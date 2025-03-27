@@ -3,7 +3,6 @@ version: 2
 project_name: motr
 builds:
   - id: motr
-    main: ./cmd/vault/main.go
     binary: app
     goos:
       - js
