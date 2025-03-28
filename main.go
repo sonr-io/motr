@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"context"
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -21,7 +20,8 @@ import (
 	_ "github.com/ncruces/go-sqlite3/embed"
 	vault "github.com/onsonr/motr/app"
 	sink "github.com/onsonr/motr/internal/sink"
-	motr "github.com/onsonr/motr/pkg/config"
+
+	// motr "github.com/onsonr/motr/pkg/config"
 	motrorm "github.com/onsonr/motr/pkg/models"
 )
 
@@ -42,14 +42,14 @@ var (
 )
 
 func main() {
-	configString := "TODO"
-	config, _ := loadConfig(configString)
+	// configString := "TODO"
+	// config, _ := loadConfig(configString)
 	dbq, err := createDB()
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
-	e, err := vault.New(config, dbq)
+	e, err := vault.New(nil, dbq)
 	if err != nil {
 		log.Fatal(err)
 		return
@@ -57,13 +57,14 @@ func main() {
 	serveFetch(e)
 }
 
-// loadConfig loads the config from the given JSON string
-func loadConfig(configString string) (*motr.Config, error) {
-	var config motr.Config
-	err := json.Unmarshal([]byte(configString), &config)
-	return &config, err
-}
-
+// // loadConfig loads the config from the given JSON string
+//
+//	func loadConfig(configString string) (*motr.Config, error) {
+//		var config motr.Config
+//		err := json.Unmarshal([]byte(configString), &config)
+//		return &config, err
+//	}
+//
 // createDB initializes and returns a configured database connection
 func createDB() (*motrorm.Queries, error) {
 	db, err := sql.Open("sqlite3", ":memory:")

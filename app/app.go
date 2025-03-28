@@ -5,8 +5,8 @@ package vault
 import (
 	"github.com/labstack/echo/v4"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
-	motr "github.com/onsonr/motr/pkg/config"
 	"github.com/onsonr/motr/pkg/context"
+	motr "github.com/onsonr/motr/pkg/embed"
 	motrorm "github.com/onsonr/motr/pkg/models"
 )
 
