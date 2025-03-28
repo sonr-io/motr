@@ -1,5 +1,7 @@
 package embed
 
+import "github.com/onsonr/motr/internal/models"
+
 // motr "github.com/onsonr/motr/pkg/config"
 
 const SchemaVersion = 1
@@ -33,8 +35,8 @@ const (
 //	}
 //
 // NewVaultConfig returns the default vault config
-func NewVaultConfig(addr string, ucanCID string) *Config {
-	return &Config{
+func NewVaultConfig(addr string, ucanCID string) *models.Config {
+	return &models.Config{
 		MotrToken:      ucanCID,
 		MotrAddress:    addr,
 		IpfsGatewayURL: "http://localhost:80",
@@ -42,13 +44,4 @@ func NewVaultConfig(addr string, ucanCID string) *Config {
 		SonrRPCURL:     "http://localhost:26657",
 		SonrChainID:    "sonr-testnet-1",
 	}
-}
-
-type Config struct {
-	MotrToken      string `json:"motrToken"`
-	MotrAddress    string `json:"motrAddress"`
-	IpfsGatewayURL string `json:"ipfsGatewayUrl"`
-	SonrAPIURL     string `json:"sonrApiUrl"`
-	SonrRPCURL     string `json:"sonrRpcUrl"`
-	SonrChainID    string `json:"sonrChainId"`
 }

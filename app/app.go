@@ -1,19 +1,18 @@
 //go:build js && wasm
 
-package server
+package app
 
 import (
 	"github.com/labstack/echo/v4"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
-	"github.com/onsonr/motr/pkg/context"
-	motr "github.com/onsonr/motr/pkg/embed"
-	motrorm "github.com/onsonr/motr/pkg/models"
+	"github.com/onsonr/motr/internal/context"
+	"github.com/onsonr/motr/internal/models"
 )
 
 type Vault = *echo.Echo
 
 // New returns a new Vault instance
-func New(config *motr.Config, dbq *motrorm.Queries) (Vault, error) {
+func New(config *models.Config, dbq *models.Queries) (Vault, error) {
 	e := echo.New()
 	// Override default behaviors
 	e.IPExtractor = echo.ExtractIPDirect()

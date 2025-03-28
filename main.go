@@ -18,11 +18,10 @@ import (
 
 	_ "github.com/ncruces/go-sqlite3/driver"
 	_ "github.com/ncruces/go-sqlite3/embed"
+	vault "github.com/onsonr/motr/app"
+	"github.com/onsonr/motr/internal/models"
 	sink "github.com/onsonr/motr/internal/sink"
-	vault "github.com/onsonr/motr/server"
-
 	// motr "github.com/onsonr/motr/pkg/config"
-	motrorm "github.com/onsonr/motr/pkg/models"
 )
 
 var (
@@ -66,7 +65,7 @@ func main() {
 //	}
 //
 // createDB initializes and returns a configured database connection
-func createDB() (*motrorm.Queries, error) {
+func createDB() (*models.Queries, error) {
 	db, err := sql.Open("sqlite3", ":memory:")
 	if err != nil {
 		return nil, err
@@ -76,7 +75,7 @@ func createDB() (*motrorm.Queries, error) {
 	if _, err := db.ExecContext(context.Background(), sink.SchemaVaultSQL); err != nil {
 		return nil, err
 	}
-	return motrorm.New(db), nil
+	return models.New(db), nil
 }
 
 // serveFetch serves HTTP requests with optimized handler management
