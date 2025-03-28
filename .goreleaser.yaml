@@ -11,7 +11,7 @@ builds:
 
 release:
   github:
-    owner: onsonr
+    owner: sonr-io
     name: motr
   name_template: "{{ .Tag }} | {{ .Env.RELEASE_DATE }}"
   draft: false

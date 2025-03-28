@@ -5,15 +5,15 @@ package app
 import (
 	"github.com/labstack/echo/v4"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
-	"github.com/onsonr/motr/internal/config"
-	"github.com/onsonr/motr/internal/context"
-	"github.com/onsonr/motr/internal/models"
+	"github.com/onsonr/motr/context"
+	"github.com/onsonr/motr/pkg/models"
+	"github.com/onsonr/motr/pkg/types"
 )
 
 type Vault = *echo.Echo
 
 // New returns a new Vault instance
-func New(config *config.Config, dbq *models.Queries) (Vault, error) {
+func New(config *types.Config, dbq *models.Queries) (Vault, error) {
 	e := echo.New()
 	// Override default behaviors
 	e.IPExtractor = echo.ExtractIPDirect()

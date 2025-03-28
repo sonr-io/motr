@@ -19,9 +19,8 @@ import (
 	_ "github.com/ncruces/go-sqlite3/driver"
 	_ "github.com/ncruces/go-sqlite3/embed"
 	vault "github.com/onsonr/motr/app"
-	"github.com/onsonr/motr/internal/models"
-	sink "github.com/onsonr/motr/internal/sink"
-	// motr "github.com/onsonr/motr/pkg/config"
+	"github.com/onsonr/motr/pkg/models"
+	sink "github.com/onsonr/motr/pkg/sink"
 )
 
 var (
@@ -64,6 +63,7 @@ func main() {
 //		return &config, err
 //	}
 //
+
 // createDB initializes and returns a configured database connection
 func createDB() (*models.Queries, error) {
 	db, err := sql.Open("sqlite3", ":memory:")

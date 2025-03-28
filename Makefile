@@ -7,8 +7,7 @@ COMMIT := $(shell git log -1 --format='%H')
 all: generate build
 
 build:
-	GOOS=js GOARCH=wasm go build -o bin/motr.wasm .
+	@task -t .taskfile.dist.yml build
 
 generate:
-	@task -t .taskfile.dist.yml sqlc:gen
-	@task -t .taskfile.dist.yml templ:gen
+	@task -t .taskfile.dist.yml gen

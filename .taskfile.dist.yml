@@ -1,15 +1,91 @@
 # https://taskfile.dev
 
 version: "3"
+silent: true
 
 tasks:
-  sqlc:gen:
-    dir: internal
+  default:
     cmds:
-      - sqlc generate
-    silent: true
+      - task: test
+      - task: gen
+      - task: build
 
-  templ:gen:
+  test:
+    desc: Runs tests
+    cmds:
+      - defer: rm -rf .task
+      - task: test:go
+
+  build:
+    desc: Builds code
+    cmds:
+      - rm -rf bin
+      - defer: rm -rf .task
+      - task: build:go
+      # - task: build:docker
+
+  gen:
+    desc: Generates code
+    cmds:
+      - defer: rm -rf .task
+      - task: gen:templ
+      - task: gen:sqlc
+
+  #
+  # Internal tasks
+  #
+
+  build:go:
+    desc: Builds Go code
+    env:
+      GOOS: js
+      GOARCH: wasm
+    sources:
+      - "main.go"
+      - "**/*.go"
+    generates:
+      - bin/motr.wasm
+    cmds:
+      - go build -o bin/motr.wasm .
+
+  build:docker:
+    desc: Builds Docker image
+    env:
+      GOOS: js
+      GOARCH: wasm
+    sources:
+      - "main.go"
+      - "**/*.go"
+    generates:
+      - bin/motr.wasm
+    cmds:
+      - go build -o bin/motr.wasm .
+
+  gen:templ:
+    internal: true
+    sources:
+      - "**/*.templ"
+    generates:
+      - "**/_templ.go"
     cmds:
       - templ generate
-    silent: true
+
+  gen:sqlc:
+    internal: true
+    sources:
+      - pkg/sink/query.sql
+      - pkg/sink/schema.sql
+    generates:
+      - pkg/models/db.go
+      - pkg/models/querier.go
+      - pkg/models/models.go
+      - pkg/models/query.sql.go
+    cmds:
+      - sqlc generate
+
+  test:go:
+    internal: true
+    sources:
+      - "**/*.go"
+    cmds:
+      - go test -v ./...

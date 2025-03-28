@@ -1,11 +1,11 @@
 version: "2"
 sql:
   - engine: "sqlite"
-    queries: "./sink/query.sql"
-    schema: "./sink/schema.sql"
+    queries: "./pkg/sink/query.sql"
+    schema: "./pkg/sink/schema.sql"
     gen:
       go:
         emit_interface: true
         emit_json_tags: true
         package: "models"
-        out: "./models"
+        out: "./pkg/models"
