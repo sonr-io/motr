@@ -1,6 +1,6 @@
 //go:build js && wasm
 
-package vault
+package server
 
 import (
 	"github.com/labstack/echo/v4"
