@@ -1,6 +1,8 @@
 package embed
 
-import "github.com/onsonr/motr/internal/models"
+import (
+	"github.com/onsonr/motr/internal/config"
+)
 
 // motr "github.com/onsonr/motr/pkg/config"
 
@@ -35,8 +37,8 @@ const (
 //	}
 //
 // NewVaultConfig returns the default vault config
-func NewVaultConfig(addr string, ucanCID string) *models.Config {
-	return &models.Config{
+func NewVaultConfig(addr string, ucanCID string) *config.Config {
+	return &config.Config{
 		MotrToken:      ucanCID,
 		MotrAddress:    addr,
 		IpfsGatewayURL: "http://localhost:80",

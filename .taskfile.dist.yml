@@ -3,18 +3,13 @@
 version: "3"
 
 tasks:
-  sqlc-gen:
+  sqlc:gen:
     dir: internal
     cmds:
       - sqlc generate
     silent: true
 
-  templ-gen:
+  templ:gen:
     cmds:
       - templ generate
-    silent: true
-
-  pkl-gen:
-    cmds:
-      - pkl-gen-go internal/pkl/App.pkl
     silent: true
