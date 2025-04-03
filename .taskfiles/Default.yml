@@ -1,7 +1,11 @@
-# https://taskfile.dev
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
 
 version: "3"
 silent: true
+
+vars:
+  ROOT_DIR:
+    sh: git rev-parse --show-toplevel
 
 tasks:
   default:
@@ -37,6 +41,7 @@ tasks:
 
   build:go:
     desc: Builds Go code
+    dir: "{{.ROOT_DIR}}"
     env:
       GOOS: js
       GOARCH: wasm
@@ -46,10 +51,11 @@ tasks:
     generates:
       - bin/motr.wasm
     cmds:
-      - go build -o bin/motr.wasm .
+      - go build -o bin/motr.wasm ./cmd/vault
 
   build:docker:
     desc: Builds Docker image
+    dir: "{{.ROOT_DIR}}"
     env:
       GOOS: js
       GOARCH: wasm
@@ -63,6 +69,7 @@ tasks:
 
   gen:templ:
     internal: true
+    dir: "{{.ROOT_DIR}}"
     sources:
       - "**/*.templ"
     generates:
@@ -72,19 +79,21 @@ tasks:
 
   gen:sqlc:
     internal: true
+    dir: "{{.ROOT_DIR}}"
     sources:
-      - pkg/sink/query.sql
-      - pkg/sink/schema.sql
+      - "**/query.sql"
+      - "**/schema.sql"
     generates:
-      - pkg/models/db.go
-      - pkg/models/querier.go
-      - pkg/models/models.go
-      - pkg/models/query.sql.go
+      - "**/db.go"
+      - "**/querier.go"
+      - "**/models.go"
+      - "**/query.sql.go"
     cmds:
       - sqlc generate
 
   test:go:
     internal: true
+    dir: "{{.ROOT_DIR}}"
     sources:
       - "**/*.go"
     cmds:

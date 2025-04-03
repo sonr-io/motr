@@ -5,78 +5,13 @@ package main
 
 import (
 	"bytes"
-	"context"
-	"database/sql"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"strings"
-	"sync"
 	"syscall/js"
-
-	_ "github.com/ncruces/go-sqlite3/driver"
-	_ "github.com/ncruces/go-sqlite3/embed"
-	"github.com/onsonr/motr/internal/models"
-	sink "github.com/onsonr/motr/internal/sink"
-	vault "github.com/onsonr/motr/server"
 )
-
-var (
-	// Global buffer pool to reduce allocations
-	bufferPool = sync.Pool{
-		New: func() any {
-			return new(bytes.Buffer)
-		},
-	}
-
-	// Cached JS globals
-	jsGlobal     = js.Global()
-	jsUint8Array = jsGlobal.Get("Uint8Array")
-	jsResponse   = jsGlobal.Get("Response")
-	jsPromise    = jsGlobal.Get("Promise")
-	jsWasmHTTP   = jsGlobal.Get("wasmhttp")
-)
-
-func main() {
-	// configString := "TODO"
-	// config, _ := loadConfig(configString)
-	dbq, err := createDB()
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-	e, err := vault.New(nil, dbq)
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-	serveFetch(e)
-}
-
-// // loadConfig loads the config from the given JSON string
-//
-//	func loadConfig(configString string) (*motr.Config, error) {
-//		var config motr.Config
-//		err := json.Unmarshal([]byte(configString), &config)
-//		return &config, err
-//	}
-//
-
-// createDB initializes and returns a configured database connection
-func createDB() (*models.Queries, error) {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		return nil, err
-	}
-
-	// create tables
-	if _, err := db.ExecContext(context.Background(), sink.SchemaVaultSQL); err != nil {
-		return nil, err
-	}
-	return models.New(db), nil
-}
 
 // serveFetch serves HTTP requests with optimized handler management
 func serveFetch(handler http.Handler) func() {

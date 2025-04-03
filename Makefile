@@ -7,7 +7,7 @@ COMMIT := $(shell git log -1 --format='%H')
 all: generate build
 
 build:
-	@task -t .taskfile.dist.yml build
+	@task -t .taskfiles/Default.yml build
 
 generate:
-	@task -t .taskfile.dist.yml gen
+	@task -t .taskfiles/Default.yml gen

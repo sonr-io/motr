@@ -5,15 +5,14 @@ package server
 import (
 	"github.com/labstack/echo/v4"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
-	"github.com/onsonr/motr/internal/context"
 	"github.com/onsonr/motr/internal/models"
-	"github.com/onsonr/motr/types"
+	"github.com/onsonr/motr/internal/types"
 )
 
 type Vault = *echo.Echo
 
 // New returns a new Vault instance
-func New(config *types.Config, dbq *models.Queries) (Vault, error) {
+func New(config *types.Config, dbq *models.Queries, mdws ...echo.MiddlewareFunc) (Vault, error) {
 	e := echo.New()
 	// Override default behaviors
 	e.IPExtractor = echo.ExtractIPDirect()
@@ -22,7 +21,7 @@ func New(config *types.Config, dbq *models.Queries) (Vault, error) {
 	// Built-in middleware
 	e.Use(echomiddleware.Logger())
 	e.Use(echomiddleware.Recover())
-	e.Use(context.WASMMiddleware)
+	e.Use(mdws...)
 	registerRoutes(e)
 	return e, nil
 }
