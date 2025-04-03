@@ -1,50 +1,103 @@
-# `onsonr/motr`
+# Sonr Motr
 
-[![GoDoc](https://godoc.org/github.com/onsonr/motr?status.svg)](https://godoc.org/github.com/onsonr/motr)
-[![Go Report Card](https://goreportcard.com/badge/github.com/onsonr/motr)](https://goreportcard.com/report/github.com/onsonr/motr)
+[![GoDoc](https://godoc.org/github.com/sonr-io/motr?status.svg)](https://godoc.org/github.com/sonr-io/motr)
+[![Go Report Card](https://goreportcard.com/badge/github.com/sonr-io/motr)](https://goreportcard.com/report/github.com/sonr-io/motr)
 
-`onsonr/motr` is the implementation of the Decentralized Web Node for the Sonr Blockchain.
+Motr is Sonr's decentralized vault and identity management system. It provides secure credential and profile management with online/offline capabilities through a progressive web application architecture.
 
-## Install
+## Features
+
+- **Secure Identity Management**: WebAuthn credential storage and verification
+- **Progressive Web App**: Works online and offline with service worker integration
+- **WASM Architecture**: Core functionality compiled to WebAssembly for cross-platform compatibility
+- **Local-First Design**: Data stored locally with sync capabilities to the Sonr blockchain
+
+## Installation
+
 ```bash
-go get github.com/onsonr/motr
+git clone https://github.com/sonr-io/motr.git
+cd motr
+go mod tidy
 ```
 
 ## Usage
 
-#### Example: As a library
+### Run as a Local Server
 
 ```go
 package main
+
 import (
-	"github.com/onsonr/motr"
+	"database/sql"
+	"log"
+	
+	"github.com/sonr-io/motr/app"
+	"github.com/sonr-io/motr/pkg/models"
+	"github.com/sonr-io/motr/pkg/types"
 )
 
 func main() {
-	// Create a new decentralized web node
-	node := motr.NewNode()
+	dbq, err := setupDatabase()
+	if err != nil {
+		log.Fatal(err)
+	}
+	
+	config := &types.Config{
+		MotrToken: "your-token",
+		SonrChainID: "sonr-testnet-1",
+		// Other configuration options
+	}
+	
+	vault, err := app.New(config, dbq)
+	if err != nil {
+		log.Fatal(err)
+	}
+	
+	// Start the server
+	vault.Start(":8080")
+}
 
-	// Start the decentralized web node
-	node.Start()
+func setupDatabase() (*models.Queries, error) {
+	// Initialize your database connection
+	// ...
 }
 ```
 
-#### Example: As a Service Worker
+### Compile to WebAssembly
 
 ```sh
-GOOS=js GOARCH=wasm go build -o app.wasm ./cmd/vault/main.go
+# Build the vault application as WASM
+GOOS=js GOARCH=wasm go build -o public/app.wasm ./cmd/vault/main.go
+
+# Build the proxy application for Cloudflare Workers
+GOOS=js GOARCH=wasm go build -o workers/proxy.wasm ./cmd/proxy/main.go
 ```
 
-#### Example: Via Cloudflare Workers
+### Progressive Web App Integration
 
-```sh
-GOOS=js GOARCH=wasm go build -o app.wasm ./cmd/proxy/main.go
-```
+Motr can be integrated into progressive web applications, providing:
+
+- Offline functionality via service workers
+- Secure credential storage
+- Seamless blockchain account management
+- Cross-device synchronization
+
+## Architecture
+
+Motr consists of several components:
+
+- **Echo Server**: REST API for authentication and account management
+- **WASM Runtime**: Core logic compiled to WebAssembly
+- **Service Worker**: Handles offline capabilities and request caching
+- **IndexedDB Storage**: Local data persistence
+- **Sonr Blockchain Integration**: Identity verification and data synchronization
 
 ## Contributing
-Contributions are welcome!
+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
+
 [MIT](LICENSE)  
 
-Copyright (c) 2024, diDAO
+Copyright (c) 2024, Sonr Labs, Inc.
