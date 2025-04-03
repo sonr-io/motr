@@ -6,8 +6,8 @@ import (
 	"github.com/labstack/echo/v4"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/onsonr/motr/internal/context"
-	"github.com/onsonr/motr/pkg/models"
-	"github.com/onsonr/motr/pkg/types"
+	"github.com/onsonr/motr/internal/models"
+	"github.com/onsonr/motr/types"
 )
 
 type Vault = *echo.Echo
