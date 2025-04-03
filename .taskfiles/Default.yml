@@ -17,7 +17,7 @@ tasks:
   test:
     desc: Runs tests
     cmds:
-      - defer: rm -rf .task
+      - defer: task clean
       - task: test:go
 
   build:
@@ -34,6 +34,12 @@ tasks:
       - defer: rm -rf .task
       - task: gen:templ
       - task: gen:sqlc
+
+  clean:
+    cmds:
+      - rm -rf bin
+      - rm -rf dist
+      - rm -rf .task
 
   #
   # Internal tasks
