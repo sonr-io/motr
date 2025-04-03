@@ -79,7 +79,7 @@ tasks:
 
   gen:sqlc:
     internal: true
-    dir: "{{.ROOT_DIR}}"
+    dir: "{{.ROOT_DIR}}/internal/sink"
     sources:
       - "**/query.sql"
       - "**/schema.sql"

@@ -5,8 +5,6 @@ package main
 
 import (
 	"bytes"
-	"context"
-	"database/sql"
 	"fmt"
 	"io"
 	"log"
@@ -16,11 +14,7 @@ import (
 	"sync"
 	"syscall/js"
 
-	_ "github.com/ncruces/go-sqlite3/driver"
-	_ "github.com/ncruces/go-sqlite3/embed"
-	"github.com/onsonr/motr/internal/models"
-	sink "github.com/onsonr/motr/internal/sink"
-	"github.com/onsonr/motr/server"
+	"github.com/onsonr/motr/pkg/resolver"
 )
 
 var (
@@ -42,12 +36,7 @@ var (
 func main() {
 	// configString := "TODO"
 	// config, _ := loadConfig(configString)
-	dbq, err := createDB()
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-	e, err := server.New(nil, dbq, WASMMiddleware)
+	e, err := resolver.New(nil, nil, WASMMiddleware)
 	if err != nil {
 		log.Fatal(err)
 		return
@@ -63,20 +52,6 @@ func main() {
 //		return &config, err
 //	}
 //
-
-// createDB initializes and returns a configured database connection
-func createDB() (*models.Queries, error) {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		return nil, err
-	}
-
-	// create tables
-	if _, err := db.ExecContext(context.Background(), sink.SchemaVaultSQL); err != nil {
-		return nil, err
-	}
-	return models.New(db), nil
-}
 
 // serveFetch serves HTTP requests with optimized handler management
 func serveFetch(handler http.Handler) func() {

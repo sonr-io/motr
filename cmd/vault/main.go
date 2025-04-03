@@ -9,9 +9,7 @@ import (
 	"sync"
 	"syscall/js"
 
-	_ "github.com/ncruces/go-sqlite3/driver"
-	_ "github.com/ncruces/go-sqlite3/embed"
-	"github.com/onsonr/motr/server"
+	"github.com/onsonr/motr/pkg/controller"
 )
 
 var (
@@ -38,7 +36,7 @@ func main() {
 		log.Fatal(err)
 		return
 	}
-	e, err := server.New(nil, dbq, WASMMiddleware)
+	e, err := controller.New(nil, dbq, WASMMiddleware)
 	if err != nil {
 		log.Fatal(err)
 		return

@@ -86,7 +86,6 @@ tmp/
 *.pem
 dist/
 bin/
-build/
 .devbox
 .ignore
 .opencommitignore
@@ -102,7 +101,6 @@ pkg/nebula/node_modules
 configs/logs.json
 
 mprocs.yaml
-build
 sonr.wiki
 
 !devbox.lock

@@ -1,8 +1,6 @@
-package types
+package config
 
-type Config struct {
-	// TODO
-	MotrToken      string `json:"motr_token"`
+type ResolverConfig struct {
 	MotrAddress    string `json:"motr_address"`
 	IpfsGatewayURL string `json:"ipfs_gateway_url"`
 	SonrAPIURL     string `json:"sonr_api_url"`

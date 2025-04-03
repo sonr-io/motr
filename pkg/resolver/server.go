@@ -1,18 +1,16 @@
 //go:build js && wasm
 
-package server
+package resolver
 
 import (
 	"github.com/labstack/echo/v4"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
+	"github.com/onsonr/motr/config"
 	"github.com/onsonr/motr/internal/models"
-	"github.com/onsonr/motr/internal/types"
 )
 
-type Vault = *echo.Echo
-
 // New returns a new Vault instance
-func New(config *types.Config, dbq *models.Queries, mdws ...echo.MiddlewareFunc) (Vault, error) {
+func New(config *config.ResolverConfig, dbq *models.Queries, mdws ...echo.MiddlewareFunc) (*echo.Echo, error) {
 	e := echo.New()
 	// Override default behaviors
 	e.IPExtractor = echo.ExtractIPDirect()
