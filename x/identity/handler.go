@@ -18,7 +18,7 @@ func InitTables(db *sql.DB) (Model, error) {
 	return model.New(db), nil
 }
 
-func RegisterRoutes(e *echo.Echo, m Model) {
+func RegisterRoutes(e *echo.Echo, m Model, mdws ...echo.MiddlewareFunc) {
 	controller.HandleAccounts(e.Group("/account"), m)
 	controller.HandleCredentials(e.Group("/credential"), m)
 	controller.HandleDevices(e.Group("/device"), m)
