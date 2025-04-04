@@ -9,7 +9,7 @@ import (
 	"sync"
 	"syscall/js"
 
-	"github.com/onsonr/motr/pkg/controller"
+	"github.com/onsonr/motr/services/controller"
 )
 
 var (

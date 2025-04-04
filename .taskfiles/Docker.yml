@@ -1,0 +1,106 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: "3"
+silent: true
+
+vars:
+  ROOT_DIR:
+    sh: git rev-parse --show-toplevel
+
+tasks:
+  default:
+    cmds:
+      - task: test
+      - task: gen
+      - task: build
+
+  test:
+    desc: Runs tests
+    cmds:
+      - defer: task clean
+      - task: test:go
+
+  build:
+    desc: Builds code
+    cmds:
+      - rm -rf bin
+      - defer: rm -rf .task
+      - task: build:go
+      # - task: build:docker
+
+  gen:
+    desc: Generates code
+    cmds:
+      - defer: rm -rf .task
+      - task: gen:templ
+      - task: gen:sqlc
+
+  clean:
+    cmds:
+      - rm -rf bin
+      - rm -rf dist
+      - rm -rf .task
+
+  #
+  # Internal tasks
+  #
+
+  build:go:
+    desc: Builds Go code
+    dir: "{{.ROOT_DIR}}"
+    env:
+      GOOS: js
+      GOARCH: wasm
+    sources:
+      - "main.go"
+      - "**/*.go"
+    generates:
+      - bin/motr.wasm
+    cmds:
+      - go build -o bin/motr.wasm ./cmd/vault
+
+  build:docker:
+    desc: Builds Docker image
+    dir: "{{.ROOT_DIR}}"
+    env:
+      GOOS: js
+      GOARCH: wasm
+    sources:
+      - "main.go"
+      - "**/*.go"
+    generates:
+      - bin/motr.wasm
+    cmds:
+      - go build -o bin/motr.wasm .
+
+  gen:templ:
+    internal: true
+    dir: "{{.ROOT_DIR}}"
+    sources:
+      - "**/*.templ"
+    generates:
+      - "**/_templ.go"
+    cmds:
+      - templ generate
+
+  gen:sqlc:
+    internal: true
+    dir: "{{.ROOT_DIR}}/internal/sink"
+    sources:
+      - "**/query.sql"
+      - "**/schema.sql"
+    generates:
+      - "**/db.go"
+      - "**/querier.go"
+      - "**/models.go"
+      - "**/query.sql.go"
+    cmds:
+      - sqlc generate
+
+  test:go:
+    internal: true
+    dir: "{{.ROOT_DIR}}"
+    sources:
+      - "**/*.go"
+    cmds:
+      - go test -v ./...

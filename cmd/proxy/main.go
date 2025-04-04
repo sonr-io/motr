@@ -14,7 +14,7 @@ import (
 	"sync"
 	"syscall/js"
 
-	"github.com/onsonr/motr/pkg/resolver"
+	"github.com/onsonr/motr/services/resolver"
 )
 
 var (
