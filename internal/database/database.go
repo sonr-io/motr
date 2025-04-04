@@ -8,20 +8,14 @@ import (
 
 	_ "github.com/ncruces/go-sqlite3/driver"
 	_ "github.com/ncruces/go-sqlite3/embed"
+	"github.com/onsonr/motr/pkg/config"
 	"github.com/onsonr/motr/x/identity"
 	"github.com/onsonr/motr/x/portfolio"
 	"github.com/onsonr/motr/x/user"
 )
 
-type Connection struct {
-	db        *sql.DB
-	Identity  identity.Model
-	Portfolio portfolio.Model
-	User      user.Model
-}
-
 // New returns a new SQLite database instance
-func New() (*Connection, error) {
+func New() (*config.DBConnection, error) {
 	db, err := sql.Open("sqlite3", ":memory:")
 	if err != nil {
 		return nil, err
@@ -40,9 +34,8 @@ func New() (*Connection, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	return &Connection{
-		db:        db,
+	return &config.DBConnection{
+		DB:        db,
 		Identity:  idTable,
 		Portfolio: portTable,
 		User:      userTable,

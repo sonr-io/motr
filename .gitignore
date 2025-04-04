@@ -90,7 +90,6 @@ bin/
 .ignore
 .opencommitignore
 heighliner*
-sonr
 deploy/**/data
 x/.DS_Store
 .aider*
@@ -101,7 +100,6 @@ pkg/nebula/node_modules
 configs/logs.json
 
 mprocs.yaml
-sonr.wiki
 
 !devbox.lock
 !buf.lock
@@ -110,7 +108,6 @@ sonr.wiki
 mprocs.yaml
 mprocs.log
 tools-stamp
-sonr.log
 deploy/conf
 
 interchaintest-downloader

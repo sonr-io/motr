@@ -6,12 +6,11 @@ package app
 import (
 	"github.com/labstack/echo/v4"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
-	"github.com/onsonr/motr/internal/database"
 	"github.com/onsonr/motr/pkg/config"
 )
 
 type Options struct {
-	conn *database.Connection
+	conn *config.DBConnection
 	cfg  *config.MotrConfig
 	mdws []echo.MiddlewareFunc
 }
@@ -43,7 +42,7 @@ func WithConfig(cfg *config.MotrConfig) func(*Options) {
 	}
 }
 
-func WithDatabase(conn *database.Connection) func(*Options) {
+func WithDatabase(conn *config.DBConnection) func(*Options) {
 	return func(o *Options) {
 		o.conn = conn
 	}
