@@ -40,6 +40,20 @@ type Asset struct {
 	CoingeckoID sql.NullString `json:"coingecko_id"`
 }
 
+type Balance struct {
+	ID                string       `json:"id"`
+	CreatedAt         time.Time    `json:"created_at"`
+	UpdatedAt         time.Time    `json:"updated_at"`
+	DeletedAt         sql.NullTime `json:"deleted_at"`
+	AccountID         string       `json:"account_id"`
+	AssetID           string       `json:"asset_id"`
+	Amount            string       `json:"amount"`
+	LastUpdatedHeight int64        `json:"last_updated_height"`
+	IsDelegated       bool         `json:"is_delegated"`
+	IsStaked          bool         `json:"is_staked"`
+	IsVesting         bool         `json:"is_vesting"`
+}
+
 type Credential struct {
 	ID                      string       `json:"id"`
 	CreatedAt               time.Time    `json:"created_at"`
@@ -51,6 +65,27 @@ type Credential struct {
 	Origin                  string       `json:"origin"`
 	Type                    string       `json:"type"`
 	Transports              string       `json:"transports"`
+}
+
+type Device struct {
+	ID             string         `json:"id"`
+	CreatedAt      time.Time      `json:"created_at"`
+	UpdatedAt      time.Time      `json:"updated_at"`
+	DeletedAt      sql.NullTime   `json:"deleted_at"`
+	ProfileID      string         `json:"profile_id"`
+	CredentialID   string         `json:"credential_id"`
+	Name           string         `json:"name"`
+	DeviceType     string         `json:"device_type"`
+	OsName         string         `json:"os_name"`
+	OsVersion      string         `json:"os_version"`
+	BrowserName    sql.NullString `json:"browser_name"`
+	BrowserVersion sql.NullString `json:"browser_version"`
+	LastUsedAt     time.Time      `json:"last_used_at"`
+	IsTrusted      bool           `json:"is_trusted"`
+	IsCurrent      bool           `json:"is_current"`
+	Fingerprint    string         `json:"fingerprint"`
+	UserAgent      sql.NullString `json:"user_agent"`
+	IpAddress      sql.NullString `json:"ip_address"`
 }
 
 type Profile struct {

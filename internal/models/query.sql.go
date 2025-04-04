@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	"database/sql"
 )
 
 const checkHandleExists = `-- name: CheckHandleExists :one
@@ -20,6 +21,139 @@ func (q *Queries) CheckHandleExists(ctx context.Context, handle string) (bool, e
 	var handle_exists bool
 	err := row.Scan(&handle_exists)
 	return handle_exists, err
+}
+
+const createBalance = `-- name: CreateBalance :one
+INSERT INTO balances (
+    id,
+    account_id,
+    asset_id,
+    amount,
+    last_updated_height,
+    is_delegated,
+    is_staked,
+    is_vesting
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+RETURNING id, created_at, updated_at, deleted_at, account_id, asset_id, amount, last_updated_height, is_delegated, is_staked, is_vesting
+`
+
+type CreateBalanceParams struct {
+	ID                string `json:"id"`
+	AccountID         string `json:"account_id"`
+	AssetID           string `json:"asset_id"`
+	Amount            string `json:"amount"`
+	LastUpdatedHeight int64  `json:"last_updated_height"`
+	IsDelegated       bool   `json:"is_delegated"`
+	IsStaked          bool   `json:"is_staked"`
+	IsVesting         bool   `json:"is_vesting"`
+}
+
+// Balance table methods
+func (q *Queries) CreateBalance(ctx context.Context, arg CreateBalanceParams) (Balance, error) {
+	row := q.db.QueryRowContext(ctx, createBalance,
+		arg.ID,
+		arg.AccountID,
+		arg.AssetID,
+		arg.Amount,
+		arg.LastUpdatedHeight,
+		arg.IsDelegated,
+		arg.IsStaked,
+		arg.IsVesting,
+	)
+	var i Balance
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.AccountID,
+		&i.AssetID,
+		&i.Amount,
+		&i.LastUpdatedHeight,
+		&i.IsDelegated,
+		&i.IsStaked,
+		&i.IsVesting,
+	)
+	return i, err
+}
+
+const createDevice = `-- name: CreateDevice :one
+INSERT INTO devices (
+    id,
+    profile_id,
+    credential_id,
+    name,
+    device_type,
+    os_name,
+    os_version,
+    browser_name,
+    browser_version,
+    is_trusted,
+    is_current,
+    fingerprint,
+    user_agent,
+    ip_address
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+RETURNING id, created_at, updated_at, deleted_at, profile_id, credential_id, name, device_type, os_name, os_version, browser_name, browser_version, last_used_at, is_trusted, is_current, fingerprint, user_agent, ip_address
+`
+
+type CreateDeviceParams struct {
+	ID             string         `json:"id"`
+	ProfileID      string         `json:"profile_id"`
+	CredentialID   string         `json:"credential_id"`
+	Name           string         `json:"name"`
+	DeviceType     string         `json:"device_type"`
+	OsName         string         `json:"os_name"`
+	OsVersion      string         `json:"os_version"`
+	BrowserName    sql.NullString `json:"browser_name"`
+	BrowserVersion sql.NullString `json:"browser_version"`
+	IsTrusted      bool           `json:"is_trusted"`
+	IsCurrent      bool           `json:"is_current"`
+	Fingerprint    string         `json:"fingerprint"`
+	UserAgent      sql.NullString `json:"user_agent"`
+	IpAddress      sql.NullString `json:"ip_address"`
+}
+
+// Device table methods
+func (q *Queries) CreateDevice(ctx context.Context, arg CreateDeviceParams) (Device, error) {
+	row := q.db.QueryRowContext(ctx, createDevice,
+		arg.ID,
+		arg.ProfileID,
+		arg.CredentialID,
+		arg.Name,
+		arg.DeviceType,
+		arg.OsName,
+		arg.OsVersion,
+		arg.BrowserName,
+		arg.BrowserVersion,
+		arg.IsTrusted,
+		arg.IsCurrent,
+		arg.Fingerprint,
+		arg.UserAgent,
+		arg.IpAddress,
+	)
+	var i Device
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ProfileID,
+		&i.CredentialID,
+		&i.Name,
+		&i.DeviceType,
+		&i.OsName,
+		&i.OsVersion,
+		&i.BrowserName,
+		&i.BrowserVersion,
+		&i.LastUsedAt,
+		&i.IsTrusted,
+		&i.IsCurrent,
+		&i.Fingerprint,
+		&i.UserAgent,
+		&i.IpAddress,
+	)
+	return i, err
 }
 
 const createSession = `-- name: CreateSession :one
@@ -95,6 +229,61 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 		&i.IsHumanFirst,
 		&i.IsHumanLast,
 		&i.ProfileID,
+	)
+	return i, err
+}
+
+const getBalanceByAccountAndAsset = `-- name: GetBalanceByAccountAndAsset :one
+SELECT id, created_at, updated_at, deleted_at, account_id, asset_id, amount, last_updated_height, is_delegated, is_staked, is_vesting FROM balances
+WHERE account_id = ? AND asset_id = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+type GetBalanceByAccountAndAssetParams struct {
+	AccountID string `json:"account_id"`
+	AssetID   string `json:"asset_id"`
+}
+
+func (q *Queries) GetBalanceByAccountAndAsset(ctx context.Context, arg GetBalanceByAccountAndAssetParams) (Balance, error) {
+	row := q.db.QueryRowContext(ctx, getBalanceByAccountAndAsset, arg.AccountID, arg.AssetID)
+	var i Balance
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.AccountID,
+		&i.AssetID,
+		&i.Amount,
+		&i.LastUpdatedHeight,
+		&i.IsDelegated,
+		&i.IsStaked,
+		&i.IsVesting,
+	)
+	return i, err
+}
+
+const getBalanceByID = `-- name: GetBalanceByID :one
+SELECT id, created_at, updated_at, deleted_at, account_id, asset_id, amount, last_updated_height, is_delegated, is_staked, is_vesting FROM balances
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetBalanceByID(ctx context.Context, id string) (Balance, error) {
+	row := q.db.QueryRowContext(ctx, getBalanceByID, id)
+	var i Balance
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.AccountID,
+		&i.AssetID,
+		&i.Amount,
+		&i.LastUpdatedHeight,
+		&i.IsDelegated,
+		&i.IsStaked,
+		&i.IsVesting,
 	)
 	return i, err
 }
@@ -175,6 +364,115 @@ func (q *Queries) GetCredentialsByHandle(ctx context.Context, handle string) ([]
 		return nil, err
 	}
 	return items, nil
+}
+
+const getCredentialsByProfile = `-- name: GetCredentialsByProfile :many
+SELECT c.id, c.created_at, c.updated_at, c.deleted_at, c.handle, c.credential_id, c.authenticator_attachment, c.origin, c.type, c.transports FROM credentials c
+JOIN devices d ON c.credential_id = d.credential_id
+WHERE d.profile_id = ? AND c.deleted_at IS NULL AND d.deleted_at IS NULL
+`
+
+func (q *Queries) GetCredentialsByProfile(ctx context.Context, profileID string) ([]Credential, error) {
+	rows, err := q.db.QueryContext(ctx, getCredentialsByProfile, profileID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Credential
+	for rows.Next() {
+		var i Credential
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.Handle,
+			&i.CredentialID,
+			&i.AuthenticatorAttachment,
+			&i.Origin,
+			&i.Type,
+			&i.Transports,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getDeviceByFingerprint = `-- name: GetDeviceByFingerprint :one
+SELECT id, created_at, updated_at, deleted_at, profile_id, credential_id, name, device_type, os_name, os_version, browser_name, browser_version, last_used_at, is_trusted, is_current, fingerprint, user_agent, ip_address FROM devices
+WHERE profile_id = ? AND fingerprint = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+type GetDeviceByFingerprintParams struct {
+	ProfileID   string `json:"profile_id"`
+	Fingerprint string `json:"fingerprint"`
+}
+
+func (q *Queries) GetDeviceByFingerprint(ctx context.Context, arg GetDeviceByFingerprintParams) (Device, error) {
+	row := q.db.QueryRowContext(ctx, getDeviceByFingerprint, arg.ProfileID, arg.Fingerprint)
+	var i Device
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ProfileID,
+		&i.CredentialID,
+		&i.Name,
+		&i.DeviceType,
+		&i.OsName,
+		&i.OsVersion,
+		&i.BrowserName,
+		&i.BrowserVersion,
+		&i.LastUsedAt,
+		&i.IsTrusted,
+		&i.IsCurrent,
+		&i.Fingerprint,
+		&i.UserAgent,
+		&i.IpAddress,
+	)
+	return i, err
+}
+
+const getDeviceByID = `-- name: GetDeviceByID :one
+SELECT id, created_at, updated_at, deleted_at, profile_id, credential_id, name, device_type, os_name, os_version, browser_name, browser_version, last_used_at, is_trusted, is_current, fingerprint, user_agent, ip_address FROM devices
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetDeviceByID(ctx context.Context, id string) (Device, error) {
+	row := q.db.QueryRowContext(ctx, getDeviceByID, id)
+	var i Device
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ProfileID,
+		&i.CredentialID,
+		&i.Name,
+		&i.DeviceType,
+		&i.OsName,
+		&i.OsVersion,
+		&i.BrowserName,
+		&i.BrowserVersion,
+		&i.LastUsedAt,
+		&i.IsTrusted,
+		&i.IsCurrent,
+		&i.Fingerprint,
+		&i.UserAgent,
+		&i.IpAddress,
+	)
+	return i, err
 }
 
 const getHumanVerificationNumbers = `-- name: GetHumanVerificationNumbers :one
@@ -324,6 +622,54 @@ func (q *Queries) GetSessionByID(ctx context.Context, id string) (Session, error
 	return i, err
 }
 
+const getTrustedDevicesByProfile = `-- name: GetTrustedDevicesByProfile :many
+SELECT id, created_at, updated_at, deleted_at, profile_id, credential_id, name, device_type, os_name, os_version, browser_name, browser_version, last_used_at, is_trusted, is_current, fingerprint, user_agent, ip_address FROM devices
+WHERE profile_id = ? AND is_trusted = true AND deleted_at IS NULL
+ORDER BY last_used_at DESC
+`
+
+func (q *Queries) GetTrustedDevicesByProfile(ctx context.Context, profileID string) ([]Device, error) {
+	rows, err := q.db.QueryContext(ctx, getTrustedDevicesByProfile, profileID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Device
+	for rows.Next() {
+		var i Device
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.ProfileID,
+			&i.CredentialID,
+			&i.Name,
+			&i.DeviceType,
+			&i.OsName,
+			&i.OsVersion,
+			&i.BrowserName,
+			&i.BrowserVersion,
+			&i.LastUsedAt,
+			&i.IsTrusted,
+			&i.IsCurrent,
+			&i.Fingerprint,
+			&i.UserAgent,
+			&i.IpAddress,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getVaultConfigByCID = `-- name: GetVaultConfigByCID :one
 SELECT id, created_at, updated_at, deleted_at, handle, origin, address, cid, config, session_id, redirect_uri FROM vaults
 WHERE cid = ? 
@@ -445,6 +791,106 @@ func (q *Queries) InsertProfile(ctx context.Context, arg InsertProfileParams) (P
 	return i, err
 }
 
+const listBalancesByAccount = `-- name: ListBalancesByAccount :many
+SELECT id, created_at, updated_at, deleted_at, account_id, asset_id, amount, last_updated_height, is_delegated, is_staked, is_vesting FROM balances
+WHERE account_id = ? AND deleted_at IS NULL
+ORDER BY asset_id
+`
+
+func (q *Queries) ListBalancesByAccount(ctx context.Context, accountID string) ([]Balance, error) {
+	rows, err := q.db.QueryContext(ctx, listBalancesByAccount, accountID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Balance
+	for rows.Next() {
+		var i Balance
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.AccountID,
+			&i.AssetID,
+			&i.Amount,
+			&i.LastUpdatedHeight,
+			&i.IsDelegated,
+			&i.IsStaked,
+			&i.IsVesting,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listDevicesByProfile = `-- name: ListDevicesByProfile :many
+SELECT id, created_at, updated_at, deleted_at, profile_id, credential_id, name, device_type, os_name, os_version, browser_name, browser_version, last_used_at, is_trusted, is_current, fingerprint, user_agent, ip_address FROM devices
+WHERE profile_id = ? AND deleted_at IS NULL
+ORDER BY last_used_at DESC
+`
+
+func (q *Queries) ListDevicesByProfile(ctx context.Context, profileID string) ([]Device, error) {
+	rows, err := q.db.QueryContext(ctx, listDevicesByProfile, profileID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Device
+	for rows.Next() {
+		var i Device
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.ProfileID,
+			&i.CredentialID,
+			&i.Name,
+			&i.DeviceType,
+			&i.OsName,
+			&i.OsVersion,
+			&i.BrowserName,
+			&i.BrowserVersion,
+			&i.LastUsedAt,
+			&i.IsTrusted,
+			&i.IsCurrent,
+			&i.Fingerprint,
+			&i.UserAgent,
+			&i.IpAddress,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const softDeleteBalance = `-- name: SoftDeleteBalance :exec
+UPDATE balances
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = ?
+`
+
+func (q *Queries) SoftDeleteBalance(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, softDeleteBalance, id)
+	return err
+}
+
 const softDeleteCredential = `-- name: SoftDeleteCredential :exec
 UPDATE credentials
 SET deleted_at = CURRENT_TIMESTAMP
@@ -453,6 +899,17 @@ WHERE credential_id = ?
 
 func (q *Queries) SoftDeleteCredential(ctx context.Context, credentialID string) error {
 	_, err := q.db.ExecContext(ctx, softDeleteCredential, credentialID)
+	return err
+}
+
+const softDeleteDevice = `-- name: SoftDeleteDevice :exec
+UPDATE devices
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = ?
+`
+
+func (q *Queries) SoftDeleteDevice(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, softDeleteDevice, id)
 	return err
 }
 
@@ -465,6 +922,180 @@ WHERE address = ?
 func (q *Queries) SoftDeleteProfile(ctx context.Context, address string) error {
 	_, err := q.db.ExecContext(ctx, softDeleteProfile, address)
 	return err
+}
+
+const updateBalance = `-- name: UpdateBalance :one
+UPDATE balances
+SET 
+    amount = ?,
+    last_updated_height = ?,
+    is_delegated = ?,
+    is_staked = ?,
+    is_vesting = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, account_id, asset_id, amount, last_updated_height, is_delegated, is_staked, is_vesting
+`
+
+type UpdateBalanceParams struct {
+	Amount            string `json:"amount"`
+	LastUpdatedHeight int64  `json:"last_updated_height"`
+	IsDelegated       bool   `json:"is_delegated"`
+	IsStaked          bool   `json:"is_staked"`
+	IsVesting         bool   `json:"is_vesting"`
+	ID                string `json:"id"`
+}
+
+func (q *Queries) UpdateBalance(ctx context.Context, arg UpdateBalanceParams) (Balance, error) {
+	row := q.db.QueryRowContext(ctx, updateBalance,
+		arg.Amount,
+		arg.LastUpdatedHeight,
+		arg.IsDelegated,
+		arg.IsStaked,
+		arg.IsVesting,
+		arg.ID,
+	)
+	var i Balance
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.AccountID,
+		&i.AssetID,
+		&i.Amount,
+		&i.LastUpdatedHeight,
+		&i.IsDelegated,
+		&i.IsStaked,
+		&i.IsVesting,
+	)
+	return i, err
+}
+
+const updateCredential = `-- name: UpdateCredential :one
+UPDATE credentials
+SET 
+    authenticator_attachment = ?,
+    transports = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE credential_id = ? AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, handle, credential_id, authenticator_attachment, origin, type, transports
+`
+
+type UpdateCredentialParams struct {
+	AuthenticatorAttachment string `json:"authenticator_attachment"`
+	Transports              string `json:"transports"`
+	CredentialID            string `json:"credential_id"`
+}
+
+// Additional credential methods for better integration with devices
+func (q *Queries) UpdateCredential(ctx context.Context, arg UpdateCredentialParams) (Credential, error) {
+	row := q.db.QueryRowContext(ctx, updateCredential, arg.AuthenticatorAttachment, arg.Transports, arg.CredentialID)
+	var i Credential
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Handle,
+		&i.CredentialID,
+		&i.AuthenticatorAttachment,
+		&i.Origin,
+		&i.Type,
+		&i.Transports,
+	)
+	return i, err
+}
+
+const updateDevice = `-- name: UpdateDevice :one
+UPDATE devices
+SET 
+    name = ?,
+    is_trusted = ?,
+    is_current = ?,
+    last_used_at = CURRENT_TIMESTAMP,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, profile_id, credential_id, name, device_type, os_name, os_version, browser_name, browser_version, last_used_at, is_trusted, is_current, fingerprint, user_agent, ip_address
+`
+
+type UpdateDeviceParams struct {
+	Name      string `json:"name"`
+	IsTrusted bool   `json:"is_trusted"`
+	IsCurrent bool   `json:"is_current"`
+	ID        string `json:"id"`
+}
+
+func (q *Queries) UpdateDevice(ctx context.Context, arg UpdateDeviceParams) (Device, error) {
+	row := q.db.QueryRowContext(ctx, updateDevice,
+		arg.Name,
+		arg.IsTrusted,
+		arg.IsCurrent,
+		arg.ID,
+	)
+	var i Device
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ProfileID,
+		&i.CredentialID,
+		&i.Name,
+		&i.DeviceType,
+		&i.OsName,
+		&i.OsVersion,
+		&i.BrowserName,
+		&i.BrowserVersion,
+		&i.LastUsedAt,
+		&i.IsTrusted,
+		&i.IsCurrent,
+		&i.Fingerprint,
+		&i.UserAgent,
+		&i.IpAddress,
+	)
+	return i, err
+}
+
+const updateDeviceLastUsed = `-- name: UpdateDeviceLastUsed :one
+UPDATE devices
+SET 
+    last_used_at = CURRENT_TIMESTAMP,
+    ip_address = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, profile_id, credential_id, name, device_type, os_name, os_version, browser_name, browser_version, last_used_at, is_trusted, is_current, fingerprint, user_agent, ip_address
+`
+
+type UpdateDeviceLastUsedParams struct {
+	IpAddress sql.NullString `json:"ip_address"`
+	ID        string         `json:"id"`
+}
+
+func (q *Queries) UpdateDeviceLastUsed(ctx context.Context, arg UpdateDeviceLastUsedParams) (Device, error) {
+	row := q.db.QueryRowContext(ctx, updateDeviceLastUsed, arg.IpAddress, arg.ID)
+	var i Device
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ProfileID,
+		&i.CredentialID,
+		&i.Name,
+		&i.DeviceType,
+		&i.OsName,
+		&i.OsVersion,
+		&i.BrowserName,
+		&i.BrowserVersion,
+		&i.LastUsedAt,
+		&i.IsTrusted,
+		&i.IsCurrent,
+		&i.Fingerprint,
+		&i.UserAgent,
+		&i.IpAddress,
+	)
+	return i, err
 }
 
 const updateProfile = `-- name: UpdateProfile :one

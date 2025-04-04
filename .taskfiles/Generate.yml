@@ -1,0 +1,54 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: "3"
+silent: true
+
+vars:
+  ROOT_DIR:
+    sh: git rev-parse --show-toplevel
+
+tasks:
+  gen:
+    desc: Generates code
+    sources:
+      - "x/account"
+      - "x/asset"
+      - "x/balance"
+      - "x/credential"
+      - "x/device"
+      - "x/profile"
+      - "x/session"
+      - "x/vault"
+    cmds:
+      - defer: rm -rf .task
+      - task: gen:templ
+      - for: sources
+        task: gen:sqlc
+        vars:
+          PATH: "{{.ITEM}}"
+
+  gen:templ:
+    internal: true
+    dir: "{{.ROOT_DIR}}"
+    sources:
+      - "**/*.templ"
+    generates:
+      - "**/_templ.go"
+    cmds:
+      - templ generate
+
+  gen:sqlc:
+    internal: true
+    requires:
+      vars: [PATH]
+    dir: "{{.PATH}}"
+    sources:
+      - "**/query.sql"
+      - "**/schema.sql"
+    generates:
+      - "**/db.go"
+      - "**/querier.go"
+      - "**/models.go"
+      - "**/query.sql.go"
+    cmds:
+      - sqlc generate

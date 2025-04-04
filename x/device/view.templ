@@ -1,0 +1,11 @@
+package asset
+
+func View(a *AssetViewModel) templ.Component {
+  return initialAssetView(a)
+}
+
+templ initialAssetView(a *AssetViewModel) {
+  <div>
+    <h1>Account</h1>
+  </div>
+}

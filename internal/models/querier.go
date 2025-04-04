@@ -10,22 +10,41 @@ import (
 
 type Querier interface {
 	CheckHandleExists(ctx context.Context, handle string) (bool, error)
+	// Balance table methods
+	CreateBalance(ctx context.Context, arg CreateBalanceParams) (Balance, error)
+	// Device table methods
+	CreateDevice(ctx context.Context, arg CreateDeviceParams) (Device, error)
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
+	GetBalanceByAccountAndAsset(ctx context.Context, arg GetBalanceByAccountAndAssetParams) (Balance, error)
+	GetBalanceByID(ctx context.Context, id string) (Balance, error)
 	GetChallengeBySessionID(ctx context.Context, id string) (string, error)
 	GetCredentialByID(ctx context.Context, credentialID string) (Credential, error)
 	GetCredentialsByHandle(ctx context.Context, handle string) ([]Credential, error)
+	GetCredentialsByProfile(ctx context.Context, profileID string) ([]Credential, error)
+	GetDeviceByFingerprint(ctx context.Context, arg GetDeviceByFingerprintParams) (Device, error)
+	GetDeviceByID(ctx context.Context, id string) (Device, error)
 	GetHumanVerificationNumbers(ctx context.Context, id string) (GetHumanVerificationNumbersRow, error)
 	GetProfileByAddress(ctx context.Context, address string) (Profile, error)
 	GetProfileByHandle(ctx context.Context, handle string) (Profile, error)
 	GetProfileByID(ctx context.Context, id string) (Profile, error)
 	GetSessionByClientIP(ctx context.Context, clientIpaddr string) (Session, error)
 	GetSessionByID(ctx context.Context, id string) (Session, error)
+	GetTrustedDevicesByProfile(ctx context.Context, profileID string) ([]Device, error)
 	GetVaultConfigByCID(ctx context.Context, cid string) (Vault, error)
 	GetVaultRedirectURIBySessionID(ctx context.Context, sessionID string) (string, error)
 	InsertCredential(ctx context.Context, arg InsertCredentialParams) (Credential, error)
 	InsertProfile(ctx context.Context, arg InsertProfileParams) (Profile, error)
+	ListBalancesByAccount(ctx context.Context, accountID string) ([]Balance, error)
+	ListDevicesByProfile(ctx context.Context, profileID string) ([]Device, error)
+	SoftDeleteBalance(ctx context.Context, id string) error
 	SoftDeleteCredential(ctx context.Context, credentialID string) error
+	SoftDeleteDevice(ctx context.Context, id string) error
 	SoftDeleteProfile(ctx context.Context, address string) error
+	UpdateBalance(ctx context.Context, arg UpdateBalanceParams) (Balance, error)
+	// Additional credential methods for better integration with devices
+	UpdateCredential(ctx context.Context, arg UpdateCredentialParams) (Credential, error)
+	UpdateDevice(ctx context.Context, arg UpdateDeviceParams) (Device, error)
+	UpdateDeviceLastUsed(ctx context.Context, arg UpdateDeviceLastUsedParams) (Device, error)
 	UpdateProfile(ctx context.Context, arg UpdateProfileParams) (Profile, error)
 	UpdateSessionHumanVerification(ctx context.Context, arg UpdateSessionHumanVerificationParams) (Session, error)
 	UpdateSessionWithProfileID(ctx context.Context, arg UpdateSessionWithProfileIDParams) (Session, error)

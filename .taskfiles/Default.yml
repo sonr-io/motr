@@ -3,6 +3,9 @@
 version: "3"
 silent: true
 
+includes:
+  generate: { taskfile: ./Generate.yml, flatten: true }
+
 vars:
   ROOT_DIR:
     sh: git rev-parse --show-toplevel
@@ -27,14 +30,7 @@ tasks:
       - defer: rm -rf .task
       - task: build:go
       # - task: build:docker
-
-  gen:
-    desc: Generates code
-    cmds:
-      - defer: rm -rf .task
-      - task: gen:templ
-      - task: gen:sqlc
-
+  #
   clean:
     cmds:
       - rm -rf bin
@@ -72,30 +68,6 @@ tasks:
       - bin/motr.wasm
     cmds:
       - go build -o bin/motr.wasm .
-
-  gen:templ:
-    internal: true
-    dir: "{{.ROOT_DIR}}"
-    sources:
-      - "**/*.templ"
-    generates:
-      - "**/_templ.go"
-    cmds:
-      - templ generate
-
-  gen:sqlc:
-    internal: true
-    dir: "{{.ROOT_DIR}}/internal/sink"
-    sources:
-      - "**/query.sql"
-      - "**/schema.sql"
-    generates:
-      - "**/db.go"
-      - "**/querier.go"
-      - "**/models.go"
-      - "**/query.sql.go"
-    cmds:
-      - sqlc generate
 
   test:go:
     internal: true
