@@ -7,8 +7,8 @@ import (
 	"log"
 
 	"github.com/onsonr/motr/app"
-	"github.com/onsonr/motr/pkg/context"
-	"github.com/onsonr/motr/pkg/database"
+	"github.com/onsonr/motr/internal/context"
+	"github.com/onsonr/motr/internal/database"
 )
 
 func main() {

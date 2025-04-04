@@ -6,8 +6,8 @@ package app
 import (
 	"github.com/labstack/echo/v4"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
+	"github.com/onsonr/motr/internal/database"
 	"github.com/onsonr/motr/pkg/config"
-	"github.com/onsonr/motr/pkg/database"
 )
 
 type Options struct {

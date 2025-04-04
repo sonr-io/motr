@@ -5,9 +5,9 @@ package app
 
 import (
 	"github.com/labstack/echo/v4"
+	"github.com/onsonr/motr/internal/database"
+	"github.com/onsonr/motr/internal/serve"
 	"github.com/onsonr/motr/pkg/config"
-	"github.com/onsonr/motr/pkg/database"
-	"github.com/onsonr/motr/pkg/serve"
 	"github.com/onsonr/motr/x/identity"
 	"github.com/onsonr/motr/x/portfolio"
 	"github.com/onsonr/motr/x/user"

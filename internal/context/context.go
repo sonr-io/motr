@@ -22,15 +22,6 @@ func WASMMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-// // loadConfig loads the config from the given JSON string
-//
-//	func loadConfig(configString string) (*motr.Config, error) {
-//		var config motr.Config
-//		err := json.Unmarshal([]byte(configString), &config)
-//		return &config, err
-//	}
-//
-
 // decodeWasmContext decodes the WASM context from a base64 encoded string
 func decodeWasmContext(ctx string) (map[string]any, error) {
 	decoded, err := base64.StdEncoding.DecodeString(ctx)
