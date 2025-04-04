@@ -53,7 +53,7 @@ tasks:
     generates:
       - bin/motr.wasm
     cmds:
-      - go build -o bin/motr.wasm ./cmd/vault
+      - go build -o bin/motr.wasm .
 
   build:docker:
     desc: Builds Docker image
