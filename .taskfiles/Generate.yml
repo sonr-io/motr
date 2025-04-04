@@ -11,14 +11,9 @@ tasks:
   gen:
     desc: Generates code
     sources:
-      - "x/account"
-      - "x/asset"
-      - "x/balance"
-      - "x/credential"
-      - "x/device"
-      - "x/profile"
-      - "x/session"
-      - "x/vault"
+      - "x/identity/model"
+      - "x/portfolio/model"
+      - "x/user/model"
     cmds:
       - defer: rm -rf .task
       - task: gen:templ
@@ -42,13 +37,5 @@ tasks:
     requires:
       vars: [PATH]
     dir: "{{.ROOT_DIR}}/{{.PATH}}"
-    sources:
-      - "**/query.sql"
-      - "**/schema.sql"
-    generates:
-      - "**/db.go"
-      - "**/querier.go"
-      - "**/models.go"
-      - "**/query.sql.go"
     cmds:
       - sqlc generate
