@@ -109,7 +109,7 @@ mprocs.yaml
 mprocs.log
 tools-stamp
 deploy/conf
-.aiderscript
+*.aiderscript
 
 interchaintest-downloader
 .haptic
