@@ -141,3 +141,34 @@ CREATE TABLE balances (
 CREATE INDEX idx_balances_account_id ON balances(account_id);
 CREATE INDEX idx_balances_asset_id ON balances(asset_id);
 CREATE INDEX idx_balances_deleted_at ON balances(deleted_at);
+
+-- Devices link profiles to their authenticated devices
+CREATE TABLE devices (
+    id TEXT PRIMARY KEY,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP,
+    profile_id TEXT NOT NULL,
+    credential_id TEXT NOT NULL,
+    name TEXT NOT NULL,                   -- User-friendly device name
+    device_type TEXT NOT NULL,            -- mobile, desktop, tablet, etc.
+    os_name TEXT NOT NULL,                -- iOS, Android, Windows, macOS, etc.
+    os_version TEXT NOT NULL,             -- OS version string
+    browser_name TEXT,                    -- Browser name if applicable
+    browser_version TEXT,                 -- Browser version if applicable
+    last_used_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    is_trusted BOOLEAN NOT NULL DEFAULT FALSE CHECK(is_trusted IN (0,1)),
+    is_current BOOLEAN NOT NULL DEFAULT FALSE CHECK(is_current IN (0,1)),
+    fingerprint TEXT NOT NULL,            -- Device fingerprint for additional verification
+    user_agent TEXT,                      -- Full user agent string
+    ip_address TEXT,                      -- Last known IP address
+    FOREIGN KEY (profile_id) REFERENCES profiles(id),
+    FOREIGN KEY (credential_id) REFERENCES credentials(id),
+    UNIQUE(profile_id, fingerprint)
+);
+
+CREATE INDEX idx_devices_profile_id ON devices(profile_id);
+CREATE INDEX idx_devices_credential_id ON devices(credential_id);
+CREATE INDEX idx_devices_is_trusted ON devices(is_trusted);
+CREATE INDEX idx_devices_last_used_at ON devices(last_used_at);
+CREATE INDEX idx_devices_deleted_at ON devices(deleted_at);
