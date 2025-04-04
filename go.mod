@@ -1,6 +1,6 @@
 module github.com/onsonr/motr
 
-go 1.24.1
+go 1.23.1
 
 require (
 	github.com/a-h/templ v0.3.857

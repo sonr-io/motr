@@ -42,7 +42,7 @@ tasks:
     sources:
       - "**/*.go"
     generates:
-      - web/vault.wasm
+      - web/app.wasm
     deps:
       - task: gen:templ
       - task: gen:sqlc

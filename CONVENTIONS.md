@@ -1,21 +1,23 @@
-# CLAUDE.md - Guidelines for Agentic Coding
+# MOTR Development Guide
 
-## Build/Run/Test Commands
-- **Build WASM binary**: `task build` or `make build`
-- **Generate code**: `task gen` or `make generate`
-- **Run tests**: `task test`
-- **Run single test**: `go test -v ./path/to/package -run TestName`
-- **Development workflow**: `task` (runs test, generate, build sequence)
+## Commands
+- Build: `task build` - Compiles WASM with `GOOS=js GOARCH=wasm go build -o web/vault.wasm .`
+- Generate: `task gen:templ` - Generate Go code from templ templates
+- Generate: `task gen:sqlc` - Generate Go code from SQL queries
+- Test: `task test` - Run all tests with `go test -v ./...`
+- Run single test: `go test -v ./path/to/package -run TestName`
+- Serve: `task serve` - Run development server with `bunx live-server` in web directory
 
-## Code Style Guidelines
-- **Formatting**: Standard Go formatting with `gofmt`
-- **Imports**: Group standard library, third-party, and project imports
-- **Types**: Use descriptive type names; alias complex types (e.g., `type Vault = *echo.Echo`)
-- **Error Handling**: Always check errors; wrap with context when propagating
-- **Naming**:
-  - Packages: lowercase, concise nouns (e.g., `handlers`, `models`)
-  - Interfaces: action+er (e.g., `Querier`)
-  - Variables: camelCase for local, PascalCase for exported
-- **Structure**: Follow Go's standard project layout
-- **Comments**: Add godoc comments for all exported functions/types
-- **WASM Context**: Use internal/context package for WASM-specific context
+## Code Style
+- **Imports**: Standard library first, external packages second, local packages last
+- **Formatting**: Use gofmt
+- **Types**: Prefer explicit types over interface{}
+- **Naming**: Follow Go conventions (CamelCase for exported, camelCase for unexported)
+- **Error Handling**: Always check errors and return them when appropriate
+- **Domain Structure**: Keep domain logic in `/x` directory with handler.go, model/ and view/ subdirectories
+- **Templates**: Use templ for HTML templating
+- **Database**: Use sqlc for type-safe SQL queries
+- **Middleware**: Place middleware in pkg/[service]/middleware.go
+
+## Architecture
+MOTR follows a modular architecture with domain-driven design principles. WebAssembly is used for browser execution with progressive web app capabilities.
