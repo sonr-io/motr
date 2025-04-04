@@ -5,18 +5,10 @@ package app
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/motr/internal/serve"
-	"github.com/onsonr/motr/pkg/config"
 	"github.com/onsonr/motr/x/identity"
 	"github.com/onsonr/motr/x/portfolio"
 	"github.com/onsonr/motr/x/user"
 )
-
-type App struct {
-	Config   *config.MotrConfig
-	Database *config.DBConnection
-	e        *echo.Echo
-}
 
 func New(opts ...Option) (*App, error) {
 	o := baseOptions()
@@ -24,6 +16,7 @@ func New(opts ...Option) (*App, error) {
 		opt(o)
 	}
 	e := o.applyDefaults()
+
 	identity.RegisterRoutes(e, o.conn.Identity)
 	portfolio.RegisterRoutes(e, o.conn.Portfolio)
 	user.RegisterRoutes(e, o.conn.User)
@@ -35,8 +28,8 @@ func New(opts ...Option) (*App, error) {
 	}, nil
 }
 
-func (a *App) Start() {
-	serve.Fetch(a.e)
+func handleIndex(c echo.Context) error {
+	return c.String(200, "Hello, World!")
 }
 
 func handleError() echo.HTTPErrorHandler {

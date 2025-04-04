@@ -117,6 +117,96 @@ func (q *Queries) CreateBalance(ctx context.Context, arg CreateBalanceParams) (B
 	return i, err
 }
 
+const createChain = `-- name: CreateChain :one
+INSERT INTO chains (
+    id,
+    chain_id,
+    chain_name,
+    pretty_name,
+    network_type,
+    bech32_prefix,
+    daemon_name,
+    node_home,
+    slip44,
+    fees,
+    staking_denom,
+    logo_uri,
+    apis,
+    explorers,
+    is_enabled,
+    status,
+    codebase
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+RETURNING id, created_at, updated_at, deleted_at, chain_id, chain_name, pretty_name, network_type, bech32_prefix, daemon_name, node_home, slip44, fees, staking_denom, logo_uri, apis, explorers, is_enabled, status, codebase
+`
+
+type CreateChainParams struct {
+	ID           string         `json:"id"`
+	ChainID      string         `json:"chain_id"`
+	ChainName    string         `json:"chain_name"`
+	PrettyName   string         `json:"pretty_name"`
+	NetworkType  string         `json:"network_type"`
+	Bech32Prefix string         `json:"bech32_prefix"`
+	DaemonName   string         `json:"daemon_name"`
+	NodeHome     string         `json:"node_home"`
+	Slip44       int64          `json:"slip44"`
+	Fees         string         `json:"fees"`
+	StakingDenom string         `json:"staking_denom"`
+	LogoUri      sql.NullString `json:"logo_uri"`
+	Apis         string         `json:"apis"`
+	Explorers    sql.NullString `json:"explorers"`
+	IsEnabled    bool           `json:"is_enabled"`
+	Status       string         `json:"status"`
+	Codebase     sql.NullString `json:"codebase"`
+}
+
+// Chain table methods
+func (q *Queries) CreateChain(ctx context.Context, arg CreateChainParams) (Chain, error) {
+	row := q.db.QueryRowContext(ctx, createChain,
+		arg.ID,
+		arg.ChainID,
+		arg.ChainName,
+		arg.PrettyName,
+		arg.NetworkType,
+		arg.Bech32Prefix,
+		arg.DaemonName,
+		arg.NodeHome,
+		arg.Slip44,
+		arg.Fees,
+		arg.StakingDenom,
+		arg.LogoUri,
+		arg.Apis,
+		arg.Explorers,
+		arg.IsEnabled,
+		arg.Status,
+		arg.Codebase,
+	)
+	var i Chain
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ChainID,
+		&i.ChainName,
+		&i.PrettyName,
+		&i.NetworkType,
+		&i.Bech32Prefix,
+		&i.DaemonName,
+		&i.NodeHome,
+		&i.Slip44,
+		&i.Fees,
+		&i.StakingDenom,
+		&i.LogoUri,
+		&i.Apis,
+		&i.Explorers,
+		&i.IsEnabled,
+		&i.Status,
+		&i.Codebase,
+	)
+	return i, err
+}
+
 const getAssetByCoingeckoID = `-- name: GetAssetByCoingeckoID :one
 SELECT id, created_at, updated_at, deleted_at, name, symbol, decimals, chain_id, channel, asset_type, coingecko_id FROM assets
 WHERE coingecko_id = ? AND deleted_at IS NULL
@@ -248,6 +338,74 @@ func (q *Queries) GetBalanceByID(ctx context.Context, id string) (Balance, error
 		&i.IsDelegated,
 		&i.IsStaked,
 		&i.IsVesting,
+	)
+	return i, err
+}
+
+const getChainByChainID = `-- name: GetChainByChainID :one
+SELECT id, created_at, updated_at, deleted_at, chain_id, chain_name, pretty_name, network_type, bech32_prefix, daemon_name, node_home, slip44, fees, staking_denom, logo_uri, apis, explorers, is_enabled, status, codebase FROM chains
+WHERE chain_id = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetChainByChainID(ctx context.Context, chainID string) (Chain, error) {
+	row := q.db.QueryRowContext(ctx, getChainByChainID, chainID)
+	var i Chain
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ChainID,
+		&i.ChainName,
+		&i.PrettyName,
+		&i.NetworkType,
+		&i.Bech32Prefix,
+		&i.DaemonName,
+		&i.NodeHome,
+		&i.Slip44,
+		&i.Fees,
+		&i.StakingDenom,
+		&i.LogoUri,
+		&i.Apis,
+		&i.Explorers,
+		&i.IsEnabled,
+		&i.Status,
+		&i.Codebase,
+	)
+	return i, err
+}
+
+const getChainByID = `-- name: GetChainByID :one
+SELECT id, created_at, updated_at, deleted_at, chain_id, chain_name, pretty_name, network_type, bech32_prefix, daemon_name, node_home, slip44, fees, staking_denom, logo_uri, apis, explorers, is_enabled, status, codebase FROM chains
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetChainByID(ctx context.Context, id string) (Chain, error) {
+	row := q.db.QueryRowContext(ctx, getChainByID, id)
+	var i Chain
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ChainID,
+		&i.ChainName,
+		&i.PrettyName,
+		&i.NetworkType,
+		&i.Bech32Prefix,
+		&i.DaemonName,
+		&i.NodeHome,
+		&i.Slip44,
+		&i.Fees,
+		&i.StakingDenom,
+		&i.LogoUri,
+		&i.Apis,
+		&i.Explorers,
+		&i.IsEnabled,
+		&i.Status,
+		&i.Codebase,
 	)
 	return i, err
 }
@@ -416,6 +574,206 @@ func (q *Queries) ListBalancesByAccount(ctx context.Context, accountID string) (
 	return items, nil
 }
 
+const listChains = `-- name: ListChains :many
+SELECT id, created_at, updated_at, deleted_at, chain_id, chain_name, pretty_name, network_type, bech32_prefix, daemon_name, node_home, slip44, fees, staking_denom, logo_uri, apis, explorers, is_enabled, status, codebase FROM chains
+WHERE deleted_at IS NULL
+ORDER BY network_type, chain_name
+`
+
+func (q *Queries) ListChains(ctx context.Context) ([]Chain, error) {
+	rows, err := q.db.QueryContext(ctx, listChains)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Chain
+	for rows.Next() {
+		var i Chain
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.ChainID,
+			&i.ChainName,
+			&i.PrettyName,
+			&i.NetworkType,
+			&i.Bech32Prefix,
+			&i.DaemonName,
+			&i.NodeHome,
+			&i.Slip44,
+			&i.Fees,
+			&i.StakingDenom,
+			&i.LogoUri,
+			&i.Apis,
+			&i.Explorers,
+			&i.IsEnabled,
+			&i.Status,
+			&i.Codebase,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listChainsByNetworkType = `-- name: ListChainsByNetworkType :many
+SELECT id, created_at, updated_at, deleted_at, chain_id, chain_name, pretty_name, network_type, bech32_prefix, daemon_name, node_home, slip44, fees, staking_denom, logo_uri, apis, explorers, is_enabled, status, codebase FROM chains
+WHERE network_type = ? AND deleted_at IS NULL
+ORDER BY chain_name
+`
+
+func (q *Queries) ListChainsByNetworkType(ctx context.Context, networkType string) ([]Chain, error) {
+	rows, err := q.db.QueryContext(ctx, listChainsByNetworkType, networkType)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Chain
+	for rows.Next() {
+		var i Chain
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.ChainID,
+			&i.ChainName,
+			&i.PrettyName,
+			&i.NetworkType,
+			&i.Bech32Prefix,
+			&i.DaemonName,
+			&i.NodeHome,
+			&i.Slip44,
+			&i.Fees,
+			&i.StakingDenom,
+			&i.LogoUri,
+			&i.Apis,
+			&i.Explorers,
+			&i.IsEnabled,
+			&i.Status,
+			&i.Codebase,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listChainsByStatus = `-- name: ListChainsByStatus :many
+SELECT id, created_at, updated_at, deleted_at, chain_id, chain_name, pretty_name, network_type, bech32_prefix, daemon_name, node_home, slip44, fees, staking_denom, logo_uri, apis, explorers, is_enabled, status, codebase FROM chains
+WHERE status = ? AND deleted_at IS NULL
+ORDER BY network_type, chain_name
+`
+
+func (q *Queries) ListChainsByStatus(ctx context.Context, status string) ([]Chain, error) {
+	rows, err := q.db.QueryContext(ctx, listChainsByStatus, status)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Chain
+	for rows.Next() {
+		var i Chain
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.ChainID,
+			&i.ChainName,
+			&i.PrettyName,
+			&i.NetworkType,
+			&i.Bech32Prefix,
+			&i.DaemonName,
+			&i.NodeHome,
+			&i.Slip44,
+			&i.Fees,
+			&i.StakingDenom,
+			&i.LogoUri,
+			&i.Apis,
+			&i.Explorers,
+			&i.IsEnabled,
+			&i.Status,
+			&i.Codebase,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listEnabledChains = `-- name: ListEnabledChains :many
+SELECT id, created_at, updated_at, deleted_at, chain_id, chain_name, pretty_name, network_type, bech32_prefix, daemon_name, node_home, slip44, fees, staking_denom, logo_uri, apis, explorers, is_enabled, status, codebase FROM chains
+WHERE is_enabled = true AND deleted_at IS NULL
+ORDER BY network_type, chain_name
+`
+
+func (q *Queries) ListEnabledChains(ctx context.Context) ([]Chain, error) {
+	rows, err := q.db.QueryContext(ctx, listEnabledChains)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Chain
+	for rows.Next() {
+		var i Chain
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.ChainID,
+			&i.ChainName,
+			&i.PrettyName,
+			&i.NetworkType,
+			&i.Bech32Prefix,
+			&i.DaemonName,
+			&i.NodeHome,
+			&i.Slip44,
+			&i.Fees,
+			&i.StakingDenom,
+			&i.LogoUri,
+			&i.Apis,
+			&i.Explorers,
+			&i.IsEnabled,
+			&i.Status,
+			&i.Codebase,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const searchAssetsByName = `-- name: SearchAssetsByName :many
 SELECT id, created_at, updated_at, deleted_at, name, symbol, decimals, chain_id, channel, asset_type, coingecko_id FROM assets
 WHERE name LIKE ? AND deleted_at IS NULL
@@ -458,6 +816,62 @@ func (q *Queries) SearchAssetsByName(ctx context.Context, name string) ([]Asset,
 	return items, nil
 }
 
+const searchChainsByName = `-- name: SearchChainsByName :many
+SELECT id, created_at, updated_at, deleted_at, chain_id, chain_name, pretty_name, network_type, bech32_prefix, daemon_name, node_home, slip44, fees, staking_denom, logo_uri, apis, explorers, is_enabled, status, codebase FROM chains
+WHERE (chain_name LIKE ? OR pretty_name LIKE ?) AND deleted_at IS NULL
+ORDER BY network_type, chain_name
+LIMIT 100
+`
+
+type SearchChainsByNameParams struct {
+	ChainName  string `json:"chain_name"`
+	PrettyName string `json:"pretty_name"`
+}
+
+func (q *Queries) SearchChainsByName(ctx context.Context, arg SearchChainsByNameParams) ([]Chain, error) {
+	rows, err := q.db.QueryContext(ctx, searchChainsByName, arg.ChainName, arg.PrettyName)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Chain
+	for rows.Next() {
+		var i Chain
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.ChainID,
+			&i.ChainName,
+			&i.PrettyName,
+			&i.NetworkType,
+			&i.Bech32Prefix,
+			&i.DaemonName,
+			&i.NodeHome,
+			&i.Slip44,
+			&i.Fees,
+			&i.StakingDenom,
+			&i.LogoUri,
+			&i.Apis,
+			&i.Explorers,
+			&i.IsEnabled,
+			&i.Status,
+			&i.Codebase,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const softDeleteAsset = `-- name: SoftDeleteAsset :exec
 UPDATE assets
 SET deleted_at = CURRENT_TIMESTAMP
@@ -477,6 +891,17 @@ WHERE id = ?
 
 func (q *Queries) SoftDeleteBalance(ctx context.Context, id string) error {
 	_, err := q.db.ExecContext(ctx, softDeleteBalance, id)
+	return err
+}
+
+const softDeleteChain = `-- name: SoftDeleteChain :exec
+UPDATE chains
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = ?
+`
+
+func (q *Queries) SoftDeleteChain(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, softDeleteChain, id)
 	return err
 }
 
@@ -572,6 +997,137 @@ func (q *Queries) UpdateBalance(ctx context.Context, arg UpdateBalanceParams) (B
 		&i.IsDelegated,
 		&i.IsStaked,
 		&i.IsVesting,
+	)
+	return i, err
+}
+
+const updateChain = `-- name: UpdateChain :one
+UPDATE chains
+SET 
+    chain_name = ?,
+    pretty_name = ?,
+    network_type = ?,
+    bech32_prefix = ?,
+    daemon_name = ?,
+    node_home = ?,
+    slip44 = ?,
+    fees = ?,
+    staking_denom = ?,
+    logo_uri = ?,
+    apis = ?,
+    explorers = ?,
+    is_enabled = ?,
+    status = ?,
+    codebase = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, chain_id, chain_name, pretty_name, network_type, bech32_prefix, daemon_name, node_home, slip44, fees, staking_denom, logo_uri, apis, explorers, is_enabled, status, codebase
+`
+
+type UpdateChainParams struct {
+	ChainName    string         `json:"chain_name"`
+	PrettyName   string         `json:"pretty_name"`
+	NetworkType  string         `json:"network_type"`
+	Bech32Prefix string         `json:"bech32_prefix"`
+	DaemonName   string         `json:"daemon_name"`
+	NodeHome     string         `json:"node_home"`
+	Slip44       int64          `json:"slip44"`
+	Fees         string         `json:"fees"`
+	StakingDenom string         `json:"staking_denom"`
+	LogoUri      sql.NullString `json:"logo_uri"`
+	Apis         string         `json:"apis"`
+	Explorers    sql.NullString `json:"explorers"`
+	IsEnabled    bool           `json:"is_enabled"`
+	Status       string         `json:"status"`
+	Codebase     sql.NullString `json:"codebase"`
+	ID           string         `json:"id"`
+}
+
+func (q *Queries) UpdateChain(ctx context.Context, arg UpdateChainParams) (Chain, error) {
+	row := q.db.QueryRowContext(ctx, updateChain,
+		arg.ChainName,
+		arg.PrettyName,
+		arg.NetworkType,
+		arg.Bech32Prefix,
+		arg.DaemonName,
+		arg.NodeHome,
+		arg.Slip44,
+		arg.Fees,
+		arg.StakingDenom,
+		arg.LogoUri,
+		arg.Apis,
+		arg.Explorers,
+		arg.IsEnabled,
+		arg.Status,
+		arg.Codebase,
+		arg.ID,
+	)
+	var i Chain
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ChainID,
+		&i.ChainName,
+		&i.PrettyName,
+		&i.NetworkType,
+		&i.Bech32Prefix,
+		&i.DaemonName,
+		&i.NodeHome,
+		&i.Slip44,
+		&i.Fees,
+		&i.StakingDenom,
+		&i.LogoUri,
+		&i.Apis,
+		&i.Explorers,
+		&i.IsEnabled,
+		&i.Status,
+		&i.Codebase,
+	)
+	return i, err
+}
+
+const updateChainStatus = `-- name: UpdateChainStatus :one
+UPDATE chains
+SET 
+    is_enabled = ?,
+    status = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, chain_id, chain_name, pretty_name, network_type, bech32_prefix, daemon_name, node_home, slip44, fees, staking_denom, logo_uri, apis, explorers, is_enabled, status, codebase
+`
+
+type UpdateChainStatusParams struct {
+	IsEnabled bool   `json:"is_enabled"`
+	Status    string `json:"status"`
+	ID        string `json:"id"`
+}
+
+func (q *Queries) UpdateChainStatus(ctx context.Context, arg UpdateChainStatusParams) (Chain, error) {
+	row := q.db.QueryRowContext(ctx, updateChainStatus, arg.IsEnabled, arg.Status, arg.ID)
+	var i Chain
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ChainID,
+		&i.ChainName,
+		&i.PrettyName,
+		&i.NetworkType,
+		&i.Bech32Prefix,
+		&i.DaemonName,
+		&i.NodeHome,
+		&i.Slip44,
+		&i.Fees,
+		&i.StakingDenom,
+		&i.LogoUri,
+		&i.Apis,
+		&i.Explorers,
+		&i.IsEnabled,
+		&i.Status,
+		&i.Codebase,
 	)
 	return i, err
 }

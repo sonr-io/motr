@@ -7,6 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/motr/x/portfolio/controller"
 	"github.com/onsonr/motr/x/portfolio/model"
+	"github.com/onsonr/motr/x/portfolio/view"
 )
 
 type Model = *model.Queries
@@ -19,7 +20,14 @@ func InitTables(db *sql.DB) (Model, error) {
 }
 
 func RegisterRoutes(e *echo.Echo, m Model, mdws ...echo.MiddlewareFunc) {
-	controller.HandleAssets(e.Group("/assets"), m)
-	controller.HandleBalances(e.Group("/balances"), m)
-	controller.HandleChains(e.Group("/chains"), m)
+	// API Routes
+	g := e.Group("/api/portfolio/v1")
+	controller.HandleAssets(g, m)
+	controller.HandleBalances(g, m)
+	controller.HandleChains(g, m)
+
+	// View Routes
+	e.GET("/allocation", view.HandleView)
+	e.GET("/market", view.HandleView)
+	e.GET("/transactions", view.HandleView)
 }

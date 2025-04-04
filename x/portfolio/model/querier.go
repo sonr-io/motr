@@ -13,20 +13,32 @@ type Querier interface {
 	CreateAsset(ctx context.Context, arg CreateAssetParams) (Asset, error)
 	// Balance table methods
 	CreateBalance(ctx context.Context, arg CreateBalanceParams) (Balance, error)
+	// Chain table methods
+	CreateChain(ctx context.Context, arg CreateChainParams) (Chain, error)
 	GetAssetByCoingeckoID(ctx context.Context, coingeckoID sql.NullString) (Asset, error)
 	GetAssetByID(ctx context.Context, id string) (Asset, error)
 	GetAssetBySymbolAndChain(ctx context.Context, arg GetAssetBySymbolAndChainParams) (Asset, error)
 	GetBalanceByAccountAndAsset(ctx context.Context, arg GetBalanceByAccountAndAssetParams) (Balance, error)
 	GetBalanceByID(ctx context.Context, id string) (Balance, error)
+	GetChainByChainID(ctx context.Context, chainID string) (Chain, error)
+	GetChainByID(ctx context.Context, id string) (Chain, error)
 	ListAssets(ctx context.Context) ([]Asset, error)
 	ListAssetsByChain(ctx context.Context, chainID string) ([]Asset, error)
 	ListAssetsByType(ctx context.Context, assetType string) ([]Asset, error)
 	ListBalancesByAccount(ctx context.Context, accountID string) ([]Balance, error)
+	ListChains(ctx context.Context) ([]Chain, error)
+	ListChainsByNetworkType(ctx context.Context, networkType string) ([]Chain, error)
+	ListChainsByStatus(ctx context.Context, status string) ([]Chain, error)
+	ListEnabledChains(ctx context.Context) ([]Chain, error)
 	SearchAssetsByName(ctx context.Context, name string) ([]Asset, error)
+	SearchChainsByName(ctx context.Context, arg SearchChainsByNameParams) ([]Chain, error)
 	SoftDeleteAsset(ctx context.Context, id string) error
 	SoftDeleteBalance(ctx context.Context, id string) error
+	SoftDeleteChain(ctx context.Context, id string) error
 	UpdateAsset(ctx context.Context, arg UpdateAssetParams) (Asset, error)
 	UpdateBalance(ctx context.Context, arg UpdateBalanceParams) (Balance, error)
+	UpdateChain(ctx context.Context, arg UpdateChainParams) (Chain, error)
+	UpdateChainStatus(ctx context.Context, arg UpdateChainStatusParams) (Chain, error)
 }
 
 var _ Querier = (*Queries)(nil)

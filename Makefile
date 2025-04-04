@@ -7,7 +7,10 @@ COMMIT := $(shell git log -1 --format='%H')
 all: generate build
 
 build:
-	@task -t .taskfiles/Default.yml build
+	@go build -o bin/app.wasm .
 
 generate:
-	@task -t .taskfiles/Default.yml gen
+	@templ generate
+	@sqlc generate -f "x/identity/model/sqlc.yaml"
+	@sqlc generate -f "x/portfolio/model/sqlc.yaml"
+	@sqlc generate -f "x/user/model/sqlc.yaml"

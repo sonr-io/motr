@@ -6,8 +6,19 @@ package app
 import (
 	"github.com/labstack/echo/v4"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
+	"github.com/onsonr/motr/internal/serve"
 	"github.com/onsonr/motr/pkg/config"
 )
+
+type App struct {
+	Config   *config.MotrConfig
+	Database *config.DBConnection
+	e        *echo.Echo
+}
+
+func (a *App) Start() {
+	serve.Fetch(a.e)
+}
 
 type Options struct {
 	conn *config.DBConnection
@@ -22,6 +33,7 @@ func (o *Options) applyDefaults() *echo.Echo {
 	for _, mdw := range o.mdws {
 		e.Use(mdw)
 	}
+	e.GET("/", handleIndex)
 	return nil
 }
 
