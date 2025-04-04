@@ -41,7 +41,7 @@ tasks:
     internal: true
     requires:
       vars: [PATH]
-    dir: "{{.PATH}}"
+    dir: "{{.ROOT_DIR}}/{{.PATH}}"
     sources:
       - "**/query.sql"
       - "**/schema.sql"
