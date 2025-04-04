@@ -7,10 +7,14 @@ COMMIT := $(shell git log -1 --format='%H')
 all: generate build
 
 build:
-	@GOOS=js GOARCH=wasm go build -o bin/app.wasm .
+	rm -rf src/vault.wasm
+	@GOOS=js GOARCH=wasm go build -o src/vault.wasm .
 
 generate:
 	@templ generate
 	@sqlc generate -f "x/identity/model/sqlc.yaml"
 	@sqlc generate -f "x/portfolio/model/sqlc.yaml"
 	@sqlc generate -f "x/user/model/sqlc.yaml"
+
+test:
+	@go test -v ./...
