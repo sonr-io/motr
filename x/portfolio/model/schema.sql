@@ -41,4 +41,32 @@ CREATE INDEX idx_balances_account_id ON balances(account_id);
 CREATE INDEX idx_balances_asset_id ON balances(asset_id);
 CREATE INDEX idx_balances_deleted_at ON balances(deleted_at);
 
+-- Chains table following Cosmos chain registry specification
+CREATE TABLE chains (
+    id TEXT PRIMARY KEY,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP,
+    chain_id TEXT NOT NULL UNIQUE,
+    chain_name TEXT NOT NULL,
+    pretty_name TEXT NOT NULL,
+    network_type TEXT NOT NULL, -- mainnet, testnet, devnet
+    bech32_prefix TEXT NOT NULL,
+    daemon_name TEXT NOT NULL,
+    node_home TEXT NOT NULL,
+    slip44 INTEGER NOT NULL,
+    fees TEXT NOT NULL, -- JSON structure for fee information
+    staking_denom TEXT NOT NULL,
+    logo_uri TEXT,
+    apis TEXT NOT NULL, -- JSON structure for API endpoints (rpc, rest, grpc)
+    explorers TEXT, -- JSON structure for block explorers
+    is_enabled BOOLEAN NOT NULL DEFAULT TRUE CHECK(is_enabled IN (0,1)),
+    status TEXT NOT NULL DEFAULT 'live', -- live, upcoming, killed
+    codebase TEXT -- JSON structure for GitHub repos, etc.
+);
+
+CREATE INDEX idx_chains_chain_id ON chains(chain_id);
+CREATE INDEX idx_chains_network_type ON chains(network_type);
+CREATE INDEX idx_chains_deleted_at ON chains(deleted_at);
+CREATE INDEX idx_chains_is_enabled ON chains(is_enabled);
 
