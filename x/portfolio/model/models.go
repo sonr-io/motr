@@ -36,3 +36,26 @@ type Balance struct {
 	IsStaked          bool         `json:"is_staked"`
 	IsVesting         bool         `json:"is_vesting"`
 }
+
+type Chain struct {
+	ID           string         `json:"id"`
+	CreatedAt    time.Time      `json:"created_at"`
+	UpdatedAt    time.Time      `json:"updated_at"`
+	DeletedAt    sql.NullTime   `json:"deleted_at"`
+	ChainID      string         `json:"chain_id"`
+	ChainName    string         `json:"chain_name"`
+	PrettyName   string         `json:"pretty_name"`
+	NetworkType  string         `json:"network_type"`
+	Bech32Prefix string         `json:"bech32_prefix"`
+	DaemonName   string         `json:"daemon_name"`
+	NodeHome     string         `json:"node_home"`
+	Slip44       int64          `json:"slip44"`
+	Fees         string         `json:"fees"`
+	StakingDenom string         `json:"staking_denom"`
+	LogoUri      sql.NullString `json:"logo_uri"`
+	Apis         string         `json:"apis"`
+	Explorers    sql.NullString `json:"explorers"`
+	IsEnabled    bool           `json:"is_enabled"`
+	Status       string         `json:"status"`
+	Codebase     sql.NullString `json:"codebase"`
+}

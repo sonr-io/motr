@@ -36,6 +36,6 @@ tasks:
     internal: true
     requires:
       vars: [PATH]
-    dir: "{{.ROOT_DIR}}/{{.PATH}}"
+    dir: "{{.ROOT_DIR}}"
     cmds:
-      - sqlc generate
+      - sqlc generate -f "{{.PATH}}/sqlc.yaml"

@@ -21,4 +21,5 @@ func InitTables(db *sql.DB) (Model, error) {
 func RegisterRoutes(e *echo.Echo, m Model, mdws ...echo.MiddlewareFunc) {
 	controller.HandleAssets(e.Group("/assets"), m)
 	controller.HandleBalances(e.Group("/balances"), m)
+	controller.HandleChains(e.Group("/chains"), m)
 }
