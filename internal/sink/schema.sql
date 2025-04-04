@@ -20,7 +20,7 @@ CREATE TABLE accounts (
     number INTEGER NOT NULL,
     sequence INTEGER NOT NULL DEFAULT 0,
     address TEXT NOT NULL UNIQUE,
-    public_key TEXT NOT NULL CHECK(json_valid(public_key)),
+    public_key TEXT NOT NULL,
     chain_id TEXT NOT NULL,
     controller TEXT NOT NULL,
     is_subsidiary BOOLEAN NOT NULL DEFAULT FALSE CHECK(is_subsidiary IN (0,1)),
@@ -90,7 +90,7 @@ CREATE TABLE vaults (
     origin TEXT NOT NULL,
     address TEXT NOT NULL,
     cid TEXT NOT NULL UNIQUE,
-    config TEXT NOT NULL CHECK(json_valid(config)),
+    config TEXT NOT NULL,
     session_id TEXT NOT NULL,
     redirect_uri TEXT NOT NULL
 );
