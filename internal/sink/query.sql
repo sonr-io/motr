@@ -136,3 +136,129 @@ INSERT INTO sessions (
     profile_id
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
 RETURNING *;
+
+-- Balance table methods
+-- name: CreateBalance :one
+INSERT INTO balances (
+    id,
+    account_id,
+    asset_id,
+    amount,
+    last_updated_height,
+    is_delegated,
+    is_staked,
+    is_vesting
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+RETURNING *;
+
+-- name: GetBalanceByID :one
+SELECT * FROM balances
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1;
+
+-- name: GetBalanceByAccountAndAsset :one
+SELECT * FROM balances
+WHERE account_id = ? AND asset_id = ? AND deleted_at IS NULL
+LIMIT 1;
+
+-- name: ListBalancesByAccount :many
+SELECT * FROM balances
+WHERE account_id = ? AND deleted_at IS NULL
+ORDER BY asset_id;
+
+-- name: UpdateBalance :one
+UPDATE balances
+SET 
+    amount = ?,
+    last_updated_height = ?,
+    is_delegated = ?,
+    is_staked = ?,
+    is_vesting = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? AND deleted_at IS NULL
+RETURNING *;
+
+-- name: SoftDeleteBalance :exec
+UPDATE balances
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = ?;
+
+-- Device table methods
+-- name: CreateDevice :one
+INSERT INTO devices (
+    id,
+    profile_id,
+    credential_id,
+    name,
+    device_type,
+    os_name,
+    os_version,
+    browser_name,
+    browser_version,
+    is_trusted,
+    is_current,
+    fingerprint,
+    user_agent,
+    ip_address
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+RETURNING *;
+
+-- name: GetDeviceByID :one
+SELECT * FROM devices
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1;
+
+-- name: GetDeviceByFingerprint :one
+SELECT * FROM devices
+WHERE profile_id = ? AND fingerprint = ? AND deleted_at IS NULL
+LIMIT 1;
+
+-- name: ListDevicesByProfile :many
+SELECT * FROM devices
+WHERE profile_id = ? AND deleted_at IS NULL
+ORDER BY last_used_at DESC;
+
+-- name: GetTrustedDevicesByProfile :many
+SELECT * FROM devices
+WHERE profile_id = ? AND is_trusted = true AND deleted_at IS NULL
+ORDER BY last_used_at DESC;
+
+-- name: UpdateDevice :one
+UPDATE devices
+SET 
+    name = ?,
+    is_trusted = ?,
+    is_current = ?,
+    last_used_at = CURRENT_TIMESTAMP,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? AND deleted_at IS NULL
+RETURNING *;
+
+-- name: UpdateDeviceLastUsed :one
+UPDATE devices
+SET 
+    last_used_at = CURRENT_TIMESTAMP,
+    ip_address = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? AND deleted_at IS NULL
+RETURNING *;
+
+-- name: SoftDeleteDevice :exec
+UPDATE devices
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = ?;
+
+-- Additional credential methods for better integration with devices
+-- name: UpdateCredential :one
+UPDATE credentials
+SET 
+    authenticator_attachment = ?,
+    transports = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE credential_id = ? AND deleted_at IS NULL
+RETURNING *;
+
+-- name: GetCredentialsByProfile :many
+SELECT c.* FROM credentials c
+JOIN devices d ON c.credential_id = d.credential_id
+WHERE d.profile_id = ? AND c.deleted_at IS NULL AND d.deleted_at IS NULL;
