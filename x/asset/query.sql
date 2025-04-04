@@ -40,7 +40,7 @@ ORDER BY chain_id, symbol;
 SELECT * FROM assets
 WHERE name LIKE ? AND deleted_at IS NULL
 ORDER BY chain_id, name
-LIMIT ?;
+LIMIT 100;
 
 -- name: UpdateAsset :one
 UPDATE assets
