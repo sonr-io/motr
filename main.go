@@ -6,23 +6,22 @@ package main
 import (
 	"log"
 
+	wasmhttp "github.com/nlepage/go-wasm-http-server/v2"
 	"github.com/onsonr/motr/app"
-	"github.com/onsonr/motr/internal/context"
 	"github.com/onsonr/motr/internal/database"
 )
 
 func main() {
 	// configString := "TODO"
-	// config, _ := loadConfig(configString)
 	dbq, err := database.New()
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
-	e, err := app.New(app.WithDatabase(dbq), app.WithMiddleware(context.WASMMiddleware))
+	_, err = app.New(app.WithDatabase(dbq))
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
-	e.Start()
+	wasmhttp.Serve(nil)
 }

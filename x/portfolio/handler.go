@@ -8,7 +8,6 @@ import (
 	"database/sql"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/motr/x/portfolio/controller"
 	"github.com/onsonr/motr/x/portfolio/model"
 	"github.com/onsonr/motr/x/portfolio/view"
 )
@@ -24,10 +23,10 @@ func InitTables(db *sql.DB) (Model, error) {
 
 func RegisterRoutes(e *echo.Echo, m Model, mdws ...echo.MiddlewareFunc) {
 	// API Routes
-	g := e.Group("/api/portfolio/v1")
-	controller.HandleAssets(g, m)
-	controller.HandleBalances(g, m)
-	controller.HandleChains(g, m)
+	// g := e.Group("/api/portfolio/v1")
+	// controller.HandleAssets(g, m)
+	// controller.HandleBalances(g, m)
+	// controller.HandleChains(g, m)
 
 	// View Routes
 	e.GET("/allocation", view.HandleView)

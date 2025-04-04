@@ -6,6 +6,12 @@ require (
 	github.com/a-h/templ v0.3.857
 	github.com/labstack/echo/v4 v4.13.3
 	github.com/ncruces/go-sqlite3 v0.21.3
+	github.com/nlepage/go-wasm-http-server/v2 v2.2.1
+)
+
+require (
+	github.com/hack-pad/safejs v0.1.1 // indirect
+	github.com/nlepage/go-js-promise v1.0.0 // indirect
 )
 
 require (

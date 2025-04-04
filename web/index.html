@@ -11,7 +11,7 @@
       async function hello() {
         const name = document.querySelector("#name").value;
 
-        const res = await fetch("api/hello", {
+        const res = await fetch("vault", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
