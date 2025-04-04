@@ -7,7 +7,7 @@ COMMIT := $(shell git log -1 --format='%H')
 all: generate build
 
 build:
-	@go build -o bin/app.wasm .
+	@GOOS=js GOARCH=wasm go build -o bin/app.wasm .
 
 generate:
 	@templ generate
