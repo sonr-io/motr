@@ -111,3 +111,98 @@ WHERE id = ?;
 SELECT * FROM assets
 WHERE coingecko_id = ? AND deleted_at IS NULL
 LIMIT 1;
+
+-- Chain table methods
+-- name: CreateChain :one
+INSERT INTO chains (
+    id,
+    chain_id,
+    chain_name,
+    pretty_name,
+    network_type,
+    bech32_prefix,
+    daemon_name,
+    node_home,
+    slip44,
+    fees,
+    staking_denom,
+    logo_uri,
+    apis,
+    explorers,
+    is_enabled,
+    status,
+    codebase
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+RETURNING *;
+
+-- name: GetChainByID :one
+SELECT * FROM chains
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1;
+
+-- name: GetChainByChainID :one
+SELECT * FROM chains
+WHERE chain_id = ? AND deleted_at IS NULL
+LIMIT 1;
+
+-- name: ListChains :many
+SELECT * FROM chains
+WHERE deleted_at IS NULL
+ORDER BY network_type, chain_name;
+
+-- name: ListChainsByNetworkType :many
+SELECT * FROM chains
+WHERE network_type = ? AND deleted_at IS NULL
+ORDER BY chain_name;
+
+-- name: ListEnabledChains :many
+SELECT * FROM chains
+WHERE is_enabled = true AND deleted_at IS NULL
+ORDER BY network_type, chain_name;
+
+-- name: ListChainsByStatus :many
+SELECT * FROM chains
+WHERE status = ? AND deleted_at IS NULL
+ORDER BY network_type, chain_name;
+
+-- name: SearchChainsByName :many
+SELECT * FROM chains
+WHERE (chain_name LIKE ? OR pretty_name LIKE ?) AND deleted_at IS NULL
+ORDER BY network_type, chain_name
+LIMIT 100;
+
+-- name: UpdateChain :one
+UPDATE chains
+SET 
+    chain_name = ?,
+    pretty_name = ?,
+    network_type = ?,
+    bech32_prefix = ?,
+    daemon_name = ?,
+    node_home = ?,
+    slip44 = ?,
+    fees = ?,
+    staking_denom = ?,
+    logo_uri = ?,
+    apis = ?,
+    explorers = ?,
+    is_enabled = ?,
+    status = ?,
+    codebase = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? AND deleted_at IS NULL
+RETURNING *;
+
+-- name: UpdateChainStatus :one
+UPDATE chains
+SET 
+    is_enabled = ?,
+    status = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? AND deleted_at IS NULL
+RETURNING *;
+
+-- name: SoftDeleteChain :exec
+UPDATE chains
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = ?;
