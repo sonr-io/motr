@@ -16,8 +16,8 @@ type MotrConfig struct {
 	Version    string `json:"version"`
 }
 
-// LoardFromString loads the config from the given JSON string
-func LoardFromString(configString string) (*MotrConfig, error) {
+// LoadFromString loads the config from the given JSON string
+func LoadFromString(configString string) (*MotrConfig, error) {
 	var config MotrConfig
 	err := json.Unmarshal([]byte(configString), &config)
 	return &config, err
