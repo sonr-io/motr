@@ -5,6 +5,9 @@
 bin
 tmp
 dist
+node_modules
+deploy/conf
+configs/logs.json
 
 # Aider related generated files
 .aider-context
