@@ -1,0 +1,21 @@
+{
+  "name": "@sonr-io/vault",
+  "version": "0.0.1",
+  "source": [
+    "src/index.js"
+  ],
+  "main": "dist/main.js",
+  "module": "dist/module.js",
+  "scripts": {
+    "watch": "parcel watch",
+    "build": "parcel build"
+  },
+  "devDependencies": {
+    "@parcel/bundler-library": "^2.14.4",
+    "@parcel/packager-wasm": "^2.14.4",
+    "parcel": "^2.14.4"
+  },
+  "dependencies": {
+    "@extism/extism": "^2.0.0-rc11"
+  }
+}

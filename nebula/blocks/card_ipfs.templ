@@ -1,0 +1,197 @@
+package blocks
+
+var heliaCardScriptHandle = templ.NewOnceHandle()
+
+// StatusCard component for displaying Helia node status
+templ HeliaStatusCard() {
+	<div class="p-4 flex flex-col bg-white border border-gray-200 rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
+		<div class="flex justify-between items-center mb-1">
+			<h2 class="text-4xl font-semibold text-gray-800 dark:text-neutral-200">
+				<span id="statusValue">Offline</span>
+			</h2>
+			<div class="flex items-center -space-x-2">
+				<img class="shrink-0 size-7 rounded-full" src="https://images.unsplash.com/photo-1659482633369-9fe69af50bfb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=3&w=320&h=320&q=80" alt="Avatar"/>
+			</div>
+		</div>
+		<h3 class="text-gray-500 dark:text-neutral-500">
+			Status
+		</h3>
+	</div>
+}
+
+// NodeIDCard component for displaying Helia node ID
+templ HeliaNodeIDCard() {
+	<div>
+		<div class="p-4 flex flex-col bg-white border border-gray-200 rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
+			<div class="flex justify-between items-center mb-1">
+				<h2 class="text-4xl font-semibold text-gray-800 dark:text-neutral-200">
+					Node ID
+				</h2>
+			</div>
+		</div>
+		<div class="inline-flex items-center gap-x-2">
+			<h3 class="text-gray-500 dark:text-neutral-500">
+				<span id="nodeId">-</span>
+			</h3>
+		</div>
+	</div>
+}
+
+// DiscoveredPeersCard component for displaying discovered peers count
+templ HeliaDiscoveredPeersCard() {
+	<div class="p-4 flex flex-col bg-white border border-gray-200 rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
+		<div class="flex justify-between items-center mb-1">
+			<h2 class="text-4xl font-semibold text-gray-800 dark:text-neutral-200">
+				<span id="discoveredPeerCount">0</span>
+			</h2>
+		</div>
+		<div class="inline-flex items-center gap-x-2">
+			<h3 class="text-gray-500 dark:text-neutral-500">
+				Discovered Peers
+			</h3>
+		</div>
+	</div>
+}
+
+// ConnectedPeersCard component for displaying connected peers count
+templ HeliaConnectedPeersCard() {
+	<div class="p-4 flex flex-col bg-white border border-gray-200 rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
+		<div class="flex justify-between items-center mb-1">
+			<h2 class="text-4xl font-semibold text-gray-800 dark:text-neutral-200">
+				<span id="connectedPeerCount">0</span>
+			</h2>
+			<div class="flex items-center -space-x-2"></div>
+		</div>
+		<h3 class="text-gray-500 dark:text-neutral-500">
+			Connected Peers
+		</h3>
+	</div>
+}
+
+// HeliaInfoCard combines all the individual cards and includes the initialization script
+templ HeliaInfoCard() {
+	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+		@HeliaStatusCard()
+		@HeliaNodeIDCard()
+		@HeliaDiscoveredPeersCard()
+		@HeliaConnectedPeersCard()
+	</div>
+	@heliaCardScriptHandle.Once() {
+		<script>
+            document.addEventListener('DOMContentLoaded', async () => {
+                try {
+                    // Use the globally available instantiateHeliaNode function
+                    const helia = window.helia = await window.instantiateHeliaNode()
+                    window.heliaFs = await HeliaUnixfs.unixfs(helia)
+
+                    helia.libp2p.addEventListener('peer:discovery', (evt) => {
+                        window.discoveredPeers.set(evt.detail.id.toString(), evt.detail)
+                        addToLog(`Discovered peer ${evt.detail.id.toString()}`)
+                    })
+
+                    helia.libp2p.addEventListener('peer:connect', (evt) => {
+                        addToLog(`Connected to ${evt.detail.toString()}`)
+                    })
+                    
+                    helia.libp2p.addEventListener('peer:disconnect', (evt) => {
+                        addToLog(`Disconnected from ${evt.detail.toString()}`)
+                    })
+
+                    setInterval(() => {
+                        const statusValueEl = document.getElementById('statusValue')
+                        if (statusValueEl) {
+                            statusValueEl.innerHTML = helia.libp2p.status === 'started' ? 'Online' : 'Offline'
+                        }
+                        updateConnectedPeers()
+                        updateDiscoveredPeers()
+                    }, 500)
+
+                    const id = await helia.libp2p.peerId.toString()
+                    const nodeIdEl = document.getElementById('nodeId')
+                    if (nodeIdEl) {
+                        nodeIdEl.innerHTML = id
+                    }
+                    addToLog('Helia node initialized successfully')
+                } catch (err) {
+                    addToLog(`Error initializing Helia: ${err.message}`)
+                    console.error('Error initializing Helia:', err)
+                }
+            })
+        </script>
+	}
+}
+
+// Optional: Create a component for a connected peers list if needed
+templ HeliaConnectedPeersList() {
+	<div class="p-4 bg-white border border-gray-200 rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
+		<h3 class="text-lg font-medium text-gray-800 dark:text-neutral-200 mb-2">Connected Peers List</h3>
+		<ul id="connectedPeersList" class="text-sm text-gray-600 dark:text-neutral-400"></ul>
+	</div>
+}
+
+// Optional: Create a component for the running log
+templ HeliaRunningLog() {
+	<div class="p-4 bg-white border border-gray-200 rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
+		<h3 class="text-lg font-medium text-gray-800 dark:text-neutral-200 mb-2">Running Log</h3>
+		<div id="runningLog" class="text-sm text-gray-600 dark:text-neutral-400 h-40 overflow-y-auto font-mono"></div>
+	</div>
+}
+
+// Example of how to use all components together
+templ HeliaFullDashboard() {
+	<div class="space-y-6">
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+			@HeliaStatusCard()
+			@HeliaNodeIDCard()
+			@HeliaDiscoveredPeersCard()
+			@HeliaConnectedPeersCard()
+		</div>
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+			@HeliaConnectedPeersList()
+			@HeliaRunningLog()
+		</div>
+		@heliaCardScriptHandle.Once() {
+			<script>
+                document.addEventListener('DOMContentLoaded', async () => {
+                    try {
+                        // Use the globally available instantiateHeliaNode function
+                        const helia = window.helia = await window.instantiateHeliaNode()
+                        window.heliaFs = await HeliaUnixfs.unixfs(helia)
+
+                        helia.libp2p.addEventListener('peer:discovery', (evt) => {
+                            window.discoveredPeers.set(evt.detail.id.toString(), evt.detail)
+                            addToLog(`Discovered peer ${evt.detail.id.toString()}`)
+                        })
+
+                        helia.libp2p.addEventListener('peer:connect', (evt) => {
+                            addToLog(`Connected to ${evt.detail.toString()}`)
+                        })
+                        
+                        helia.libp2p.addEventListener('peer:disconnect', (evt) => {
+                            addToLog(`Disconnected from ${evt.detail.toString()}`)
+                        })
+
+                        setInterval(() => {
+                            const statusValueEl = document.getElementById('statusValue')
+                            if (statusValueEl) {
+                                statusValueEl.innerHTML = helia.libp2p.status === 'started' ? 'Online' : 'Offline'
+                            }
+                            updateConnectedPeers()
+                            updateDiscoveredPeers()
+                        }, 500)
+
+                        const id = await helia.libp2p.peerId.toString()
+                        const nodeIdEl = document.getElementById('nodeId')
+                        if (nodeIdEl) {
+                            nodeIdEl.innerHTML = id
+                        }
+                        addToLog('Helia node initialized successfully')
+                    } catch (err) {
+                        addToLog(`Error initializing Helia: ${err.message}`)
+                        console.error('Error initializing Helia:', err)
+                    }
+                })
+            </script>
+		}
+	</div>
+}

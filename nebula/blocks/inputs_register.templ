@@ -1,0 +1,143 @@
+package blocks
+
+templ HandleInitial() {
+	<div hx-target="this" hx-swap="outerHTML">
+		<sl-input name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required hx-post="/register/profile" hx-indicator="#handle-indicator" autofocus>
+			<div slot="prefix">
+				<sl-icon name="at-sign" library="sonr"></sl-icon>
+			</div>
+		</sl-input>
+	</div>
+	<br/>
+}
+
+templ HandleError(value string, helpText string) {
+	<sl-input name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required class="border-red-500" value={ value } help-text={ helpText }>
+		<div slot="prefix">
+			<sl-icon name="at-sign" library="sonr"></sl-icon>
+		</div>
+		<div slot="suffix" style="color: #B54549;">
+			<sl-icon name="x"></sl-icon>
+		</div>
+	</sl-input>
+	<br/>
+}
+
+templ HandleSuccess(value string) {
+	<sl-input name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required class="border-green-500" value={ value } disabled>
+		<div slot="prefix" style="color: #46A758;">
+			<sl-icon name="at-sign" library="sonr"></sl-icon>
+		</div>
+	</sl-input>
+	<br/>
+}
+
+templ PasskeyInitial(clickHandler templ.ComponentScript) {
+	<sl-button style="width: 100%;" onclick={ clickHandler }>
+		<sl-icon slot="prefix" name="passkey" library="sonr" style="font-size: 24px;" class="text-neutral-500"></sl-icon>
+		Register Passkey
+	</sl-button>
+}
+
+templ PasskeyError(clickHandler templ.ComponentScript) {
+	<sl-button style="width: 100%;" onclick={ clickHandler }>
+		<sl-icon slot="prefix" name="passkey" library="sonr" style="font-size: 24px;" class="text-red-500"></sl-icon>
+		Register Passkey
+	</sl-button>
+}
+
+templ PasskeySuccess(clickHandler templ.ComponentScript) {
+	<sl-button style="width: 100%;" onclick={ clickHandler }>
+		<sl-icon slot="prefix" name="passkey" library="sonr" style="font-size: 24px;" class="text-green-500"></sl-icon>
+		Register Passkey
+	</sl-button>
+}
+
+script NavigatorCredentialsCreate(userId string, userHandle string, challenge string) {
+  const publicKey = {
+    challenge: Uint8Array.from(challenge, (c) => c.charCodeAt(0)),
+    rp: {
+      name: "Sonr.ID",
+    },
+    user: {
+      // Assuming that userId is ASCII-only
+      id: Uint8Array.from(userId, (c) => c.charCodeAt(0)),
+      name: userId,
+      displayName: userHandle,
+    },
+    pubKeyCredParams: [
+      {
+        type: "public-key",
+        alg: -7, // "ES256"
+      },
+      {
+        type: "public-key",
+        alg: -257, // "RS256"
+      },
+    ],
+    authenticatorSelection: {
+      userVerification: "required",
+      residentKey: "required",
+      authenticatorAttachment: "platform",
+    },
+    timeout: 60000, // 1 minute
+    extensions: {
+      payment: {
+        isPayment: true,
+      },
+      largeBlob: {
+        supported: "preferred",
+      },
+    },
+  };
+
+  // Helper function to convert ArrayBuffer to Base64URL string
+  function arrayBufferToBase64URL(buffer) {
+    const bytes = new Uint8Array(buffer);
+    let str = '';
+    bytes.forEach(byte => { str += String.fromCharCode(byte) });
+    return btoa(str)
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
+  }
+
+navigator.credentials
+  .create({ publicKey })
+  .then((newCredentialInfo) => {
+    if (!(newCredentialInfo instanceof PublicKeyCredential)) {
+      throw new Error('Received credential is not a PublicKeyCredential');
+    }
+
+    const response = newCredentialInfo.response;
+    if (!(response instanceof AuthenticatorAttestationResponse)) {
+      throw new Error('Response is not an AuthenticatorAttestationResponse');
+    }
+
+    // Convert the credential data to a cross-platform compatible format
+    const credentialJSON = {
+      id: newCredentialInfo.id,
+      rawId: arrayBufferToBase64URL(newCredentialInfo.rawId),
+      type: newCredentialInfo.type,
+      authenticatorAttachment: newCredentialInfo.authenticatorAttachment || null,
+      transports: Array.isArray(response.getTransports) ? response.getTransports() : [],
+      clientExtensionResults: newCredentialInfo.getClientExtensionResults(),
+      response: {
+        attestationObject: arrayBufferToBase64URL(response.attestationObject),
+        clientDataJSON: arrayBufferToBase64URL(response.clientDataJSON)
+      }
+    };
+
+    // Set the form value with the stringified credential data
+    const credential = document.getElementById('credential-data');
+    credential.value = JSON.stringify(credentialJSON);
+
+    // Submit the form
+    const form = document.getElementById('passkey-form');
+    form.submit();
+  })
+  .catch((err) => {
+    console.error('Passkey creation failed:', err);
+    alert(`Failed to create passkey: ${err.message || 'Unknown error'}`);
+  });
+}

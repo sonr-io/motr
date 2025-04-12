@@ -1,0 +1,27 @@
+package blocks
+
+import "github.com/sonr-io/cosmstyle/models/html"
+
+templ MetaComponent(m html.Metadata) {
+	<title>{ m.Title }</title>
+	<link rel="icon" type="image/png" href={ m.Favicon }/>
+	<meta name="description" content={ m.Description }/>
+	<meta name="keywords" content={ m.Keywords }/>
+	<meta name="author" content={ m.Author }/>
+	<meta name="robots" content={ m.Robots }/>
+	<meta name="googlebot" content={ m.Googlebot }/>
+	<meta name="google" content={ m.Google }/>
+	<meta property="og:title" content={ m.Title }/>
+	<meta property="og:description" content={ m.Description }/>
+	<meta property="og:image" content={ m.OGImage }/>
+	<meta property="og:url" content={ m.OGURL }/>
+	<meta property="og:site_name" content={ m.OGSiteName }/>
+	<meta property="og:type" content="website"/>
+	<meta property="og:locale" content="en_US"/>
+	<meta name="twitter:card" content="summary_large_image"/>
+	<meta name="twitter:site" content={ m.TwitterSite }/>
+	<meta name="twitter:creator" content={ m.TwitterCreator }/>
+	<meta name="twitter:title" content={ m.Title }/>
+	<meta name="twitter:description" content={ m.Description }/>
+	<meta name="twitter:image" content={ m.TwitterImage }/>
+}

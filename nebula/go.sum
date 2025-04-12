@@ -1,0 +1,6 @@
+github.com/a-h/templ v0.3.857 h1:6EqcJuGZW4OL+2iZ3MD+NnIcG7nGkaQeF2Zq5kf9ZGg=
+github.com/a-h/templ v0.3.857/go.mod h1:qhrhAkRFubE7khxLZHsBFHfX+gWwVNKbzKeF9GlPV4M=
+github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
+github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
+github.com/sonr-io/cosmstyle v0.0.0-20250411144526-931cc8226a47 h1:YawLRpmSpOP88lLpvNHEDhPw74G5Ehm7Y9dPw7i6VXA=
+github.com/sonr-io/cosmstyle v0.0.0-20250411144526-931cc8226a47/go.mod h1:yn0xViR1iYNql815TEZnQWUyJjPRGm/Mk3pxztOhixU=

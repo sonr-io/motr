@@ -1,7 +1,7 @@
-package resolver
+package types
 
 // MotrConfig is the configuration for the Motr application assumed to be in the same directory as the dwn index
-type MotrConfig struct {
+type ResolverConfig struct {
 	CID        string `json:"cid"`
 	Address    string `json:"address"`
 	GatewayURL string `json:"gateway_url"`
