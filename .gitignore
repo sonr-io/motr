@@ -8,6 +8,8 @@ dist
 node_modules
 deploy/conf
 configs/logs.json
+go.work
+go.work.sum
 
 # Aider related generated files
 .aider-context
