@@ -26,6 +26,7 @@
     "dev": "concurrently \"tsc -w\" \"tsc-alias -w\"",
     "gen:protobufs": "node scripts/gen-protobufs.mjs",
     "gen:registry": "node scripts/gen-registry.mjs",
+    "gen-all": "pnpm run gen:protobufs && pnpm run gen:registry",
     "lint": "eslint **/*.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest --run",
