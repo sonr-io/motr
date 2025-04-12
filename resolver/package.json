@@ -1,6 +1,6 @@
 {
-	"name": "app",
-	"version": "0.0.0",
+	"name": "@sonr-io/resolver",
+	"version": "0.0.1",
 	"private": true,
 	"scripts": {
 		"build": "go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go && GOOS=js GOARCH=wasm go build -o ./build/app.wasm .",

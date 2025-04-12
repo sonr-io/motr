@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://json.schemastore.org/taskfile
+version: "3"
+tasks:
+  default:
+    cmds:
+      - task: gen:templ
+
+  build:
+    desc: Build Wallet
+    vars:
+      INPUT: wallet/main.go
+      OUTPUT: packages/vault/src/plugin.wasm
+      FLAGS: -target wasip1 -buildmode=c-shared
+    cmds:
+      - rm -rf packages/vault/plugin.wasm
+      - tinygo build -o {{.OUTPUT}} {{.FLAGS}} {{.INPUT}}
+      - gum log --time rfc822 --level info "[WALLET] Build Complete"

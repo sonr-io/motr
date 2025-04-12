@@ -11,6 +11,7 @@ configs/logs.json
 go.work
 go.work.sum
 Taskfile.yml
+!.taskfile.yml
 !.taskfile.dist.yml
 
 # Aider related generated files
