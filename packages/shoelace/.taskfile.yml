@@ -1,54 +1,12 @@
 # yaml-language-server: $schema=https://json.schemastore.org/taskfile
-version: "3"
+version: '3'
 tasks:
-  default:
-    cmds:
-      - task: gen:templ
-
-  publish:
-    cmds:
-      - task: publish:cosmes
-      - task: publish:shoelace
-
-  test:
-    desc: Test
-    cmds:
-      - go test -v ./...
-
-  gen:templ:
-    aliases:
-      - gen
-      - g
-    cmds:
-      - templ generate
-      - gum log --level info --time kitchen "[UI] Templ files generated"
-
-  build:cosmes:
-    dir: packages/cosmes
+  build:
     preconditions:
       - sh: command -v pnpm
     sources:
-      - "**/*.ts"
-      - "**/*.js"
-    generates:
-      - dist
-    deps:
-      - task: install:cosmes
-    cmds:
-      - gum spin --spinner dot --title "Generating Chain Registry..." -- pnpm run gen:registry
-      - gum log --level info --time kitchen "[COSMES] Chain Registry generated"
-      - gum spin --spinner dot --title "Generating Go from Templ..." -- pnpm run gen:protobufs
-      - gum log --level info --time kitchen "[COSMES] Protobufs generated"
-      - gum spin --spinner dot --title "Generating Go from Templ..." -- pnpm run build
-      - gum log --level info --time kitchen "[COSMES] Packages built"
-
-  build:shoelace:
-    dir: packages/shoelace
-    preconditions:
-      - sh: command -v pnpm
-    sources:
-      - "**/*.ts"
-      - "**/*.js"
+      - '**/*.ts'
+      - '**/*.js'
     generates:
       - dist
       - cdn
@@ -59,32 +17,7 @@ tasks:
       - gum log --level info --time kitchen "[SHOELACE] Compressed Icon Set"
       - gum spin --spinner dot --title "Building Web Components..." -- pnpm run build
       - gum log --level info --time kitchen "[SHOELACE] Web Components built"
-
-  build:vault:
-    desc: Build Vault
-    dir: packages/vault
-    sources:
-      - "**/*.wasm"
-      - "**/*.ts"
-      - "**/*.js"
-    generates:
-      - dist
-    cmds:
-      - pnpm run build
-
-  build:wallet:
-    desc: Build Wallet
-    vars:
-      INPUT: wallet/main.go
-      OUTPUT: packages/vault/src/plugin.wasm
-      FLAGS: -target wasip1 -buildmode=c-shared
-    cmds:
-      - rm -rf packages/vault/plugin.wasm
-      - tinygo build -o {{.OUTPUT}} {{.FLAGS}} {{.INPUT}}
-      - gum log --time rfc822 --level info "[WALLET] Build Complete"
-
-  install:cosmes:
-    dir: packages/cosmes
+  install:
     preconditions:
       - sh: command -v pnpm
     sources:
@@ -94,40 +27,7 @@ tasks:
       - node_modules
     cmds:
       - pnpm install
-
-  install:shoelace:
-    dir: packages/shoelace
-    preconditions:
-      - sh: command -v pnpm
-    sources:
-      - package.json
-    generates:
-      - pnpm-lock.yaml
-      - node_modules
-    cmds:
-      - pnpm install
-
-  install:vault:
-    dir: packages/vault
-    preconditions:
-      - sh: command -v pnpm
-    sources:
-      - package.json
-    generates:
-      - pnpm-lock.yaml
-      - node_modules
-    cmds:
-      - pnpm install
-
-  publish:cosmes:
-    dir: packages/cosmes
-    preconditions:
-      - sh: command -v npm
-    cmds:
-      - npm publish
-
-  publish:shoelace:
-    dir: packages/shoelace
+  publish:
     preconditions:
       - sh: command -v npm
     cmds:
