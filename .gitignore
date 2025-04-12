@@ -122,3 +122,5 @@ deploy/conf
 interchaintest-downloader
 .haptic
 
+packages/vault/.parcel-cache
+packages/vault/.parcel-cache

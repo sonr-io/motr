@@ -1,6 +1,6 @@
 # Root Makefile
 # -----------------------------------------------
-.PHONY: build gen gen-types
+.PHONY: build gen proto publish
 
 all: gen build
 
@@ -16,5 +16,10 @@ gen:
 	@$(MAKE) -C nebula gen
 	@$(MAKE) -C resolver gen
 
-gen-types:
+proto:
 	@$(MAKE) -C packages/cosmes gen
+
+publish:
+	@$(MAKE) -C packages/cosmes publish
+	@$(MAKE) -C packages/shoelace publish
+	@$(MAKE) -C packages/vault publish
