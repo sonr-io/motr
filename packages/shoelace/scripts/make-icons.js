@@ -42,8 +42,8 @@ const cryptoIconDir = path.join(outdir, '/assets/crypto');
 
 await fs.mkdir(sonrIconDir, { recursive: true });
 await fs.mkdir(cryptoIconDir, { recursive: true });
-await Promise.all([copy('./assets/sonr-icons', sonrIconDir)]);
-await Promise.all([copy('./assets/crypto-icons', cryptoIconDir)]);
+await Promise.all([copy('./assets/icons/sonr', sonrIconDir)]);
+await Promise.all([copy('./assets/icons/crypto', cryptoIconDir)]);
 
 // Generate metadata
 const files = await globby(`${srcPath}/docs/content/icons/**/*.md`);
