@@ -2,12 +2,7 @@ module github.com/sonr-io/motr/wallet
 
 go 1.24.2
 
-replace github.com/sonr-io/crypto => ../
-
-require (
-	github.com/extism/go-pdk v1.1.3
-	github.com/sonr-io/crypto v0.4.0
-)
+require github.com/extism/go-pdk v1.1.3
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
@@ -22,6 +17,7 @@ require (
 	github.com/mimoo/StrobeGo v0.0.0-20181016162300-f8f6d4d2b643 // indirect
 	github.com/mmcloughlin/addchain v0.4.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/sonr-io/crypto v0.5.0
 	golang.org/x/crypto v0.36.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect
 	rsc.io/tmplfunc v0.0.3 // indirect
