@@ -1,6 +1,7 @@
 *.aiderscript
 
 _site
+docs
 .cache
 .DS_Store
 cdn
