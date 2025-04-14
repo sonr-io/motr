@@ -1,7 +1,7 @@
 import createPlugin from '@extism/extism';
 
 const plugin = await createPlugin(
-    'plugin.wasm',
+    'signer.wasm',
     { useWasi: true }
 );
 

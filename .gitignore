@@ -1,4 +1,5 @@
 .DS_Store
+.tmp*
 .aider*
 .vscode
 .idea
@@ -117,7 +118,6 @@ mprocs.log
 tools-stamp
 deploy/conf
 *.aiderscript
-*.wasm
 
 interchaintest-downloader
 .haptic
