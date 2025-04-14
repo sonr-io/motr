@@ -1,6 +1,6 @@
 package info
 
-import "github.com/sonr-io/motr/nebula/types/html"
+import "github.com/sonr-io/motr/ui/types/html"
 
 type ChainInfo struct {
 	Name string

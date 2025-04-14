@@ -13,7 +13,7 @@ build:
 	@cd controller && pnpm run build
 
 gen:
-	@$(MAKE) -C nebula gen
+	@$(MAKE) -C ui gen
 	@cd resolver && pnpm run gen:templ
 	@cd controller && pnpm run gen:templ
 

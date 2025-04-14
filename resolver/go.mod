@@ -6,10 +6,10 @@ require (
 	github.com/a-h/templ v0.3.857
 	github.com/labstack/echo/v4 v4.13.3
 	github.com/syumai/workers v0.30.1
-	github.com/sonr-io/motr/nebula v0.0.0-20230810135626-f3c3f4f1c8f1
+	github.com/sonr-io/motr/ui v0.0.0-00010101000000-000000000000
 )
 
-replace github.com/sonr-io/motr/nebula => ../nebula
+replace github.com/sonr-io/motr/ui => ../ui
 
 require (
 	github.com/labstack/gommon v0.4.2 // indirect

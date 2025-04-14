@@ -1,4 +1,4 @@
-module github.com/sonr-io/motr/nebula
+module github.com/sonr-io/motr/ui
 
 go 1.24.2
 

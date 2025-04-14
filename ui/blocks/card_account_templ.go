@@ -8,7 +8,7 @@ package blocks
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/sonr-io/motr/nebula/types/info"
+import "github.com/sonr-io/motr/ui/types/info"
 
 // accountInfoCard displays a user's account information in a card
 func AccountInfoCard(data info.AccountInfo) templ.Component {
