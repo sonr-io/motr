@@ -10,10 +10,12 @@ build:
 	@$(MAKE) -C packages/shoelace build
 	@$(MAKE) -C packages/vault build
 	@cd resolver && pnpm run build
+	@cd controller && pnpm run build
 
 gen:
 	@$(MAKE) -C nebula gen
 	@cd resolver && pnpm run gen:templ
+	@cd controller && pnpm run gen:templ
 
 proto:
 	@$(MAKE) -C packages/cosmes gen

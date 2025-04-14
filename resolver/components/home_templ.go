@@ -122,7 +122,7 @@ func timeComponent(d time.Time, acc info.AccountInfo, data []charts.CandleData) 
 						}()
 					}
 					ctx = templ.InitializeContext(ctx)
-					templ_7745c5c3_Err = ui.NavLogo("Example").Render(ctx, templ_7745c5c3_Buffer)
+					templ_7745c5c3_Err = ui.NavLogo("Motr").Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}

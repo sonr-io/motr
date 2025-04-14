@@ -20,7 +20,7 @@ type Metadata struct {
 
 func DefaultMetadata() Metadata {
 	return Metadata{
-		Title:          "Sonr",
+		Title:          "Motr",
 		Author:         "Sonr",
 		Favicon:        "https://cdn.sonr.id/favicon.png",
 		Robots:         "index, follow",

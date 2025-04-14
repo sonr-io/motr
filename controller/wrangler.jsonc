@@ -5,27 +5,10 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "controller",
-	"main": "src/index.ts",
+	"main": "./build/worker.mjs",
 	"compatibility_date": "2025-04-14",
-	"migrations": [
-		{
-			"new_sqlite_classes": [
-				"MyDurableObject"
-			],
-			"tag": "v1"
-		}
-	],
-	"assets": {
-		"binding": "ASSETS",
-		"directory": "./public"
-	},
-	"durable_objects": {
-		"bindings": [
-			{
-				"class_name": "MyDurableObject",
-				"name": "MY_DURABLE_OBJECT"
-			}
-		]
+	"build": {
+		"command": "npm run build"
 	},
 	"observability": {
 		"enabled": true
