@@ -15,6 +15,9 @@ importers:
       '@parcel/bundler-library':
         specifier: ^2.14.4
         version: 2.14.4(@parcel/core@2.14.4(@swc/helpers@0.5.17))
+      '@parcel/config-default':
+        specifier: ^2.14.4
+        version: 2.14.4(@parcel/core@2.14.4(@swc/helpers@0.5.17))(@swc/helpers@0.5.17)
       '@parcel/packager-wasm':
         specifier: ^2.14.4
         version: 2.14.4(@parcel/core@2.14.4(@swc/helpers@0.5.17))

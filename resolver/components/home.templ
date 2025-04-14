@@ -1,0 +1,68 @@
+package components
+
+import (
+	"github.com/sonr-io/motr/nebula"
+	"github.com/sonr-io/motr/nebula/blocks"
+	"github.com/sonr-io/motr/nebula/charts"
+	"github.com/sonr-io/motr/nebula/types/html"
+	"github.com/sonr-io/motr/nebula/types/info"
+	"time"
+)
+
+var meta = html.DefaultMetadata()
+
+func HomeView(d time.Time) templ.Component {
+	acc := info.AccountInfo{
+		Address: "sonr1q9u8t9a5c8e8h9f9g9h9i9j9k9l9m9n9o9p9q9r9s9t9u9v9w9x9y9z9a",
+		Name:    "Example",
+		Handle:  "@jeff",
+		Block:   "1234567890",
+	}
+	data := []charts.CandleData{
+		{
+			Open:  128.9962,
+			Close: 129.745,
+			High:  130.1345,
+			Low:   128.6167,
+			Date:  time.Date(2025, 2, 7, 14, 30, 0, 0, time.UTC),
+		},
+		// ... add more data points
+	}
+	return timeComponent(d, acc, data)
+}
+
+templ timeComponent(d time.Time, acc info.AccountInfo, data []charts.CandleData) {
+	@ui.HTML() {
+		@ui.Head() {
+			@blocks.MetaComponent(meta)
+		}
+		<sl-tab-group>
+			@ui.Nav() {
+				@ui.NavLeft() {
+					@ui.NavLogo("Example")
+				}
+				@ui.NavRight() {
+					<sl-tab slot="nav" panel="tab-1">Time</sl-tab>
+					<sl-tab slot="nav" panel="tab-2">Account</sl-tab>
+					<sl-tab slot="nav" panel="tab-3">Prices</sl-tab>
+				}
+			}
+			@ui.Body() {
+				<sl-tab-panel name="tab-1" active>
+					@ui.Container() {
+						@blocks.HeliaFullDashboard()
+					}
+				</sl-tab-panel>
+				<sl-tab-panel name="tab-3" active>
+					@ui.Container() {
+						@charts.CandleChart(data)
+					}
+				</sl-tab-panel>
+			}
+		</sl-tab-group>
+	}
+}
+
+templ NotFoundComponent() {
+	<div>404 - Not found</div>
+}
