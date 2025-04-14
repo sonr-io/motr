@@ -9,11 +9,11 @@ build:
 	@$(MAKE) -C packages/cosmes build
 	@$(MAKE) -C packages/shoelace build
 	@$(MAKE) -C packages/vault build
-	@$(MAKE) -C resolver build
+	@cd resolver && pnpm run build
 
 gen:
 	@$(MAKE) -C nebula gen
-	@$(MAKE) -C resolver gen
+	@cd resolver && pnpm run generate
 
 proto:
 	@$(MAKE) -C packages/cosmes gen
