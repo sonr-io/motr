@@ -118,7 +118,7 @@ mprocs.log
 tools-stamp
 deploy/conf
 *.aiderscript
-
+*.wasm
 interchaintest-downloader
 .haptic
 
