@@ -13,7 +13,7 @@ build:
 
 gen:
 	@$(MAKE) -C nebula gen
-	@cd resolver && pnpm run generate
+	@cd resolver && pnpm run gen:templ
 
 proto:
 	@$(MAKE) -C packages/cosmes gen
