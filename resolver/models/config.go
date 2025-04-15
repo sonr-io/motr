@@ -1,4 +1,4 @@
-package types
+package models
 
 // MotrConfig is the configuration for the Motr application assumed to be in the same directory as the dwn index
 type ResolverConfig struct {
