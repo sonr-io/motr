@@ -1,8 +1,11 @@
 VERSION 0.8
-FROM golang:1.24.2-alpine
-WORKDIR /work
 
-build:
+docker:
+    FROM oven/bun:1.2.0
+    WORKDIR /work
+    COPY package.json .
+    RUN bun install
     COPY . .
-    RUN GOOS=js GOARCH=wasm go build -o ./build/app.wasm .
-    SAVE ARTIFACT build/app.wasm AS LOCAL ./build/app.wasm
+    EXPOSE 8787
+    CMD ["bun", "run", "start"]
+    SAVE IMAGE motr-controller:latest
