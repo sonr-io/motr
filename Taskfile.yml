@@ -1,66 +1,106 @@
-# yaml-language-server: $schema=https://json.schemastore.org/taskfile
+#yaml-language-server: $schema=https://json.schemastore.org/taskfile
 version: "3"
 silent: true
-
-# vars:
-#   VERSION:
-#     sh: git describe --tags
-#   COMMIT:
-#     sh: git log -1 --format='%H'
-#
+vars:
+  ROOT_DIR:
+    sh: git rev-parse --show-toplevel
 
 tasks:
-  default:
+  start:controller:
+    desc: Start the controller
+    dir: "{{.ROOT_DIR}}/controller"
     cmds:
-      - task: gen:templ
-      - task: gen:sqlc
-      - task: build
+      - devbox run start
 
-  gen:templ:
-    desc: Generate code
-    sources:
-      - "**/*.templ"
-    generates:
-      - "**/*_templ.go"
+  start:resolver:
+    desc: Start the resolver
+    dir: "{{.ROOT_DIR}}/resolver"
+    cmds:
+      - devbox run start
+
+  build:
+    desc: Build all
+    cmds:
+      - defer: { task: clean }
+      - task: build:controller
+      - task: build:resolver
+      - task: build:signer
+
+  proto:
+    desc: Generate proto
+    cmds:
+      - make -C packages/cosmes gen
+
+  templ:
+    desc: Generate templ
     cmds:
       - templ generate
 
-  gen:sqlc:
-    desc: Generate code
+  build:controller:
+    desc: Build the controller
+    dir: "{{.ROOT_DIR}}/controller"
+    cmds:
+      - devbox run build
     sources:
-      - x/**/model/*.sql
+      - package.json
+      - main.go
+      - go.mod
     generates:
-      - x/**/model/*.go
-    cmds:
-      - sqlc generate -f "x/identity/model/sqlc.yaml"
-      - sqlc generate -f "x/portfolio/model/sqlc.yaml"
-      - sqlc generate -f "x/user/model/sqlc.yaml"
+      - build/app.wasm
 
-  build:
-    desc: Build
-    watch: true
+  build:resolver:
+    desc: Build the resolver
+    dir: "{{.ROOT_DIR}}/resolver"
+    cmds:
+      - devbox run build
     sources:
-      - "**/*.go"
+      - package.json
+      - main.go
+      - go.mod
     generates:
-      - web/app.wasm
-    deps:
-      - task: gen:templ
-      - task: gen:sqlc
-    vars:
-      TIME:
-        sh: date
-    cmds:
-      - rm -rf web/vault.wasm
-      - GOOS=js GOARCH=wasm go build -o web/vault.wasm .
-      - gum log --time rfc822 --level info "[BUILD] WASM Complete"
+      - build/app.wasm
 
-  serve:
-    desc: Serve
-    dir: web
+  build:signer:
+    desc: Build and Upload the signer
+    dir: "{{.ROOT_DIR}}/signer"
     cmds:
-      - bunx live-server
+      - earthly +build
+      - gum log --level debug "Uploading signer.wasm to r2"
+      - rclone copy ./dist/signer.wasm r2:cdn/bin/
+    sources:
+      - Earthfile
+      - main.go
+      - go.mod
+    generates:
+      - dist/signer.wasm
 
-  test:
-    desc: Test
+  build:packages:
+    desc: Build all packages
     cmds:
-      - go test -v ./...
+      - make -C packages/cosmes build
+      - make -C packages/shoelace build
+      - make -C packages/vault build
+
+  publish:packages:
+    desc: Publish all packages
+    cmds:
+      - make -C packages/cosmes publish
+      - make -C packages/shoelace publish
+      - make -C packages/vault publish
+
+  deploy:controller:
+    desc: Deploy the controller
+    dir: "{{.ROOT_DIR}}/controller"
+    cmds:
+      - devbox run deploy
+
+  deploy:resolver:
+    desc: Deploy the resolver
+    dir: "{{.ROOT_DIR}}/resolver"
+    cmds:
+      - devbox run deploy
+
+  clean:
+    desc: Remove build artifacts
+    cmds:
+      - rm -rf ./build

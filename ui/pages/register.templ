@@ -1,0 +1,41 @@
+package pages
+
+import (
+	"github.com/sonr-io/motr/ui"
+	"github.com/sonr-io/motr/ui/blocks"
+	"github.com/sonr-io/motr/ui/charts"
+	"github.com/sonr-io/motr/ui/types/info"
+	"time"
+)
+
+templ RegisterView(d time.Time, acc info.AccountInfo, data []charts.CandleData) {
+	@ui.HTML() {
+		@ui.Head() {
+			@blocks.MetaComponent(meta)
+		}
+		<sl-tab-group>
+			@ui.Nav() {
+				@ui.NavLeft() {
+					@ui.NavLogo("Motr")
+				}
+				@ui.NavRight() {
+					<sl-tab slot="nav" panel="tab-1">Time</sl-tab>
+					<sl-tab slot="nav" panel="tab-2">Account</sl-tab>
+					<sl-tab slot="nav" panel="tab-3">Prices</sl-tab>
+				}
+			}
+			@ui.Body() {
+				<sl-tab-panel name="tab-1" active>
+					@ui.Container() {
+						@blocks.HeliaFullDashboard()
+					}
+				</sl-tab-panel>
+				<sl-tab-panel name="tab-3" active>
+					@ui.Container() {
+						@charts.CandleChart(data)
+					}
+				</sl-tab-panel>
+			}
+		</sl-tab-group>
+	}
+}

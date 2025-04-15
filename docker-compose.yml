@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  resolver:
+    image: motr-resolver:latest
+    ports:
+      - "8787:8787"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./resolver:/work
+    restart: unless-stopped
+
+  controller:
+    image: motr-controller:latest
+    ports:
+      - "8788:8787"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./controller:/work
+    restart: unless-stopped

@@ -1,0 +1,10 @@
+# Top-level configuration
+name = "motr-controller"
+main = "build/worker.mjs"
+compatibility_date = "2025-04-14"
+
+[build]
+command = "devbox run build"
+
+[observability]
+enabled = true

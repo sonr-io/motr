@@ -1,0 +1,94 @@
+package deps
+
+// Additional component for file operations
+templ HeliaFileOperations() {
+	<div class="helia-file-operations">
+		<h3>File Operations</h3>
+		<div class="operation-container">
+			<h4>Add File</h4>
+			<input type="file" id="fileInput"/>
+			<button id="addFileBtn">Add File</button>
+			<div id="addFileResult"></div>
+		</div>
+		<div class="operation-container">
+			<h4>Retrieve File by CID</h4>
+			<input type="text" id="cidInput" placeholder="Enter CID"/>
+			<button id="retrieveFileBtn">Retrieve</button>
+			<div id="retrieveFileResult"></div>
+		</div>
+		<script>
+            (() => {
+                document.addEventListener('DOMContentLoaded', () => {
+                    // Wait until Helia is initialized
+                    const checkHeliaInterval = setInterval(() => {
+                        if (window.helia && window.heliaFs) {
+                            clearInterval(checkHeliaInterval)
+                            setupFileOperations()
+                        }
+                    }, 500)
+                    
+                    function setupFileOperations() {
+                        const addFileBtn = document.getElementById('addFileBtn')
+                        const retrieveFileBtn = document.getElementById('retrieveFileBtn')
+                        
+                        addFileBtn.addEventListener('click', async () => {
+                            const fileInput = document.getElementById('fileInput')
+                            const resultEl = document.getElementById('addFileResult')
+                            
+                            if (!fileInput.files || fileInput.files.length === 0) {
+                                resultEl.textContent = 'Please select a file'
+                                return
+                            }
+                            
+                            try {
+                                const file = fileInput.files[0]
+                                resultEl.textContent = 'Adding file...'
+                                
+                                const cid = await window.heliaFs.addFile(file)
+                                resultEl.textContent = `File added with CID: ${cid.toString()}`
+                            } catch (err) {
+                                resultEl.textContent = `Error adding file: ${err.message}`
+                                console.error('Error adding file:', err)
+                            }
+                        })
+                        
+                        retrieveFileBtn.addEventListener('click', async () => {
+                            const cidInput = document.getElementById('cidInput')
+                            const resultEl = document.getElementById('retrieveFileResult')
+                            
+                            if (!cidInput.value) {
+                                resultEl.textContent = 'Please enter a CID'
+                                return
+                            }
+                            
+                            try {
+                                resultEl.textContent = 'Retrieving file...'
+                                
+                                const cid = cidInput.value
+                                const chunks = []
+                                
+                                for await (const chunk of window.heliaFs.cat(cid)) {
+                                    chunks.push(chunk)
+                                }
+                                
+                                const content = new TextDecoder().decode(
+                                    chunks.reduce((acc, chunk) => {
+                                        const combined = new Uint8Array(acc.length + chunk.length)
+                                        combined.set(acc)
+                                        combined.set(chunk, acc.length)
+                                        return combined
+                                    }, new Uint8Array(0))
+                                )
+                                
+                                resultEl.textContent = `Retrieved content (first 100 chars): ${content.substring(0, 100)}${content.length > 100 ? '...' : ''}`
+                            } catch (err) {
+                                resultEl.textContent = `Error retrieving file: ${err.message}`
+                                console.error('Error retrieving file:', err)
+                            }
+                        })
+                    }
+                })
+            })()
+        </script>
+	</div>
+}
