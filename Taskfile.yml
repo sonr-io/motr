@@ -6,6 +6,18 @@ vars:
     sh: git rev-parse --show-toplevel
 
 tasks:
+  start:controller:
+    desc: Start the controller
+    dir: "{{.ROOT_DIR}}/controller"
+    cmds:
+      - devbox run start
+
+  start:resolver:
+    desc: Start the resolver
+    dir: "{{.ROOT_DIR}}/resolver"
+    cmds:
+      - devbox run start
+
   build:
     desc: Build all
     cmds:

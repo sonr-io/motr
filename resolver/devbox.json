@@ -3,11 +3,11 @@
   "packages": [
     "bun@latest",
     "go@latest",
-    "templ@latest"
+    "templ@latest",
+    "nodejs@latest"
   ],
   "shell": {
     "init_hook": [
-      "bun install wrangler -g",
       "go install github.com/syumai/workers/cmd/workers-assets-gen@latest"
     ],
     "scripts": {
@@ -17,10 +17,10 @@
         "GOOS=js GOARCH=wasm go build -o ./build/app.wasm ."
       ],
       "deploy": [
-        "wrangler deploy"
+        "bunx wrangler deploy"
       ],
       "start": [
-        "wrangler dev"
+        "bunx wrangler dev"
       ],
       "generate": [
         "templ generate"
