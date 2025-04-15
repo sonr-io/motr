@@ -10,7 +10,6 @@ import (
 func main() {
 	e := echo.New()
 	e.GET("/", handlers.IndexHandler)
-	e.GET("/login", handlers.LoginHandler)
 	e.GET("/register", handlers.RegisterHandler)
 	workers.Serve(e)
 }
