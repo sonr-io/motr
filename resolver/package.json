@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"build": "npm run gen:templ && npm run gen:assets && npm run build:wasm",
-		"build:wasm": "GOOS=js GOARCH=wasm go build -o ./build/app.wasm .",
+		"build:wasm": "earthly +build",
 		"deploy": "wrangler deploy",
 		"gen:templ": "templ generate",
 		"gen:assets": "go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go",

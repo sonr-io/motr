@@ -9,8 +9,7 @@
   "module": "dist/module.js",
   "scripts": {
     "watch": "parcel watch",
-    "build": "parcel build && npm run dl:signer",
-    "dl:signer": "earthly github.com/sonr-io/crypto+signer && mv ./signer.wasm ./dist/signer.wasm"
+    "build": "parcel build"
   },
   "devDependencies": {
     "@parcel/config-default": "^2.14.4",

@@ -1,0 +1,9 @@
+VERSION 0.8
+FROM tinygo/tinygo:0.37.0
+WORKDIR /work
+
+build:
+    COPY . .
+    RUN tinygo build -o plugin.wasm -target wasip1 -buildmode=c-shared .
+    SAVE ARTIFACT plugin.wasm AS LOCAL ./signer.wasm
+
