@@ -4,7 +4,7 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "app",
+	"name": "motr-resolver",
 	"main": "./build/worker.mjs",
 	"compatibility_date": "2025-04-12",
 	"build": {

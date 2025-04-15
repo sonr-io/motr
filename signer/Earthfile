@@ -4,6 +4,6 @@ WORKDIR /work
 
 build:
     COPY . .
-    RUN tinygo build -o plugin.wasm -target wasip1 -buildmode=c-shared .
-    SAVE ARTIFACT plugin.wasm AS LOCAL ./signer.wasm
+    RUN tinygo build -o signer.wasm -target wasip1 -buildmode=c-shared .
+    SAVE ARTIFACT signer.wasm AS LOCAL ./dist/signer.wasm
 

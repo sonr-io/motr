@@ -1,0 +1,9 @@
+VERSION 0.8
+FROM golang:1.24.2-alpine
+WORKDIR /work
+
+build:
+    COPY . .
+    RUN GOOS=js GOARCH=wasm go build -o ./build/app.wasm .
+    SAVE ARTIFACT build/app.wasm AS LOCAL ./build/app.wasm
+

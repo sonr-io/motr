@@ -1,0 +1,94 @@
+#yaml-language-server: $schema=https://json.schemastore.org/taskfile
+version: "3"
+silent: true
+vars:
+  ROOT_DIR:
+    sh: git rev-parse --show-toplevel
+
+tasks:
+  build:
+    desc: Build all
+    cmds:
+      - defer: { task: clean }
+      - task: build:controller
+      - task: build:resolver
+      - task: build:signer
+
+  proto:
+    desc: Generate proto
+    cmds:
+      - make -C packages/cosmes gen
+
+  templ:
+    desc: Generate templ
+    cmds:
+      - templ generate
+
+  build:controller:
+    desc: Build the controller
+    dir: "{{.ROOT_DIR}}/controller"
+    cmds:
+      - bun run build
+    sources:
+      - package.json
+      - main.go
+      - go.mod
+    generates:
+      - build/app.wasm
+
+  build:resolver:
+    desc: Build the resolver
+    dir: "{{.ROOT_DIR}}/resolver"
+    cmds:
+      - bun run build
+    sources:
+      - package.json
+      - main.go
+      - go.mod
+    generates:
+      - build/app.wasm
+
+  build:signer:
+    desc: Build and Upload the signer
+    dir: "{{.ROOT_DIR}}/signer"
+    cmds:
+      - earthly +build
+      - gum log --level debug "Uploading signer.wasm to r2"
+      - rclone copy ./dist/signer.wasm r2:cdn/bin/
+    sources:
+      - Earthfile
+      - main.go
+      - go.mod
+    generates:
+      - dist/signer.wasm
+
+  build:packages:
+    desc: Build all packages
+    cmds:
+      - make -C packages/cosmes build
+      - make -C packages/shoelace build
+      - make -C packages/vault build
+
+  publish:packages:
+    desc: Publish all packages
+    cmds:
+      - make -C packages/cosmes publish
+      - make -C packages/shoelace publish
+      - make -C packages/vault publish
+
+  deploy:controller:
+    desc: Deploy the controller
+    dir: "{{.ROOT_DIR}}/controller"
+    cmds:
+      - bun run deploy
+
+  deploy:resolver:
+    desc: Deploy the resolver
+    dir: "{{.ROOT_DIR}}/resolver"
+    cmds:
+      - bun run deploy
+
+  clean:
+    desc: Remove build artifacts
+    cmds:
+      - rm -rf ./build

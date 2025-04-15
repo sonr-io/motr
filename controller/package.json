@@ -1,15 +1,13 @@
 {
-	"name": "@sonr-io/controller",
+	"name": "@sonr-io/motr-controller",
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"build": "npm run gen:templ && npm run gen:assets && npm run build:wasm && npm run dl:signer",
+		"build": "npm run templ && npm run build:assets && npm run build:wasm",
+		"build:assets": "go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go",
 		"build:wasm": "GOOS=js GOARCH=wasm go build -o ./build/app.wasm .",
-		"dl:signer": "earthly github.com/sonr-io/crypto+signer && mv ./signer.wasm ./build/signer.wasm",
 		"deploy": "wrangler deploy",
-		"gen:templ": "templ generate",
-		"gen:assets": "go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go",
-		"generate": "npm run gen:templ && npm run gen:assets",
+		"templ": "templ generate",
 		"start": "wrangler dev"
 	},
 	"devDependencies": {
