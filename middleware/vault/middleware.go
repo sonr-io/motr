@@ -1,4 +1,4 @@
-package ipfs
+package vault
 
 import "github.com/labstack/echo/v4"
 
