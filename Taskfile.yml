@@ -28,8 +28,7 @@ tasks:
     desc: Build the controller
     dir: "{{.ROOT_DIR}}/controller"
     cmds:
-      - bun run build
-      - earthly +docker
+      - devbox run build
     sources:
       - package.json
       - main.go
@@ -41,8 +40,7 @@ tasks:
     desc: Build the resolver
     dir: "{{.ROOT_DIR}}/resolver"
     cmds:
-      - bun run build
-      - earthly +docker
+      - devbox run build
     sources:
       - package.json
       - main.go
@@ -82,13 +80,13 @@ tasks:
     desc: Deploy the controller
     dir: "{{.ROOT_DIR}}/controller"
     cmds:
-      - bun run deploy
+      - devbox run deploy
 
   deploy:resolver:
     desc: Deploy the resolver
     dir: "{{.ROOT_DIR}}/resolver"
     cmds:
-      - bun run deploy
+      - devbox run deploy
 
   clean:
     desc: Remove build artifacts
