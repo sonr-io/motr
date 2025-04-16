@@ -93,7 +93,7 @@ tasks:
 
   build:signer:
     desc: Build and Upload the signer
-    dir: "{{.ROOT_DIR}}/signer"
+    dir: "{{.ROOT_DIR}}/cmd/signer"
     cmds:
       - earthly +build
       - gum log --level debug "Uploading signer.wasm to r2"

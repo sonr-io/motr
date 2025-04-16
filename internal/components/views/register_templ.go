@@ -9,8 +9,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/sonr-io/motr/internal/ui"
-	"github.com/sonr-io/motr/internal/ui/blocks"
+	"github.com/sonr-io/motr/internal/components/blocks"
+	"github.com/sonr-io/motr/internal/components/ui"
 	"github.com/sonr-io/motr/sink/options"
 )
 
