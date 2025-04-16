@@ -1,8 +1,8 @@
 package blocks
 
-import "github.com/sonr-io/motr/ui/types/html"
+import "github.com/sonr-io/motr/sink/types"
 
-templ MetaComponent(m html.Metadata) {
+templ MetaComponent(m types.Metadata) {
 	<title>{ m.Title }</title>
 	<link rel="icon" type="image/png" href={ m.Favicon }/>
 	<meta name="description" content={ m.Description }/>

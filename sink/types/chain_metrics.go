@@ -1,4 +1,4 @@
-package metrics
+package types
 
 type ChainMetrics struct {
 	ChainID string

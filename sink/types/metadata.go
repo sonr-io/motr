@@ -1,4 +1,4 @@
-package html
+package types
 
 type Metadata struct {
 	Title          string

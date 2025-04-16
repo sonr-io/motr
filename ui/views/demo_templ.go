@@ -9,15 +9,15 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"github.com/sonr-io/motr/sink/types"
 	"github.com/sonr-io/motr/ui"
 	"github.com/sonr-io/motr/ui/blocks"
 	"github.com/sonr-io/motr/ui/charts"
-	"github.com/sonr-io/motr/ui/types/info"
 	"time"
 )
 
 func DemoView(d time.Time) templ.Component {
-	acc := info.AccountInfo{
+	acc := types.AccountInfo{
 		Address: "sonr1q9u8t9a5c8e8h9f9g9h9i9j9k9l9m9n9o9p9q9r9s9t9u9v9w9x9y9z9a",
 		Name:    "Example",
 		Handle:  "@jeff",
@@ -33,10 +33,10 @@ func DemoView(d time.Time) templ.Component {
 		},
 		// ... add more data points
 	}
-	return timeComponent(d, acc, data)
+	return demoComponent(d, acc, data)
 }
 
-func timeComponent(d time.Time, acc info.AccountInfo, data []charts.CandleData) templ.Component {
+func demoComponent(d time.Time, acc types.AccountInfo, data []charts.CandleData) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -242,35 +242,6 @@ func timeComponent(d time.Time, acc info.AccountInfo, data []charts.CandleData) 
 			return nil
 		})
 		templ_7745c5c3_Err = ui.HTML().Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		return nil
-	})
-}
-
-func NotFoundComponent() templ.Component {
-	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
-		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
-		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
-			return templ_7745c5c3_CtxErr
-		}
-		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
-		if !templ_7745c5c3_IsBuffer {
-			defer func() {
-				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err == nil {
-					templ_7745c5c3_Err = templ_7745c5c3_BufErr
-				}
-			}()
-		}
-		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var10 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var10 == nil {
-			templ_7745c5c3_Var10 = templ.NopComponent
-		}
-		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<div>404 - Not found</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -1,4 +1,4 @@
-package metrics
+package types
 
 type AssetMetrics struct {
 	AssetID string

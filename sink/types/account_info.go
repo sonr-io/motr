@@ -1,4 +1,4 @@
-package info
+package types
 
 type AccountInfo struct {
 	Address string

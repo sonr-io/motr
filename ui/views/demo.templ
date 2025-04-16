@@ -1,15 +1,15 @@
 package views
 
 import (
+	"github.com/sonr-io/motr/sink/types"
 	"github.com/sonr-io/motr/ui"
 	"github.com/sonr-io/motr/ui/blocks"
 	"github.com/sonr-io/motr/ui/charts"
-	"github.com/sonr-io/motr/ui/types/info"
 	"time"
 )
 
 func DemoView(d time.Time) templ.Component {
-	acc := info.AccountInfo{
+	acc := types.AccountInfo{
 		Address: "sonr1q9u8t9a5c8e8h9f9g9h9i9j9k9l9m9n9o9p9q9r9s9t9u9v9w9x9y9z9a",
 		Name:    "Example",
 		Handle:  "@jeff",
@@ -28,7 +28,7 @@ func DemoView(d time.Time) templ.Component {
 	return demoComponent(d, acc, data)
 }
 
-templ demoComponent(d time.Time, acc info.AccountInfo, data []charts.CandleData) {
+templ demoComponent(d time.Time, acc types.AccountInfo, data []charts.CandleData) {
 	@ui.HTML() {
 		@ui.Head() {
 			@blocks.MetaComponent(meta)
@@ -58,8 +58,4 @@ templ demoComponent(d time.Time, acc info.AccountInfo, data []charts.CandleData)
 			}
 		</sl-tab-group>
 	}
-}
-
-templ NotFoundComponent() {
-	<div>404 - Not found</div>
 }
