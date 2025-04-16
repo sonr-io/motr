@@ -1,3 +1,6 @@
+// Package main implements a WebAssembly module for secure enclave operations
+// using the Extism PDK. It provides functionality for importing, signing, and
+// verifying data with MPC (Multi-Party Computation) enclaves.
 package main
 
 import (
@@ -9,32 +12,14 @@ import (
 	"github.com/sonr-io/crypto/mpc"
 )
 
+// Storage key constants used for persistent state
 const (
 	configKey = "sonr-enclave-config"
 	dataKey   = "sonr-enclave-data"
 	stateKey  = "sonr-enclave-state"
 )
 
-type EnclaveState int
-
-const (
-	EnclaveStateNone EnclaveState = iota
-	EnclaveStateImported
-	EnclaveStateStored
-)
-
-func getState() EnclaveState {
-	state := pdk.GetVarInt(stateKey)
-	if state == 0 {
-		return EnclaveStateNone
-	}
-	return EnclaveState(state)
-}
-
-func setState(state EnclaveState) {
-	pdk.SetVarInt(stateKey, int(state))
-}
-
+// Error definitions
 var (
 	ErrInvalidArgument = errors.New("invalid argument")
 	ErrInvalidConfig   = errors.New("invalid config")
@@ -43,14 +28,25 @@ var (
 	ErrMissingEnclave  = errors.New("missing enclave")
 )
 
+// EnclaveState represents the current state of the enclave
+type EnclaveState int
+
+const (
+	EnclaveStateNone     EnclaveState = iota // No enclave loaded
+	EnclaveStateImported               // Enclave imported but not stored
+	EnclaveStateStored                 // Enclave fully stored
+)
+
+// ExtractionMethod defines how enclave data will be retrieved
 type ExtractionMethod int
 
 const (
-	ExtractionMethodNone ExtractionMethod = iota
-	ExtractionMethodIPFS
-	ExtractionMethodFile
+	ExtractionMethodNone ExtractionMethod = iota // No extraction method defined
+	ExtractionMethodIPFS                         // Retrieve from IPFS
+	ExtractionMethodFile                         // Retrieve from local file
 )
 
+// EnclaveConfig holds configuration for enclave retrieval
 type EnclaveConfig struct {
 	CID        string           `json:"cid"`
 	GatewayURL string           `json:"gateway_url"`
@@ -59,6 +55,17 @@ type EnclaveConfig struct {
 	Method     ExtractionMethod `json:"extraction_method"`
 }
 
+// Request/Response types
+type SignRequest struct {
+	Data []byte `json:"message"`
+}
+
+type VerifyRequest struct {
+	Message   []byte `json:"message"`
+	Signature []byte `json:"signature"`
+}
+
+// getURL returns the full IPFS URL for retrieval
 func (e EnclaveConfig) getURL() string {
 	if e.GatewayURL == "" {
 		return "https://ipfs.io/ipfs/" + e.CID
@@ -66,6 +73,7 @@ func (e EnclaveConfig) getURL() string {
 	return e.GatewayURL + "/ipfs/" + e.CID
 }
 
+// Resolve retrieves the enclave data based on the configured method
 func (e EnclaveConfig) Resolve() ([]byte, error) {
 	switch e.Method {
 	case ExtractionMethodIPFS:
@@ -84,85 +92,23 @@ func (e EnclaveConfig) Resolve() ([]byte, error) {
 	}
 }
 
-//go:wasmexport import
-func importEnclave() int32 {
-	config := loadConfig()
-	bz, err := config.Resolve()
-	if err != nil {
-		logError(err)
-		return 1
+// State management functions
+
+// getState retrieves the current enclave state
+func getState() EnclaveState {
+	state := pdk.GetVarInt(stateKey)
+	if state == 0 {
+		return EnclaveStateNone
 	}
-	e, err := mpc.ImportEnclave(mpc.WithEnclaveJSON(bz))
-	if err != nil {
-		logError(err)
-		return 1
-	}
-	storeEnclave(e)
-	pdk.Log(pdk.LogInfo, "Enclave imported successfully")
-	pdk.OutputJSON(e)
-	return 0
+	return EnclaveState(state)
 }
 
-type SignRequest struct {
-	Data []byte `json:"message"`
+// setState updates the enclave state
+func setState(state EnclaveState) {
+	pdk.SetVarInt(stateKey, int(state))
 }
 
-//go:wasmexport sign
-func sign() int32 {
-	req := SignRequest{}
-	err := pdk.InputJSON(req)
-	if err != nil {
-		logError(err)
-		return 1
-	}
-
-	e, err := fetchEnclave()
-	if err != nil {
-		logError(err)
-		return 1
-	}
-
-	sig, err := e.Sign(req.Data)
-	if err != nil {
-		logError(err)
-		return 1
-	}
-	pdk.Log(pdk.LogInfo, "Signature successful")
-	pdk.OutputJSON(sig)
-	return 0
-}
-
-type VerifyRequest struct {
-	Message   []byte `json:"message"`
-	Signature []byte `json:"signature"`
-}
-
-//go:wasmexport verify
-func verify() int32 {
-	req := VerifyRequest{}
-	err := pdk.InputJSON(req)
-	if err != nil {
-		logError(err)
-		return 1
-	}
-	e, err := fetchEnclave()
-	if err != nil {
-		logError(err)
-		return 1
-	}
-	sig, err := e.Verify(req.Message, req.Signature)
-	if err != nil {
-		logError(err)
-		return 1
-	}
-	if sig {
-		logInfo("Signature verified successfully")
-		return 0
-	}
-	logInfo("Signature verification failed")
-	return -1
-}
-
+// loadConfig loads configuration from plugin parameters
 func loadConfig() EnclaveConfig {
 	config := EnclaveConfig{}
 	var (
@@ -202,6 +148,9 @@ func loadConfig() EnclaveConfig {
 	return config
 }
 
+// Enclave operations
+
+// fetchEnclave retrieves the enclave from storage
 func fetchEnclave() (mpc.Enclave, error) {
 	if getState() != EnclaveStateImported {
 		return nil, ErrInvalidState
@@ -217,6 +166,7 @@ func fetchEnclave() (mpc.Enclave, error) {
 	return e, nil
 }
 
+// storeEnclave persists the enclave to storage
 func storeEnclave(e mpc.Enclave) error {
 	bz, err := e.Serialize()
 	if err != nil {
@@ -227,16 +177,97 @@ func storeEnclave(e mpc.Enclave) error {
 	return nil
 }
 
+// Exported WebAssembly functions
+
+//go:wasmexport import
+// importEnclave loads an enclave from its configured source
+func importEnclave() int32 {
+	config := loadConfig()
+	bz, err := config.Resolve()
+	if err != nil {
+		logError(err)
+		return 1
+	}
+	e, err := mpc.ImportEnclave(mpc.WithEnclaveJSON(bz))
+	if err != nil {
+		logError(err)
+		return 1
+	}
+	storeEnclave(e)
+	pdk.Log(pdk.LogInfo, "Enclave imported successfully")
+	pdk.OutputJSON(e)
+	return 0
+}
+
+//go:wasmexport sign
+// sign uses the enclave to sign input data
+func sign() int32 {
+	req := SignRequest{}
+	err := pdk.InputJSON(req)
+	if err != nil {
+		logError(err)
+		return 1
+	}
+
+	e, err := fetchEnclave()
+	if err != nil {
+		logError(err)
+		return 1
+	}
+
+	sig, err := e.Sign(req.Data)
+	if err != nil {
+		logError(err)
+		return 1
+	}
+	pdk.Log(pdk.LogInfo, "Signature successful")
+	pdk.OutputJSON(sig)
+	return 0
+}
+
+//go:wasmexport verify
+// verify checks if a signature is valid for the given data
+func verify() int32 {
+	req := VerifyRequest{}
+	err := pdk.InputJSON(req)
+	if err != nil {
+		logError(err)
+		return 1
+	}
+	e, err := fetchEnclave()
+	if err != nil {
+		logError(err)
+		return 1
+	}
+	sig, err := e.Verify(req.Message, req.Signature)
+	if err != nil {
+		logError(err)
+		return 1
+	}
+	if sig {
+		logInfo("Signature verified successfully")
+		return 0
+	}
+	logInfo("Signature verification failed")
+	return -1
+}
+
+// Logging utilities
+
+// logDebug logs a debug message
 func logDebug(msg string) {
 	pdk.Log(pdk.LogDebug, msg)
 }
 
+// logInfo logs an info message
 func logInfo(msg string) {
 	pdk.Log(pdk.LogInfo, msg)
 }
 
+// logError logs an error message
 func logError(err error) {
 	pdk.Log(pdk.LogError, err.Error())
 }
 
+// main is required but not used in WebAssembly modules
 func main() {}
