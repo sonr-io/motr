@@ -9,19 +9,34 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/sonr-io/motr/sink/options"
+	"github.com/sonr-io/motr/internal/ui"
+	"github.com/sonr-io/motr/internal/ui/blocks"
+	"github.com/sonr-io/motr/internal/ui/charts"
 	"github.com/sonr-io/motr/sink/types"
-	"github.com/sonr-io/motr/ui"
-	"github.com/sonr-io/motr/ui/blocks"
+	"time"
 )
 
-var meta = types.DefaultMetadata()
-
-func LoginView(opts options.LoginOptions) templ.Component {
-	return loginComponent()
+func DemoView(d time.Time) templ.Component {
+	acc := types.AccountInfo{
+		Address: "sonr1q9u8t9a5c8e8h9f9g9h9i9j9k9l9m9n9o9p9q9r9s9t9u9v9w9x9y9z9a",
+		Name:    "Example",
+		Handle:  "@jeff",
+		Block:   "1234567890",
+	}
+	data := []charts.CandleData{
+		{
+			Open:  128.9962,
+			Close: 129.745,
+			High:  130.1345,
+			Low:   128.6167,
+			Date:  time.Date(2025, 2, 7, 14, 30, 0, 0, time.UTC),
+		},
+		// ... add more data points
+	}
+	return demoComponent(d, acc, data)
 }
 
-func loginComponent() templ.Component {
+func demoComponent(d time.Time, acc types.AccountInfo, data []charts.CandleData) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -158,13 +173,69 @@ func loginComponent() templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<sl-tab-panel name=\"tab-1\" active>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Var8 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+					templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+					templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+					if !templ_7745c5c3_IsBuffer {
+						defer func() {
+							templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+							if templ_7745c5c3_Err == nil {
+								templ_7745c5c3_Err = templ_7745c5c3_BufErr
+							}
+						}()
+					}
+					ctx = templ.InitializeContext(ctx)
+					templ_7745c5c3_Err = blocks.HeliaFullDashboard().Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					return nil
+				})
+				templ_7745c5c3_Err = ui.Container().Render(templ.WithChildren(ctx, templ_7745c5c3_Var8), templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</sl-tab-panel> <sl-tab-panel name=\"tab-3\" active>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Var9 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+					templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+					templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+					if !templ_7745c5c3_IsBuffer {
+						defer func() {
+							templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+							if templ_7745c5c3_Err == nil {
+								templ_7745c5c3_Err = templ_7745c5c3_BufErr
+							}
+						}()
+					}
+					ctx = templ.InitializeContext(ctx)
+					templ_7745c5c3_Err = charts.CandleChart(data).Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					return nil
+				})
+				templ_7745c5c3_Err = ui.Container().Render(templ.WithChildren(ctx, templ_7745c5c3_Var9), templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</sl-tab-panel>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
 				return nil
 			})
 			templ_7745c5c3_Err = ui.Body().Render(templ.WithChildren(ctx, templ_7745c5c3_Var7), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</sl-tab-group>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</sl-tab-group>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -2,9 +2,8 @@ package main
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/sonr-io/motr/handlers"
-	"github.com/sonr-io/motr/middleware/sonr"
-
+	"github.com/sonr-io/motr/internal/handlers"
+	"github.com/sonr-io/motr/internal/middleware/sonr"
 	"github.com/syumai/workers"
 )
 

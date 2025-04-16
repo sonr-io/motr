@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/sonr-io/motr/handlers"
+	"github.com/sonr-io/motr/internal/handlers"
 	"github.com/syumai/workers"
 )
 
