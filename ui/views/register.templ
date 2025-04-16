@@ -3,12 +3,19 @@ package views
 import (
 	"github.com/sonr-io/motr/ui"
 	"github.com/sonr-io/motr/ui/blocks"
-	"github.com/sonr-io/motr/ui/charts"
-	"github.com/sonr-io/motr/ui/types/info"
-	"time"
 )
 
-templ RegisterView(d time.Time, acc info.AccountInfo, data []charts.CandleData) {
+type RegisterOptions struct {
+	Address   string
+	Handle    string
+	Challenge string
+}
+
+func RegisterView(opts RegisterOptions) templ.Component {
+	return registerComponent(opts.Address, opts.Handle, opts.Challenge)
+}
+
+templ registerComponent(addr, handle, challenge string) {
 	@ui.HTML() {
 		@ui.Head() {
 			@blocks.MetaComponent(meta)
@@ -25,16 +32,10 @@ templ RegisterView(d time.Time, acc info.AccountInfo, data []charts.CandleData) 
 				}
 			}
 			@ui.Body() {
-				<sl-tab-panel name="tab-1" active>
-					@ui.Container() {
-						@blocks.HeliaFullDashboard()
-					}
-				</sl-tab-panel>
-				<sl-tab-panel name="tab-3" active>
-					@ui.Container() {
-						@charts.CandleChart(data)
-					}
-				</sl-tab-panel>
+				@ui.Container() {
+					@blocks.HandleInitial()
+					@blocks.PasskeyInitial(blocks.NavigatorCredentialsCreate(addr, handle, challenge))
+				}
 			}
 		</sl-tab-group>
 	}

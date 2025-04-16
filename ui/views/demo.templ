@@ -25,10 +25,10 @@ func DemoView(d time.Time) templ.Component {
 		},
 		// ... add more data points
 	}
-	return timeComponent(d, acc, data)
+	return demoComponent(d, acc, data)
 }
 
-templ timeComponent(d time.Time, acc info.AccountInfo, data []charts.CandleData) {
+templ demoComponent(d time.Time, acc info.AccountInfo, data []charts.CandleData) {
 	@ui.HTML() {
 		@ui.Head() {
 			@blocks.MetaComponent(meta)

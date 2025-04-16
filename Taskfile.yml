@@ -32,15 +32,15 @@ tasks:
 
   start:controller:
     desc: Start the controller
-    dir: "{{.ROOT_DIR}}/controller"
+    dir: "{{.ROOT_DIR}}/cmd/controller"
     cmds:
-      - devbox run start
+      - bun run start
 
   start:resolver:
     desc: Start the resolver
-    dir: "{{.ROOT_DIR}}/resolver"
+    dir: "{{.ROOT_DIR}}/cmd/resolver"
     cmds:
-      - devbox run start
+      - bun run start
 
   build:
     desc: Build all
@@ -62,9 +62,9 @@ tasks:
 
   build:controller:
     desc: Build the controller
-    dir: "{{.ROOT_DIR}}/controller"
+    dir: "{{.ROOT_DIR}}/cmd/controller"
     cmds:
-      - devbox run build
+      - bun run build
     sources:
       - package.json
       - main.go
@@ -74,9 +74,9 @@ tasks:
 
   build:resolver:
     desc: Build the resolver
-    dir: "{{.ROOT_DIR}}/resolver"
+    dir: "{{.ROOT_DIR}}/cmd/resolver"
     cmds:
-      - devbox run build
+      - bun run build
     sources:
       - package.json
       - main.go
@@ -86,7 +86,7 @@ tasks:
 
   build:signer:
     desc: Build and Upload the signer
-    dir: "{{.ROOT_DIR}}/signer"
+    dir: "{{.ROOT_DIR}}/cmd/signer"
     cmds:
       - earthly +build
       - gum log --level debug "Uploading signer.wasm to r2"
@@ -114,15 +114,15 @@ tasks:
 
   deploy:controller:
     desc: Deploy the controller
-    dir: "{{.ROOT_DIR}}/controller"
+    dir: "{{.ROOT_DIR}}/cmd/controller"
     cmds:
-      - devbox run deploy
+      - bun run deploy
 
   deploy:resolver:
     desc: Deploy the resolver
-    dir: "{{.ROOT_DIR}}/resolver"
+    dir: "{{.ROOT_DIR}}/cmd/resolver"
     cmds:
-      - devbox run deploy
+      - bun run deploy
 
   clean:
     desc: Remove build artifacts
@@ -136,13 +136,13 @@ tasks:
   tidy:controller:
     desc: Go mod tidy the controller
     internal: true
-    dir: "{{.ROOT_DIR}}/controller"
+    dir: "{{.ROOT_DIR}}/cmd/controller"
     cmds:
       - go mod tidy
 
   tidy:resolver:
     desc: Go mod tidy the resolver
     internal: true
-    dir: "{{.ROOT_DIR}}/resolver"
+    dir: "{{.ROOT_DIR}}/cmd/resolver"
     cmds:
       - go mod tidy
