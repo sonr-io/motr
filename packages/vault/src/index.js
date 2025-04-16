@@ -6,8 +6,7 @@ const plugin = await createPlugin(
 );
 
 export async function sign(data) {
-  const input = "Hello World";
-  let out = await plugin.call("sign", input);
+  let out = await plugin.call("sign", data);
   console.log(out.text());
   return out;
 }

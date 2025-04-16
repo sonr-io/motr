@@ -9,24 +9,28 @@ tasks:
   compose:up:
     desc: Start the docker-compose stack
     aliases: [up]
+    dir: "{{.ROOT_DIR}}/procs/docker"
     cmds:
       - docker compose up --build
 
   compose:up:detached:
     desc: Start the docker-compose stack in detached mode
     aliases: [start]
+    dir: "{{.ROOT_DIR}}/procs/docker"
     cmds:
       - docker compose up -d
 
   compose:down:
     desc: Stop the docker-compose stack
     aliases: [down]
+    dir: "{{.ROOT_DIR}}/procs/docker"
     cmds:
       - docker compose down
 
   compose:logs:
     desc: Show the docker-compose logs
     aliases: [logs]
+    dir: "{{.ROOT_DIR}}/procs/docker"
     cmds:
       - docker compose logs -f
 
@@ -73,9 +77,7 @@ tasks:
     cmds:
       - bun run build
     sources:
-      - package.json
       - main.go
-      - go.mod
     generates:
       - build/app.wasm
 
@@ -85,9 +87,7 @@ tasks:
     cmds:
       - bun run build
     sources:
-      - package.json
       - main.go
-      - go.mod
     generates:
       - build/app.wasm
 
@@ -99,9 +99,7 @@ tasks:
       - gum log --level debug "Uploading signer.wasm to r2"
       - rclone copy ./dist/signer.wasm r2:cdn/bin/
     sources:
-      - Earthfile
       - main.go
-      - go.mod
     generates:
       - dist/signer.wasm
 
