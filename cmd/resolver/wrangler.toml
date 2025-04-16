@@ -13,3 +13,11 @@ enabled = true
 binding = "MotrDB" # available in your Worker on env.DB
 database_name = "motr-global-db"
 database_id = "c63709f7-2d82-4a21-942a-6031ffda1b5a"
+
+[vars]
+SONR_CHAIN_ID = 'sonr-testnet-1'
+IPFS_GATEWAY = 'https://ipfs.sonr.land'
+SONR_API_URL = 'https://api.sonr.land'
+SONR_RPC_URL = 'https://rpc.sonr.land'
+SONR_GRPC_URL = 'https://grpc.sonr.land'
+MATRIX_SERVER = 'https://bm.chat'
