@@ -5,8 +5,8 @@ go 1.24.2
 require (
 	github.com/a-h/templ v0.3.857
 	github.com/labstack/echo/v4 v4.13.3
+	github.com/sonr-io/motr v0.0.3
 	github.com/syumai/workers v0.30.2
-	github.com/sonr-io/motr v0.0.2
 )
 
 require (
