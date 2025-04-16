@@ -1,8 +1,11 @@
-module github.com/sonr-io/motr/middleware
+module github.com/sonr-io/motr
 
-go 1.24.0
+go 1.24.2
 
-require github.com/labstack/echo/v4 v4.13.3
+require (
+	github.com/a-h/templ v0.3.857
+	github.com/labstack/echo/v4 v4.13.3
+)
 
 require (
 	github.com/labstack/gommon v0.4.2 // indirect
