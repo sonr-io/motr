@@ -10,6 +10,8 @@ import (
 	"github.com/sonr-io/motr/internal/handlers"
 	"github.com/sonr-io/motr/sink/models"
 	"github.com/syumai/workers"
+
+	_ "github.com/syumai/workers/cloudflare/d1"
 )
 
 func main() {
