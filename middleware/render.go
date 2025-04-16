@@ -1,4 +1,4 @@
-package handlers
+package middleware
 
 import (
 	"bytes"
@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func render(c echo.Context, cmp templ.Component) error {
+func Render(c echo.Context, cmp templ.Component) error {
 	// Create a buffer to store the rendered HTML
 	buf := &bytes.Buffer{}
 	// Render the component to the buffer
