@@ -8,19 +8,19 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/internal/handlers"
-	"github.com/sonr-io/motr/sink/models"
+	"github.com/sonr-io/motr/sink/models/controller"
 	"github.com/syumai/workers"
 
 	_ "github.com/syumai/workers/cloudflare/d1"
 )
 
 func main() {
-	db, err := sql.Open("d1", "DB")
+	db, err := sql.Open("d1", "MotrDB")
 	if err != nil {
 		panic(err)
 	}
 	e := echo.New()
-	e.GET("/", handlers.IndexHandler(models.New(db)))
-	e.GET("/login", handlers.LoginHandler(models.New(db)))
+	e.GET("/", handlers.IndexHandler())
+	e.GET("/login", handlers.LoginHandler(controller.New(db)))
 	workers.Serve(e)
 }

@@ -8,3 +8,8 @@ command = "bun run build"
 
 [observability]
 enabled = true
+
+[[d1_databases]]
+binding = "MotrDB" # available in your Worker on env.DB
+database_name = "motr-global-db"
+database_id = "c63709f7-2d82-4a21-942a-6031ffda1b5a"

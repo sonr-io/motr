@@ -9,28 +9,28 @@ tasks:
   compose:up:
     desc: Start the docker-compose stack
     aliases: [up]
-    dir: "{{.ROOT_DIR}}/procs/docker"
+    dir: "{{.ROOT_DIR}}/deploy/docker"
     cmds:
       - docker compose up --build
 
   compose:up:detached:
     desc: Start the docker-compose stack in detached mode
     aliases: [start]
-    dir: "{{.ROOT_DIR}}/procs/docker"
+    dir: "{{.ROOT_DIR}}/deploy/docker"
     cmds:
       - docker compose up -d
 
   compose:down:
     desc: Stop the docker-compose stack
     aliases: [down]
-    dir: "{{.ROOT_DIR}}/procs/docker"
+    dir: "{{.ROOT_DIR}}/deploy/docker"
     cmds:
       - docker compose down
 
   compose:logs:
     desc: Show the docker-compose logs
     aliases: [logs]
-    dir: "{{.ROOT_DIR}}/procs/docker"
+    dir: "{{.ROOT_DIR}}/deploy/docker"
     cmds:
       - docker compose logs -f
 
@@ -64,7 +64,6 @@ tasks:
     dir: "{{.ROOT_DIR}}/sink"
     cmds:
       - make gen
-      - make bind
 
   templ:
     desc: Generate templ
@@ -93,7 +92,7 @@ tasks:
 
   build:signer:
     desc: Build and Upload the signer
-    dir: "{{.ROOT_DIR}}/cmd/signer"
+    dir: "{{.ROOT_DIR}}/signer"
     cmds:
       - earthly +build
       - gum log --level debug "Uploading signer.wasm to r2"
