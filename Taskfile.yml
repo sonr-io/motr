@@ -6,6 +6,30 @@ vars:
     sh: git rev-parse --show-toplevel
 
 tasks:
+  compose:up:
+    desc: Start the docker-compose stack
+    aliases: [up]
+    cmds:
+      - docker compose up --build
+
+  compose:up:detached:
+    desc: Start the docker-compose stack in detached mode
+    aliases: [start]
+    cmds:
+      - docker compose up -d
+
+  compose:down:
+    desc: Stop the docker-compose stack
+    aliases: [down]
+    cmds:
+      - docker compose down
+
+  compose:logs:
+    desc: Show the docker-compose logs
+    aliases: [logs]
+    cmds:
+      - docker compose logs -f
+
   start:controller:
     desc: Start the controller
     dir: "{{.ROOT_DIR}}/controller"

@@ -1,12 +1,27 @@
-FROM jetpackio/devbox:latest
+FROM golang:1.24.2
+WORKDIR /app
 
-# Installing your devbox project
-WORKDIR /code
-USER root:root
-RUN mkdir -p /code && chown ${DEVBOX_USER}:${DEVBOX_USER} /code
-USER ${DEVBOX_USER}:${DEVBOX_USER}
-COPY --chown=${DEVBOX_USER}:${DEVBOX_USER} devbox.json devbox.json
-COPY --chown=${DEVBOX_USER}:${DEVBOX_USER} devbox.lock devbox.lock
-COPY --chown=${DEVBOX_USER}:${DEVBOX_USER} . .
-RUN devbox run -- echo "Installed Packages." && nix-store --gc && nix-store --optimise
-CMD ["devbox", "run", "start"]
+# Install Node.js and Bun
+RUN apt-get update && apt-get install -y \
+    curl \
+    unzip \
+    && curl -fsSL https://deb.nodesource.com/setup_current.x | bash - \
+    && apt-get install -y nodejs \
+    && curl -fsSL https://bun.sh/install | bash \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add Bun to PATH
+ENV PATH="/root/.bun/bin:${PATH}"
+
+# Install templ
+RUN go install github.com/a-h/templ/cmd/templ@latest
+
+# Install workers-assets-gen
+RUN go install github.com/syumai/workers/cmd/workers-assets-gen@latest
+
+# Copy project files
+COPY . .
+
+# Build commands
+CMD ["bun", "x", "wrangler", "dev"]

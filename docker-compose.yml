@@ -1,8 +1,10 @@
-version: '3.8'
+version: "3.8"
 
 services:
   resolver:
-    image: motr-resolver:latest
+    build:
+      context: ./resolver
+      dockerfile: Dockerfile
     ports:
       - "8787:8787"
     environment:
@@ -12,7 +14,9 @@ services:
     restart: unless-stopped
 
   controller:
-    image: motr-controller:latest
+    build:
+      context: ./controller
+      dockerfile: Dockerfile
     ports:
       - "8788:8787"
     environment:

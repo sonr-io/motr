@@ -1,0 +1,15 @@
+{
+  "name": "@sonr-io/motr-resolver",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "bun run build:assets && bun run build:wasm",
+    "build:assets": "go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go",
+    "build:wasm": "GOOS=js GOARCH=wasm go build -o ./build/app.wasm .",
+    "deploy": "bunx wrangler deploy",
+    "start": "bunx wrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^4.10.0"
+  }
+}
