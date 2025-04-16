@@ -2,8 +2,15 @@ VERSION 0.8
 FROM tinygo/tinygo:0.37.0
 WORKDIR /work
 
+# Cache Go modules
+deps:
+    COPY go.mod go.sum* .
+    RUN go mod download
+    SAVE IMAGE
+
+# Build target with caching
 build:
+    FROM +deps
     COPY . .
     RUN tinygo build -o signer.wasm -target wasip1 -buildmode=c-shared .
     SAVE ARTIFACT signer.wasm AS LOCAL ./dist/signer.wasm
-
