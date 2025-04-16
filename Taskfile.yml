@@ -49,7 +49,6 @@ tasks:
   build:
     desc: Build all
     cmds:
-      - defer: { task: clean }
       - task: build:controller
       - task: build:resolver
       - task: build:signer
@@ -97,6 +96,8 @@ tasks:
       - earthly +build
       - gum log --level debug "Uploading signer.wasm to r2"
       - rclone copy ./dist/signer.wasm r2:cdn/bin/
+    status:
+      - test -f ./dist/signer.wasm
     sources:
       - main.go
     generates:
