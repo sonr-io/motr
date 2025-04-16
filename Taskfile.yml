@@ -59,7 +59,8 @@ tasks:
     desc: Generate sqlc
     dir: "{{.ROOT_DIR}}/sink"
     cmds:
-      - sqlc generate
+      - make gen
+      - make bind
 
   templ:
     desc: Generate templ
