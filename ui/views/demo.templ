@@ -1,17 +1,14 @@
-package components
+package views
 
 import (
 	"github.com/sonr-io/motr/ui"
 	"github.com/sonr-io/motr/ui/blocks"
 	"github.com/sonr-io/motr/ui/charts"
-	"github.com/sonr-io/motr/ui/types/html"
 	"github.com/sonr-io/motr/ui/types/info"
 	"time"
 )
 
-var meta = html.DefaultMetadata()
-
-func HomeView(d time.Time) templ.Component {
+func DemoView(d time.Time) templ.Component {
 	acc := info.AccountInfo{
 		Address: "sonr1q9u8t9a5c8e8h9f9g9h9i9j9k9l9m9n9o9p9q9r9s9t9u9v9w9x9y9z9a",
 		Name:    "Example",
