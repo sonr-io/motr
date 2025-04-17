@@ -1,7 +1,8 @@
 {
-  "name": "@sonr-io/vault",
+  "name": "sonr-vault",
   "description": "A ServiceWorker which provides a secure, encrypted, and authenticated storage for your web applications.",
   "version": "0.0.2",
+  "private": false,
   "source": [
     "src/index.js"
   ],
