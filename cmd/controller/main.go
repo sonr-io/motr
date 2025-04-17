@@ -17,14 +17,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	cq, err := c.DB.GetController()
-	if err != nil {
-		panic(err)
-	}
 	e := echo.New()
 	e.Use(sonr.UseMiddleware(c.Sonr))
 	e.Use(vault.UseMiddleware(c.IPFS))
 	e.GET("/", handlers.IndexHandler(c.DB.GetCommon()))
-	e.GET("/login", handlers.LoginHandler(cq))
+	e.GET("/login", handlers.LoginHandler(c.DB.GetController()))
 	workers.Serve(e)
 }

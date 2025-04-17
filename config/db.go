@@ -21,32 +21,32 @@ const (
 
 type DBConfig interface {
 	GetCommon() *common.Queries
-	GetController() (*controller.Queries, error)
-	GetResolver() (*resolver.Queries, error)
+	GetController() *controller.Queries
+	GetResolver() *resolver.Queries
 }
 
 func (c dbConfig) GetCommon() *common.Queries {
 	return common.New(c.CommonDB)
 }
 
-func (c dbConfig) GetController() (*controller.Queries, error) {
+func (c dbConfig) GetController() *controller.Queries {
 	if c.Mode != ControllerMode {
-		return nil, ErrInvalidMode
+		panic(ErrInvalidMode)
 	}
 	if c.Controller == nil {
-		return nil, ErrDBNotFound
+		panic(ErrDBNotFound)
 	}
-	return controller.New(c.Controller), nil
+	return controller.New(c.Controller)
 }
 
-func (c dbConfig) GetResolver() (*resolver.Queries, error) {
+func (c dbConfig) GetResolver() *resolver.Queries {
 	if c.Mode != ResolverMode {
-		return nil, ErrInvalidMode
+		panic(ErrInvalidMode)
 	}
 	if c.ResolverDB == nil {
-		return nil, ErrDBNotFound
+		panic(ErrDBNotFound)
 	}
-	return resolver.New(c.ResolverDB), nil
+	return resolver.New(c.ResolverDB)
 }
 
 type dbConfig struct {

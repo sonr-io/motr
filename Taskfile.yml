@@ -46,12 +46,11 @@ tasks:
     cmds:
       - bun run start
 
-  build:
-    desc: Build all
+  build:workers:
+    desc: Build all workers
     cmds:
       - task: build:controller
       - task: build:resolver
-      - task: build:signer
 
   proto:
     desc: Generate proto

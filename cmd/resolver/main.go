@@ -17,14 +17,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	rq, err := c.DB.GetResolver()
-	if err != nil {
-		panic(err)
-	}
 	e := echo.New()
 	e.Use(sonr.UseMiddleware(c.Sonr))
 	e.Use(vault.UseMiddleware(c.IPFS))
 	e.GET("/", handlers.IndexHandler(c.DB.GetCommon()))
-	e.GET("/register", handlers.RegisterHandler(rq))
+	e.GET("/register", handlers.RegisterHandler(c.DB.GetResolver()))
 	workers.Serve(e)
 }
