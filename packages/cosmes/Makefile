@@ -20,3 +20,7 @@ install:
 publish:
 	@gum spin --show-error --title "[COSMES] Running npm publish..." -- sh -c "npm publish"
 	@gum log --level info --time kitchen "[COSMES] Completed npm publish successfully."
+
+bump:
+	@gum spin --show-error --title "[COSMES] Running bump..." -- sh -c "npm version patch"
+	@gum log --level info --time kitchen "[COSMES] Completed bump successfully."

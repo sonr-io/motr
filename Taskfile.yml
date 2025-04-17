@@ -109,6 +109,13 @@ tasks:
       - make -C packages/shoelace build
       - make -C packages/vault build
 
+  bump:packages:
+    desc: Bump all packages
+    cmds:
+      - make -C packages/cosmes bump
+      - make -C packages/shoelace bump
+      - make -C packages/vault bump
+
   publish:packages:
     desc: Publish all packages
     cmds:
