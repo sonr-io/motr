@@ -10,6 +10,9 @@
     "deploy": "bunx wrangler deploy",
     "start": "bunx wrangler dev"
   },
+  "dependencies": {
+    "@extism/extism": "^2.0.0-rc11"
+  },
   "devDependencies": {
     "wrangler": "^4.10.0"
   }

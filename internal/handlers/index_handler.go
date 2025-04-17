@@ -9,6 +9,10 @@ import (
 	"github.com/sonr-io/motr/sink/models/common"
 )
 
+type index struct {
+	Data *common.Queries
+}
+
 func IndexHandler(c *common.Queries) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		return middleware.Render(c, views.DemoView(time.Now()))
