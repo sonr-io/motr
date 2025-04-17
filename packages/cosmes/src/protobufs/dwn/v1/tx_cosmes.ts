@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { MsgInitialize, MsgInitializeResponse, MsgUpdateParams, MsgUpdateParamsResponse } from "./tx_pb.js";
+import { MsgEjectVault, MsgEjectVaultResponse, MsgUpdateParams, MsgUpdateParamsResponse, MsgUpdateVault, MsgUpdateVaultResponse } from "./tx_pb.js";
 
 const TYPE_NAME = "dwn.v1.Msg";
 
@@ -22,14 +22,26 @@ export const MsgUpdateParamsService = {
 } as const;
 
 /**
- * Spawn spawns a new Vault
+ * UpdateVault defines a governance operation for updating the parameters.
  *
- * @generated from rpc dwn.v1.Msg.Initialize
+ * @generated from rpc dwn.v1.Msg.UpdateVault
  */
-export const MsgInitializeService = {
+export const MsgUpdateVaultService = {
   typeName: TYPE_NAME,
-  method: "Initialize",
-  Request: MsgInitialize,
-  Response: MsgInitializeResponse,
+  method: "UpdateVault",
+  Request: MsgUpdateVault,
+  Response: MsgUpdateVaultResponse,
+} as const;
+
+/**
+ * EjectVault defines a governance operation for ejecting a vault.
+ *
+ * @generated from rpc dwn.v1.Msg.EjectVault
+ */
+export const MsgEjectVaultService = {
+  typeName: TYPE_NAME,
+  method: "EjectVault",
+  Request: MsgEjectVault,
+  Response: MsgEjectVaultResponse,
 } as const;
 

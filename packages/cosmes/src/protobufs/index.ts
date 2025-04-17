@@ -1882,12 +1882,15 @@ export {
 export {
   MsgUpdateParams as DwnV1MsgUpdateParams,
   MsgUpdateParamsResponse as DwnV1MsgUpdateParamsResponse,
-  MsgInitialize as DwnV1MsgInitialize,
-  MsgInitializeResponse as DwnV1MsgInitializeResponse,
+  MsgUpdateVault as DwnV1MsgUpdateVault,
+  MsgUpdateVaultResponse as DwnV1MsgUpdateVaultResponse,
+  MsgEjectVault as DwnV1MsgEjectVault,
+  MsgEjectVaultResponse as DwnV1MsgEjectVaultResponse,
 } from "./dwn/v1/tx_pb.js";
 export {
   MsgUpdateParamsService as DwnV1MsgUpdateParamsService,
-  MsgInitializeService as DwnV1MsgInitializeService,
+  MsgUpdateVaultService as DwnV1MsgUpdateVaultService,
+  MsgEjectVaultService as DwnV1MsgEjectVaultService,
 } from "./dwn/v1/tx_cosmes.js";
 export {
   Credential as DwnV1Credential,
@@ -1896,9 +1899,15 @@ export {
 export {
   QueryParamsRequest as DwnV1QueryParamsRequest,
   QueryParamsResponse as DwnV1QueryParamsResponse,
+  QuerySpawnRequest as DwnV1QuerySpawnRequest,
+  QuerySpawnResponse as DwnV1QuerySpawnResponse,
+  QueryCheckRequest as DwnV1QueryCheckRequest,
+  QueryCheckResponse as DwnV1QueryCheckResponse,
 } from "./dwn/v1/query_pb.js";
 export {
   QueryParamsService as DwnV1QueryParamsService,
+  QuerySpawnService as DwnV1QuerySpawnService,
+  QueryCheckService as DwnV1QueryCheckService,
 } from "./dwn/v1/query_cosmes.js";
 export {
   GenesisState as DwnV1GenesisState,
@@ -1911,31 +1920,31 @@ export {
   Module as DwnModuleV1Module,
 } from "./dwn/module/v1/module_pb.js";
 export {
-  MsgLinkAuthentication as DidV1MsgLinkAuthentication,
-  MsgLinkAuthenticationResponse as DidV1MsgLinkAuthenticationResponse,
-  MsgLinkAssertion as DidV1MsgLinkAssertion,
-  MsgLinkAssertionResponse as DidV1MsgLinkAssertionResponse,
+  MsgRegisterController as DidV1MsgRegisterController,
+  MsgRegisterControllerResponse as DidV1MsgRegisterControllerResponse,
+  MsgLinkVerificationMethod as DidV1MsgLinkVerificationMethod,
+  MsgLinkVerificationMethodResponse as DidV1MsgLinkVerificationMethodResponse,
+  MsgUnlinkVerificationMethod as DidV1MsgUnlinkVerificationMethod,
+  MsgUnlinkVerificationMethodResponse as DidV1MsgUnlinkVerificationMethodResponse,
   MsgExecuteTx as DidV1MsgExecuteTx,
   MsgExecuteTxResponse as DidV1MsgExecuteTxResponse,
-  MsgUnlinkAssertion as DidV1MsgUnlinkAssertion,
-  MsgUnlinkAssertionResponse as DidV1MsgUnlinkAssertionResponse,
-  MsgUnlinkAuthentication as DidV1MsgUnlinkAuthentication,
-  MsgUnlinkAuthenticationResponse as DidV1MsgUnlinkAuthenticationResponse,
   MsgUpdateParams as DidV1MsgUpdateParams,
   MsgUpdateParamsResponse as DidV1MsgUpdateParamsResponse,
 } from "./did/v1/tx_pb.js";
 export {
   MsgExecuteTxService as DidV1MsgExecuteTxService,
-  MsgLinkAssertionService as DidV1MsgLinkAssertionService,
-  MsgLinkAuthenticationService as DidV1MsgLinkAuthenticationService,
-  MsgUnlinkAssertionService as DidV1MsgUnlinkAssertionService,
-  MsgUnlinkAuthenticationService as DidV1MsgUnlinkAuthenticationService,
+  MsgRegisterControllerService as DidV1MsgRegisterControllerService,
+  MsgLinkVerificationMethodService as DidV1MsgLinkVerificationMethodService,
+  MsgUnlinkVerificationMethodService as DidV1MsgUnlinkVerificationMethodService,
   MsgUpdateParamsService as DidV1MsgUpdateParamsService,
 } from "./did/v1/tx_cosmes.js";
 export {
-  Account as DidV1Account,
-  PublicKey as DidV1PublicKey,
-  Verification as DidV1Verification,
+  Authentication as DidV1Authentication,
+  Assertion as DidV1Assertion,
+  Authorization as DidV1Authorization,
+  Controller as DidV1Controller,
+  Delegation as DidV1Delegation,
+  Invocation as DidV1Invocation,
 } from "./did/v1/state_pb.js";
 export {
   QueryRequest as DidV1QueryRequest,
@@ -1958,6 +1967,7 @@ export {
   Capability as DidV1Capability,
   Resource as DidV1Resource,
   Document as DidV1Document,
+  VerificationMethod as DidV1VerificationMethod,
 } from "./did/v1/genesis_pb.js";
 export {
   Module as DidModuleV1Module,

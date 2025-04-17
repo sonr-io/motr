@@ -21,6 +21,6 @@ func main() {
 	e.Use(sonr.UseMiddleware(c.Sonr))
 	e.Use(vault.UseMiddleware(c.IPFS))
 	e.GET("/", handlers.IndexHandler(c.DB.GetCommon()))
-	e.GET("/login", handlers.LoginHandler(c.DB.GetController()))
+	e.GET("/login", handlers.LoginHandler(c.DB.GetVault()))
 	workers.Serve(e)
 }

@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { QueryParamsRequest, QueryParamsResponse } from "./query_pb.js";
+import { QueryCheckRequest, QueryCheckResponse, QueryParamsRequest, QueryParamsResponse, QuerySpawnRequest, QuerySpawnResponse } from "./query_pb.js";
 
 const TYPE_NAME = "dwn.v1.Query";
 
@@ -17,5 +17,29 @@ export const QueryParamsService = {
   method: "Params",
   Request: QueryParamsRequest,
   Response: QueryParamsResponse,
+} as const;
+
+/**
+ * Spawn is a rate-limited query that spawns a new vault with unclaimed state.
+ *
+ * @generated from rpc dwn.v1.Query.Spawn
+ */
+export const QuerySpawnService = {
+  typeName: TYPE_NAME,
+  method: "Spawn",
+  Request: QuerySpawnRequest,
+  Response: QuerySpawnResponse,
+} as const;
+
+/**
+ * Check returns the status of a vault.
+ *
+ * @generated from rpc dwn.v1.Query.Check
+ */
+export const QueryCheckService = {
+  typeName: TYPE_NAME,
+  method: "Check",
+  Request: QueryCheckRequest,
+  Response: QueryCheckResponse,
 } as const;
 

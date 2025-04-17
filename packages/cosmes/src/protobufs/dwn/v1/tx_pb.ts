@@ -102,9 +102,9 @@ export class MsgUpdateParamsResponse extends Message<MsgUpdateParamsResponse> {
  *
  * Since: cosmos-sdk 0.47
  *
- * @generated from message dwn.v1.MsgInitialize
+ * @generated from message dwn.v1.MsgUpdateVault
  */
-export class MsgInitialize extends Message<MsgInitialize> {
+export class MsgUpdateVault extends Message<MsgUpdateVault> {
   /**
    * authority is the address of the governance account.
    *
@@ -121,32 +121,32 @@ export class MsgInitialize extends Message<MsgInitialize> {
    */
   params?: Params;
 
-  constructor(data?: PartialMessage<MsgInitialize>) {
+  constructor(data?: PartialMessage<MsgUpdateVault>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "dwn.v1.MsgInitialize";
+  static readonly typeName = "dwn.v1.MsgUpdateVault";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "authority", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "params", kind: "message", T: Params },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): MsgInitialize {
-    return new MsgInitialize().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): MsgUpdateVault {
+    return new MsgUpdateVault().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): MsgInitialize {
-    return new MsgInitialize().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): MsgUpdateVault {
+    return new MsgUpdateVault().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): MsgInitialize {
-    return new MsgInitialize().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): MsgUpdateVault {
+    return new MsgUpdateVault().fromJsonString(jsonString, options);
   }
 
-  static equals(a: MsgInitialize | PlainMessage<MsgInitialize> | undefined, b: MsgInitialize | PlainMessage<MsgInitialize> | undefined): boolean {
-    return proto3.util.equals(MsgInitialize, a, b);
+  static equals(a: MsgUpdateVault | PlainMessage<MsgUpdateVault> | undefined, b: MsgUpdateVault | PlainMessage<MsgUpdateVault> | undefined): boolean {
+    return proto3.util.equals(MsgUpdateVault, a, b);
   }
 }
 
@@ -156,33 +156,123 @@ export class MsgInitialize extends Message<MsgInitialize> {
  *
  * Since: cosmos-sdk 0.47
  *
- * @generated from message dwn.v1.MsgInitializeResponse
+ * @generated from message dwn.v1.MsgUpdateVaultResponse
  */
-export class MsgInitializeResponse extends Message<MsgInitializeResponse> {
-  constructor(data?: PartialMessage<MsgInitializeResponse>) {
+export class MsgUpdateVaultResponse extends Message<MsgUpdateVaultResponse> {
+  constructor(data?: PartialMessage<MsgUpdateVaultResponse>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "dwn.v1.MsgInitializeResponse";
+  static readonly typeName = "dwn.v1.MsgUpdateVaultResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): MsgInitializeResponse {
-    return new MsgInitializeResponse().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): MsgUpdateVaultResponse {
+    return new MsgUpdateVaultResponse().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): MsgInitializeResponse {
-    return new MsgInitializeResponse().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): MsgUpdateVaultResponse {
+    return new MsgUpdateVaultResponse().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): MsgInitializeResponse {
-    return new MsgInitializeResponse().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): MsgUpdateVaultResponse {
+    return new MsgUpdateVaultResponse().fromJsonString(jsonString, options);
   }
 
-  static equals(a: MsgInitializeResponse | PlainMessage<MsgInitializeResponse> | undefined, b: MsgInitializeResponse | PlainMessage<MsgInitializeResponse> | undefined): boolean {
-    return proto3.util.equals(MsgInitializeResponse, a, b);
+  static equals(a: MsgUpdateVaultResponse | PlainMessage<MsgUpdateVaultResponse> | undefined, b: MsgUpdateVaultResponse | PlainMessage<MsgUpdateVaultResponse> | undefined): boolean {
+    return proto3.util.equals(MsgUpdateVaultResponse, a, b);
+  }
+}
+
+/**
+ * MsgEjectVault ejects a vault from the system. This is a one-time
+ * operation that must be performed interacting with the Vault.
+ *
+ * Since: cosmos-sdk 0.47
+ *
+ * @generated from message dwn.v1.MsgEjectVault
+ */
+export class MsgEjectVault extends Message<MsgEjectVault> {
+  /**
+   * authority is the address of the governance account.
+   *
+   * @generated from field: string authority = 1;
+   */
+  authority = "";
+
+  /**
+   * params defines the parameters to update.
+   *
+   * NOTE: All parameters must be supplied.
+   *
+   * @generated from field: dwn.v1.Params params = 2;
+   */
+  params?: Params;
+
+  constructor(data?: PartialMessage<MsgEjectVault>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "dwn.v1.MsgEjectVault";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "authority", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "params", kind: "message", T: Params },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): MsgEjectVault {
+    return new MsgEjectVault().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): MsgEjectVault {
+    return new MsgEjectVault().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): MsgEjectVault {
+    return new MsgEjectVault().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: MsgEjectVault | PlainMessage<MsgEjectVault> | undefined, b: MsgEjectVault | PlainMessage<MsgEjectVault> | undefined): boolean {
+    return proto3.util.equals(MsgEjectVault, a, b);
+  }
+}
+
+/**
+ * MsgEjectVaultResponse defines the response structure for executing a
+ * MsgEjectVault message.
+ *
+ * Since: cosmos-sdk 0.47
+ *
+ * @generated from message dwn.v1.MsgEjectVaultResponse
+ */
+export class MsgEjectVaultResponse extends Message<MsgEjectVaultResponse> {
+  constructor(data?: PartialMessage<MsgEjectVaultResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "dwn.v1.MsgEjectVaultResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): MsgEjectVaultResponse {
+    return new MsgEjectVaultResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): MsgEjectVaultResponse {
+    return new MsgEjectVaultResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): MsgEjectVaultResponse {
+    return new MsgEjectVaultResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: MsgEjectVaultResponse | PlainMessage<MsgEjectVaultResponse> | undefined, b: MsgEjectVaultResponse | PlainMessage<MsgEjectVaultResponse> | undefined): boolean {
+    return proto3.util.equals(MsgEjectVaultResponse, a, b);
   }
 }
 

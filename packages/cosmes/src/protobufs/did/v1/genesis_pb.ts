@@ -310,3 +310,66 @@ export class Document extends Message<Document> {
   }
 }
 
+/**
+ * VerificationMethod defines a verification method
+ *
+ * @generated from message did.v1.VerificationMethod
+ */
+export class VerificationMethod extends Message<VerificationMethod> {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  /**
+   * @generated from field: string controller = 2;
+   */
+  controller = "";
+
+  /**
+   * @generated from field: string type = 3;
+   */
+  type = "";
+
+  /**
+   * @generated from field: string public_key_base64 = 4;
+   */
+  publicKeyBase64 = "";
+
+  /**
+   * @generated from field: string subject = 5;
+   */
+  subject = "";
+
+  constructor(data?: PartialMessage<VerificationMethod>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "did.v1.VerificationMethod";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "controller", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "type", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "public_key_base64", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "subject", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): VerificationMethod {
+    return new VerificationMethod().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): VerificationMethod {
+    return new VerificationMethod().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): VerificationMethod {
+    return new VerificationMethod().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: VerificationMethod | PlainMessage<VerificationMethod> | undefined, b: VerificationMethod | PlainMessage<VerificationMethod> | undefined): boolean {
+    return proto3.util.equals(VerificationMethod, a, b);
+  }
+}
+

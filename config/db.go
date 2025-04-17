@@ -7,21 +7,21 @@ import (
 	"database/sql"
 
 	"github.com/sonr-io/motr/sink/models/common"
-	"github.com/sonr-io/motr/sink/models/controller"
 	"github.com/sonr-io/motr/sink/models/resolver"
+	"github.com/sonr-io/motr/sink/models/vault"
 	"github.com/syumai/workers/cloudflare"
 	_ "github.com/syumai/workers/cloudflare/d1"
 )
 
 const (
-	commonDBName     = "CommonDB"
-	controllerDBName = "ControllerDB"
-	resolverDBName   = "ResolverDB"
+	commonDBName   = "CommonDB"
+	resolverDBName = "ResolverDB"
+	vaultDBName    = "VaultDB"
 )
 
 type DBConfig interface {
 	GetCommon() *common.Queries
-	GetController() *controller.Queries
+	GetVault() *vault.Queries
 	GetResolver() *resolver.Queries
 }
 
@@ -29,14 +29,14 @@ func (c dbConfig) GetCommon() *common.Queries {
 	return common.New(c.CommonDB)
 }
 
-func (c dbConfig) GetController() *controller.Queries {
+func (c dbConfig) GetVault() *vault.Queries {
 	if c.Mode != ControllerMode {
 		panic(ErrInvalidMode)
 	}
-	if c.Controller == nil {
+	if c.VaultDB == nil {
 		panic(ErrDBNotFound)
 	}
-	return controller.New(c.Controller)
+	return vault.New(c.VaultDB)
 }
 
 func (c dbConfig) GetResolver() *resolver.Queries {
@@ -51,7 +51,7 @@ func (c dbConfig) GetResolver() *resolver.Queries {
 
 type dbConfig struct {
 	CommonDB   *sql.DB
-	Controller *sql.DB
+	VaultDB    *sql.DB
 	ResolverDB *sql.DB
 	Mode       MotrMode
 }
@@ -70,11 +70,11 @@ func connectDBs() (DBConfig, error) {
 	// Get specific DB config based on mode
 	switch c.Mode {
 	case ControllerMode:
-		dbCont, err := sql.Open("d1", controllerDBName)
+		dbCont, err := sql.Open("d1", vaultDBName)
 		if err != nil {
 			return nil, err
 		}
-		c.Controller = dbCont
+		c.VaultDB = dbCont
 		return c, nil
 	case ResolverMode:
 		dbRes, err := sql.Open("d1", resolverDBName)

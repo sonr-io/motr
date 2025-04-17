@@ -7,9 +7,11 @@ import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialM
 import { Message, proto3, protoInt64 } from "@bufbuild/protobuf";
 
 /**
- * @generated from message did.v1.Account
+ * Authentication is the authentication method to be used by the DID.
+ *
+ * @generated from message did.v1.Authentication
  */
-export class Account extends Message<Account> {
+export class Authentication extends Message<Authentication> {
   /**
    * The unique identifier of the assertion
    *
@@ -34,272 +36,461 @@ export class Account extends Message<Account> {
   /**
    * string is the verification method
    *
-   * @generated from field: string public_key_hex = 4;
+   * @generated from field: string public_key_base64 = 4;
    */
-  publicKeyHex = "";
+  publicKeyBase64 = "";
 
   /**
    * AssertionType is the assertion type
    *
-   * @generated from field: string assertion_type = 5;
+   * @generated from field: string did_type = 5;
    */
-  assertionType = "";
-
-  /**
-   * Metadata of the authentication
-   *
-   * @generated from field: map<string, bytes> accumulator = 6;
-   */
-  accumulator: { [key: string]: Uint8Array } = {};
+  didType = "";
 
   /**
    * CreationBlock is the block number of the creation of the authentication
    *
-   * @generated from field: int64 creation_block = 7;
+   * @generated from field: int64 creation_block = 6;
    */
   creationBlock = protoInt64.zero;
 
-  constructor(data?: PartialMessage<Account>) {
+  constructor(data?: PartialMessage<Authentication>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "did.v1.Account";
+  static readonly typeName = "did.v1.Authentication";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "did", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "controller", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "subject", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "public_key_hex", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 5, name: "assertion_type", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 6, name: "accumulator", kind: "map", K: 9 /* ScalarType.STRING */, V: {kind: "scalar", T: 12 /* ScalarType.BYTES */} },
-    { no: 7, name: "creation_block", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
+    { no: 4, name: "public_key_base64", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "did_type", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: "creation_block", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Account {
-    return new Account().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Authentication {
+    return new Authentication().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Account {
-    return new Account().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Authentication {
+    return new Authentication().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Account {
-    return new Account().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Authentication {
+    return new Authentication().fromJsonString(jsonString, options);
   }
 
-  static equals(a: Account | PlainMessage<Account> | undefined, b: Account | PlainMessage<Account> | undefined): boolean {
-    return proto3.util.equals(Account, a, b);
+  static equals(a: Authentication | PlainMessage<Authentication> | undefined, b: Authentication | PlainMessage<Authentication> | undefined): boolean {
+    return proto3.util.equals(Authentication, a, b);
   }
 }
 
 /**
- * PublicKey represents a public key
+ * Assertion is the assertion method to be used by the DID.
  *
- * @generated from message did.v1.PublicKey
+ * @generated from message did.v1.Assertion
  */
-export class PublicKey extends Message<PublicKey> {
+export class Assertion extends Message<Assertion> {
   /**
-   * The unique identifier of the controller
-   *
-   * @generated from field: uint64 number = 1;
-   */
-  number = protoInt64.zero;
-
-  /**
-   * The unique identifier of the controller
-   *
-   * @generated from field: string did = 2;
-   */
-  did = "";
-
-  /**
-   * The DID of the controller
-   *
-   * @generated from field: string sonr_address = 3;
-   */
-  sonrAddress = "";
-
-  /**
-   * The DID of the controller
-   *
-   * @generated from field: string eth_address = 4;
-   */
-  ethAddress = "";
-
-  /**
-   * The DID of the controller
-   *
-   * @generated from field: string btc_address = 5;
-   */
-  btcAddress = "";
-
-  /**
-   * string is the verification method
-   *
-   * @generated from field: string public_key_hex = 6;
-   */
-  publicKeyHex = "";
-
-  /**
-   * Pointer to the Keyshares
-   *
-   * @generated from field: string ks_val = 7;
-   */
-  ksVal = "";
-
-  /**
-   * The block number of when a user claimed the controller
-   *
-   * @generated from field: int64 claimed_block = 8;
-   */
-  claimedBlock = protoInt64.zero;
-
-  /**
-   * CreationBlock is the block number of the creation of the controller
-   *
-   * @generated from field: int64 creation_block = 9;
-   */
-  creationBlock = protoInt64.zero;
-
-  constructor(data?: PartialMessage<PublicKey>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "did.v1.PublicKey";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "number", kind: "scalar", T: 4 /* ScalarType.UINT64 */ },
-    { no: 2, name: "did", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "sonr_address", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "eth_address", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 5, name: "btc_address", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 6, name: "public_key_hex", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 7, name: "ks_val", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 8, name: "claimed_block", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
-    { no: 9, name: "creation_block", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): PublicKey {
-    return new PublicKey().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): PublicKey {
-    return new PublicKey().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): PublicKey {
-    return new PublicKey().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: PublicKey | PlainMessage<PublicKey> | undefined, b: PublicKey | PlainMessage<PublicKey> | undefined): boolean {
-    return proto3.util.equals(PublicKey, a, b);
-  }
-}
-
-/**
- * Verification represents a verification method
- *
- * @generated from message did.v1.Verification
- */
-export class Verification extends Message<Verification> {
-  /**
-   * The unique identifier of the verification
+   * The unique identifier of the assertion
    *
    * @generated from field: string did = 1;
    */
   did = "";
 
   /**
-   * The controller of the verification
+   * The authentication of the DID
    *
    * @generated from field: string controller = 2;
    */
   controller = "";
 
   /**
-   * The DIDNamespace of the verification
+   * Origin of the authentication
    *
-   * @generated from field: string did_method = 3;
-   */
-  didMethod = "";
-
-  /**
-   * The value of the linked identifier
-   *
-   * @generated from field: string issuer = 4;
-   */
-  issuer = "";
-
-  /**
-   * The subject of the verification
-   *
-   * @generated from field: string subject = 5;
+   * @generated from field: string subject = 3;
    */
   subject = "";
 
   /**
-   * The public key of the verification
+   * string is the verification method
    *
-   * @generated from field: string public_key_hex = 6;
+   * @generated from field: string public_key_base64 = 4;
    */
-  publicKeyHex = "";
+  publicKeyBase64 = "";
 
   /**
-   * The verification method type
+   * DIDType is the DID type
    *
-   * @generated from field: string verification_type = 7;
+   * @generated from field: string did_type = 5;
    */
-  verificationType = "";
+  didType = "";
 
   /**
-   * Metadata of the verification
+   * CreationBlock is the block number of the creation of the authentication
    *
-   * @generated from field: map<string, string> metadata = 8;
-   */
-  metadata: { [key: string]: string } = {};
-
-  /**
-   * CreationBlock is the block number of the creation of the controller
-   *
-   * @generated from field: int64 creation_block = 9;
+   * @generated from field: int64 creation_block = 6;
    */
   creationBlock = protoInt64.zero;
 
-  constructor(data?: PartialMessage<Verification>) {
+  constructor(data?: PartialMessage<Assertion>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "did.v1.Verification";
+  static readonly typeName = "did.v1.Assertion";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "did", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "controller", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "did_method", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "issuer", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 5, name: "subject", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 6, name: "public_key_hex", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 7, name: "verification_type", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 8, name: "metadata", kind: "map", K: 9 /* ScalarType.STRING */, V: {kind: "scalar", T: 9 /* ScalarType.STRING */} },
-    { no: 9, name: "creation_block", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
+    { no: 3, name: "subject", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "public_key_base64", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "did_type", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: "creation_block", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Verification {
-    return new Verification().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Assertion {
+    return new Assertion().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Verification {
-    return new Verification().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Assertion {
+    return new Assertion().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Verification {
-    return new Verification().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Assertion {
+    return new Assertion().fromJsonString(jsonString, options);
   }
 
-  static equals(a: Verification | PlainMessage<Verification> | undefined, b: Verification | PlainMessage<Verification> | undefined): boolean {
-    return proto3.util.equals(Verification, a, b);
+  static equals(a: Assertion | PlainMessage<Assertion> | undefined, b: Assertion | PlainMessage<Assertion> | undefined): boolean {
+    return proto3.util.equals(Assertion, a, b);
+  }
+}
+
+/**
+ * Authorization is a relationship between a Service and a Resource with UCAN
+ *
+ * @generated from message did.v1.Authorization
+ */
+export class Authorization extends Message<Authorization> {
+  /**
+   * The unique identifier of the assertion
+   *
+   * @generated from field: string did = 1;
+   */
+  did = "";
+
+  /**
+   * The authentication of the DID
+   *
+   * @generated from field: string controller = 2;
+   */
+  controller = "";
+
+  /**
+   * Origin of the authentication
+   *
+   * @generated from field: string subject = 3;
+   */
+  subject = "";
+
+  /**
+   * string is the verification method
+   *
+   * @generated from field: string public_key_base64 = 4;
+   */
+  publicKeyBase64 = "";
+
+  /**
+   * DIDType is the DID type
+   *
+   * @generated from field: string origin = 5;
+   */
+  origin = "";
+
+  /**
+   * CreationBlock is the block number of the creation of the authentication
+   *
+   * @generated from field: int64 creation_block = 6;
+   */
+  creationBlock = protoInt64.zero;
+
+  constructor(data?: PartialMessage<Authorization>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "did.v1.Authorization";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "did", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "controller", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "subject", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "public_key_base64", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "origin", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: "creation_block", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Authorization {
+    return new Authorization().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Authorization {
+    return new Authorization().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Authorization {
+    return new Authorization().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: Authorization | PlainMessage<Authorization> | undefined, b: Authorization | PlainMessage<Authorization> | undefined): boolean {
+    return proto3.util.equals(Authorization, a, b);
+  }
+}
+
+/**
+ * Controller is the controller method to be used by the DID.
+ *
+ * @generated from message did.v1.Controller
+ */
+export class Controller extends Message<Controller> {
+  /**
+   * The unique identifier of the assertion
+   *
+   * @generated from field: string did = 1;
+   */
+  did = "";
+
+  /**
+   * The authentication of the DID
+   *
+   * @generated from field: string controller = 2;
+   */
+  controller = "";
+
+  /**
+   * Origin of the authentication
+   *
+   * @generated from field: string subject = 3;
+   */
+  subject = "";
+
+  /**
+   * string is the verification method
+   *
+   * @generated from field: string public_key_base64 = 4;
+   */
+  publicKeyBase64 = "";
+
+  /**
+   * DIDType is the DID type
+   *
+   * @generated from field: string did_type = 5;
+   */
+  didType = "";
+
+  /**
+   * CreationBlock is the block number of the creation of the authentication
+   *
+   * @generated from field: int64 creation_block = 6;
+   */
+  creationBlock = protoInt64.zero;
+
+  constructor(data?: PartialMessage<Controller>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "did.v1.Controller";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "did", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "controller", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "subject", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "public_key_base64", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "did_type", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: "creation_block", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Controller {
+    return new Controller().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Controller {
+    return new Controller().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Controller {
+    return new Controller().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: Controller | PlainMessage<Controller> | undefined, b: Controller | PlainMessage<Controller> | undefined): boolean {
+    return proto3.util.equals(Controller, a, b);
+  }
+}
+
+/**
+ * Delegation is usually an external blockchain account that is used to sign
+ * transactions on behalf of the DID
+ *
+ * @generated from message did.v1.Delegation
+ */
+export class Delegation extends Message<Delegation> {
+  /**
+   * The unique identifier of the assertion
+   *
+   * @generated from field: string did = 1;
+   */
+  did = "";
+
+  /**
+   * The authentication of the DID
+   *
+   * @generated from field: string controller = 2;
+   */
+  controller = "";
+
+  /**
+   * Origin of the authentication
+   *
+   * @generated from field: string subject = 3;
+   */
+  subject = "";
+
+  /**
+   * string is the verification method
+   *
+   * @generated from field: string public_key_base64 = 4;
+   */
+  publicKeyBase64 = "";
+
+  /**
+   * DIDType is the DID type
+   *
+   * @generated from field: string did_type = 5;
+   */
+  didType = "";
+
+  /**
+   * CreationBlock is the block number of the creation of the authentication
+   *
+   * @generated from field: int64 creation_block = 6;
+   */
+  creationBlock = protoInt64.zero;
+
+  constructor(data?: PartialMessage<Delegation>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "did.v1.Delegation";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "did", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "controller", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "subject", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "public_key_base64", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "did_type", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: "creation_block", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Delegation {
+    return new Delegation().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Delegation {
+    return new Delegation().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Delegation {
+    return new Delegation().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: Delegation | PlainMessage<Delegation> | undefined, b: Delegation | PlainMessage<Delegation> | undefined): boolean {
+    return proto3.util.equals(Delegation, a, b);
+  }
+}
+
+/**
+ * Invocation is usually a smart contract that is used to sign transactions on
+ * behalf of the DID
+ *
+ * @generated from message did.v1.Invocation
+ */
+export class Invocation extends Message<Invocation> {
+  /**
+   * The unique identifier of the assertion
+   *
+   * @generated from field: string did = 1;
+   */
+  did = "";
+
+  /**
+   * The authentication of the DID
+   *
+   * @generated from field: string controller = 2;
+   */
+  controller = "";
+
+  /**
+   * Origin of the authentication
+   *
+   * @generated from field: string subject = 3;
+   */
+  subject = "";
+
+  /**
+   * string is the verification method
+   *
+   * @generated from field: string public_key_base64 = 4;
+   */
+  publicKeyBase64 = "";
+
+  /**
+   * DIDType is the DID type
+   *
+   * @generated from field: string did_type = 5;
+   */
+  didType = "";
+
+  /**
+   * CreationBlock is the block number of the creation of the authentication
+   *
+   * @generated from field: int64 creation_block = 6;
+   */
+  creationBlock = protoInt64.zero;
+
+  constructor(data?: PartialMessage<Invocation>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "did.v1.Invocation";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "did", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "controller", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "subject", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "public_key_base64", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "did_type", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: "creation_block", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Invocation {
+    return new Invocation().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Invocation {
+    return new Invocation().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Invocation {
+    return new Invocation().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: Invocation | PlainMessage<Invocation> | undefined, b: Invocation | PlainMessage<Invocation> | undefined): boolean {
+    return proto3.util.equals(Invocation, a, b);
   }
 }
 

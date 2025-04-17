@@ -81,3 +81,187 @@ export class QueryParamsResponse extends Message<QueryParamsResponse> {
   }
 }
 
+/**
+ * QuerySpawnRequest is the request type for the Query/Spawn RPC method.
+ *
+ * @generated from message dwn.v1.QuerySpawnRequest
+ */
+export class QuerySpawnRequest extends Message<QuerySpawnRequest> {
+  constructor(data?: PartialMessage<QuerySpawnRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "dwn.v1.QuerySpawnRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): QuerySpawnRequest {
+    return new QuerySpawnRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): QuerySpawnRequest {
+    return new QuerySpawnRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): QuerySpawnRequest {
+    return new QuerySpawnRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: QuerySpawnRequest | PlainMessage<QuerySpawnRequest> | undefined, b: QuerySpawnRequest | PlainMessage<QuerySpawnRequest> | undefined): boolean {
+    return proto3.util.equals(QuerySpawnRequest, a, b);
+  }
+}
+
+/**
+ * QuerySpawnResponse is the response type for the Query/Spawn RPC method.
+ *
+ * @generated from message dwn.v1.QuerySpawnResponse
+ */
+export class QuerySpawnResponse extends Message<QuerySpawnResponse> {
+  /**
+   * Cid of the new vault.
+   *
+   * @generated from field: string cid = 1;
+   */
+  cid = "";
+
+  /**
+   * Address of the new vault.
+   *
+   * @generated from field: string address = 2;
+   */
+  address = "";
+
+  /**
+   * Redirect is the redirect of the vault.
+   *
+   * @generated from field: string redirect = 3;
+   */
+  redirect = "";
+
+  constructor(data?: PartialMessage<QuerySpawnResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "dwn.v1.QuerySpawnResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "cid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "address", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "redirect", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): QuerySpawnResponse {
+    return new QuerySpawnResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): QuerySpawnResponse {
+    return new QuerySpawnResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): QuerySpawnResponse {
+    return new QuerySpawnResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: QuerySpawnResponse | PlainMessage<QuerySpawnResponse> | undefined, b: QuerySpawnResponse | PlainMessage<QuerySpawnResponse> | undefined): boolean {
+    return proto3.util.equals(QuerySpawnResponse, a, b);
+  }
+}
+
+/**
+ * @generated from message dwn.v1.QueryCheckRequest
+ */
+export class QueryCheckRequest extends Message<QueryCheckRequest> {
+  /**
+   * Cid of the vault to check.
+   *
+   * @generated from field: string cid = 1;
+   */
+  cid = "";
+
+  constructor(data?: PartialMessage<QueryCheckRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "dwn.v1.QueryCheckRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "cid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): QueryCheckRequest {
+    return new QueryCheckRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): QueryCheckRequest {
+    return new QueryCheckRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): QueryCheckRequest {
+    return new QueryCheckRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: QueryCheckRequest | PlainMessage<QueryCheckRequest> | undefined, b: QueryCheckRequest | PlainMessage<QueryCheckRequest> | undefined): boolean {
+    return proto3.util.equals(QueryCheckRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message dwn.v1.QueryCheckResponse
+ */
+export class QueryCheckResponse extends Message<QueryCheckResponse> {
+  /**
+   * Address of the vault.
+   *
+   * @generated from field: string address = 1;
+   */
+  address = "";
+
+  /**
+   * Redirect is the redirect of the vault.
+   *
+   * @generated from field: string redirect = 2;
+   */
+  redirect = "";
+
+  /**
+   * Status is the status of the vault.
+   *
+   * @generated from field: string status = 3;
+   */
+  status = "";
+
+  constructor(data?: PartialMessage<QueryCheckResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "dwn.v1.QueryCheckResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "address", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "redirect", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "status", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): QueryCheckResponse {
+    return new QueryCheckResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): QueryCheckResponse {
+    return new QueryCheckResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): QueryCheckResponse {
+    return new QueryCheckResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: QueryCheckResponse | PlainMessage<QueryCheckResponse> | undefined, b: QueryCheckResponse | PlainMessage<QueryCheckResponse> | undefined): boolean {
+    return proto3.util.equals(QueryCheckResponse, a, b);
+  }
+}
+

@@ -6,73 +6,23 @@ vars:
     sh: git rev-parse --show-toplevel
 
 tasks:
-  compose:up:
-    desc: Start the docker-compose stack
-    aliases: [up]
-    dir: "{{.ROOT_DIR}}/deploy/docker"
-    cmds:
-      - docker compose up --build
+  default:
+    cmd: task $(tv task)
 
-  compose:up:detached:
-    desc: Start the docker-compose stack in detached mode
-    aliases: [start]
-    dir: "{{.ROOT_DIR}}/deploy/docker"
-    cmds:
-      - docker compose up -d
-
-  compose:down:
-    desc: Stop the docker-compose stack
-    aliases: [down]
-    dir: "{{.ROOT_DIR}}/deploy/docker"
-    cmds:
-      - docker compose down
-
-  compose:logs:
-    desc: Show the docker-compose logs
-    aliases: [logs]
-    dir: "{{.ROOT_DIR}}/deploy/docker"
-    cmds:
-      - docker compose logs -f
-
-  start:controller:
-    desc: Start the controller
-    dir: "{{.ROOT_DIR}}/cmd/controller"
-    cmds:
-      - bun run start
+  start:vault:
+    desc: Start the vault
+    dir: "{{.ROOT_DIR}}/cmd/vault"
+    cmd: bun run start
 
   start:resolver:
     desc: Start the resolver
     dir: "{{.ROOT_DIR}}/cmd/resolver"
-    cmds:
-      - bun run start
+    cmd: bun run start
 
-  build:workers:
-    desc: Build all workers
-    cmds:
-      - task: build:controller
-      - task: build:resolver
-
-  proto:
-    desc: Generate proto
-    cmds:
-      - make -C packages/cosmes gen
-
-  sqlc:
-    desc: Generate sqlc
-    dir: "{{.ROOT_DIR}}"
-    cmds:
-      - sqlc generate
-
-  templ:
-    desc: Generate templ
-    cmds:
-      - templ generate
-
-  build:controller:
-    desc: Build the controller
-    dir: "{{.ROOT_DIR}}/cmd/controller"
-    cmds:
-      - bun run build
+  build:vault:
+    desc: Build the vault
+    dir: "{{.ROOT_DIR}}/cmd/vault"
+    cmd: bun run build
     sources:
       - main.go
     generates:
@@ -81,59 +31,55 @@ tasks:
   build:resolver:
     desc: Build the resolver
     dir: "{{.ROOT_DIR}}/cmd/resolver"
-    cmds:
-      - bun run build
+    cmd: bun run build
     sources:
       - main.go
     generates:
       - build/app.wasm
 
-  build:signer:
-    desc: Build and Upload the signer
-    dir: "{{.ROOT_DIR}}/signer"
-    cmds:
-      - earthly +build
-      - gum log --level debug "Uploading signer.wasm to r2"
-      - rclone copy ./dist/signer.wasm r2:cdn/bin/
-    status:
-      - test -f ./dist/signer.wasm
-    sources:
-      - main.go
-    generates:
-      - dist/signer.wasm
-
-  build:packages:
-    desc: Build all packages
-    cmds:
-      - make -C packages/cosmes build
-      - make -C packages/shoelace build
-      - make -C packages/vault build
-
-  bump:packages:
-    desc: Bump all packages
-    cmds:
-      - make -C packages/cosmes bump
-      - make -C packages/shoelace bump
-      - make -C packages/vault bump
-
-  publish:packages:
-    desc: Publish all packages
-    cmds:
-      - make -C packages/cosmes publish
-      - make -C packages/shoelace publish
-      - make -C packages/vault publish
-
-  deploy:controller:
-    desc: Deploy the controller
-    dir: "{{.ROOT_DIR}}/cmd/controller"
+  deploy:vault:
+    desc: Deploy the vault
+    dir: "{{.ROOT_DIR}}/cmd/vault"
     cmds:
       - bun run deploy
 
   deploy:resolver:
     desc: Deploy the resolver
     dir: "{{.ROOT_DIR}}/cmd/resolver"
+    cmd: bun run deploy
+
+  build:packages:
+    desc: Build all packages
     cmds:
-      - bun run deploy
+      - make -C packages/cosmes build
+      - make -C packages/shoelace build
+      - make -C signer build
+
+  bump:packages:
+    desc: Bump all packages
+    cmds:
+      - make -C packages/cosmes bump
+      - make -C packages/shoelace bump
+
+  publish:packages:
+    desc: Publish all packages
+    cmds:
+      - make -C packages/cosmes publish
+      - make -C packages/shoelace publish
+      - make -C signer publish
+
+  gen:proto:
+    desc: Generate proto
+    cmd: make -C packages/cosmes gen
+
+  gen:sqlc:
+    desc: Generate sqlc
+    dir: "{{.ROOT_DIR}}"
+    cmd: sqlc generate
+
+  gen:templ:
+    desc: Generate templ
+    cmd: templ generate
 
   clean:
     desc: Remove build artifacts

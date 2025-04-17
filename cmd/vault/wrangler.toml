@@ -4,20 +4,10 @@ main = "./worker.mjs"
 compatibility_date = "2025-04-14"
 
 [build]
-command = "bun install && bun run build"
+command = "bun run build"
 
 [observability]
 enabled = true
-
-[[d1_databases]]
-binding = "CommonDB" # available in your Worker on env.DB
-database_name = "motr-global-db"
-database_id = "701488b4-de41-4f75-9ca9-b4d37acf621e"
-
-[[d1_databases]]
-binding = "ControllerDB" # available in your Worker on env.DB
-database_name = "motr-controller-db"
-database_id = "fb3229b9-ab48-482c-b914-0e4e86e1a908"
 
 [vars]
 SONR_CHAIN_ID = 'sonr-testnet-1'
@@ -28,6 +18,20 @@ SONR_GRPC_URL = 'https://grpc.sonr.land'
 MATRIX_SERVER = 'https://bm.chat'
 MOTR_MODE = 'controller'
 
+[[r2_buckets]]
+binding = 'PLUGINS'
+bucket_name = 'motr-plugins'
+preview_bucket_name = 'motr-plugins-dev'
+
+[[d1_databases]]
+binding = "CommonDB" # available in your Worker on env.DB
+database_name = "motr-common-db"
+database_id = "701488b4-de41-4f75-9ca9-b4d37acf621e"
+
+[[d1_databases]]
+binding = "ControllerDB" # available in your Worker on env.DB
+database_name = "motr-controller-db"
+database_id = "fb3229b9-ab48-482c-b914-0e4e86e1a908"
 [durable_objects]
 bindings = [{name = "VAULT", class_name = "Vault"}]
 

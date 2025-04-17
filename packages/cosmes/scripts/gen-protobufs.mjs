@@ -35,7 +35,7 @@ const REPOS = [
     paths: ["proto"],
   },
   {
-    repo: "sonr-io/snrd#main",
+    repo: "sonr-io/core#main",
     paths: ["proto"],
   },
   {

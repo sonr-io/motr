@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { MsgExecuteTx, MsgExecuteTxResponse, MsgLinkAssertion, MsgLinkAssertionResponse, MsgLinkAuthentication, MsgLinkAuthenticationResponse, MsgUnlinkAssertion, MsgUnlinkAssertionResponse, MsgUnlinkAuthentication, MsgUnlinkAuthenticationResponse, MsgUpdateParams, MsgUpdateParamsResponse } from "./tx_pb.js";
+import { MsgExecuteTx, MsgExecuteTxResponse, MsgLinkVerificationMethod, MsgLinkVerificationMethodResponse, MsgRegisterController, MsgRegisterControllerResponse, MsgUnlinkVerificationMethod, MsgUnlinkVerificationMethodResponse, MsgUpdateParams, MsgUpdateParamsResponse } from "./tx_pb.js";
 
 const TYPE_NAME = "did.v1.Msg";
 
@@ -21,51 +21,39 @@ export const MsgExecuteTxService = {
 } as const;
 
 /**
- * LinkAssertion links an assertion to a controller.
+ * RegisterController registers a controller.
  *
- * @generated from rpc did.v1.Msg.LinkAssertion
+ * @generated from rpc did.v1.Msg.RegisterController
  */
-export const MsgLinkAssertionService = {
+export const MsgRegisterControllerService = {
   typeName: TYPE_NAME,
-  method: "LinkAssertion",
-  Request: MsgLinkAssertion,
-  Response: MsgLinkAssertionResponse,
+  method: "RegisterController",
+  Request: MsgRegisterController,
+  Response: MsgRegisterControllerResponse,
 } as const;
 
 /**
- * LinkAuthentication links an authentication to a controller.
+ * LinkAssertion links an assertion to a controller.
  *
- * @generated from rpc did.v1.Msg.LinkAuthentication
+ * @generated from rpc did.v1.Msg.LinkVerificationMethod
  */
-export const MsgLinkAuthenticationService = {
+export const MsgLinkVerificationMethodService = {
   typeName: TYPE_NAME,
-  method: "LinkAuthentication",
-  Request: MsgLinkAuthentication,
-  Response: MsgLinkAuthenticationResponse,
+  method: "LinkVerificationMethod",
+  Request: MsgLinkVerificationMethod,
+  Response: MsgLinkVerificationMethodResponse,
 } as const;
 
 /**
  * UnlinkAssertion unlinks an assertion from a controller.
  *
- * @generated from rpc did.v1.Msg.UnlinkAssertion
+ * @generated from rpc did.v1.Msg.UnlinkVerificationMethod
  */
-export const MsgUnlinkAssertionService = {
+export const MsgUnlinkVerificationMethodService = {
   typeName: TYPE_NAME,
-  method: "UnlinkAssertion",
-  Request: MsgUnlinkAssertion,
-  Response: MsgUnlinkAssertionResponse,
-} as const;
-
-/**
- * UnlinkAuthentication unlinks an authentication from a controller.
- *
- * @generated from rpc did.v1.Msg.UnlinkAuthentication
- */
-export const MsgUnlinkAuthenticationService = {
-  typeName: TYPE_NAME,
-  method: "UnlinkAuthentication",
-  Request: MsgUnlinkAuthentication,
-  Response: MsgUnlinkAuthenticationResponse,
+  method: "UnlinkVerificationMethod",
+  Request: MsgUnlinkVerificationMethod,
+  Response: MsgUnlinkVerificationMethodResponse,
 } as const;
 
 /**

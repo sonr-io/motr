@@ -3,7 +3,7 @@
 //   sqlc v1.28.0
 // source: query.sql
 
-package controller
+package vault
 
 import (
 	"context"

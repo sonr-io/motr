@@ -1,7 +1,7 @@
 {
   "name": "sonr-shoelace",
   "description": "A specialized fork of Shoelace customized for the Sonr Network, focusing on cryptocurrency and blockchain interfaces.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "homepage": "https://docs.sonr.io",
   "private": false,
   "author": "Prad <prad@sonr.io>",
