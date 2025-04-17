@@ -1,0 +1,11 @@
+{
+  "name": "@sonr-io/motr-common",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "db:seed": "wrangler d1 execute motr-common-db --local --file=./schema.sql"
+  },
+  "devDependencies": {
+    "wrangler": "^4.10.0"
+  }
+}

@@ -10,9 +10,14 @@ command = "bun run build"
 enabled = true
 
 [[d1_databases]]
-binding = "MotrDB" # available in your Worker on env.DB
+binding = "CommonDB" # available in your Worker on env.DB
 database_name = "motr-global-db"
-database_id = "c63709f7-2d82-4a21-942a-6031ffda1b5a"
+database_id = "701488b4-de41-4f75-9ca9-b4d37acf621e"
+
+[[d1_databases]]
+binding = "ControllerDB" # available in your Worker on env.DB
+database_name = "motr-controller-db"
+database_id = "fb3229b9-ab48-482c-b914-0e4e86e1a908"
 
 [vars]
 SONR_CHAIN_ID = 'sonr-testnet-1'
@@ -21,3 +26,4 @@ SONR_API_URL = 'https://api.sonr.land'
 SONR_RPC_URL = 'https://rpc.sonr.land'
 SONR_GRPC_URL = 'https://grpc.sonr.land'
 MATRIX_SERVER = 'https://bm.chat'
+MOTR_MODE = 'controller'

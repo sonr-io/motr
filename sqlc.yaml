@@ -1,6 +1,16 @@
 version: "2"
 sql:
   - engine: "sqlite"
+    queries: "./sink/query.sql"
+    schema: "./sink/schema.sql"
+    gen:
+      go:
+        emit_interface: true
+        emit_json_tags: true
+        package: "common"
+        out: "./sink/models/common"
+
+  - engine: "sqlite"
     queries: "./cmd/controller/query.sql"
     schema: "./cmd/controller/schema.sql"
     gen:
