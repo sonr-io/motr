@@ -1,5 +1,5 @@
 # Top-level configuration
-name = "motr-vault"
+name = "motr-controller"
 main = "./worker.mjs"
 compatibility_date = "2025-04-14"
 
@@ -37,9 +37,8 @@ database_name = "motr-controller-db"
 database_id = "fb3229b9-ab48-482c-b914-0e4e86e1a908"
 
 [durable_objects]
-bindings = [{name = "CONTROLLER", class_name = "Controller"}]
+bindings = [{name = "VAULT", class_name = "Vault"}]
 
 [[migrations]]
-tag = "v2" 
-new_classes = ["Controller"]
-old_classes = ["Vault"]
+tag = "v1" 
+new_classes = ["Vault"]

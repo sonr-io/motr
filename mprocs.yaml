@@ -4,3 +4,15 @@ procs:
     shell: "task start:resolver"
   vault:
     shell: "task start:vault"
+hide_keymap_window: true
+proc_list_width: 24
+keymap_procs:
+  <Enter>: { c: toggle-focus }
+  <Tab>: { c: toggle-focus }
+  <M-l>: { c: toggle-focus }
+  <Esc>: { c: toggle-focus } # Processes
+  <C-a>: null
+keymap_term:
+  reset: true
+  <Tab>: { c: toggle-focus } # Processes
+

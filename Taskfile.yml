@@ -6,9 +6,6 @@ vars:
     sh: git rev-parse --show-toplevel
 
 tasks:
-  default:
-    cmd: task $(tv task)
-
   dev:
     desc: Start the development server
     cmd: tmux new-window -c "#{pane_current_path}" "bunx mprocs"
