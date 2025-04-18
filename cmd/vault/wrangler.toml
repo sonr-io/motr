@@ -1,6 +1,6 @@
 # Top-level configuration
 name = "motr-vault"
-main = "./build/worker.mjs"
+main = "./worker.mjs"
 compatibility_date = "2025-04-14"
 
 [build]
@@ -30,3 +30,5 @@ SONR_RPC_URL = 'https://rpc.sonr.land'
 SONR_GRPC_URL = 'https://grpc.sonr.land'
 MATRIX_SERVER = 'https://bm.chat'
 MOTR_MODE = 'controller'
+
+
