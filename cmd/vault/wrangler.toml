@@ -32,6 +32,7 @@ database_id = "701488b4-de41-4f75-9ca9-b4d37acf621e"
 binding = "ControllerDB" # available in your Worker on env.DB
 database_name = "motr-controller-db"
 database_id = "fb3229b9-ab48-482c-b914-0e4e86e1a908"
+
 [durable_objects]
 bindings = [{name = "VAULT", class_name = "Vault"}]
 

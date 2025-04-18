@@ -107,7 +107,7 @@ func Dexie() templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(jsDelivrURL("dexie", "4.0.10", "dist/dexie.min.js"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/deps/imports.templ`, Line: 25, Col: 67}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/base/deps/imports.templ`, Line: 25, Col: 67}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -120,7 +120,7 @@ func Dexie() templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(jsDelivrURL("dexie-export-import", "4.1.4", "dist/dexie-export-import.min.js"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/deps/imports.templ`, Line: 26, Col: 94}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/base/deps/imports.templ`, Line: 26, Col: 94}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -276,7 +276,7 @@ func Htmx() templ.Component {
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(jsDelivrURL("htmx.org", "1.9.12", "dist/htmx.min.js"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/deps/imports.templ`, Line: 130, Col: 69}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/base/deps/imports.templ`, Line: 130, Col: 69}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 			if templ_7745c5c3_Err != nil {
@@ -289,7 +289,7 @@ func Htmx() templ.Component {
 			var templ_7745c5c3_Var14 string
 			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(jsDelivrURL("htmx-ext-include-vals", "2.0.0", "include-vals.min.js"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/deps/imports.templ`, Line: 131, Col: 84}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/base/deps/imports.templ`, Line: 131, Col: 84}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 			if templ_7745c5c3_Err != nil {
@@ -302,7 +302,7 @@ func Htmx() templ.Component {
 			var templ_7745c5c3_Var15 string
 			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(jsDelivrURL("htmx-ext-path-params", "2.0.0", "path-params.min.js"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/deps/imports.templ`, Line: 132, Col: 82}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/base/deps/imports.templ`, Line: 132, Col: 82}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 			if templ_7745c5c3_Err != nil {
@@ -315,7 +315,7 @@ func Htmx() templ.Component {
 			var templ_7745c5c3_Var16 string
 			templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(jsDelivrURL("htmx-ext-alpine-morph", "2.0.0", "alpine-morph.min.js"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/deps/imports.templ`, Line: 133, Col: 84}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/base/deps/imports.templ`, Line: 133, Col: 84}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 			if templ_7745c5c3_Err != nil {
@@ -328,7 +328,7 @@ func Htmx() templ.Component {
 			var templ_7745c5c3_Var17 string
 			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(jsDelivrURL("htmx-ext-sse", "2.2.2", "sse.min.js"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/deps/imports.templ`, Line: 134, Col: 66}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/base/deps/imports.templ`, Line: 134, Col: 66}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 			if templ_7745c5c3_Err != nil {
@@ -341,7 +341,7 @@ func Htmx() templ.Component {
 			var templ_7745c5c3_Var18 string
 			templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(jsDelivrURL("htmx-ext-ws", "2.0.2", "ws.min.js"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/deps/imports.templ`, Line: 135, Col: 64}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/base/deps/imports.templ`, Line: 135, Col: 64}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 			if templ_7745c5c3_Err != nil {
