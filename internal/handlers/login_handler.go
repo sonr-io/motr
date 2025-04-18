@@ -5,17 +5,17 @@ package handlers
 
 import (
 	"github.com/labstack/echo/v4"
+	"github.com/sonr-io/motr/internal"
 	"github.com/sonr-io/motr/internal/components/views"
 	"github.com/sonr-io/motr/internal/middleware"
-	"github.com/sonr-io/motr/sink/models/vault"
 	"github.com/sonr-io/motr/sink/options"
 )
 
 type login struct {
-	Data *vault.Queries
+	Data internal.VaultController
 }
 
-func Login(db *vault.Queries) *login {
+func Login(db internal.VaultController) *login {
 	return &login{
 		Data: db,
 	}

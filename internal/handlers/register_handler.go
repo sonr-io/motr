@@ -5,17 +5,17 @@ package handlers
 
 import (
 	"github.com/labstack/echo/v4"
+	"github.com/sonr-io/motr/internal"
 	"github.com/sonr-io/motr/internal/components/views"
 	"github.com/sonr-io/motr/internal/middleware"
-	"github.com/sonr-io/motr/sink/models/resolver"
 	"github.com/sonr-io/motr/sink/options"
 )
 
 type register struct {
-	Data *resolver.Queries
+	Data internal.ResolverController
 }
 
-func Register(q *resolver.Queries) *register {
+func Register(q internal.ResolverController) *register {
 	return &register{
 		Data: q,
 	}

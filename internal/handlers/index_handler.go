@@ -7,18 +7,18 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	"github.com/sonr-io/motr/internal"
 	"github.com/sonr-io/motr/internal/components/views"
 	"github.com/sonr-io/motr/internal/middleware"
-	"github.com/sonr-io/motr/sink/models/common"
 )
 
 type index struct {
-	Data *common.Queries
+	Data internal.Controller
 }
 
-func Index(db *common.Queries) *index {
+func Index(c internal.Controller) *index {
 	return &index{
-		Data: db,
+		Data: c,
 	}
 }
 
