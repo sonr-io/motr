@@ -11,6 +11,37 @@ import (
 	"github.com/sonr-io/motr/sink/models/common"
 )
 
+// UseAllDBs adds all database controllers to the session context
+func UseAllDBs(c config.DBConfig) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(ctx echo.Context) error {
+			// Try to get session context
+			sc, ok := ctx.Get("session").(*SessionContext)
+			if !ok {
+				// Create a new session context
+				sc = &SessionContext{
+					Context: ctx,
+					ID:      getOrCreateSessionID(ctx),
+				}
+				ctx.Set("session", sc)
+			}
+			
+			// Create full controller
+			fullController, err := database.NewFullController(c)
+			if err != nil {
+				return err
+			}
+			
+			// Set all controllers
+			sc.controller = fullController
+			sc.resolverController = fullController
+			sc.vaultController = fullController
+			
+			return next(ctx)
+		}
+	}
+}
+
 // UseConfig is a middleware that adds a new key to the context
 func UseConfig(c config.Config) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
@@ -46,9 +77,9 @@ func getOrCreateSessionID(c echo.Context) string {
 func UseCommonDB(c config.DBConfig) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(ctx echo.Context) error {
-			// Get or create a session context
-			sc, err := GetSession(ctx)
-			if err != nil {
+			// Try to get session context
+			sc, ok := ctx.Get("session").(*SessionContext)
+			if !ok {
 				// Create a new session context
 				sc = &SessionContext{
 					Context: ctx,
@@ -77,9 +108,9 @@ func UseCommonDB(c config.DBConfig) echo.MiddlewareFunc {
 func UseResolverDB(c config.DBConfig) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(ctx echo.Context) error {
-			// Get or create a session context
-			sc, err := GetSession(ctx)
-			if err != nil {
+			// Try to get session context
+			sc, ok := ctx.Get("session").(*SessionContext)
+			if !ok {
 				// Create a new session context
 				sc = &SessionContext{
 					Context: ctx,
@@ -104,9 +135,9 @@ func UseResolverDB(c config.DBConfig) echo.MiddlewareFunc {
 func UseVaultDB(c config.DBConfig) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(ctx echo.Context) error {
-			// Get or create a session context
-			sc, err := GetSession(ctx)
-			if err != nil {
+			// Try to get session context
+			sc, ok := ctx.Get("session").(*SessionContext)
+			if !ok {
 				// Create a new session context
 				sc = &SessionContext{
 					Context: ctx,

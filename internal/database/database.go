@@ -71,3 +71,30 @@ func NewResolverController(c config.DBConfig) (ResolverController, error) {
 		ResolverDB: resolver.New(rdb),
 	}, nil
 }
+
+// NewFullController creates a controller with connections to all databases
+func NewFullController(c config.DBConfig) (*ControllerImpl, error) {
+	// Get common DB
+	cdb, err := c.GetCommon()
+	if err != nil {
+		return nil, err
+	}
+	
+	// Get resolver DB
+	rdb, err := c.GetResolver()
+	if err != nil {
+		return nil, err
+	}
+	
+	// Get vault DB
+	vdb, err := c.GetVault()
+	if err != nil {
+		return nil, err
+	}
+	
+	return &ControllerImpl{
+		CommonDB:   common.New(cdb),
+		ResolverDB: resolver.New(rdb),
+		VaultDB:    vault.New(vdb),
+	}, nil
+}
