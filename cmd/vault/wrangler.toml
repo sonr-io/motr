@@ -18,10 +18,10 @@ SONR_GRPC_URL = 'https://grpc.sonr.land'
 MATRIX_SERVER = 'https://bm.chat'
 MOTR_MODE = 'controller'
 
-[[r2_buckets]]
-binding = 'PLUGINS'
-bucket_name = 'motr-plugins'
-preview_bucket_name = 'motr-plugins-dev'
+# [[r2_buckets]]
+# binding = 'PLUGINS'
+# bucket_name = 'motr-plugins'
+# preview_bucket_name = 'motr-plugins-dev'
 
 [[d1_databases]]
 binding = "CommonDB" # available in your Worker on env.DB
