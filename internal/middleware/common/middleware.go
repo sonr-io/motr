@@ -1,7 +1,7 @@
 //go:build js && wasm
 // +build js,wasm
 
-package ucan
+package common
 
 import (
 	"github.com/labstack/echo/v4"
