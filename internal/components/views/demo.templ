@@ -31,7 +31,7 @@ func DemoView(d time.Time) templ.Component {
 templ demoComponent(d time.Time, acc types.AccountInfo, data []charts.CandleData) {
 	@ui.HTML() {
 		@ui.Head() {
-			@blocks.MetaComponent(meta)
+			@ui.MetaComponent(meta)
 		}
 		<sl-tab-group>
 			@ui.Nav() {

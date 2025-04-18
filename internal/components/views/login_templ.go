@@ -10,7 +10,6 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	ui "github.com/sonr-io/motr/internal/components/base"
-	"github.com/sonr-io/motr/internal/components/blocks"
 	"github.com/sonr-io/motr/sink/options"
 	"github.com/sonr-io/motr/sink/types"
 )
@@ -66,7 +65,7 @@ func loginComponent() templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = blocks.MetaComponent(meta).Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = ui.MetaComponent(meta).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

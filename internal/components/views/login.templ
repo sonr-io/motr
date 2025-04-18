@@ -2,7 +2,6 @@ package views
 
 import (
 	ui "github.com/sonr-io/motr/internal/components/base"
-	"github.com/sonr-io/motr/internal/components/blocks"
 	"github.com/sonr-io/motr/sink/options"
 	"github.com/sonr-io/motr/sink/types"
 )
@@ -16,7 +15,7 @@ func LoginView(opts options.LoginOptions) templ.Component {
 templ loginComponent() {
 	@ui.HTML() {
 		@ui.Head() {
-			@blocks.MetaComponent(meta)
+			@ui.MetaComponent(meta)
 		}
 		<sl-tab-group>
 			@ui.Nav() {

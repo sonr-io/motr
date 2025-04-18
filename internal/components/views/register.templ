@@ -13,7 +13,7 @@ func RegisterView(opts options.RegisterOptions) templ.Component {
 templ registerComponent(addr, handle, challenge string) {
 	@ui.HTML() {
 		@ui.Head() {
-			@blocks.MetaComponent(meta)
+			@ui.MetaComponent(meta)
 		}
 		<sl-tab-group>
 			@ui.Nav() {
