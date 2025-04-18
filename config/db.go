@@ -16,7 +16,7 @@ import (
 const (
 	commonDBName   = "COMMON_DB"
 	resolverDBName = "RESOLVER_DB"
-	vaultDBName    = "VAULT_DB"
+	vaultDBName    = "CONTROLLER_DB"
 )
 
 type DBConfig interface {
@@ -83,9 +83,8 @@ func connectDBs() (DBConfig, error) {
 		}
 		c.ResolverDB = dbRes
 		return c, nil
-	default:
-		return nil, newError("unknown mode")
 	}
+	return c, nil
 }
 
 func getMotrMode() MotrMode {
