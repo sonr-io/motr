@@ -11,17 +11,12 @@ import (
 	"github.com/sonr-io/motr/internal/handlers"
 	"github.com/sonr-io/motr/internal/middleware"
 	"github.com/syumai/workers"
-	_ "github.com/syumai/workers/cloudflare/d1"
 )
 
 func main() {
 	c := config.GetConfig()
-	// rc, err := database.NewResolverController(c.DB)
-	// if err != nil {
-	// 	panic(err)
-	// }
 	e := echo.New()
-	e.Use(middleware.UseConfig(c))
+	e.Use(middleware.UseSession(c), middleware.DBCommon(c), middleware.DBResolver(c))
 	e.GET("/", handlers.IndexHandler)
 	e.GET("/claim", handlers.RegisterHandler)
 	workers.Serve(e)

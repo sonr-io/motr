@@ -12,7 +12,13 @@
     "clean": "rm -rf ./build && rm -rf .wrangler && rm -rf ./dist && rm -rf ./node_modules && npm install"
   },
   "dependencies": {
-    "@extism/extism": "^2.0.0-rc11"
+    "@extism/extism": "^2.0.0-rc11",
+    "helia": "^2.1.0",
+    "@helia/strings": "^1.0.1",
+    "@helia/json": "^1.0.1",
+    "@helia/dag-json": "^1.0.1",
+    "@helia/dag-cbor": "^1.0.1",
+    "@helia/unixfs": "^1.4.1"
   },
   "devDependencies": {
     "wrangler": "^4.10.0"

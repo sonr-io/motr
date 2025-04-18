@@ -8,6 +8,7 @@ import (
 	"github.com/sonr-io/motr/sink/models/common"
 	"github.com/sonr-io/motr/sink/models/resolver"
 	"github.com/sonr-io/motr/sink/models/vault"
+	_ "github.com/syumai/workers/cloudflare/d1"
 )
 
 type Controller interface {
@@ -79,19 +80,19 @@ func NewFullController(c config.DBConfig) (*ControllerImpl, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	// Get resolver DB
 	rdb, err := c.GetResolver()
 	if err != nil {
 		return nil, err
 	}
-	
+
 	// Get vault DB
 	vdb, err := c.GetVault()
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return &ControllerImpl{
 		CommonDB:   common.New(cdb),
 		ResolverDB: resolver.New(rdb),

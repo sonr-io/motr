@@ -1,18 +1,22 @@
+//go:build js && wasm
+// +build js,wasm
+
 package middleware
 
 import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/segmentio/ksuid"
 	"github.com/sonr-io/motr/internal/database"
 )
 
 type SessionContext struct {
 	echo.Context
-	ID                  string
-	controller          database.Controller
-	resolverController  database.ResolverController
-	vaultController     database.VaultController
+	ID                 string
+	controller         database.Controller
+	resolverController database.ResolverController
+	vaultController    database.VaultController
 }
 
 func GetSession(c echo.Context) (*SessionContext, error) {
@@ -23,8 +27,8 @@ func GetSession(c echo.Context) (*SessionContext, error) {
 	return cc, nil
 }
 
-// GetController retrieves the Controller from the context
-func GetController(c echo.Context) (database.Controller, error) {
+// GetCommonController retrieves the Controller from the context
+func GetCommonController(c echo.Context) (database.Controller, error) {
 	sc, err := GetSession(c)
 	if err != nil {
 		return nil, err
@@ -61,7 +65,7 @@ func GetVaultController(c echo.Context) (database.VaultController, error) {
 
 // MustGetController retrieves the Controller from the context or panics
 func MustGetController(c echo.Context) database.Controller {
-	controller, err := GetController(c)
+	controller, err := GetCommonController(c)
 	if err != nil {
 		panic(err)
 	}
@@ -84,4 +88,22 @@ func MustGetVaultController(c echo.Context) database.VaultController {
 		panic(err)
 	}
 	return controller
+}
+
+// getOrCreateSessionID returns the session ID from the cookie or creates a new one if it doesn't exist
+func getOrCreateSessionID(c echo.Context) string {
+	if ok := CookieExists(c, SessionID); !ok {
+		sessionID := ksuid.New().String()
+		WriteCookie(c, SessionID, sessionID)
+		c.Echo().Logger.Debug("Wrote session ID to cookie")
+		return sessionID
+	}
+	c.Echo().Logger.Debug("Has session ID in cookie")
+	sessionID, err := ReadCookie(c, SessionID)
+	if err != nil {
+		sessionID = ksuid.New().String()
+		WriteCookie(c, SessionID, sessionID)
+		c.Echo().Logger.Debug("Failed to read session ID from cookie, wrote new one")
+	}
+	return sessionID
 }
