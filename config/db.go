@@ -30,9 +30,6 @@ func (c dbConfig) GetCommon() *common.Queries {
 }
 
 func (c dbConfig) GetVault() *vault.Queries {
-	if c.Mode != ControllerMode {
-		panic(ErrInvalidMode)
-	}
 	if c.VaultDB == nil {
 		panic(ErrDBNotFound)
 	}
@@ -40,9 +37,6 @@ func (c dbConfig) GetVault() *vault.Queries {
 }
 
 func (c dbConfig) GetResolver() *resolver.Queries {
-	if c.Mode != ResolverMode {
-		panic(ErrInvalidMode)
-	}
 	if c.ResolverDB == nil {
 		panic(ErrDBNotFound)
 	}
@@ -56,35 +50,22 @@ type dbConfig struct {
 	Mode       MotrMode
 }
 
-func connectDBs() (DBConfig, error) {
+func connectDBs() DBConfig {
+	// Get mode
 	c := dbConfig{
 		Mode: getMotrMode(),
 	}
-	// Get common DB config
-	dbComm, err := sql.Open("d1", commonDBName)
-	if err != nil {
-		return nil, err
-	}
-	c.CommonDB = dbComm
 
-	// Get specific DB config based on mode
-	switch c.Mode {
-	case ControllerMode:
-		dbCont, err := sql.Open("d1", vaultDBName)
-		if err != nil {
-			return nil, err
-		}
-		c.VaultDB = dbCont
-		return c, nil
-	case ResolverMode:
-		dbRes, err := sql.Open("d1", resolverDBName)
-		if err != nil {
-			return nil, err
-		}
-		c.ResolverDB = dbRes
-		return c, nil
-	}
-	return c, nil
+	// Get common DB config
+	dbComm, _ := sql.Open("d1", commonDBName)
+	dbRes, _ := sql.Open("d1", resolverDBName)
+	dbCont, _ := sql.Open("d1", vaultDBName)
+
+	// Set DBs
+	c.CommonDB = dbComm
+	c.ResolverDB = dbRes
+	c.VaultDB = dbCont
+	return c
 }
 
 func getMotrMode() MotrMode {

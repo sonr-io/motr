@@ -13,10 +13,7 @@ import (
 )
 
 func main() {
-	c, err := config.GetConfig()
-	if err != nil {
-		panic(err)
-	}
+	c := config.GetConfig()
 	e := echo.New()
 	e.Use(sonr.UseMiddleware(c.Sonr))
 	e.Use(vault.UseMiddleware(c.IPFS))

@@ -11,17 +11,13 @@ type Config struct {
 	DB   DBConfig   `json:"db"`
 }
 
-func GetConfig() (Config, error) {
+func GetConfig() Config {
 	c := Config{
 		Sonr: GetSonrConfig(),
 		IPFS: GetIPFSConfig(),
+		DB:   connectDBs(),
 	}
-	db, err := connectDBs()
-	if err != nil {
-		return c, err
-	}
-	c.DB = db
-	return c, nil
+	return c
 }
 
 type SonrConfig struct {
