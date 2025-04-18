@@ -6,16 +6,19 @@ compatibility_date = "2025-04-14"
 [build]
 command = "bun run build"
 
+[dev]
+port = 8787
+
 [observability]
 enabled = true
 
 [[d1_databases]]
-binding = "CommonDB" # available in your Worker on env.DB
+binding = "COMMON_DB" # available in your Worker on env.DB
 database_name = "motr-common-db"
 database_id = "701488b4-de41-4f75-9ca9-b4d37acf621e"
 
 [[d1_databases]]
-binding = "ResolverDB" # available in your Worker on env.DB
+binding = "RESOLVER_DB" # available in your Worker on env.DB
 database_name = "motr-resolver-db"
 database_id = "f807c224-7a15-480e-9f93-f4dc203f7113"
 

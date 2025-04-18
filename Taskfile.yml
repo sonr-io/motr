@@ -9,6 +9,10 @@ tasks:
   default:
     cmd: task $(tv task)
 
+  dev:
+    desc: Start the development server
+    cmd: tmux new-window -c "#{pane_current_path}" "bunx mprocs"
+
   start:vault:
     desc: Start the vault
     dir: "{{.ROOT_DIR}}/cmd/vault"
@@ -87,13 +91,13 @@ tasks:
       - rm -rf ./build
       - rm -rf ./dist
       - rm -rf .task
-      - task: tidy:controller
+      - task: tidy:vault
       - task: tidy:resolver
 
-  tidy:controller:
-    desc: Go mod tidy the controller
+  tidy:vault:
+    desc: Go mod tidy the vault
     internal: true
-    dir: "{{.ROOT_DIR}}/cmd/controller"
+    dir: "{{.ROOT_DIR}}/cmd/vault"
     cmds:
       - go mod tidy
 

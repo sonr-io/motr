@@ -1,7 +1,7 @@
 export { default } from './build/worker.mjs';
 import createPlugin from '@extism/extism';
 
-export class Vault {
+export class Controller {
   constructor(state, env) {
     this.state = state;
   }

@@ -14,9 +14,9 @@ import (
 )
 
 const (
-	commonDBName   = "CommonDB"
-	resolverDBName = "ResolverDB"
-	vaultDBName    = "VaultDB"
+	commonDBName   = "COMMON_DB"
+	resolverDBName = "RESOLVER_DB"
+	vaultDBName    = "VAULT_DB"
 )
 
 type DBConfig interface {
