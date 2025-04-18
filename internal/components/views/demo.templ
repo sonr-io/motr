@@ -2,33 +2,17 @@ package views
 
 import (
 	ui "github.com/sonr-io/motr/internal/components/base"
-	"github.com/sonr-io/motr/internal/components/blocks"
-	"github.com/sonr-io/motr/internal/components/charts"
-	"github.com/sonr-io/motr/sink/types"
+	"github.com/sonr-io/motr/internal/components/cards"
 	"time"
 )
 
+var heliaCardScriptHandle = templ.NewOnceHandle()
+
 func DemoView(d time.Time) templ.Component {
-	acc := types.AccountInfo{
-		Address: "sonr1q9u8t9a5c8e8h9f9g9h9i9j9k9l9m9n9o9p9q9r9s9t9u9v9w9x9y9z9a",
-		Name:    "Example",
-		Handle:  "@jeff",
-		Block:   "1234567890",
-	}
-	data := []charts.CandleData{
-		{
-			Open:  128.9962,
-			Close: 129.745,
-			High:  130.1345,
-			Low:   128.6167,
-			Date:  time.Date(2025, 2, 7, 14, 30, 0, 0, time.UTC),
-		},
-		// ... add more data points
-	}
-	return demoComponent(d, acc, data)
+	return demoComponent(d)
 }
 
-templ demoComponent(d time.Time, acc types.AccountInfo, data []charts.CandleData) {
+templ demoComponent(d time.Time) {
 	@ui.HTML() {
 		@ui.Head() {
 			@ui.MetaComponent(meta)
@@ -40,19 +24,66 @@ templ demoComponent(d time.Time, acc types.AccountInfo, data []charts.CandleData
 				}
 				@ui.NavRight() {
 					<sl-tab slot="nav" panel="tab-1">Time</sl-tab>
-					<sl-tab slot="nav" panel="tab-2">Account</sl-tab>
-					<sl-tab slot="nav" panel="tab-3">Prices</sl-tab>
 				}
 			}
 			@ui.Body() {
 				<sl-tab-panel name="tab-1" active>
 					@ui.Container() {
-						@blocks.HeliaFullDashboard()
-					}
-				</sl-tab-panel>
-				<sl-tab-panel name="tab-3" active>
-					@ui.Container() {
-						@charts.CandleChart(data)
+						<div class="space-y-6">
+							<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+								@cards.HeliaStatusCard()
+								@cards.HeliaNodeIDCard()
+								@cards.HeliaDiscoveredPeersCard()
+								@cards.HeliaConnectedPeersCard()
+							</div>
+							<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+								@cards.HeliaConnectedPeersList()
+								@cards.HeliaRunningLog()
+							</div>
+							@heliaCardScriptHandle.Once() {
+								<script>
+                document.addEventListener('DOMContentLoaded', async () => {
+                    try {
+                        // Use the globally available instantiateHeliaNode function
+                        const helia = window.helia = await window.instantiateHeliaNode()
+                        window.heliaFs = await HeliaUnixfs.unixfs(helia)
+
+                        helia.libp2p.addEventListener('peer:discovery', (evt) => {
+                            window.discoveredPeers.set(evt.detail.id.toString(), evt.detail)
+                            addToLog(`Discovered peer ${evt.detail.id.toString()}`)
+                        })
+
+                        helia.libp2p.addEventListener('peer:connect', (evt) => {
+                            addToLog(`Connected to ${evt.detail.toString()}`)
+                        })
+                        
+                        helia.libp2p.addEventListener('peer:disconnect', (evt) => {
+                            addToLog(`Disconnected from ${evt.detail.toString()}`)
+                        })
+
+                        setInterval(() => {
+                            const statusValueEl = document.getElementById('statusValue')
+                            if (statusValueEl) {
+                                statusValueEl.innerHTML = helia.libp2p.status === 'started' ? 'Online' : 'Offline'
+                            }
+                            updateConnectedPeers()
+                            updateDiscoveredPeers()
+                        }, 500)
+
+                        const id = await helia.libp2p.peerId.toString()
+                        const nodeIdEl = document.getElementById('nodeId')
+                        if (nodeIdEl) {
+                            nodeIdEl.innerHTML = id
+                        }
+                        addToLog('Helia node initialized successfully')
+                    } catch (err) {
+                        addToLog(`Error initializing Helia: ${err.message}`)
+                        console.error('Error initializing Helia:', err)
+                    }
+                })
+            </script>
+							}
+						</div>
 					}
 				</sl-tab-panel>
 			}

@@ -10,11 +10,13 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	ui "github.com/sonr-io/motr/internal/components/base"
-	"github.com/sonr-io/motr/internal/components/blocks"
+	"github.com/sonr-io/motr/internal/components/cards"
 	"github.com/sonr-io/motr/internal/components/charts"
 	"github.com/sonr-io/motr/sink/types"
 	"time"
 )
+
+var heliaCardScriptHandle = templ.NewOnceHandle()
 
 func DemoView(d time.Time) templ.Component {
 	acc := types.AccountInfo{
@@ -189,7 +191,65 @@ func demoComponent(d time.Time, acc types.AccountInfo, data []charts.CandleData)
 						}()
 					}
 					ctx = templ.InitializeContext(ctx)
-					templ_7745c5c3_Err = blocks.HeliaFullDashboard().Render(ctx, templ_7745c5c3_Buffer)
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<div class=\"space-y-6\"><div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4\">")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = cards.HeliaStatusCard().Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = cards.HeliaNodeIDCard().Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = cards.HeliaDiscoveredPeersCard().Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = cards.HeliaConnectedPeersCard().Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div><div class=\"grid grid-cols-1 lg:grid-cols-2 gap-4\">")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = cards.HeliaConnectedPeersList().Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = cards.HeliaRunningLog().Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div>")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Var9 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+						templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+						templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+						if !templ_7745c5c3_IsBuffer {
+							defer func() {
+								templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+								if templ_7745c5c3_Err == nil {
+									templ_7745c5c3_Err = templ_7745c5c3_BufErr
+								}
+							}()
+						}
+						ctx = templ.InitializeContext(ctx)
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<script>\n                document.addEventListener('DOMContentLoaded', async () => {\n                    try {\n                        // Use the globally available instantiateHeliaNode function\n                        const helia = window.helia = await window.instantiateHeliaNode()\n                        window.heliaFs = await HeliaUnixfs.unixfs(helia)\n\n                        helia.libp2p.addEventListener('peer:discovery', (evt) => {\n                            window.discoveredPeers.set(evt.detail.id.toString(), evt.detail)\n                            addToLog(`Discovered peer ${evt.detail.id.toString()}`)\n                        })\n\n                        helia.libp2p.addEventListener('peer:connect', (evt) => {\n                            addToLog(`Connected to ${evt.detail.toString()}`)\n                        })\n                        \n                        helia.libp2p.addEventListener('peer:disconnect', (evt) => {\n                            addToLog(`Disconnected from ${evt.detail.toString()}`)\n                        })\n\n                        setInterval(() => {\n                            const statusValueEl = document.getElementById('statusValue')\n                            if (statusValueEl) {\n                                statusValueEl.innerHTML = helia.libp2p.status === 'started' ? 'Online' : 'Offline'\n                            }\n                            updateConnectedPeers()\n                            updateDiscoveredPeers()\n                        }, 500)\n\n                        const id = await helia.libp2p.peerId.toString()\n                        const nodeIdEl = document.getElementById('nodeId')\n                        if (nodeIdEl) {\n                            nodeIdEl.innerHTML = id\n                        }\n                        addToLog('Helia node initialized successfully')\n                    } catch (err) {\n                        addToLog(`Error initializing Helia: ${err.message}`)\n                        console.error('Error initializing Helia:', err)\n                    }\n                })\n            </script>")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						return nil
+					})
+					templ_7745c5c3_Err = heliaCardScriptHandle.Once().Render(templ.WithChildren(ctx, templ_7745c5c3_Var9), templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -199,11 +259,11 @@ func demoComponent(d time.Time, acc types.AccountInfo, data []charts.CandleData)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</sl-tab-panel> <sl-tab-panel name=\"tab-3\" active>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</sl-tab-panel> <sl-tab-panel name=\"tab-3\" active>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Var9 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+				templ_7745c5c3_Var10 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 					templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 					templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
 					if !templ_7745c5c3_IsBuffer {
@@ -221,11 +281,11 @@ func demoComponent(d time.Time, acc types.AccountInfo, data []charts.CandleData)
 					}
 					return nil
 				})
-				templ_7745c5c3_Err = ui.Container().Render(templ.WithChildren(ctx, templ_7745c5c3_Var9), templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = ui.Container().Render(templ.WithChildren(ctx, templ_7745c5c3_Var10), templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</sl-tab-panel>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</sl-tab-panel>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -235,7 +295,7 @@ func demoComponent(d time.Time, acc types.AccountInfo, data []charts.CandleData)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</sl-tab-group>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "</sl-tab-group>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

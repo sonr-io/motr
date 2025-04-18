@@ -4,7 +4,7 @@ main = "./worker.mjs"
 compatibility_date = "2025-04-14"
 
 [build]
-command = "bun run build"
+command = "npm run build"
 
 [dev]
 port = 8788
@@ -31,4 +31,9 @@ SONR_GRPC_URL = 'https://grpc.sonr.land'
 MATRIX_SERVER = 'https://bm.chat'
 MOTR_MODE = 'controller'
 
+[durable_objects]
+bindings = [{name = "VAULT", class_name = "Vault"}]
 
+[[migrations]]
+tag = "v1" # Should be unique for each entry
+new_classes = ["Vault"] # List the classes that should be created

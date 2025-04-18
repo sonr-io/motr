@@ -4,7 +4,7 @@ main = "build/worker.mjs"
 compatibility_date = "2025-04-14"
 
 [build]
-command = "bun run build"
+command = "npm run build"
 
 [dev]
 port = 8787

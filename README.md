@@ -54,38 +54,38 @@ docker-compose down
 package main
 
 import (
-	"database/sql"
-	"log"
-	
-	"github.com/sonr-io/motr/app"
-	"github.com/sonr-io/motr/pkg/models"
-	"github.com/sonr-io/motr/pkg/types"
+ "database/sql"
+ "log"
+ 
+ "github.com/sonr-io/motr/app"
+ "github.com/sonr-io/motr/pkg/models"
+ "github.com/sonr-io/motr/pkg/types"
 )
 
 func main() {
-	dbq, err := setupDatabase()
-	if err != nil {
-		log.Fatal(err)
-	}
-	
-	config := &types.Config{
-		MotrToken: "your-token",
-		SonrChainID: "sonr-testnet-1",
-		// Other configuration options
-	}
-	
-	vault, err := app.New(config, dbq)
-	if err != nil {
-		log.Fatal(err)
-	}
-	
-	// Start the server
-	vault.Start(":8080")
+ dbq, err := setupDatabase()
+ if err != nil {
+  log.Fatal(err)
+ }
+ 
+ config := &types.Config{
+  MotrToken: "your-token",
+  SonrChainID: "sonr-testnet-1",
+  // Other configuration options
+ }
+ 
+ vault, err := app.New(config, dbq)
+ if err != nil {
+  log.Fatal(err)
+ }
+ 
+ // Start the server
+ vault.Start(":8080")
 }
 
 func setupDatabase() (*models.Queries, error) {
-	// Initialize your database connection
-	// ...
+ // Initialize your database connection
+ // ...
 }
 ```
 

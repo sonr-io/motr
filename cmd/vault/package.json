@@ -1,15 +1,15 @@
 {
-  "name": "@sonr-io/motr-controller",
+  "name": "@sonr-io/motr-vault",
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "bun install && bun run build:assets && bun run build:wasm",
-    "build:assets": "go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go",
-    "build:wasm": "GOOS=js GOARCH=wasm go build -o ./build/app.wasm .",
+    "build": "npm run clean && npm run assets && npm run wasm",
+    "assets": "go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go",
+    "wasm": "GOOS=js GOARCH=wasm go build -o ./build/app.wasm .",
     "migrate": "wrangler d1 execute motr-controller-db --remote --file=./schema.sql",
-    "deploy": "bunx wrangler deploy",
-    "start": "bunx wrangler dev",
-    "clean": "rm -rf ./build && rm -rf .wrangler"
+    "deploy": "wrangler deploy",
+    "start": "wrangler dev",
+    "clean": "rm -rf ./build && rm -rf .wrangler && rm -rf ./dist && rm -rf ./node_modules && npm install"
   },
   "dependencies": {
     "@extism/extism": "^2.0.0-rc11"

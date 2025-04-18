@@ -7,7 +7,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/config"
 
-	// "github.com/sonr-io/motr/internal/database"
 	"github.com/sonr-io/motr/internal/handlers"
 	"github.com/sonr-io/motr/internal/middleware"
 	"github.com/syumai/workers"
