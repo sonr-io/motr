@@ -24,26 +24,26 @@ type ResolverController interface {
 	Resolver() resolver.Querier
 }
 
-type controller struct {
-	common   common.Querier
-	resolver resolver.Querier
-	vault    vault.Querier
+type ControllerImpl struct {
+	CommonDB   common.Querier
+	ResolverDB resolver.Querier
+	VaultDB    vault.Querier
 }
 
-func (c controller) Common() common.Querier {
-	return c.common
+func (c *ControllerImpl) Common() common.Querier {
+	return c.CommonDB
 }
 
-func (c controller) Resolver() resolver.Querier {
-	return c.resolver
+func (c *ControllerImpl) Resolver() resolver.Querier {
+	return c.ResolverDB
 }
 
-func (c controller) Vault() vault.Querier {
-	return c.vault
+func (c *ControllerImpl) Vault() vault.Querier {
+	return c.VaultDB
 }
 
 func NewVaultController(c config.DBConfig) (VaultController, error) {
-	cdb, err := c.GetVault()
+	cdb, err := c.GetCommon()
 	if err != nil {
 		return nil, err
 	}
@@ -51,14 +51,14 @@ func NewVaultController(c config.DBConfig) (VaultController, error) {
 	if err != nil {
 		return nil, err
 	}
-	return controller{
-		common: common.New(cdb),
-		vault:  vault.New(vdb),
+	return &ControllerImpl{
+		CommonDB: common.New(cdb),
+		VaultDB:  vault.New(vdb),
 	}, nil
 }
 
 func NewResolverController(c config.DBConfig) (ResolverController, error) {
-	cdb, err := c.GetResolver()
+	cdb, err := c.GetCommon()
 	if err != nil {
 		return nil, err
 	}
@@ -66,8 +66,8 @@ func NewResolverController(c config.DBConfig) (ResolverController, error) {
 	if err != nil {
 		return nil, err
 	}
-	return controller{
-		common:   common.New(cdb),
-		resolver: resolver.New(rdb),
+	return &ControllerImpl{
+		CommonDB:   common.New(cdb),
+		ResolverDB: resolver.New(rdb),
 	}, nil
 }
