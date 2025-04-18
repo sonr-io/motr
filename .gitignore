@@ -108,13 +108,11 @@ cmd/gateway/node_modules
 pkg/nebula/node_modules
 configs/logs.json
 
-mprocs.yaml
 
 !devbox.lock
 !buf.lock
 
 .air.toml
-mprocs.yaml
 mprocs.log
 tools-stamp
 deploy/conf
