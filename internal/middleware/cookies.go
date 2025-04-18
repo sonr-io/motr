@@ -1,4 +1,7 @@
-package common
+//go:build js && wasm
+// +build js,wasm
+
+package middleware
 
 import (
 	"encoding/base64"

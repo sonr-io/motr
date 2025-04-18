@@ -20,7 +20,7 @@ func main() {
 	e := echo.New()
 	e.Use(sonr.UseMiddleware(c.Sonr))
 	e.Use(vault.UseMiddleware(c.IPFS))
-	e.GET("/", handlers.IndexHandler(c.DB.GetCommon()))
-	e.GET("/login", handlers.LoginHandler(c.DB.GetVault()))
+	e.GET("/", handlers.Index(c.DB.GetCommon()).Handler)
+	e.GET("/login", handlers.Login(c.DB.GetVault()).Handler)
 	workers.Serve(e)
 }

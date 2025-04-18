@@ -1,4 +1,7 @@
-package common
+//go:build js && wasm
+// +build js,wasm
+
+package middleware
 
 import "github.com/labstack/echo/v4"
 

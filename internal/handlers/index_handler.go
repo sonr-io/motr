@@ -1,3 +1,6 @@
+//go:build js && wasm
+// +build js,wasm
+
 package handlers
 
 import (
@@ -13,8 +16,12 @@ type index struct {
 	Data *common.Queries
 }
 
-func IndexHandler(c *common.Queries) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		return middleware.Render(c, views.DemoView(time.Now()))
+func Index(db *common.Queries) *index {
+	return &index{
+		Data: db,
 	}
+}
+
+func (i index) Handler(c echo.Context) error {
+	return middleware.Render(c, views.DemoView(time.Now()))
 }

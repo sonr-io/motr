@@ -1,3 +1,6 @@
+//go:build js && wasm
+// +build js,wasm
+
 package handlers
 
 import (
@@ -8,8 +11,16 @@ import (
 	"github.com/sonr-io/motr/sink/options"
 )
 
-func RegisterHandler(q *resolver.Queries) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		return middleware.Render(c, views.RegisterView(options.RegisterOptions{}))
+type register struct {
+	Data *resolver.Queries
+}
+
+func Register(q *resolver.Queries) *register {
+	return &register{
+		Data: q,
 	}
+}
+
+func (r register) Handler(c echo.Context) error {
+	return middleware.Render(c, views.RegisterView(options.RegisterOptions{}))
 }
