@@ -8,13 +8,9 @@ package blocks
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-type Coin struct {
-	Ticker    string
-	Name      string
-	IsDefault bool
-}
+import "github.com/sonr-io/motr/sink/types"
 
-var defaultCoins = []Coin{
+var defaultCoins = []types.Coin{
 	{Ticker: "SNR", Name: "Sonr", IsDefault: true},
 	{Ticker: "BTC", Name: "Bitcoin", IsDefault: true},
 	{Ticker: "ETH", Name: "Ethereum", IsDefault: true},
@@ -70,7 +66,7 @@ func CoinsDropdown() templ.Component {
 	})
 }
 
-func CoinOption(a Coin) templ.Component {
+func CoinOption(a types.Coin) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -99,7 +95,7 @@ func CoinOption(a Coin) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(a.Ticker)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/blocks/coins_dropdown.templ`, Line: 55, Col: 29}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/blocks/coins_dropdown.templ`, Line: 51, Col: 29}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -112,7 +108,7 @@ func CoinOption(a Coin) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(a.Ticker)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/blocks/coins_dropdown.templ`, Line: 56, Col: 41}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/blocks/coins_dropdown.templ`, Line: 52, Col: 41}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -125,7 +121,7 @@ func CoinOption(a Coin) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(a.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/blocks/coins_dropdown.templ`, Line: 57, Col: 11}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/blocks/coins_dropdown.templ`, Line: 53, Col: 11}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -143,7 +139,7 @@ func CoinOption(a Coin) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(a.Ticker)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/blocks/coins_dropdown.templ`, Line: 61, Col: 29}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/blocks/coins_dropdown.templ`, Line: 57, Col: 29}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -156,7 +152,7 @@ func CoinOption(a Coin) templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(a.Ticker)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/blocks/coins_dropdown.templ`, Line: 62, Col: 41}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/blocks/coins_dropdown.templ`, Line: 58, Col: 41}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
@@ -169,7 +165,7 @@ func CoinOption(a Coin) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(a.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/blocks/coins_dropdown.templ`, Line: 63, Col: 11}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/blocks/coins_dropdown.templ`, Line: 59, Col: 11}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {

@@ -127,10 +127,6 @@ func registerComponent(addr, handle, challenge string) templ.Component {
 						}()
 					}
 					ctx = templ.InitializeContext(ctx)
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<sl-tab slot=\"nav\" panel=\"tab-1\">Time</sl-tab> <sl-tab slot=\"nav\" panel=\"tab-2\">Account</sl-tab> <sl-tab slot=\"nav\" panel=\"tab-3\">Prices</sl-tab>")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
 					return nil
 				})
 				templ_7745c5c3_Err = ui.NavRight().Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
@@ -171,7 +167,7 @@ func registerComponent(addr, handle, challenge string) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, " ")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, " ")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -191,7 +187,7 @@ func registerComponent(addr, handle, challenge string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</sl-tab-group>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</sl-tab-group>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -1,12 +1,8 @@
 package blocks
 
-type Coin struct {
-	Ticker    string
-	Name      string
-	IsDefault bool
-}
+import "github.com/sonr-io/motr/sink/types"
 
-var defaultCoins = []Coin{
+var defaultCoins = []types.Coin{
 	{Ticker: "SNR", Name: "Sonr", IsDefault: true},
 	{Ticker: "BTC", Name: "Bitcoin", IsDefault: true},
 	{Ticker: "ETH", Name: "Ethereum", IsDefault: true},
@@ -50,7 +46,7 @@ templ CoinsDropdown() {
 	</script>
 }
 
-templ CoinOption(a Coin) {
+templ CoinOption(a types.Coin) {
 	if a.IsDefault {
 		<sl-option value={ a.Ticker } selected disabled>
 			<sl-icon slot="prefix" name={ a.Ticker } library="crypto"></sl-icon>
