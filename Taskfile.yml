@@ -117,7 +117,7 @@ tasks:
     generates:
       - schema.sql
 
-  migrate:common:
+
     internal: true
     desc: Migrate the common database
     dir: "{{.ROOT_DIR}}/sink"
