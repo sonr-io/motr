@@ -1,7 +1,7 @@
 #yaml-schema-server:https://json.schemastore.org/mprocs-0.6.4.json
 procs:
   resolver:
-    shell: "task start:resolver"
+    shell: "task start:front"
   vault:
     shell: "task start:vault"
 hide_keymap_window: true

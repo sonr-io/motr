@@ -15,9 +15,9 @@ tasks:
     dir: "{{.ROOT_DIR}}/cmd/vault"
     cmd: bun run start
 
-  start:resolver:
-    desc: Start the resolver
-    dir: "{{.ROOT_DIR}}/cmd/resolver"
+  start:front:
+    desc: Start the frontend
+    dir: "{{.ROOT_DIR}}/cmd/front"
     cmd: bun run start
 
   build:vault:
@@ -29,9 +29,9 @@ tasks:
     generates:
       - build/app.wasm
 
-  build:resolver:
-    desc: Build the resolver
-    dir: "{{.ROOT_DIR}}/cmd/resolver"
+  build:front:
+    desc: Build the frontend
+    dir: "{{.ROOT_DIR}}/cmd/front"
     cmd: bun run build
     sources:
       - main.go
@@ -44,9 +44,9 @@ tasks:
     cmds:
       - bun run deploy
 
-  deploy:resolver:
-    desc: Deploy the resolver
-    dir: "{{.ROOT_DIR}}/cmd/resolver"
+  deploy:front:
+    desc: Deploy the frontend
+    dir: "{{.ROOT_DIR}}/cmd/front"
     cmd: bun run deploy
 
   build:packages:
@@ -77,7 +77,7 @@ tasks:
     desc: Generate templ
     cmd: templ generate
 
-  gen:sqlc:
+  db:sqlc:
     desc: Generate sqlc
     cmd: sqlc generate
 
@@ -101,10 +101,10 @@ tasks:
     generates:
       - schema.sql
 
-  migrate:resolver:
+  migrate:front:
     internal: true
-    desc: Migrate the resolver database
-    dir: "{{.ROOT_DIR}}/cmd/resolver"
+    desc: Migrate the frontend database
+    dir: "{{.ROOT_DIR}}/cmd/front"
     cmd: npm run migrate
     sources:
       - schema.sql
@@ -125,7 +125,7 @@ tasks:
     desc: Remove build artifacts
     cmds:
       - task: tidy:vault
-      - task: tidy:resolver
+      - task: tidy:front
       - go mod tidy
       - rm -rf .task
 
@@ -138,10 +138,10 @@ tasks:
       - rm -rf ./build
       - rm -rf ./dist
 
-  tidy:resolver:
-    desc: Go mod tidy the resolver
+  tidy:front:
+    desc: Go mod tidy the frontend
     internal: true
-    dir: "{{.ROOT_DIR}}/cmd/resolver"
+    dir: "{{.ROOT_DIR}}/cmd/front"
     cmds:
       - bun run clean
       - rm -rf ./build
