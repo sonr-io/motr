@@ -25,3 +25,30 @@ type Account struct {
 	IsDelegator   bool         `json:"is_delegator"`
 	IsAccountable bool         `json:"is_accountable"`
 }
+
+type Asset struct {
+	ID          string         `json:"id"`
+	CreatedAt   time.Time      `json:"created_at"`
+	UpdatedAt   time.Time      `json:"updated_at"`
+	DeletedAt   sql.NullTime   `json:"deleted_at"`
+	Name        string         `json:"name"`
+	Symbol      string         `json:"symbol"`
+	Decimals    int64          `json:"decimals"`
+	ChainID     string         `json:"chain_id"`
+	Channel     string         `json:"channel"`
+	AssetType   string         `json:"asset_type"`
+	CoingeckoID sql.NullString `json:"coingecko_id"`
+}
+
+type Credential struct {
+	ID                      string       `json:"id"`
+	CreatedAt               time.Time    `json:"created_at"`
+	UpdatedAt               time.Time    `json:"updated_at"`
+	DeletedAt               sql.NullTime `json:"deleted_at"`
+	Handle                  string       `json:"handle"`
+	CredentialID            string       `json:"credential_id"`
+	AuthenticatorAttachment string       `json:"authenticator_attachment"`
+	Origin                  string       `json:"origin"`
+	Type                    string       `json:"type"`
+	Transports              string       `json:"transports"`
+}

@@ -9,62 +9,6 @@ import (
 	"context"
 )
 
-const getAccountByAddress = `-- name: GetAccountByAddress :one
-SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, controller, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
-WHERE address = ? AND deleted_at IS NULL
-LIMIT 1
-`
-
-func (q *Queries) GetAccountByAddress(ctx context.Context, address string) (Account, error) {
-	row := q.db.QueryRowContext(ctx, getAccountByAddress, address)
-	var i Account
-	err := row.Scan(
-		&i.ID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.DeletedAt,
-		&i.Number,
-		&i.Sequence,
-		&i.Address,
-		&i.PublicKey,
-		&i.ChainID,
-		&i.Controller,
-		&i.IsSubsidiary,
-		&i.IsValidator,
-		&i.IsDelegator,
-		&i.IsAccountable,
-	)
-	return i, err
-}
-
-const getAccountByChainID = `-- name: GetAccountByChainID :one
-SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, controller, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
-WHERE chain_id = ? AND deleted_at IS NULL
-LIMIT 1
-`
-
-func (q *Queries) GetAccountByChainID(ctx context.Context, chainID string) (Account, error) {
-	row := q.db.QueryRowContext(ctx, getAccountByChainID, chainID)
-	var i Account
-	err := row.Scan(
-		&i.ID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.DeletedAt,
-		&i.Number,
-		&i.Sequence,
-		&i.Address,
-		&i.PublicKey,
-		&i.ChainID,
-		&i.Controller,
-		&i.IsSubsidiary,
-		&i.IsValidator,
-		&i.IsDelegator,
-		&i.IsAccountable,
-	)
-	return i, err
-}
-
 const getAccountByController = `-- name: GetAccountByController :one
 SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, controller, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
 WHERE controller = ? AND deleted_at IS NULL
@@ -73,34 +17,6 @@ LIMIT 1
 
 func (q *Queries) GetAccountByController(ctx context.Context, controller string) (Account, error) {
 	row := q.db.QueryRowContext(ctx, getAccountByController, controller)
-	var i Account
-	err := row.Scan(
-		&i.ID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.DeletedAt,
-		&i.Number,
-		&i.Sequence,
-		&i.Address,
-		&i.PublicKey,
-		&i.ChainID,
-		&i.Controller,
-		&i.IsSubsidiary,
-		&i.IsValidator,
-		&i.IsDelegator,
-		&i.IsAccountable,
-	)
-	return i, err
-}
-
-const getAccountByID = `-- name: GetAccountByID :one
-SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, controller, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
-WHERE id = ? AND deleted_at IS NULL
-LIMIT 1
-`
-
-func (q *Queries) GetAccountByID(ctx context.Context, id string) (Account, error) {
-	row := q.db.QueryRowContext(ctx, getAccountByID, id)
 	var i Account
 	err := row.Scan(
 		&i.ID,
@@ -249,35 +165,57 @@ func (q *Queries) GetAccountsByChainID(ctx context.Context, chainID string) ([]A
 	return items, nil
 }
 
-const getAccountsByController = `-- name: GetAccountsByController :many
-SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, controller, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
-WHERE controller = ? AND deleted_at IS NULL
+const getCredentialByID = `-- name: GetCredentialByID :one
+SELECT id, created_at, updated_at, deleted_at, handle, credential_id, authenticator_attachment, origin, type, transports FROM credentials
+WHERE credential_id = ?
+AND deleted_at IS NULL
+LIMIT 1
 `
 
-func (q *Queries) GetAccountsByController(ctx context.Context, controller string) ([]Account, error) {
-	rows, err := q.db.QueryContext(ctx, getAccountsByController, controller)
+func (q *Queries) GetCredentialByID(ctx context.Context, credentialID string) (Credential, error) {
+	row := q.db.QueryRowContext(ctx, getCredentialByID, credentialID)
+	var i Credential
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Handle,
+		&i.CredentialID,
+		&i.AuthenticatorAttachment,
+		&i.Origin,
+		&i.Type,
+		&i.Transports,
+	)
+	return i, err
+}
+
+const getCredentialsByHandle = `-- name: GetCredentialsByHandle :many
+SELECT id, created_at, updated_at, deleted_at, handle, credential_id, authenticator_attachment, origin, type, transports FROM credentials
+WHERE handle = ?
+AND deleted_at IS NULL
+`
+
+func (q *Queries) GetCredentialsByHandle(ctx context.Context, handle string) ([]Credential, error) {
+	rows, err := q.db.QueryContext(ctx, getCredentialsByHandle, handle)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Account
+	var items []Credential
 	for rows.Next() {
-		var i Account
+		var i Credential
 		if err := rows.Scan(
 			&i.ID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.DeletedAt,
-			&i.Number,
-			&i.Sequence,
-			&i.Address,
-			&i.PublicKey,
-			&i.ChainID,
-			&i.Controller,
-			&i.IsSubsidiary,
-			&i.IsValidator,
-			&i.IsDelegator,
-			&i.IsAccountable,
+			&i.Handle,
+			&i.CredentialID,
+			&i.AuthenticatorAttachment,
+			&i.Origin,
+			&i.Type,
+			&i.Transports,
 		); err != nil {
 			return nil, err
 		}
@@ -290,4 +228,58 @@ func (q *Queries) GetAccountsByController(ctx context.Context, controller string
 		return nil, err
 	}
 	return items, nil
+}
+
+const insertCredential = `-- name: InsertCredential :one
+INSERT INTO credentials (
+    handle,
+    credential_id,
+    origin,
+    type,
+    transports
+) VALUES (?, ?, ?, ?, ?)
+RETURNING id, created_at, updated_at, deleted_at, handle, credential_id, authenticator_attachment, origin, type, transports
+`
+
+type InsertCredentialParams struct {
+	Handle       string `json:"handle"`
+	CredentialID string `json:"credential_id"`
+	Origin       string `json:"origin"`
+	Type         string `json:"type"`
+	Transports   string `json:"transports"`
+}
+
+func (q *Queries) InsertCredential(ctx context.Context, arg InsertCredentialParams) (Credential, error) {
+	row := q.db.QueryRowContext(ctx, insertCredential,
+		arg.Handle,
+		arg.CredentialID,
+		arg.Origin,
+		arg.Type,
+		arg.Transports,
+	)
+	var i Credential
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Handle,
+		&i.CredentialID,
+		&i.AuthenticatorAttachment,
+		&i.Origin,
+		&i.Type,
+		&i.Transports,
+	)
+	return i, err
+}
+
+const softDeleteCredential = `-- name: SoftDeleteCredential :exec
+UPDATE credentials
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE credential_id = ?
+`
+
+func (q *Queries) SoftDeleteCredential(ctx context.Context, credentialID string) error {
+	_, err := q.db.ExecContext(ctx, softDeleteCredential, credentialID)
+	return err
 }

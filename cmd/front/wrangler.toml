@@ -3,6 +3,10 @@ name = "motr-front"
 main = "build/worker.mjs"
 compatibility_date = "2025-04-14"
 
+routes = [
+  { pattern = "sonr.id", custom_domain = true },
+]
+
 [build]
 command = "npm run build"
 
@@ -11,22 +15,20 @@ port = 8787
 
 [observability]
 enabled = true
+logpush = true
 
 [[d1_databases]]
 binding = "COMMON_DB" # available in your Worker on env.DB
 database_name = "motr-common-db"
 database_id = "701488b4-de41-4f75-9ca9-b4d37acf621e"
 
-[[d1_databases]]
-binding = "RESOLVER_DB" # available in your Worker on env.DB
-database_name = "motr-resolver-db"
-database_id = "f807c224-7a15-480e-9f93-f4dc203f7113"
-
 [vars]
 SONR_CHAIN_ID = 'sonr-testnet-1'
 IPFS_GATEWAY = 'https://ipfs.sonr.land'
 SONR_API_URL = 'https://api.sonr.land'
 SONR_RPC_URL = 'https://rpc.sonr.land'
-SONR_GRPC_URL = 'https://grpc.sonr.land'
+SONR_GRPC_URL = 'https://grpc.sonr.id'
 MATRIX_SERVER = 'https://bm.chat'
+MOTR_GATEWAY = 'https://sonr.id'
+MOTR_VAULT = 'https://did.run'
 MOTR_MODE = 'resolver'

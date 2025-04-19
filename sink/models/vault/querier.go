@@ -9,15 +9,15 @@ import (
 )
 
 type Querier interface {
-	GetAccountByAddress(ctx context.Context, address string) (Account, error)
-	GetAccountByChainID(ctx context.Context, chainID string) (Account, error)
 	GetAccountByController(ctx context.Context, controller string) (Account, error)
-	GetAccountByID(ctx context.Context, id string) (Account, error)
 	GetAccountByNumber(ctx context.Context, number int64) (Account, error)
 	GetAccountByPublicKey(ctx context.Context, publicKey string) (Account, error)
 	GetAccountBySequence(ctx context.Context, sequence int64) (Account, error)
 	GetAccountsByChainID(ctx context.Context, chainID string) ([]Account, error)
-	GetAccountsByController(ctx context.Context, controller string) ([]Account, error)
+	GetCredentialByID(ctx context.Context, credentialID string) (Credential, error)
+	GetCredentialsByHandle(ctx context.Context, handle string) ([]Credential, error)
+	InsertCredential(ctx context.Context, arg InsertCredentialParams) (Credential, error)
+	SoftDeleteCredential(ctx context.Context, credentialID string) error
 }
 
 var _ Querier = (*Queries)(nil)

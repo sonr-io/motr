@@ -55,33 +55,6 @@ func DBCommon(c config.Config) echo.MiddlewareFunc {
 	}
 }
 
-// DBResolver adds a ResolverController reference to the session context
-func DBResolver(c config.Config) echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(ctx echo.Context) error {
-			// Try to get session context
-			sc, ok := ctx.Get("session").(*SessionContext)
-			if !ok {
-				// Create a new session context
-				sc = &SessionContext{
-					Context: ctx,
-					ID:      getOrCreateSessionID(ctx),
-				}
-				ctx.Set("session", sc)
-			}
-
-			// Create resolver controller
-			resolverController, err := database.NewResolverController(c.DB)
-			if err != nil {
-				return err
-			}
-
-			sc.resolverController = resolverController
-			return next(ctx)
-		}
-	}
-}
-
 // DBVault adds a VaultController reference to the session context
 func DBVault(c config.Config) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {

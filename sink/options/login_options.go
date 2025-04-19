@@ -1,5 +1,8 @@
 package options
 
 type LoginOptions struct {
-	Account string
+	Account            string
+	Handle             string
+	Challenge          string
+	AllowedCredentials []string
 }

@@ -3,14 +3,19 @@ name = "motr-vault"
 main = "./worker.mjs"
 compatibility_date = "2025-04-14"
 
+routes = [
+  { pattern = "did.run", custom_domain = true },
+]
+
 [build]
 command = "npm run build"
 
 [dev]
-port = 8788
+port = 6969
 
 [observability]
 enabled = true
+logpush = true
 
 [[d1_databases]]
 binding = "COMMON_DB" # available in your Worker on env.DB
@@ -29,6 +34,8 @@ SONR_API_URL = 'https://api.sonr.land'
 SONR_RPC_URL = 'https://rpc.sonr.land'
 SONR_GRPC_URL = 'https://grpc.sonr.land'
 MATRIX_SERVER = 'https://bm.chat'
+MOTR_GATEWAY = 'https://sonr.id'
+MOTR_VAULT = 'https://did.run'
 MOTR_MODE = 'controller'
 
 [durable_objects]

@@ -6,9 +6,39 @@ vars:
     sh: git rev-parse --show-toplevel
 
 tasks:
-  dev:
+  clean:
+    desc: Remove build artifacts
+    cmds:
+      - task: tidy:vault
+      - task: tidy:front
+      - go mod tidy
+      - rm -rf .task
+
+  start:
     desc: Start the development server
     cmd: tmux new-window -c "#{pane_current_path}" "bunx mprocs"
+
+  deploy:
+    desc: Deploy all
+    cmds:
+      - task: deploy:vault
+      - task: deploy:front
+
+  publish:
+    desc: Publish all packages
+    cmds:
+      - make -C packages/cosmes bump
+      - make -C packages/shoelace bump
+      - make -C packages/cosmes publish
+      - make -C packages/shoelace publish
+      - make -C signer publish
+
+  build:
+    desc: Build all
+    cmds:
+      - task: build:packages
+      - task: build:vault
+      - task: build:front
 
   start:vault:
     desc: Start the vault
@@ -56,19 +86,6 @@ tasks:
       - make -C packages/shoelace build
       - make -C signer build
 
-  bump:packages:
-    desc: Bump all packages
-    cmds:
-      - make -C packages/cosmes bump
-      - make -C packages/shoelace bump
-
-  publish:packages:
-    desc: Publish all packages
-    cmds:
-      - make -C packages/cosmes publish
-      - make -C packages/shoelace publish
-      - make -C signer publish
-
   gen:proto:
     desc: Generate proto
     cmd: make -C packages/cosmes gen
@@ -87,7 +104,6 @@ tasks:
       - Are you sure you want to run this command? This will delete all data in the database.
     cmds:
       - task: migrate:vault
-      - task: migrate:resolver
       - task: migrate:common
       - task: gen:sqlc
 
@@ -95,16 +111,6 @@ tasks:
     internal: true
     desc: Migrate the vault database
     dir: "{{.ROOT_DIR}}/cmd/vault"
-    cmd: npm run migrate
-    sources:
-      - schema.sql
-    generates:
-      - schema.sql
-
-  migrate:front:
-    internal: true
-    desc: Migrate the frontend database
-    dir: "{{.ROOT_DIR}}/cmd/front"
     cmd: npm run migrate
     sources:
       - schema.sql
@@ -121,13 +127,6 @@ tasks:
     generates:
       - schema.sql
 
-  clean:
-    desc: Remove build artifacts
-    cmds:
-      - task: tidy:vault
-      - task: tidy:front
-      - go mod tidy
-      - rm -rf .task
 
   tidy:vault:
     desc: Go mod tidy the vault
