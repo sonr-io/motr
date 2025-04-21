@@ -1,7 +1,4 @@
-//go:build js && wasm
-// +build js,wasm
-
-package home
+package handlers
 
 import (
 	"github.com/labstack/echo/v4"
@@ -9,6 +6,6 @@ import (
 	"github.com/sonr-io/motr/x/home/views"
 )
 
-func (cc *HomeController) HandleHome(c echo.Context) error {
+func (h *Handler) HandleDefault(c echo.Context) error {
 	return middleware.Render(c, views.HomeView())
 }

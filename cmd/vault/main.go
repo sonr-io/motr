@@ -16,10 +16,10 @@ func main() {
 	e.Use(middleware.UseSession(c), middleware.UseCloudflareCache(c))
 
 	// Register controllers
-	if err := home.RegisterController(c, e); err != nil {
+	if err := home.Register(c, e); err != nil {
 		panic(err)
 	}
-	if err := auth.RegisterController(c, e); err != nil {
+	if err := auth.Register(c, e); err != nil {
 		panic(err)
 	}
 

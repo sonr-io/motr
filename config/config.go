@@ -10,6 +10,7 @@ import (
 	"github.com/sonr-io/motr/sink/models"
 	"github.com/syumai/workers/cloudflare"
 	_ "github.com/syumai/workers/cloudflare/d1"
+	"github.com/syumai/workers/cloudflare/kv"
 )
 
 type MotrMode string
@@ -29,6 +30,7 @@ type Config struct {
 	Mode  MotrMode    `json:"mode"`
 	DB    DBConfig    `json:"db"`
 	Cache CacheConfig `json:"cache"` // Added Cache configuration
+	KV    string      `json:"kv"`    // Added KV configuration
 }
 
 func getConfig() Config {
@@ -38,8 +40,13 @@ func getConfig() Config {
 		Mode:  getMotrMode(),
 		DB:    getDBConfig(),
 		Cache: getCacheConfig(), // Added Cache configuration
+		KV:    "SESSIONS",
 	}
 	return c
+}
+
+func (c Config) GetKVNamespace() (*kv.Namespace, error) {
+	return kv.NewNamespace(c.KV)
 }
 
 type SonrConfig struct {

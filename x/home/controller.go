@@ -4,32 +4,16 @@
 package home
 
 import (
-	"context"
-
 	"github.com/sonr-io/motr/config"
-	"github.com/sonr-io/motr/sink/models"
+	"github.com/sonr-io/motr/x/home/handlers"
 )
 
-type HomeController struct {
-	Querier models.Querier
-}
-
-func RegisterController(cfg config.Config, s *config.Server) error {
+func Register(cfg config.Config, s *config.Server) error {
 	q, err := cfg.DB.GetQuerier()
 	if err != nil {
 		return err
 	}
-	c := &HomeController{Querier: q}
-
-	// Register routes
-	s.GET("/", c.HandleHome)
+	h := handlers.New(q)
+	s.GET("/", h.HandleDefault)
 	return nil
-}
-
-func (c *HomeController) CheckHandle(handle string) bool {
-	res, err := c.Querier.CheckHandleExists(context.Background(), handle)
-	if err != nil {
-		return false
-	}
-	return res
 }

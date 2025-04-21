@@ -19,8 +19,12 @@ logpush = true
 
 [[d1_databases]]
 binding = "MOTR_DB" # available in your Worker on env.DB
-database_name = "motr-db"
-database_id = "abc70ab3-32ce-4600-9b15-a452f92b7987"
+database_name = "motr-controller-db"
+database_id = "872a4b08-7e07-4978-b227-5b60940238ed"
+
+[[kv_namespaces]]
+binding = "SESSIONS" # available in your Worker on env.KV
+id = "ea5de66fcfc14b5eba170395e29432ee"
 
 [vars]
 SONR_CHAIN_ID = 'sonr-testnet-1'

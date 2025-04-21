@@ -1,7 +1,4 @@
-//go:build js && wasm
-// +build js,wasm
-
-package dash
+package handlers
 
 import (
 	"time"
@@ -11,6 +8,6 @@ import (
 	"github.com/sonr-io/motr/x/dash/views"
 )
 
-func (cc *DashController) HandleDashOverview(c echo.Context) error {
+func (h *Handler) HandleOverview(c echo.Context) error {
 	return middleware.Render(c, views.DemoView(time.Now()))
 }
