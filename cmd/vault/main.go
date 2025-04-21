@@ -7,7 +7,6 @@ import (
 	"github.com/sonr-io/motr/config"
 	"github.com/sonr-io/motr/middleware"
 	"github.com/sonr-io/motr/x/auth"
-	"github.com/sonr-io/motr/x/home"
 )
 
 func main() {
@@ -16,9 +15,6 @@ func main() {
 	e.Use(middleware.UseSession(c), middleware.UseCloudflareCache(c))
 
 	// Register controllers
-	if err := home.Register(c, e); err != nil {
-		panic(err)
-	}
 	if err := auth.Register(c, e); err != nil {
 		panic(err)
 	}

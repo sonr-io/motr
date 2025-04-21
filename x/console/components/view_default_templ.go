@@ -10,7 +10,6 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	ui "github.com/sonr-io/motr/ui/base"
-	"github.com/sonr-io/motr/ui/cards"
 	"time"
 )
 
@@ -173,19 +172,19 @@ func demoComponent(d time.Time) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = cards.HeliaStatusCard().Render(ctx, templ_7745c5c3_Buffer)
+					templ_7745c5c3_Err = HeliaStatusCard().Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = cards.HeliaNodeIDCard().Render(ctx, templ_7745c5c3_Buffer)
+					templ_7745c5c3_Err = HeliaNodeIDCard().Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = cards.HeliaDiscoveredPeersCard().Render(ctx, templ_7745c5c3_Buffer)
+					templ_7745c5c3_Err = HeliaDiscoveredPeersCard().Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = cards.HeliaConnectedPeersCard().Render(ctx, templ_7745c5c3_Buffer)
+					templ_7745c5c3_Err = HeliaConnectedPeersCard().Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -193,11 +192,11 @@ func demoComponent(d time.Time) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = cards.HeliaConnectedPeersList().Render(ctx, templ_7745c5c3_Buffer)
+					templ_7745c5c3_Err = HeliaConnectedPeersList().Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = cards.HeliaRunningLog().Render(ctx, templ_7745c5c3_Buffer)
+					templ_7745c5c3_Err = HeliaRunningLog().Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}

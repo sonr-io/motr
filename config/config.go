@@ -29,9 +29,9 @@ type Config struct {
 	IPFS       IPFSConfig  `json:"ipfs"`
 	Mode       MotrMode    `json:"mode"`
 	DB         DBConfig    `json:"db"`
-	Cache      CacheConfig `json:"cache"` // Added Cache configuration
-	KVSessions string      `json:"kv"`    // Added KV configuration
-	KVHandles  string      `json:"kv"`    // Added KV configuration
+	Cache      CacheConfig `json:"cache"`    // Added Cache configuration
+	KVSessions string      `json:"sessions"` // Added KV configuration
+	KVHandles  string      `json:"handles"`  // Added KV configuration
 }
 
 func getConfig() Config {

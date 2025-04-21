@@ -2,7 +2,6 @@ package components
 
 import (
 	ui "github.com/sonr-io/motr/ui/base"
-	"github.com/sonr-io/motr/ui/cards"
 	"time"
 )
 
@@ -30,14 +29,14 @@ templ demoComponent(d time.Time) {
 					@ui.Container() {
 						<div class="space-y-6">
 							<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-								@cards.HeliaStatusCard()
-								@cards.HeliaNodeIDCard()
-								@cards.HeliaDiscoveredPeersCard()
-								@cards.HeliaConnectedPeersCard()
+								@HeliaStatusCard()
+								@HeliaNodeIDCard()
+								@HeliaDiscoveredPeersCard()
+								@HeliaConnectedPeersCard()
 							</div>
 							<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-								@cards.HeliaConnectedPeersList()
-								@cards.HeliaRunningLog()
+								@HeliaConnectedPeersList()
+								@HeliaRunningLog()
 							</div>
 							@heliaCardScriptHandle.Once() {
 								<script>
