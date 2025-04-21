@@ -8,7 +8,7 @@ package components
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/sonr-io/motr/sink/types"
+import "github.com/sonr-io/motr/x/auth/types"
 
 // accountInfoCard displays a user's account information in a card
 func AccountInfoCard(data types.AccountInfo) templ.Component {
