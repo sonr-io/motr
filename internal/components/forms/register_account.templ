@@ -4,6 +4,13 @@ import "github.com/sonr-io/motr/sink/options"
 
 templ RegisterAccountForm(opts options.RegisterOptions) {
 	<form id="passkey-form" hx-post="/register/account" hx-target="#passkey-form" hx-swap="innerHTML" hx-indicator="#indicator" hx-trigger="click">
-
+		
 	</form>
 }
+
+templ initialRegisterAccountFormView(opts options.RegisterOptions) {
+	<form id="passkey-form" hx-post="/register/account" hx-target="#passkey-form" hx-swap="innerHTML" hx-indicator="#indicator" hx-trigger="click">
+	</form>
+}
+
+

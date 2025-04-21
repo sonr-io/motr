@@ -108,7 +108,6 @@ tasks:
       - task: gen:sqlc
 
   migrate:vault:
-    internal: true
     desc: Migrate the vault database
     dir: "{{.ROOT_DIR}}/cmd/vault"
     cmd: npm run migrate
@@ -117,7 +116,7 @@ tasks:
     generates:
       - schema.sql
 
-
+  migrate:common:
     internal: true
     desc: Migrate the common database
     dir: "{{.ROOT_DIR}}/sink"

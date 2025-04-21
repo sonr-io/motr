@@ -4,9 +4,12 @@
 package handlers
 
 import (
+	"time"
+
 	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/internal/components/views"
 	"github.com/sonr-io/motr/internal/middleware"
+	"github.com/sonr-io/motr/sink/models/common"
 )
 
 func IndexHandler(c echo.Context) error {
@@ -14,9 +17,6 @@ func IndexHandler(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return demoViewHandler(cc, c)
-}
-
-func demoViewHandler(cc database.Controller, c echo.Context) error {
-	return middleware.Render(c, views.DemoView(cc.Common().GetSession(c.Request().Context()).CreatedAt))
+	cc.Common().CreateSession(c.Request().Context(), common.CreateSessionParams{})
+	return middleware.Render(c, views.DemoView(time.Now()))
 }
