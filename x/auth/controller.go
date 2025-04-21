@@ -22,13 +22,16 @@ func Register(cfg config.Config, s *config.Server) error {
 	if err != nil {
 		return err
 	}
-
 	h := handlers.New(q)
+
 	s.GET("/login", h.HandleLoginInitial)
 	s.GET("/login/:handle", h.HandleLoginStart)
+	s.POST("/login/:handle/check", h.HandleLoginUsernameCheck)
 	s.POST("/login/:handle/finish", h.HandleLoginFinish)
-	s.GET("/register", h.HandleRegisterStart)
+
+	s.GET("/register", h.HandleRegisterInitial)
 	s.GET("/register/:handle", h.HandleRegisterStart)
+	s.POST("/register/:handle/check", h.HandleRegisterUsernameCheck)
 	s.POST("/register/:handle/finish", h.HandleRegisterFinish)
 	return nil
 }

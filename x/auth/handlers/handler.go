@@ -14,12 +14,12 @@ func New(q models.Querier) *Handler {
 	return &Handler{Querier: q}
 }
 
-func (c *Handler) checkHandle(handle string) bool {
+func (c *Handler) checkHandle(handle string, target bool) bool {
 	res, err := c.Querier.CheckHandleExists(context.Background(), handle)
 	if err != nil {
 		return false
 	}
-	return res
+	return res == target
 }
 
 func (c *Handler) getCredentials(handle string) ([]models.Credential, error) {

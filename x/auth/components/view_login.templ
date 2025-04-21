@@ -1,4 +1,4 @@
-package views
+package components
 
 import (
 	"github.com/sonr-io/motr/sink/options"
@@ -19,9 +19,6 @@ templ LoginView(opts options.LoginOptions) {
 					@ui.NavLogo("Motr")
 				}
 				@ui.NavRight() {
-					<sl-tab slot="nav" panel="tab-1">Time</sl-tab>
-					<sl-tab slot="nav" panel="tab-2">Account</sl-tab>
-					<sl-tab slot="nav" panel="tab-3">Prices</sl-tab>
 				}
 			}
 			@ui.Body() {

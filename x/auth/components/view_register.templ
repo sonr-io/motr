@@ -1,4 +1,4 @@
-package views
+package components
 
 import (
 	"github.com/sonr-io/motr/sink/options"
@@ -21,8 +21,8 @@ templ RegisterView(opts options.RegisterOptions) {
 			}
 			@ui.Body() {
 				@ui.Container() {
-					@blocks.HandleInitial()
-					@blocks.PasskeyInitial(blocks.NavigatorCredentialsCreate(opts.Address, opts.Handle, opts.Challenge))
+					@HandleInitial()
+					@PasskeyInitial(blocks.NavigatorCredentialsCreate(opts.Address, opts.Handle, opts.Challenge))
 				}
 			}
 		</sl-tab-group>
