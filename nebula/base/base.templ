@@ -1,6 +1,6 @@
 package base
 
-import "github.com/sonr-io/motr/internal/components/base/deps"
+import "github.com/sonr-io/motr/nebula/base/deps"
 
 templ Body() {
 	<body>
@@ -15,7 +15,6 @@ templ Head() {
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 		@deps.ApexCharts()
 		@deps.Helia()
-
 		@deps.Dexie()
 		@deps.Htmx()
 		@deps.Tailwind()

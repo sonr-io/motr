@@ -4,22 +4,23 @@
 package main
 
 import (
+	"github.com/sonr-io/motr/config"
+	"github.com/sonr-io/motr/internal/controllers/auth"
+	"github.com/sonr-io/motr/internal/controllers/index"
 	"github.com/sonr-io/motr/internal/server"
-
-	"github.com/sonr-io/motr/internal/handlers"
 )
 
 func main() {
 	e := server.New()
-
-	// Unauthenticated routes
-	e.GET("/", handlers.IndexHandler)
-	e.GET("/register/:handle", handlers.HandleRegisterStart)
-	e.POST("/register/:handle/finish", handlers.HandleRegisterFinish)
-	e.GET("/login/:handle", handlers.HandleLoginStart)
-	e.POST("/login/:handle/finish", handlers.HandleLoginFinish)
-
-	// Authenticated routes
-	e.GET("/:handle/home", handlers.IndexHandler)
+	ic, err := index.NewController(config.GetConfig())
+	if err != nil {
+		panic(err)
+	}
+	ic.RegisterRoutes(e)
+	ac, err := auth.NewController(config.GetConfig())
+	if err != nil {
+		panic(err)
+	}
+	ac.RegisterRoutes(e)
 	e.Serve()
 }

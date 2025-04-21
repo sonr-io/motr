@@ -84,7 +84,7 @@ func (c DBConfig) GetCommon() (*sql.DB, error) {
 	return sql.Open("d1", c.DBName)
 }
 
-func (c DBConfig) GetQueries() (*models.Queries, error) {
+func (c DBConfig) GetQuerier() (models.Querier, error) {
 	db, err := c.GetCommon()
 	if err != nil {
 		return nil, err

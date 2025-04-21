@@ -8,7 +8,7 @@ package views
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import ui "github.com/sonr-io/motr/internal/components/base"
+import ui "github.com/sonr-io/motr/nebula/base"
 
 func HomeView() templ.Component {
 	return homeComponent()
@@ -159,7 +159,7 @@ func homeComponent() templ.Component {
 						}()
 					}
 					ctx = templ.InitializeContext(ctx)
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<sl-card><div slot=\"header\"><h3 class=\"card-title text-md\">Welcome to Motr</h3></div><div class=\"card-body\"><p>This is a demo of the Motr web app.</p><p>You can use this app to manage your Motr account.</p></div><div class=\"card-footer\"><sl-button type=\"primary\" size=\"large\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"passkey\"></sl-icon> Register</sl-button></div></sl-card>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<sl-card><div slot=\"header\"><h3 class=\"card-title\">Welcome to Motr</h3></div><div class=\"card-body\"><p>This is a demo of the Motr web app.</p><p>You can use this app to manage your Motr account.</p></div><div class=\"card-footer\"><sl-button type=\"primary\" size=\"large\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"passkey\"></sl-icon> Register</sl-button></div></sl-card>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
