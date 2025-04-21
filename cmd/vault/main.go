@@ -4,14 +4,28 @@
 package main
 
 import (
-	"github.com/sonr-io/motr/internal/handlers"
-	"github.com/sonr-io/motr/internal/server"
+	"github.com/sonr-io/motr/config"
+	"github.com/sonr-io/motr/middleware"
+	"github.com/sonr-io/motr/x/auth"
+	"github.com/sonr-io/motr/x/index"
 )
 
 func main() {
-	e := server.New()
-	e.GET("/", handlers.IndexHandler)
-	e.GET("/login/:handle", handlers.HandleLoginStart)
-	e.POST("/login/:handle/finish", handlers.HandleLoginFinish)
+	// Setup config
+	c := config.GetConfig()
+	e := config.New()
+	e.Use(middleware.UseSession(c))
+
+	// Register controllers
+	err := index.RegisterController(c, e)
+	if err != nil {
+		panic(err)
+	}
+	err = auth.RegisterController(c, e)
+	if err != nil {
+		panic(err)
+	}
+
+	// Start server
 	e.Serve()
 }

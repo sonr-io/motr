@@ -18,9 +18,9 @@ enabled = true
 logpush = true
 
 [[d1_databases]]
-binding = "COMMON_DB" # available in your Worker on env.DB
-database_name = "motr-common-db"
-database_id = "701488b4-de41-4f75-9ca9-b4d37acf621e"
+binding = "MOTR_DB" # available in your Worker on env.DB
+database_name = "motr-db"
+database_id = "abc70ab3-32ce-4600-9b15-a452f92b7987"
 
 [vars]
 SONR_CHAIN_ID = 'sonr-testnet-1'

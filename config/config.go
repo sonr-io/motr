@@ -8,6 +8,7 @@ import (
 
 	"github.com/sonr-io/motr/sink/models"
 	"github.com/syumai/workers/cloudflare"
+	_ "github.com/syumai/workers/cloudflare/d1"
 )
 
 type MotrMode string

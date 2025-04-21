@@ -7,7 +7,6 @@ import (
 	"context"
 
 	"github.com/sonr-io/motr/config"
-	"github.com/sonr-io/motr/internal/server"
 	"github.com/sonr-io/motr/sink/models"
 )
 
@@ -15,18 +14,16 @@ type IndexController struct {
 	Querier models.Querier
 }
 
-func NewController(cfg config.Config) (*IndexController, error) {
+func RegisterController(cfg config.Config, s *config.Server) error {
 	q, err := cfg.DB.GetQuerier()
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return &IndexController{
-		Querier: q,
-	}, nil
-}
+	c := &IndexController{Querier: q}
 
-func (c *IndexController) RegisterRoutes(s *server.Server) {
+	// Register routes
 	s.GET("/", c.HandleHome)
+	return nil
 }
 
 func (c *IndexController) CheckHandle(handle string) bool {

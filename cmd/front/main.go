@@ -5,22 +5,27 @@ package main
 
 import (
 	"github.com/sonr-io/motr/config"
-	"github.com/sonr-io/motr/internal/controllers/auth"
-	"github.com/sonr-io/motr/internal/controllers/index"
-	"github.com/sonr-io/motr/internal/server"
+	"github.com/sonr-io/motr/middleware"
+	"github.com/sonr-io/motr/x/auth"
+	"github.com/sonr-io/motr/x/index"
 )
 
 func main() {
-	e := server.New()
-	ic, err := index.NewController(config.GetConfig())
+	// Setup config
+	c := config.GetConfig()
+	e := config.New()
+	e.Use(middleware.UseSession(c))
+
+	// Register controllers
+	err := index.RegisterController(c, e)
 	if err != nil {
 		panic(err)
 	}
-	ic.RegisterRoutes(e)
-	ac, err := auth.NewController(config.GetConfig())
+	err = auth.RegisterController(c, e)
 	if err != nil {
 		panic(err)
 	}
-	ac.RegisterRoutes(e)
+
+	// Start server
 	e.Serve()
 }
