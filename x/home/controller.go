@@ -13,7 +13,15 @@ func Register(cfg config.Config, s *config.Server) error {
 	if err != nil {
 		return err
 	}
-	h := handlers.New(q)
-	s.GET("/", h.HandleDefault)
+	hkv, err := cfg.HandlesKV()
+	if err != nil {
+		return err
+	}
+	skv, err := cfg.SessionsKV()
+	if err != nil {
+		return err
+	}
+	h := handlers.New(q, hkv, skv)
+	h.SetupRoutes(s)
 	return nil
 }

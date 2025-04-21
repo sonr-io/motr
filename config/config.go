@@ -25,28 +25,34 @@ func (m MotrMode) String() string {
 }
 
 type Config struct {
-	Sonr  SonrConfig  `json:"sonr"`
-	IPFS  IPFSConfig  `json:"ipfs"`
-	Mode  MotrMode    `json:"mode"`
-	DB    DBConfig    `json:"db"`
-	Cache CacheConfig `json:"cache"` // Added Cache configuration
-	KV    string      `json:"kv"`    // Added KV configuration
+	Sonr       SonrConfig  `json:"sonr"`
+	IPFS       IPFSConfig  `json:"ipfs"`
+	Mode       MotrMode    `json:"mode"`
+	DB         DBConfig    `json:"db"`
+	Cache      CacheConfig `json:"cache"` // Added Cache configuration
+	KVSessions string      `json:"kv"`    // Added KV configuration
+	KVHandles  string      `json:"kv"`    // Added KV configuration
 }
 
 func getConfig() Config {
 	c := Config{
-		Sonr:  getSonrConfig(),
-		IPFS:  getIPFSConfig(),
-		Mode:  getMotrMode(),
-		DB:    getDBConfig(),
-		Cache: getCacheConfig(), // Added Cache configuration
-		KV:    "SESSIONS",
+		Sonr:       getSonrConfig(),
+		IPFS:       getIPFSConfig(),
+		Mode:       getMotrMode(),
+		DB:         getDBConfig(),
+		Cache:      getCacheConfig(), // Added Cache configuration
+		KVSessions: "SESSIONS",
+		KVHandles:  "HANDLES",
 	}
 	return c
 }
 
-func (c Config) GetKVNamespace() (*kv.Namespace, error) {
-	return kv.NewNamespace(c.KV)
+func (c Config) SessionsKV() (*kv.Namespace, error) {
+	return kv.NewNamespace(c.KVSessions)
+}
+
+func (c Config) HandlesKV() (*kv.Namespace, error) {
+	return kv.NewNamespace(c.KVHandles)
 }
 
 type SonrConfig struct {

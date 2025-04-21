@@ -37,3 +37,7 @@ database_id = "abc70ab3-32ce-4600-9b15-a452f92b7987"
 binding = "SESSIONS" # available in your Worker on env.KV
 id = "ea5de66fcfc14b5eba170395e29432ee"
 
+[[kv_namespaces]]
+binding = "HANDLES" # available in your Worker on env.KV
+id = "271d47087a8842b2aac5ee79cf7bb203"
+

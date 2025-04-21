@@ -1,6 +1,13 @@
+//go:build js && wasm
+// +build js,wasm
+
 package handlers
 
 import (
+	"encoding/json"
+	"fmt"
+
+	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/config/middleware"
 	"github.com/sonr-io/motr/sink/options"
@@ -12,5 +19,16 @@ func (h *Handler) HandleSubmitCredentialLogin(c echo.Context) error {
 }
 
 func (h *Handler) HandleSubmitCredentialRegister(c echo.Context) error {
+	credJSON := c.FormValue("credentialJSON")
+	if credJSON == "" {
+		return middleware.Render(c, components.RegisterView(options.RegisterOptions{}))
+	}
+	cred := webauthn.Credential{}
+	err := json.Unmarshal([]byte(credJSON), &cred)
+	if err != nil {
+		return middleware.Render(c, components.RegisterView(options.RegisterOptions{}))
+	}
+	fmt.Println(cred)
+
 	return middleware.Render(c, components.RegisterView(options.RegisterOptions{}))
 }

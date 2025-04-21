@@ -26,6 +26,10 @@ database_id = "872a4b08-7e07-4978-b227-5b60940238ed"
 binding = "SESSIONS" # available in your Worker on env.KV
 id = "ea5de66fcfc14b5eba170395e29432ee"
 
+[[kv_namespaces]]
+binding = "HANDLES" # available in your Worker on env.KV
+id = "271d47087a8842b2aac5ee79cf7bb203"
+
 [vars]
 SONR_CHAIN_ID = 'sonr-testnet-1'
 IPFS_GATEWAY = 'https://ipfs.sonr.land'

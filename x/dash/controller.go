@@ -13,9 +13,11 @@ func RegisterController(cfg config.Config, s *config.Server) error {
 	if err != nil {
 		return err
 	}
-	h := handlers.New(q)
-
-	// Register routes
-	s.GET("/dash", h.HandleOverview)
+	skv, err := cfg.SessionsKV()
+	if err != nil {
+		return err
+	}
+	h := handlers.New(q, skv)
+	h.SetupRoutes(s)
 	return nil
 }
