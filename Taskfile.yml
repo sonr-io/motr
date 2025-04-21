@@ -24,19 +24,9 @@ tasks:
       - task: deploy:vault
       - task: deploy:front
 
-  publish:
-    desc: Publish all packages
-    cmds:
-      - make -C packages/cosmes bump
-      - make -C packages/shoelace bump
-      - make -C packages/cosmes publish
-      - make -C packages/shoelace publish
-      - make -C signer publish
-
   build:
     desc: Build all
     cmds:
-      - task: build:packages
       - task: build:vault
       - task: build:front
 
@@ -78,17 +68,6 @@ tasks:
     desc: Deploy the frontend
     dir: "{{.ROOT_DIR}}/cmd/front"
     cmd: bun run deploy
-
-  build:packages:
-    desc: Build all packages
-    cmds:
-      - make -C packages/cosmes build
-      - make -C packages/shoelace build
-      - make -C signer build
-
-  gen:proto:
-    desc: Generate proto
-    cmd: make -C packages/cosmes gen
 
   gen:templ:
     desc: Generate templ
