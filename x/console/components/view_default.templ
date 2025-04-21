@@ -1,13 +1,11 @@
 package components
 
 import (
-	"github.com/sonr-io/motr/sink/types"
 	ui "github.com/sonr-io/motr/ui/base"
 	"github.com/sonr-io/motr/ui/cards"
 	"time"
 )
 
-var meta = types.DefaultMetadata()
 var heliaCardScriptHandle = templ.NewOnceHandle()
 
 func DemoView(d time.Time) templ.Component {
@@ -17,7 +15,6 @@ func DemoView(d time.Time) templ.Component {
 templ demoComponent(d time.Time) {
 	@ui.HTML() {
 		@ui.Head() {
-			@ui.MetaComponent(meta)
 		}
 		<sl-tab-group>
 			@ui.Nav() {

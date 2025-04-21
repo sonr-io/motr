@@ -5,7 +5,7 @@ package dash
 
 import (
 	"github.com/sonr-io/motr/config"
-	"github.com/sonr-io/motr/x/dash/handlers"
+	"github.com/sonr-io/motr/x/console/handlers"
 )
 
 func Register(cfg config.Config, s *config.Server) error {

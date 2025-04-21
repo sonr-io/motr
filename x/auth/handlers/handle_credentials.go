@@ -9,15 +9,17 @@ import (
 
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/labstack/echo/v4"
-	"github.com/sonr-io/motr/config/middleware"
+	"github.com/sonr-io/motr/middleware"
 	"github.com/sonr-io/motr/sink/options"
 	"github.com/sonr-io/motr/x/auth/components"
 )
 
+// HandleSubmitCredentialLogin handles the submit credential login request.
 func (h *Handler) HandleSubmitCredentialLogin(c echo.Context) error {
 	return middleware.Render(c, components.RegisterView(options.RegisterOptions{}))
 }
 
+// HandleSubmitCredentialRegister handles the submit credential register request.
 func (h *Handler) HandleSubmitCredentialRegister(c echo.Context) error {
 	credJSON := c.FormValue("credentialJSON")
 	if credJSON == "" {

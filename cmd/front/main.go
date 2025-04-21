@@ -5,7 +5,7 @@ package main
 
 import (
 	"github.com/sonr-io/motr/config"
-	"github.com/sonr-io/motr/config/middleware"
+	"github.com/sonr-io/motr/middleware"
 	"github.com/sonr-io/motr/x/auth"
 	"github.com/sonr-io/motr/x/home"
 )

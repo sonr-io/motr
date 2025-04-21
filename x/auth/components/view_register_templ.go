@@ -11,7 +11,6 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"github.com/sonr-io/motr/sink/options"
 	ui "github.com/sonr-io/motr/ui/base"
-	"github.com/sonr-io/motr/ui/blocks"
 )
 
 func RegisterView(opts options.RegisterOptions) templ.Component {
@@ -167,7 +166,7 @@ func RegisterView(opts options.RegisterOptions) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = PasskeyInitial(blocks.NavigatorCredentialsCreate(opts.Address, opts.Handle, opts.Challenge)).Render(ctx, templ_7745c5c3_Buffer)
+					templ_7745c5c3_Err = PasskeyInitial(NavigatorCredentialsCreate(opts.Address, opts.Handle, opts.Challenge)).Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}

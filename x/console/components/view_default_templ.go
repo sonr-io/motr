@@ -9,13 +9,11 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/sonr-io/motr/sink/types"
 	ui "github.com/sonr-io/motr/ui/base"
 	"github.com/sonr-io/motr/ui/cards"
 	"time"
 )
 
-var meta = types.DefaultMetadata()
 var heliaCardScriptHandle = templ.NewOnceHandle()
 
 func DemoView(d time.Time) templ.Component {
@@ -67,10 +65,6 @@ func demoComponent(d time.Time) templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = ui.MetaComponent(meta).Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
 				return nil
 			})
 			templ_7745c5c3_Err = ui.Head().Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)

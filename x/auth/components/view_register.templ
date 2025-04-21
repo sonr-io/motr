@@ -3,7 +3,6 @@ package components
 import (
 	"github.com/sonr-io/motr/sink/options"
 	ui "github.com/sonr-io/motr/ui/base"
-	"github.com/sonr-io/motr/ui/blocks"
 )
 
 templ RegisterView(opts options.RegisterOptions) {
@@ -22,7 +21,7 @@ templ RegisterView(opts options.RegisterOptions) {
 			@ui.Body() {
 				@ui.Container() {
 					@HandleInitial()
-					@PasskeyInitial(blocks.NavigatorCredentialsCreate(opts.Address, opts.Handle, opts.Challenge))
+					@PasskeyInitial(NavigatorCredentialsCreate(opts.Address, opts.Handle, opts.Challenge))
 				}
 			}
 		</sl-tab-group>

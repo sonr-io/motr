@@ -28,8 +28,12 @@ MOTR_MODE = 'resolver'
 enabled = true
 logpush = true
 
+[[r2_buckets]]
+binding = 'PROFILES'
+bucket_name = 'profiles'
+
 [[d1_databases]]
-binding = "MOTR_DB" # available in your Worker on env.DB
+binding = "DB" # available in your Worker on env.DB
 database_name = "motr-db"
 database_id = "abc70ab3-32ce-4600-9b15-a452f92b7987"
 

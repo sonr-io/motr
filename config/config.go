@@ -93,7 +93,7 @@ type DBConfig struct {
 
 func getDBConfig() DBConfig {
 	return DBConfig{
-		DBName: "MOTR_DB",
+		DBName: "DB",
 	}
 }
 
