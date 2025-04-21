@@ -307,31 +307,4 @@ export class Vault {
       throw new Error(`Failed to add DAG-CBOR: ${error.message}`);
     }
   }
-
-  // Legacy fetch handler for backward compatibility
-  async fetch(request) {
-    const url = new URL(request.url);
-    const path = url.pathname;
-
-    if (path === "/vault/sign") {
-      try {
-        const body = await request.json();
-        const result = await this.sign(body);
-        return new Response(JSON.stringify(result), {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        });
-      } catch (error) {
-        return new Response(JSON.stringify({ error: error.message }), {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-    }
-
-    return new Response(JSON.stringify({ error: "Not found" }), {
-      status: 404,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
 }
