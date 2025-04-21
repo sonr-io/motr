@@ -8,5 +8,6 @@ import (
 )
 
 func (h *Handler) SetupRoutes(s *config.Server) {
-	s.GET("/", h.HandleDefault)
+	s.GET("/", h.HandleIndex)
+	s.GET("/about", h.HandleAbout)
 }

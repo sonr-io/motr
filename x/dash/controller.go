@@ -8,12 +8,12 @@ import (
 	"github.com/sonr-io/motr/x/dash/handlers"
 )
 
-func RegisterController(cfg config.Config, s *config.Server) error {
+func Register(cfg config.Config, s *config.Server) error {
 	q, err := cfg.DB.GetQuerier()
 	if err != nil {
 		return err
 	}
-	skv, err := cfg.SessionsKV()
+	skv, err := cfg.GetSessionsKV()
 	if err != nil {
 		return err
 	}

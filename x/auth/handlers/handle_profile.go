@@ -12,7 +12,7 @@ import (
 
 func (h *Handler) HandleRegisterUsernameCheck(c echo.Context) error {
 	handle := c.FormValue("handle")
-	ok := h.checkHandle(handle, false)
+	ok := h.verifyHandle(handle, false)
 	if ok {
 		return middleware.Render(c, components.RegisterView(options.RegisterOptions{}))
 	}
@@ -21,7 +21,7 @@ func (h *Handler) HandleRegisterUsernameCheck(c echo.Context) error {
 
 func (h *Handler) HandleLoginUsernameCheck(c echo.Context) error {
 	handle := c.FormValue("handle")
-	ok := h.checkHandle(handle, true)
+	ok := h.verifyHandle(handle, true)
 	if ok {
 		return middleware.Render(c, components.RegisterView(options.RegisterOptions{}))
 	}

@@ -47,11 +47,11 @@ func getConfig() Config {
 	return c
 }
 
-func (c Config) SessionsKV() (*kv.Namespace, error) {
+func (c Config) GetSessionsKV() (*kv.Namespace, error) {
 	return kv.NewNamespace(c.KVSessions)
 }
 
-func (c Config) HandlesKV() (*kv.Namespace, error) {
+func (c Config) GetHandlesKV() (*kv.Namespace, error) {
 	return kv.NewNamespace(c.KVHandles)
 }
 

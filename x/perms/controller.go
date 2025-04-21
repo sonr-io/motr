@@ -1,7 +1,7 @@
 //go:build js && wasm
 // +build js,wasm
 
-package authz
+package perms
 
 import (
 	"github.com/sonr-io/motr/config"

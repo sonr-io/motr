@@ -11,7 +11,6 @@ require (
 )
 
 require (
-	github.com/boyter/go-string v1.0.5 // indirect
 	github.com/fxamacker/cbor/v2 v2.8.0 // indirect
 	github.com/go-webauthn/x v0.1.20 // indirect
 	github.com/golang-jwt/jwt/v5 v5.2.2 // indirect
@@ -25,7 +24,6 @@ require (
 	github.com/labstack/gommon v0.4.2 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	github.com/medama-io/go-useragent v1.1.0
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	golang.org/x/crypto v0.36.0 // indirect

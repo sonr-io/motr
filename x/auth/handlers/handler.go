@@ -21,26 +21,14 @@ func New(q models.Querier, hkv *kv.Namespace, skv *kv.Namespace) *Handler {
 	return &Handler{DB: q, Handles: hkv, Sessions: skv}
 }
 
-func (c *Handler) checkHandle(handle string, target bool) bool {
+func (c *Handler) verifyHandle(handle string, target bool) bool {
+	_, err := c.Handles.GetString(handle, nil)
+	if err != nil {
+		return !target
+	}
 	res, err := c.DB.CheckHandleExists(context.Background(), handle)
 	if err != nil {
 		return false
 	}
 	return res == target
-}
-
-func (c *Handler) getCredentials(handle string) ([]models.Credential, error) {
-	return c.DB.GetCredentialsByHandle(context.Background(), handle)
-}
-
-func (c *Handler) getProfile(handle string) (models.Profile, error) {
-	return c.DB.GetProfileByHandle(context.Background(), handle)
-}
-
-func (c *Handler) insertCredential(handle, credentialID, authenticatorAttachment, origin, typ, transports string) (models.Credential, error) {
-	return c.DB.InsertCredential(context.Background(), models.InsertCredentialParams{})
-}
-
-func (c *Handler) insertProfile(address, handle, origin, name string) (models.Profile, error) {
-	return c.DB.InsertProfile(context.Background(), models.InsertProfileParams{})
 }

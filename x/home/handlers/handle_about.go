@@ -9,6 +9,6 @@ import (
 	"github.com/sonr-io/motr/x/home/components"
 )
 
-func (h *Handler) HandleIndex(c echo.Context) error {
+func (h *Handler) HandleAbout(c echo.Context) error {
 	return middleware.Render(c, components.HomeView())
 }
