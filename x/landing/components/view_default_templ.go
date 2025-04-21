@@ -9,8 +9,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"github.com/sonr-io/motr/config/ui"
 	"github.com/sonr-io/motr/sink"
-	ui "github.com/sonr-io/motr/ui/base"
 )
 
 var meta = sink.DefaultMetadata()

@@ -5,9 +5,9 @@ package handlers
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/sonr-io/motr/middleware"
-	"github.com/sonr-io/motr/sink/options"
+	"github.com/sonr-io/motr/config/ui"
 	"github.com/sonr-io/motr/x/auth/components"
+	"github.com/sonr-io/motr/x/auth/types"
 )
 
 // ╭───────────────────────────────────────────────────────────╮
@@ -15,7 +15,7 @@ import (
 // ╰───────────────────────────────────────────────────────────╯
 
 func (h *Handler) HandleRegisterInitial(c echo.Context) error {
-	return middleware.Render(c, components.RegisterView(options.RegisterOptions{}))
+	return ui.Render(c, components.RegisterView(types.RegisterOptions{}))
 }
 
 // ╭──────────────────────────────────────────────────────────────────╮
@@ -23,7 +23,7 @@ func (h *Handler) HandleRegisterInitial(c echo.Context) error {
 // ╰──────────────────────────────────────────────────────────────────╯
 
 func (h *Handler) HandleRegisterStart(c echo.Context) error {
-	return middleware.Render(c, components.RegisterView(options.RegisterOptions{}))
+	return ui.Render(c, components.RegisterView(types.RegisterOptions{}))
 }
 
 // ╭────────────────────────────────────────────────────────────────────╮
@@ -31,5 +31,5 @@ func (h *Handler) HandleRegisterStart(c echo.Context) error {
 // ╰────────────────────────────────────────────────────────────────────╯
 
 func (h *Handler) HandleRegisterFinish(c echo.Context) error {
-	return middleware.Render(c, components.RegisterView(options.RegisterOptions{}))
+	return ui.Render(c, components.RegisterView(types.RegisterOptions{}))
 }

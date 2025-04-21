@@ -1,11 +1,11 @@
 package components
 
 import (
-	"github.com/sonr-io/motr/sink/options"
-	ui "github.com/sonr-io/motr/ui/base"
+	"github.com/sonr-io/motr/config/ui"
+	"github.com/sonr-io/motr/x/auth/types"
 )
 
-templ RegisterView(opts options.RegisterOptions) {
+templ RegisterView(opts types.RegisterOptions) {
 	@ui.HTML() {
 		@ui.Head() {
 			@ui.MetaComponent(meta)

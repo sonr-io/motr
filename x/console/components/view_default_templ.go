@@ -9,7 +9,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	ui "github.com/sonr-io/motr/ui/base"
+	"github.com/sonr-io/motr/config/ui"
 	"time"
 )
 

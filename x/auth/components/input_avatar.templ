@@ -1,0 +1,9 @@
+package components
+
+templ InputAvatar(value string, helpText string) {
+	<sl-input name="avatar" placeholder="Avatar" type="text" label="Avatar" minlength="4" maxlength="12" required class="border-red-500" value={ value } help-text={ helpText }>
+		<div slot="prefix">
+			<sl-icon name="at-sign" library="sonr"></sl-icon>
+		</div>
+	</sl-input>
+}
