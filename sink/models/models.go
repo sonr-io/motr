@@ -64,26 +64,6 @@ type Profile struct {
 	Name      string       `json:"name"`
 }
 
-type Session struct {
-	ID             string       `json:"id"`
-	CreatedAt      time.Time    `json:"created_at"`
-	UpdatedAt      time.Time    `json:"updated_at"`
-	DeletedAt      sql.NullTime `json:"deleted_at"`
-	BrowserName    string       `json:"browser_name"`
-	BrowserVersion string       `json:"browser_version"`
-	ClientIpaddr   string       `json:"client_ipaddr"`
-	Platform       string       `json:"platform"`
-	IsDesktop      bool         `json:"is_desktop"`
-	IsMobile       bool         `json:"is_mobile"`
-	IsTablet       bool         `json:"is_tablet"`
-	IsTv           bool         `json:"is_tv"`
-	IsBot          bool         `json:"is_bot"`
-	Challenge      string       `json:"challenge"`
-	IsHumanFirst   bool         `json:"is_human_first"`
-	IsHumanLast    bool         `json:"is_human_last"`
-	ProfileID      string       `json:"profile_id"`
-}
-
 type Vault struct {
 	ID          string       `json:"id"`
 	CreatedAt   time.Time    `json:"created_at"`

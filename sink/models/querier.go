@@ -10,21 +10,16 @@ import (
 
 type Querier interface {
 	CheckHandleExists(ctx context.Context, handle string) (bool, error)
-	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
 	GetAccountByController(ctx context.Context, controller string) (Account, error)
 	GetAccountByNumber(ctx context.Context, number int64) (Account, error)
 	GetAccountByPublicKey(ctx context.Context, publicKey string) (Account, error)
 	GetAccountBySequence(ctx context.Context, sequence int64) (Account, error)
 	GetAccountsByChainID(ctx context.Context, chainID string) ([]Account, error)
-	GetChallengeBySessionID(ctx context.Context, id string) (string, error)
 	GetCredentialByID(ctx context.Context, credentialID string) (Credential, error)
 	GetCredentialsByHandle(ctx context.Context, handle string) ([]Credential, error)
-	GetHumanVerificationNumbers(ctx context.Context, id string) (GetHumanVerificationNumbersRow, error)
 	GetProfileByAddress(ctx context.Context, address string) (Profile, error)
 	GetProfileByHandle(ctx context.Context, handle string) (Profile, error)
 	GetProfileByID(ctx context.Context, id string) (Profile, error)
-	GetSessionByClientIP(ctx context.Context, clientIpaddr string) (Session, error)
-	GetSessionByID(ctx context.Context, id string) (Session, error)
 	GetVaultConfigByCID(ctx context.Context, cid string) (Vault, error)
 	GetVaultRedirectURIBySessionID(ctx context.Context, sessionID string) (string, error)
 	InsertCredential(ctx context.Context, arg InsertCredentialParams) (Credential, error)
@@ -32,8 +27,6 @@ type Querier interface {
 	SoftDeleteCredential(ctx context.Context, credentialID string) error
 	SoftDeleteProfile(ctx context.Context, address string) error
 	UpdateProfile(ctx context.Context, arg UpdateProfileParams) (Profile, error)
-	UpdateSessionHumanVerification(ctx context.Context, arg UpdateSessionHumanVerificationParams) (Session, error)
-	UpdateSessionWithProfileID(ctx context.Context, arg UpdateSessionWithProfileIDParams) (Session, error)
 }
 
 var _ Querier = (*Queries)(nil)

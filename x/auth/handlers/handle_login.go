@@ -10,6 +10,10 @@ import (
 	"github.com/sonr-io/motr/x/auth/types"
 )
 
+// ╭───────────────────────────────────────────────────────────╮
+// │                   Login Handlers (/login)                 │
+// ╰───────────────────────────────────────────────────────────╯
+
 func (h *Handler) HandleLoginFinish(c echo.Context) error {
 	return middleware.Render(c, components.LoginView(types.LoginOptions{}))
 }

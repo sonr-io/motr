@@ -22,83 +22,6 @@ func (q *Queries) CheckHandleExists(ctx context.Context, handle string) (bool, e
 	return handle_exists, err
 }
 
-const createSession = `-- name: CreateSession :one
-INSERT INTO sessions (
-    id,
-    browser_name,
-    browser_version,
-    client_ipaddr,
-    platform,
-    is_desktop,
-    is_mobile,
-    is_tablet,
-    is_tv,
-    is_bot,
-    challenge,
-    is_human_first,
-    is_human_last,
-    profile_id
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
-RETURNING id, created_at, updated_at, deleted_at, browser_name, browser_version, client_ipaddr, platform, is_desktop, is_mobile, is_tablet, is_tv, is_bot, challenge, is_human_first, is_human_last, profile_id
-`
-
-type CreateSessionParams struct {
-	ID             string `json:"id"`
-	BrowserName    string `json:"browser_name"`
-	BrowserVersion string `json:"browser_version"`
-	ClientIpaddr   string `json:"client_ipaddr"`
-	Platform       string `json:"platform"`
-	IsDesktop      bool   `json:"is_desktop"`
-	IsMobile       bool   `json:"is_mobile"`
-	IsTablet       bool   `json:"is_tablet"`
-	IsTv           bool   `json:"is_tv"`
-	IsBot          bool   `json:"is_bot"`
-	Challenge      string `json:"challenge"`
-	IsHumanFirst   bool   `json:"is_human_first"`
-	IsHumanLast    bool   `json:"is_human_last"`
-	ProfileID      string `json:"profile_id"`
-}
-
-func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error) {
-	row := q.db.QueryRowContext(ctx, createSession,
-		arg.ID,
-		arg.BrowserName,
-		arg.BrowserVersion,
-		arg.ClientIpaddr,
-		arg.Platform,
-		arg.IsDesktop,
-		arg.IsMobile,
-		arg.IsTablet,
-		arg.IsTv,
-		arg.IsBot,
-		arg.Challenge,
-		arg.IsHumanFirst,
-		arg.IsHumanLast,
-		arg.ProfileID,
-	)
-	var i Session
-	err := row.Scan(
-		&i.ID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.DeletedAt,
-		&i.BrowserName,
-		&i.BrowserVersion,
-		&i.ClientIpaddr,
-		&i.Platform,
-		&i.IsDesktop,
-		&i.IsMobile,
-		&i.IsTablet,
-		&i.IsTv,
-		&i.IsBot,
-		&i.Challenge,
-		&i.IsHumanFirst,
-		&i.IsHumanLast,
-		&i.ProfileID,
-	)
-	return i, err
-}
-
 const getAccountByController = `-- name: GetAccountByController :one
 SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, controller, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
 WHERE controller = ? AND deleted_at IS NULL
@@ -255,19 +178,6 @@ func (q *Queries) GetAccountsByChainID(ctx context.Context, chainID string) ([]A
 	return items, nil
 }
 
-const getChallengeBySessionID = `-- name: GetChallengeBySessionID :one
-SELECT challenge FROM sessions
-WHERE id = ? AND deleted_at IS NULL
-LIMIT 1
-`
-
-func (q *Queries) GetChallengeBySessionID(ctx context.Context, id string) (string, error) {
-	row := q.db.QueryRowContext(ctx, getChallengeBySessionID, id)
-	var challenge string
-	err := row.Scan(&challenge)
-	return challenge, err
-}
-
 const getCredentialByID = `-- name: GetCredentialByID :one
 SELECT id, created_at, updated_at, deleted_at, handle, credential_id, authenticator_attachment, origin, type, transports FROM credentials
 WHERE credential_id = ?
@@ -333,24 +243,6 @@ func (q *Queries) GetCredentialsByHandle(ctx context.Context, handle string) ([]
 	return items, nil
 }
 
-const getHumanVerificationNumbers = `-- name: GetHumanVerificationNumbers :one
-SELECT is_human_first, is_human_last FROM sessions
-WHERE id = ? AND deleted_at IS NULL
-LIMIT 1
-`
-
-type GetHumanVerificationNumbersRow struct {
-	IsHumanFirst bool `json:"is_human_first"`
-	IsHumanLast  bool `json:"is_human_last"`
-}
-
-func (q *Queries) GetHumanVerificationNumbers(ctx context.Context, id string) (GetHumanVerificationNumbersRow, error) {
-	row := q.db.QueryRowContext(ctx, getHumanVerificationNumbers, id)
-	var i GetHumanVerificationNumbersRow
-	err := row.Scan(&i.IsHumanFirst, &i.IsHumanLast)
-	return i, err
-}
-
 const getProfileByAddress = `-- name: GetProfileByAddress :one
 SELECT id, created_at, updated_at, deleted_at, address, handle, origin, name FROM profiles
 WHERE address = ? AND deleted_at IS NULL
@@ -414,68 +306,6 @@ func (q *Queries) GetProfileByID(ctx context.Context, id string) (Profile, error
 		&i.Handle,
 		&i.Origin,
 		&i.Name,
-	)
-	return i, err
-}
-
-const getSessionByClientIP = `-- name: GetSessionByClientIP :one
-SELECT id, created_at, updated_at, deleted_at, browser_name, browser_version, client_ipaddr, platform, is_desktop, is_mobile, is_tablet, is_tv, is_bot, challenge, is_human_first, is_human_last, profile_id FROM sessions
-WHERE client_ipaddr = ? AND deleted_at IS NULL
-LIMIT 1
-`
-
-func (q *Queries) GetSessionByClientIP(ctx context.Context, clientIpaddr string) (Session, error) {
-	row := q.db.QueryRowContext(ctx, getSessionByClientIP, clientIpaddr)
-	var i Session
-	err := row.Scan(
-		&i.ID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.DeletedAt,
-		&i.BrowserName,
-		&i.BrowserVersion,
-		&i.ClientIpaddr,
-		&i.Platform,
-		&i.IsDesktop,
-		&i.IsMobile,
-		&i.IsTablet,
-		&i.IsTv,
-		&i.IsBot,
-		&i.Challenge,
-		&i.IsHumanFirst,
-		&i.IsHumanLast,
-		&i.ProfileID,
-	)
-	return i, err
-}
-
-const getSessionByID = `-- name: GetSessionByID :one
-SELECT id, created_at, updated_at, deleted_at, browser_name, browser_version, client_ipaddr, platform, is_desktop, is_mobile, is_tablet, is_tv, is_bot, challenge, is_human_first, is_human_last, profile_id FROM sessions
-WHERE id = ? AND deleted_at IS NULL
-LIMIT 1
-`
-
-func (q *Queries) GetSessionByID(ctx context.Context, id string) (Session, error) {
-	row := q.db.QueryRowContext(ctx, getSessionByID, id)
-	var i Session
-	err := row.Scan(
-		&i.ID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.DeletedAt,
-		&i.BrowserName,
-		&i.BrowserVersion,
-		&i.ClientIpaddr,
-		&i.Platform,
-		&i.IsDesktop,
-		&i.IsMobile,
-		&i.IsTablet,
-		&i.IsTv,
-		&i.IsBot,
-		&i.Challenge,
-		&i.IsHumanFirst,
-		&i.IsHumanLast,
-		&i.ProfileID,
 	)
 	return i, err
 }
@@ -652,86 +482,6 @@ func (q *Queries) UpdateProfile(ctx context.Context, arg UpdateProfileParams) (P
 		&i.Handle,
 		&i.Origin,
 		&i.Name,
-	)
-	return i, err
-}
-
-const updateSessionHumanVerification = `-- name: UpdateSessionHumanVerification :one
-UPDATE sessions
-SET 
-    is_human_first = ?,
-    is_human_last = ?,
-    updated_at = CURRENT_TIMESTAMP
-WHERE id = ?
-RETURNING id, created_at, updated_at, deleted_at, browser_name, browser_version, client_ipaddr, platform, is_desktop, is_mobile, is_tablet, is_tv, is_bot, challenge, is_human_first, is_human_last, profile_id
-`
-
-type UpdateSessionHumanVerificationParams struct {
-	IsHumanFirst bool   `json:"is_human_first"`
-	IsHumanLast  bool   `json:"is_human_last"`
-	ID           string `json:"id"`
-}
-
-func (q *Queries) UpdateSessionHumanVerification(ctx context.Context, arg UpdateSessionHumanVerificationParams) (Session, error) {
-	row := q.db.QueryRowContext(ctx, updateSessionHumanVerification, arg.IsHumanFirst, arg.IsHumanLast, arg.ID)
-	var i Session
-	err := row.Scan(
-		&i.ID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.DeletedAt,
-		&i.BrowserName,
-		&i.BrowserVersion,
-		&i.ClientIpaddr,
-		&i.Platform,
-		&i.IsDesktop,
-		&i.IsMobile,
-		&i.IsTablet,
-		&i.IsTv,
-		&i.IsBot,
-		&i.Challenge,
-		&i.IsHumanFirst,
-		&i.IsHumanLast,
-		&i.ProfileID,
-	)
-	return i, err
-}
-
-const updateSessionWithProfileID = `-- name: UpdateSessionWithProfileID :one
-UPDATE sessions
-SET 
-    profile_id = ?,
-    updated_at = CURRENT_TIMESTAMP
-WHERE id = ?
-RETURNING id, created_at, updated_at, deleted_at, browser_name, browser_version, client_ipaddr, platform, is_desktop, is_mobile, is_tablet, is_tv, is_bot, challenge, is_human_first, is_human_last, profile_id
-`
-
-type UpdateSessionWithProfileIDParams struct {
-	ProfileID string `json:"profile_id"`
-	ID        string `json:"id"`
-}
-
-func (q *Queries) UpdateSessionWithProfileID(ctx context.Context, arg UpdateSessionWithProfileIDParams) (Session, error) {
-	row := q.db.QueryRowContext(ctx, updateSessionWithProfileID, arg.ProfileID, arg.ID)
-	var i Session
-	err := row.Scan(
-		&i.ID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.DeletedAt,
-		&i.BrowserName,
-		&i.BrowserVersion,
-		&i.ClientIpaddr,
-		&i.Platform,
-		&i.IsDesktop,
-		&i.IsMobile,
-		&i.IsTablet,
-		&i.IsTv,
-		&i.IsBot,
-		&i.Challenge,
-		&i.IsHumanFirst,
-		&i.IsHumanLast,
-		&i.ProfileID,
 	)
 	return i, err
 }
