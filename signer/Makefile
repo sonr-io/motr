@@ -1,5 +1,7 @@
 .PHONY: build
 
+all: build publish
+
 build: 
 	@gum spin --show-error --title "[SIGNER] Running tinygo build..." -- sh -c "tinygo build -o signer.wasm -target wasip1 -buildmode=c-shared ."
 	@gum log --level info --time kitchen "[SIGNER] Completed tinygo build successfully."
