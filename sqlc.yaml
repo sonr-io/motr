@@ -1,21 +1,11 @@
 version: "2"
 sql:
   - engine: "sqlite"
-    queries: "./sink/query.sql"
-    schema: "./sink/schema.sql"
-    gen:
-      go:
-        emit_interface: true
-        emit_json_tags: true
-        package: "common"
-        out: "./sink/models/common"
-
-  - engine: "sqlite"
     queries: "./cmd/vault/query.sql"
     schema: "./cmd/vault/schema.sql"
     gen:
       go:
         emit_interface: true
         emit_json_tags: true
-        package: "vault"
-        out: "./sink/models/vault"
+        package: "models"
+        out: "./sink/models"

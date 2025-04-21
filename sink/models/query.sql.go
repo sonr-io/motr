@@ -3,7 +3,7 @@
 //   sqlc v1.28.0
 // source: query.sql
 
-package common
+package models
 
 import (
 	"context"
@@ -99,6 +99,162 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 	return i, err
 }
 
+const getAccountByController = `-- name: GetAccountByController :one
+SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, controller, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
+WHERE controller = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetAccountByController(ctx context.Context, controller string) (Account, error) {
+	row := q.db.QueryRowContext(ctx, getAccountByController, controller)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Number,
+		&i.Sequence,
+		&i.Address,
+		&i.PublicKey,
+		&i.ChainID,
+		&i.Controller,
+		&i.IsSubsidiary,
+		&i.IsValidator,
+		&i.IsDelegator,
+		&i.IsAccountable,
+	)
+	return i, err
+}
+
+const getAccountByNumber = `-- name: GetAccountByNumber :one
+SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, controller, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
+WHERE number = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetAccountByNumber(ctx context.Context, number int64) (Account, error) {
+	row := q.db.QueryRowContext(ctx, getAccountByNumber, number)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Number,
+		&i.Sequence,
+		&i.Address,
+		&i.PublicKey,
+		&i.ChainID,
+		&i.Controller,
+		&i.IsSubsidiary,
+		&i.IsValidator,
+		&i.IsDelegator,
+		&i.IsAccountable,
+	)
+	return i, err
+}
+
+const getAccountByPublicKey = `-- name: GetAccountByPublicKey :one
+SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, controller, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
+WHERE public_key = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetAccountByPublicKey(ctx context.Context, publicKey string) (Account, error) {
+	row := q.db.QueryRowContext(ctx, getAccountByPublicKey, publicKey)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Number,
+		&i.Sequence,
+		&i.Address,
+		&i.PublicKey,
+		&i.ChainID,
+		&i.Controller,
+		&i.IsSubsidiary,
+		&i.IsValidator,
+		&i.IsDelegator,
+		&i.IsAccountable,
+	)
+	return i, err
+}
+
+const getAccountBySequence = `-- name: GetAccountBySequence :one
+SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, controller, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
+WHERE sequence = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetAccountBySequence(ctx context.Context, sequence int64) (Account, error) {
+	row := q.db.QueryRowContext(ctx, getAccountBySequence, sequence)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Number,
+		&i.Sequence,
+		&i.Address,
+		&i.PublicKey,
+		&i.ChainID,
+		&i.Controller,
+		&i.IsSubsidiary,
+		&i.IsValidator,
+		&i.IsDelegator,
+		&i.IsAccountable,
+	)
+	return i, err
+}
+
+const getAccountsByChainID = `-- name: GetAccountsByChainID :many
+SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, controller, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
+WHERE chain_id = ? AND deleted_at IS NULL
+ORDER BY sequence DESC
+`
+
+func (q *Queries) GetAccountsByChainID(ctx context.Context, chainID string) ([]Account, error) {
+	rows, err := q.db.QueryContext(ctx, getAccountsByChainID, chainID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Account
+	for rows.Next() {
+		var i Account
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.Number,
+			&i.Sequence,
+			&i.Address,
+			&i.PublicKey,
+			&i.ChainID,
+			&i.Controller,
+			&i.IsSubsidiary,
+			&i.IsValidator,
+			&i.IsDelegator,
+			&i.IsAccountable,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getChallengeBySessionID = `-- name: GetChallengeBySessionID :one
 SELECT challenge FROM sessions
 WHERE id = ? AND deleted_at IS NULL
@@ -110,6 +266,71 @@ func (q *Queries) GetChallengeBySessionID(ctx context.Context, id string) (strin
 	var challenge string
 	err := row.Scan(&challenge)
 	return challenge, err
+}
+
+const getCredentialByID = `-- name: GetCredentialByID :one
+SELECT id, created_at, updated_at, deleted_at, handle, credential_id, authenticator_attachment, origin, type, transports FROM credentials
+WHERE credential_id = ?
+AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetCredentialByID(ctx context.Context, credentialID string) (Credential, error) {
+	row := q.db.QueryRowContext(ctx, getCredentialByID, credentialID)
+	var i Credential
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Handle,
+		&i.CredentialID,
+		&i.AuthenticatorAttachment,
+		&i.Origin,
+		&i.Type,
+		&i.Transports,
+	)
+	return i, err
+}
+
+const getCredentialsByHandle = `-- name: GetCredentialsByHandle :many
+SELECT id, created_at, updated_at, deleted_at, handle, credential_id, authenticator_attachment, origin, type, transports FROM credentials
+WHERE handle = ?
+AND deleted_at IS NULL
+`
+
+func (q *Queries) GetCredentialsByHandle(ctx context.Context, handle string) ([]Credential, error) {
+	rows, err := q.db.QueryContext(ctx, getCredentialsByHandle, handle)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Credential
+	for rows.Next() {
+		var i Credential
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.Handle,
+			&i.CredentialID,
+			&i.AuthenticatorAttachment,
+			&i.Origin,
+			&i.Type,
+			&i.Transports,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getHumanVerificationNumbers = `-- name: GetHumanVerificationNumbers :one
@@ -299,6 +520,49 @@ func (q *Queries) GetVaultRedirectURIBySessionID(ctx context.Context, sessionID 
 	return redirect_uri, err
 }
 
+const insertCredential = `-- name: InsertCredential :one
+INSERT INTO credentials (
+    handle,
+    credential_id,
+    origin,
+    type,
+    transports
+) VALUES (?, ?, ?, ?, ?)
+RETURNING id, created_at, updated_at, deleted_at, handle, credential_id, authenticator_attachment, origin, type, transports
+`
+
+type InsertCredentialParams struct {
+	Handle       string `json:"handle"`
+	CredentialID string `json:"credential_id"`
+	Origin       string `json:"origin"`
+	Type         string `json:"type"`
+	Transports   string `json:"transports"`
+}
+
+func (q *Queries) InsertCredential(ctx context.Context, arg InsertCredentialParams) (Credential, error) {
+	row := q.db.QueryRowContext(ctx, insertCredential,
+		arg.Handle,
+		arg.CredentialID,
+		arg.Origin,
+		arg.Type,
+		arg.Transports,
+	)
+	var i Credential
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Handle,
+		&i.CredentialID,
+		&i.AuthenticatorAttachment,
+		&i.Origin,
+		&i.Type,
+		&i.Transports,
+	)
+	return i, err
+}
+
 const insertProfile = `-- name: InsertProfile :one
 INSERT INTO profiles (
     address,
@@ -335,6 +599,17 @@ func (q *Queries) InsertProfile(ctx context.Context, arg InsertProfileParams) (P
 		&i.Name,
 	)
 	return i, err
+}
+
+const softDeleteCredential = `-- name: SoftDeleteCredential :exec
+UPDATE credentials
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE credential_id = ?
+`
+
+func (q *Queries) SoftDeleteCredential(ctx context.Context, credentialID string) error {
+	_, err := q.db.ExecContext(ctx, softDeleteCredential, credentialID)
+	return err
 }
 
 const softDeleteProfile = `-- name: SoftDeleteProfile :exec

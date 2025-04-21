@@ -1,10 +1,7 @@
-//go:build js && wasm
-// +build js,wasm
-
-package middleware
+package types
 
 import (
-	"github.com/sonr-io/motr/sink/models/vault"
+	"github.com/sonr-io/motr/sink/models"
 )
 
 // Define the credential structure matching our frontend data
@@ -21,8 +18,8 @@ type CredentialDescriptor struct {
 	} `json:"response"`
 }
 
-func (c *CredentialDescriptor) ToModel(handle, origin string) *vault.Credential {
-	return &vault.Credential{
+func (c *CredentialDescriptor) ToModel(handle, origin string) *models.Credential {
+	return &models.Credential{
 		Handle:                  handle,
 		Origin:                  origin,
 		CredentialID:            c.ID,
@@ -32,7 +29,7 @@ func (c *CredentialDescriptor) ToModel(handle, origin string) *vault.Credential 
 	}
 }
 
-func CredentialArrayToDescriptors(credentials []vault.Credential) []*CredentialDescriptor {
+func CredentialArrayToDescriptors(credentials []models.Credential) []*CredentialDescriptor {
 	var descriptors []*CredentialDescriptor
 	for _, cred := range credentials {
 		cd := &CredentialDescriptor{

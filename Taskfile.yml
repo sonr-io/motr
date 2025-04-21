@@ -94,7 +94,7 @@ tasks:
     desc: Generate templ
     cmd: templ generate
 
-  db:sqlc:
+  gen:sqlc:
     desc: Generate sqlc
     cmd: sqlc generate
 
@@ -103,23 +103,13 @@ tasks:
     prompt:
       - Are you sure you want to run this command? This will delete all data in the database.
     cmds:
-      - task: migrate:vault
-      - task: migrate:common
+      - task: migrate:d1
       - task: gen:sqlc
 
-  migrate:vault:
-    desc: Migrate the vault database
-    dir: "{{.ROOT_DIR}}/cmd/vault"
-    cmd: npm run migrate
-    sources:
-      - schema.sql
-    generates:
-      - schema.sql
-
-  migrate:common:
+  migrate:d1:
     internal: true
     desc: Migrate the common database
-    dir: "{{.ROOT_DIR}}/sink"
+    dir: "{{.ROOT_DIR}}/cmd/vault"
     cmd: npm run migrate
     sources:
       - schema.sql

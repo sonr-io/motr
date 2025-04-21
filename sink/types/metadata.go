@@ -1,5 +1,10 @@
 package types
 
+type Icon struct {
+	Name    string
+	Library string
+}
+
 type Metadata struct {
 	Title          string
 	Author         string

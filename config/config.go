@@ -6,6 +6,7 @@ package config
 import (
 	"database/sql"
 
+	"github.com/sonr-io/motr/sink/models"
 	"github.com/syumai/workers/cloudflare"
 )
 
@@ -70,27 +71,23 @@ func GetMotrMode() MotrMode {
 }
 
 type DBConfig struct {
-	CommonDBName   string `json:"common_db_name"`
-	ResolverDBName string `json:"resolver_db_name"`
-	VaultDBName    string `json:"vault_db_name"`
+	DBName string `json:"common_db_name"`
 }
 
 func GetDBConfig() DBConfig {
 	return DBConfig{
-		CommonDBName:   "COMMON_DB",
-		ResolverDBName: "RESOLVER_DB",
-		VaultDBName:    "CONTROLLER_DB",
+		DBName: "MOTR_DB",
 	}
 }
 
 func (c DBConfig) GetCommon() (*sql.DB, error) {
-	return sql.Open("d1", c.CommonDBName)
+	return sql.Open("d1", c.DBName)
 }
 
-func (c DBConfig) GetResolver() (*sql.DB, error) {
-	return sql.Open("d1", c.ResolverDBName)
-}
-
-func (c DBConfig) GetVault() (*sql.DB, error) {
-	return sql.Open("d1", c.VaultDBName)
+func (c DBConfig) GetQueries() (*models.Queries, error) {
+	db, err := c.GetCommon()
+	if err != nil {
+		return nil, err
+	}
+	return models.New(db), nil
 }
