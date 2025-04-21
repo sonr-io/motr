@@ -14,10 +14,7 @@ import (
 func UseSession(c config.Config) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			ctx := &SessionContext{
-				Context: c,
-				ID:      getOrCreateSessionID(c),
-			}
+			ctx := NewSession(c)
 			c.Set("session", ctx)
 			return next(c)
 		}

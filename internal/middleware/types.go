@@ -4,31 +4,8 @@
 package middleware
 
 import (
-	"github.com/go-webauthn/webauthn/protocol"
-	"github.com/labstack/echo/v4"
-	"github.com/medama-io/go-useragent"
-	"github.com/segmentio/ksuid"
-	"github.com/sonr-io/motr/sink/models/common"
 	"github.com/sonr-io/motr/sink/models/vault"
 )
-
-// getOrCreateSessionID returns the session ID from the cookie or creates a new one if it doesn't exist
-func getOrCreateSessionID(c echo.Context) string {
-	if ok := CookieExists(c, SessionID); !ok {
-		sessionID := ksuid.New().String()
-		WriteCookie(c, SessionID, sessionID)
-		c.Echo().Logger.Debug("Wrote session ID to cookie")
-		return sessionID
-	}
-	c.Echo().Logger.Debug("Has session ID in cookie")
-	sessionID, err := ReadCookie(c, SessionID)
-	if err != nil {
-		sessionID = ksuid.New().String()
-		WriteCookie(c, SessionID, sessionID)
-		c.Echo().Logger.Debug("Failed to read session ID from cookie, wrote new one")
-	}
-	return sessionID
-}
 
 // Define the credential structure matching our frontend data
 type CredentialDescriptor struct {
@@ -68,31 +45,6 @@ func CredentialArrayToDescriptors(credentials []vault.Credential) []*CredentialD
 		descriptors = append(descriptors, cd)
 	}
 	return descriptors
-}
-
-func BaseSessionCreateParams(e echo.Context) common.CreateSessionParams {
-	// f := rand.Intn(5) + 1
-	// l := rand.Intn(4) + 1
-	challenge, _ := protocol.CreateChallenge()
-	id := getOrCreateSessionID(e)
-	ua := useragent.NewParser()
-	s := ua.Parse(e.Request().UserAgent())
-
-	return common.CreateSessionParams{
-		ID:             id,
-		BrowserName:    s.GetBrowser(),
-		BrowserVersion: s.GetMajorVersion(),
-		ClientIpaddr:   e.RealIP(),
-		Platform:       s.GetOS(),
-		IsMobile:       s.IsMobile(),
-		IsTablet:       s.IsTablet(),
-		IsDesktop:      s.IsDesktop(),
-		IsBot:          s.IsBot(),
-		IsTv:           s.IsTV(),
-		// IsHumanFirst:   int64(f),
-		// IsHumanLast:    int64(l),
-		Challenge: challenge.String(),
-	}
 }
 
 // ╭───────────────────────────────────────────────────────────╮

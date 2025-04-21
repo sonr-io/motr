@@ -9,7 +9,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/internal/components/views"
 	"github.com/sonr-io/motr/internal/middleware"
-	"github.com/sonr-io/motr/sink/models/common"
 )
 
 func IndexHandler(c echo.Context) error {
@@ -17,6 +16,6 @@ func IndexHandler(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	cc.Common().CreateSession(c.Request().Context(), common.CreateSessionParams{})
+	cc.Common().CreateSession(c.Request().Context(), middleware.BaseSessionCreateParams(c))
 	return middleware.Render(c, views.DemoView(time.Now()))
 }
