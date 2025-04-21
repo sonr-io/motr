@@ -13,3 +13,9 @@ func HandleLoginStart(q models.Querier) echo.HandlerFunc {
 		return middleware.Render(c, views.LoginView(options.LoginOptions{}))
 	}
 }
+
+func HandleReturnLoginView(q models.Querier) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		return middleware.Render(c, views.LoginView(options.LoginOptions{}))
+	}
+}

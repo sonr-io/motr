@@ -13,3 +13,15 @@ func HandleRegisterFinish(q models.Querier) echo.HandlerFunc {
 		return middleware.Render(c, views.RegisterView(options.RegisterOptions{}))
 	}
 }
+
+func HandleCredentialAttestation(q models.Querier) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		return middleware.Render(c, views.RegisterView(options.RegisterOptions{}))
+	}
+}
+
+func HandleRedirectRegister(q models.Querier) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		return middleware.Render(c, views.RegisterView(options.RegisterOptions{}))
+	}
+}

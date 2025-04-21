@@ -21,15 +21,17 @@ func RegisterController(cfg config.Config, s *config.Server) error {
 		return err
 	}
 
+	s.GET("/login", handlers.HandleLoginInitial(q))
 	s.GET("/login/:handle", handlers.HandleLoginStart(q))
 	s.POST("/login/:handle/finish", handlers.HandleLoginFinish(q))
+	s.GET("/register", handlers.HandleRegisterStart(q))
 	s.GET("/register/:handle", handlers.HandleRegisterStart(q))
 	s.POST("/register/:handle/finish", handlers.HandleRegisterFinish(q))
 	return nil
 }
 
 func (c *AuthenticateController) CheckHandle(handle string) bool {
-	res, err := c.Querier.CheckHandleExists(context.Background(), handle)
+	res, err := c.CheckHandleExists(context.Background(), handle)
 	if err != nil {
 		return false
 	}

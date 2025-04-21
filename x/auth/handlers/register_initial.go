@@ -8,20 +8,22 @@ import (
 	"github.com/sonr-io/motr/x/auth/views"
 )
 
-func HandleRegisterStart(q models.Querier) echo.HandlerFunc {
+func HandleRegisterInitial(q models.Querier) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		return middleware.Render(c, views.RegisterView(options.RegisterOptions{}))
 	}
 }
 
-func HandleUsernameSubmit(q models.Querier) echo.HandlerFunc {
+func HandleUsernameAvailable(q models.Querier) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return middleware.Render(c, views.RegisterView(options.RegisterOptions{}))
-	}
-}
-
-func HandleProfileSubmit(q models.Querier) echo.HandlerFunc {
-	return func(c echo.Context) error {
+		handle := c.Param("handle")
+		ok, err := q.CheckHandleExists(c.Request().Context(), handle)
+		if err != nil {
+			return err
+		}
+		if ok {
+			return middleware.Render(c, views.RegisterView(options.RegisterOptions{}))
+		}
 		return middleware.Render(c, views.RegisterView(options.RegisterOptions{}))
 	}
 }
