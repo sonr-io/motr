@@ -9,9 +9,9 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	ui "github.com/sonr-io/motr/nebula/base"
-	"github.com/sonr-io/motr/nebula/blocks"
 	"github.com/sonr-io/motr/sink/options"
+	ui "github.com/sonr-io/motr/ui/base"
+	"github.com/sonr-io/motr/ui/blocks"
 )
 
 func RegisterView(opts options.RegisterOptions) templ.Component {

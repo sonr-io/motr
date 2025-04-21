@@ -22,7 +22,6 @@ func main() {
 	if err := auth.RegisterController(c, e); err != nil {
 		panic(err)
 	}
-
 	// Start server
 	e.Serve()
 }

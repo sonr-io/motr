@@ -9,9 +9,9 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	ui "github.com/sonr-io/motr/nebula/base"
 	"github.com/sonr-io/motr/sink/options"
 	"github.com/sonr-io/motr/sink/types"
+	ui "github.com/sonr-io/motr/ui/base"
 )
 
 var meta = types.DefaultMetadata()
