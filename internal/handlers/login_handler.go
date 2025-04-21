@@ -11,10 +11,5 @@ import (
 )
 
 func LoginHandler(c echo.Context) error {
-	vc, err := middleware.GetVaultController(c)
-	if err != nil {
-		return err
-	}
-	vc.Vault().GetCredentialsByHandle(c.Request().Context(), c.QueryParam("handle"))
 	return middleware.Render(c, views.LoginView(options.LoginOptions{}))
 }

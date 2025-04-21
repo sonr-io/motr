@@ -4,11 +4,26 @@
 package database
 
 import (
+	"database/sql"
+
 	"github.com/sonr-io/motr/config"
 	"github.com/sonr-io/motr/sink/models/common"
 	"github.com/sonr-io/motr/sink/models/vault"
 	_ "github.com/syumai/workers/cloudflare/d1"
 )
+
+type (
+	CommonQueries *common.Queries
+	VaultQueries  *vault.Queries
+)
+
+func NewCommonQueries(db *sql.DB) CommonQueries {
+	return common.New(db)
+}
+
+func NewVaultQueries(db *sql.DB) VaultQueries {
+	return vault.New(db)
+}
 
 type Controller interface {
 	Common() common.Querier

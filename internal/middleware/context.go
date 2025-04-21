@@ -10,21 +10,28 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/medama-io/go-useragent"
 	"github.com/segmentio/ksuid"
+	"github.com/sonr-io/motr/config"
 	"github.com/sonr-io/motr/internal/database"
 	"github.com/sonr-io/motr/sink/models/common"
+	"github.com/sonr-io/motr/sink/models/vault"
 )
 
 type SessionContext struct {
 	echo.Context
 	ID              string
-	controller      database.Controller
-	vaultController database.VaultController
+	controller      database.CommonQueries
+	vaultController database.VaultQueries
 }
 
-func NewSession(c echo.Context) *SessionContext {
+func NewSession(c echo.Context, cfg config.Config) *SessionContext {
+	commonDB, _ := cfg.DB.GetCommon()
+	vaultDB, _ := cfg.DB.GetVault()
+
 	return &SessionContext{
-		Context: c,
-		ID:      getOrCreateSessionID(c),
+		Context:         c,
+		ID:              getOrCreateSessionID(c),
+		controller:      common.New(commonDB),
+		vaultController: vault.New(vaultDB),
 	}
 }
 
@@ -58,8 +65,8 @@ func GetSession(c echo.Context) (*SessionContext, error) {
 	return cc, nil
 }
 
-// GetCommonController retrieves the Controller from the context
-func GetCommonController(c echo.Context) (database.Controller, error) {
+// GetCommonQueries retrieves the Controller from the context
+func GetCommonQueries(c echo.Context) (database.CommonQueries, error) {
 	sc, err := GetSession(c)
 	if err != nil {
 		return nil, err
@@ -70,8 +77,8 @@ func GetCommonController(c echo.Context) (database.Controller, error) {
 	return sc.controller, nil
 }
 
-// GetVaultController retrieves the VaultController from the context
-func GetVaultController(c echo.Context) (database.VaultController, error) {
+// GetVaultQueries retrieves the VaultController from the context
+func GetVaultQueries(c echo.Context) (database.VaultQueries, error) {
 	sc, err := GetSession(c)
 	if err != nil {
 		return nil, err
@@ -80,24 +87,6 @@ func GetVaultController(c echo.Context) (database.VaultController, error) {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "VaultController not set in session")
 	}
 	return sc.vaultController, nil
-}
-
-// MustGetController retrieves the Controller from the context or panics
-func MustGetController(c echo.Context) database.Controller {
-	controller, err := GetCommonController(c)
-	if err != nil {
-		panic(err)
-	}
-	return controller
-}
-
-// MustGetVaultController retrieves the VaultController from the context or panics
-func MustGetVaultController(c echo.Context) database.VaultController {
-	controller, err := GetVaultController(c)
-	if err != nil {
-		panic(err)
-	}
-	return controller
 }
 
 // getOrCreateSessionID returns the session ID from the cookie or creates a new one if it doesn't exist

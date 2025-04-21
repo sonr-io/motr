@@ -15,7 +15,7 @@ import (
 func main() {
 	c := config.GetConfig()
 	e := echo.New()
-	e.Use(middleware.UseSession(c), middleware.DBCommon(c), middleware.DBVault(c))
+	e.Use(middleware.UseSession(c))
 	e.GET("/", handlers.IndexHandler)
 	e.GET("/login", handlers.LoginHandler)
 	workers.Serve(e)

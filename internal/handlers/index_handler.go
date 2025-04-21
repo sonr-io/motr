@@ -12,10 +12,5 @@ import (
 )
 
 func IndexHandler(c echo.Context) error {
-	cc, err := middleware.GetCommonController(c)
-	if err != nil {
-		return err
-	}
-	cc.Common().CreateSession(c.Request().Context(), middleware.BaseSessionCreateParams(c))
 	return middleware.Render(c, views.DemoView(time.Now()))
 }
