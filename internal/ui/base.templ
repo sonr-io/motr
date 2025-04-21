@@ -1,7 +1,5 @@
 package ui
 
-import "github.com/sonr-io/motr/config/ui/deps"
-
 templ Body() {
 	<body>
 		{ children... }
@@ -13,13 +11,13 @@ templ Head() {
 	<head>
 		<meta charset="UTF-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-		@deps.ApexCharts()
-		@deps.Helia()
-		@deps.Dexie()
-		@deps.Htmx()
-		@deps.Tailwind()
-		@deps.Shoelace()
-		@deps.DefaultStyles()
+		@ApexCharts()
+		@Helia()
+		@Dexie()
+		@Htmx()
+		@Tailwind()
+		@Shoelace()
+		@DefaultStyles()
 		{ children... }
 	</head>
 }
