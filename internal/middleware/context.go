@@ -4,33 +4,42 @@
 package middleware
 
 import (
-	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/segmentio/ksuid"
 	"github.com/sonr-io/motr/config"
+	"github.com/sonr-io/motr/sink"
 )
 
 type SessionContext struct {
 	echo.Context
 	ID     string
 	Config config.Config
+	Status *sink.Status
 }
 
 func NewSession(c echo.Context, cfg config.Config) *SessionContext {
+	id := getOrCreateSessionID(c)
 	return &SessionContext{
 		Context: c,
-		ID:      getOrCreateSessionID(c),
+		ID:      id,
 		Config:  cfg,
+		Status: &sink.Status{
+			SessionID: id,
+			Expires:   cfg.GetSessionExpiry(time.Now()),
+			Status:    "default",
+			Handle:    "",
+		},
 	}
 }
 
-func GetSession(c echo.Context) (*SessionContext, error) {
-	cc, ok := c.(*SessionContext)
-	if !ok {
-		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Session Context not found")
+func GetSession(c echo.Context) *SessionContext {
+	cc := c.(*SessionContext)
+	if cc == nil {
+		panic("Session Context not found")
 	}
-	return cc, nil
+	return cc
 }
 
 // getOrCreateSessionID returns the session ID from the cookie or creates a new one if it doesn't exist

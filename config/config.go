@@ -6,6 +6,7 @@ package config
 import (
 	"database/sql"
 	"strconv"
+	"time"
 
 	"github.com/sonr-io/motr/sink/models"
 	"github.com/syumai/workers/cloudflare"
@@ -25,26 +26,32 @@ func (m MotrMode) String() string {
 }
 
 type Config struct {
-	Sonr       SonrConfig  `json:"sonr"`
-	IPFS       IPFSConfig  `json:"ipfs"`
-	Mode       MotrMode    `json:"mode"`
-	DB         DBConfig    `json:"db"`
-	Cache      CacheConfig `json:"cache"`    // Added Cache configuration
-	KVSessions string      `json:"sessions"` // Added KV configuration
-	KVHandles  string      `json:"handles"`  // Added KV configuration
+	Sonr                 SonrConfig    `json:"sonr"`
+	IPFS                 IPFSConfig    `json:"ipfs"`
+	Mode                 MotrMode      `json:"mode"`
+	DB                   DBConfig      `json:"db"`
+	Cache                CacheConfig   `json:"cache"`    // Added Cache configuration
+	KVSessions           string        `json:"sessions"` // Added KV configuration
+	KVHandles            string        `json:"handles"`  // Added KV configuration
+	DefaultSessionExpiry time.Duration `json:"default_session_expiry"`
 }
 
 func getConfig() Config {
 	c := Config{
-		Sonr:       getSonrConfig(),
-		IPFS:       getIPFSConfig(),
-		Mode:       getMotrMode(),
-		DB:         getDBConfig(),
-		Cache:      getCacheConfig(), // Added Cache configuration
-		KVSessions: "SESSIONS",
-		KVHandles:  "HANDLES",
+		Sonr:                 getSonrConfig(),
+		IPFS:                 getIPFSConfig(),
+		Mode:                 getMotrMode(),
+		DB:                   getDBConfig(),
+		Cache:                getCacheConfig(), // Added Cache configuration
+		KVSessions:           "SESSIONS",
+		KVHandles:            "HANDLES",
+		DefaultSessionExpiry: time.Hour * 1, // 1 hour by default
 	}
 	return c
+}
+
+func (c Config) GetSessionExpiry(t time.Time) int64 {
+	return c.DefaultSessionExpiry.Nanoseconds() + t.UnixNano()
 }
 
 func (c Config) GetSessionsKV() (*kv.Namespace, error) {
