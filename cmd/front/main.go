@@ -4,19 +4,22 @@
 package main
 
 import (
-	"github.com/labstack/echo/v4"
-	"github.com/sonr-io/motr/config"
+	"github.com/sonr-io/motr/internal/server"
 
 	"github.com/sonr-io/motr/internal/handlers"
-	"github.com/sonr-io/motr/internal/middleware"
-	"github.com/syumai/workers"
 )
 
 func main() {
-	c := config.GetConfig()
-	e := echo.New()
-	e.Use(middleware.UseSession(c))
+	e := server.New()
+
+	// Unauthenticated routes
 	e.GET("/", handlers.IndexHandler)
-	e.GET("/register", handlers.RegisterHandler)
-	workers.Serve(e)
+	e.GET("/register/:handle", handlers.HandleRegisterStart)
+	e.POST("/register/:handle/finish", handlers.HandleRegisterFinish)
+	e.GET("/login/:handle", handlers.HandleLoginStart)
+	e.POST("/login/:handle/finish", handlers.HandleLoginFinish)
+
+	// Authenticated routes
+	e.GET("/:handle/home", handlers.IndexHandler)
+	e.Serve()
 }

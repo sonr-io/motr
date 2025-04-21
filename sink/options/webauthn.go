@@ -1,4 +1,4 @@
-package types
+package options
 
 import (
 	"github.com/sonr-io/motr/sink/models"

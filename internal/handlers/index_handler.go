@@ -12,3 +12,15 @@ import (
 func IndexHandler(c echo.Context) error {
 	return middleware.Render(c, views.HomeView())
 }
+
+func HandleNewUser(c echo.Context) error {
+	return middleware.Render(c, views.HomeView())
+}
+
+func HandleReturningUser(c echo.Context) error {
+	return middleware.Render(c, views.HomeView())
+}
+
+func HandleExpiredUser(c echo.Context) error {
+	return middleware.Render(c, views.HomeView())
+}

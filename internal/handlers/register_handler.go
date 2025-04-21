@@ -10,6 +10,10 @@ import (
 	"github.com/sonr-io/motr/sink/options"
 )
 
-func RegisterHandler(c echo.Context) error {
+func HandleRegisterStart(c echo.Context) error {
+	return middleware.Render(c, views.RegisterView(options.RegisterOptions{}))
+}
+
+func HandleRegisterFinish(c echo.Context) error {
 	return middleware.Render(c, views.RegisterView(options.RegisterOptions{}))
 }

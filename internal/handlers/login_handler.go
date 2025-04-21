@@ -10,6 +10,10 @@ import (
 	"github.com/sonr-io/motr/sink/options"
 )
 
-func LoginHandler(c echo.Context) error {
+func HandleLoginStart(c echo.Context) error {
+	return middleware.Render(c, views.LoginView(options.LoginOptions{}))
+}
+
+func HandleLoginFinish(c echo.Context) error {
 	return middleware.Render(c, views.LoginView(options.LoginOptions{}))
 }
