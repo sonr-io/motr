@@ -8,9 +8,9 @@ package blocks
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/sonr-io/motr/sink/types"
+import "github.com/sonr-io/motr/x/wallet/types"
 
-var defaultCoins = []types.Coin{
+var defaultCoins = []types.CoinInfo{
 	{Ticker: "SNR", Name: "Sonr", IsDefault: true},
 	{Ticker: "BTC", Name: "Bitcoin", IsDefault: true},
 	{Ticker: "ETH", Name: "Ethereum", IsDefault: true},
@@ -66,7 +66,7 @@ func CoinsDropdown() templ.Component {
 	})
 }
 
-func CoinOption(a types.Coin) templ.Component {
+func CoinOption(a types.CoinInfo) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

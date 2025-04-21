@@ -9,11 +9,11 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/sonr-io/motr/sink/types"
+	"github.com/sonr-io/motr/sink"
 	ui "github.com/sonr-io/motr/ui/base"
 )
 
-var meta = types.DefaultMetadata()
+var meta = sink.DefaultMetadata()
 
 func HomeView() templ.Component {
 	return homeComponent()

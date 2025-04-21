@@ -1,8 +1,8 @@
 package base
 
-import "github.com/sonr-io/motr/sink/types"
+import "github.com/sonr-io/motr/sink"
 
-templ MetaComponent(m types.Metadata) {
+templ MetaComponent(m sink.Metadata) {
 	<title>{ m.Title }</title>
 	<link rel="icon" type="image/png" href={ m.Favicon }/>
 	<meta name="description" content={ m.Description }/>

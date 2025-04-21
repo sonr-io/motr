@@ -1,4 +1,4 @@
-package types
+package sink
 
 type Icon struct {
 	Name    string

@@ -4,11 +4,15 @@ type AssetInfo struct {
 	Ticker    string
 	Name      string
 	IsDefault bool
-	Icon      Icon
 }
 
-type Coin struct {
+type CoinInfo struct {
 	Ticker    string
 	Name      string
 	IsDefault bool
+}
+
+type ChainInfo struct {
+	Name string
+	ID   string
 }
