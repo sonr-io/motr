@@ -11,7 +11,7 @@ import (
 	"github.com/medama-io/go-useragent"
 	"github.com/segmentio/ksuid"
 	"github.com/sonr-io/motr/config"
-	"github.com/sonr-io/motr/internal/database"
+	"github.com/sonr-io/motr/sink/database"
 	"github.com/sonr-io/motr/sink/models/common"
 	"github.com/sonr-io/motr/sink/models/vault"
 )
