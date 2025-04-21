@@ -1,16 +1,12 @@
 package views
 
 import (
-	ui "github.com/sonr-io/motr/nebula/base"
-	"github.com/sonr-io/motr/nebula/blocks"
 	"github.com/sonr-io/motr/sink/options"
+	ui "github.com/sonr-io/motr/ui/base"
+	"github.com/sonr-io/motr/ui/blocks"
 )
 
-func RegisterView(opts options.RegisterOptions) templ.Component {
-	return registerComponent(opts.Address, opts.Handle, opts.Challenge)
-}
-
-templ registerComponent(addr, handle, challenge string) {
+templ RegisterView(opts options.RegisterOptions) {
 	@ui.HTML() {
 		@ui.Head() {
 			@ui.MetaComponent(meta)
@@ -26,7 +22,7 @@ templ registerComponent(addr, handle, challenge string) {
 			@ui.Body() {
 				@ui.Container() {
 					@blocks.HandleInitial()
-					@blocks.PasskeyInitial(blocks.NavigatorCredentialsCreate(addr, handle, challenge))
+					@blocks.PasskeyInitial(blocks.NavigatorCredentialsCreate(opts.Address, opts.Handle, opts.Challenge))
 				}
 			}
 		</sl-tab-group>

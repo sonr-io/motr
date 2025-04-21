@@ -22,7 +22,7 @@ func RegisterController(cfg config.Config, s *config.Server) error {
 	c := &DashController{Querier: q}
 
 	// Register routes
-	s.GET("/", c.HandleDashOverview)
+	s.GET("/dash", c.HandleDashOverview)
 	return nil
 }
 

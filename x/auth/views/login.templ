@@ -1,18 +1,14 @@
 package views
 
 import (
-	ui "github.com/sonr-io/motr/nebula/base"
 	"github.com/sonr-io/motr/sink/options"
 	"github.com/sonr-io/motr/sink/types"
+	ui "github.com/sonr-io/motr/ui/base"
 )
 
 var meta = types.DefaultMetadata()
 
-func LoginView(opts options.LoginOptions) templ.Component {
-	return loginComponent()
-}
-
-templ loginComponent() {
+templ LoginView(opts options.LoginOptions) {
 	@ui.HTML() {
 		@ui.Head() {
 			@ui.MetaComponent(meta)

@@ -1,7 +1,7 @@
 //go:build js && wasm
 // +build js,wasm
 
-package index
+package home
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/sonr-io/motr/sink/models"
 )
 
-type AuthorizeController struct {
+type HomeController struct {
 	Querier models.Querier
 }
 
@@ -19,14 +19,14 @@ func RegisterController(cfg config.Config, s *config.Server) error {
 	if err != nil {
 		return err
 	}
-	c := &AuthorizeController{Querier: q}
+	c := &HomeController{Querier: q}
 
 	// Register routes
 	s.GET("/", c.HandleHome)
 	return nil
 }
 
-func (c *AuthorizeController) CheckHandle(handle string) bool {
+func (c *HomeController) CheckHandle(handle string) bool {
 	res, err := c.Querier.CheckHandleExists(context.Background(), handle)
 	if err != nil {
 		return false

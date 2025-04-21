@@ -1,6 +1,11 @@
 package views
 
-import ui "github.com/sonr-io/motr/nebula/base"
+import (
+	ui "github.com/sonr-io/motr/nebula/base"
+	"github.com/sonr-io/motr/sink/types"
+)
+
+var meta = types.DefaultMetadata()
 
 func HomeView() templ.Component {
 	return homeComponent()

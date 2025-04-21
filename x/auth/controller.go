@@ -8,10 +8,11 @@ import (
 
 	"github.com/sonr-io/motr/config"
 	"github.com/sonr-io/motr/sink/models"
+	"github.com/sonr-io/motr/x/auth/handlers"
 )
 
 type AuthenticateController struct {
-	Querier models.Querier
+	models.Querier
 }
 
 func RegisterController(cfg config.Config, s *config.Server) error {
@@ -19,13 +20,11 @@ func RegisterController(cfg config.Config, s *config.Server) error {
 	if err != nil {
 		return err
 	}
-	c := &AuthenticateController{Querier: q}
 
-	// Register routes
-	s.GET("/login/:handle", c.HandleLoginStart)
-	s.POST("/login/:handle/finish", c.HandleLoginFinish)
-	s.GET("/register/:handle", c.HandleRegisterStart)
-	s.POST("/register/:handle/finish", c.HandleRegisterFinish)
+	s.GET("/login/:handle", handlers.HandleLoginStart(q))
+	s.POST("/login/:handle/finish", handlers.HandleLoginFinish(q))
+	s.GET("/register/:handle", handlers.HandleRegisterStart(q))
+	s.POST("/register/:handle/finish", handlers.HandleRegisterFinish(q))
 	return nil
 }
 
@@ -37,7 +36,7 @@ func (c *AuthenticateController) CheckHandle(handle string) bool {
 	return res
 }
 
-func (c *AuthenticateController) ListCredentials(handle string) ([]models.Credential, error) {
+func (c *AuthenticateController) GetCredentials(handle string) ([]models.Credential, error) {
 	return c.Querier.GetCredentialsByHandle(context.Background(), handle)
 }
 

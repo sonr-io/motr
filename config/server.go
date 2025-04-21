@@ -15,17 +15,18 @@ type Server struct {
 }
 
 // New creates a new server
-func New() *Server {
+func New() (*Server, Config) {
+	c := getConfig()
 	s := &Server{
 		echo:   echo.New(),
-		Config: GetConfig(),
+		Config: c,
 	}
-	return s
+	return s, c
 }
 
 // Use registers a middleware
-func (s *Server) Use(middleware echo.MiddlewareFunc) {
-	s.echo.Use(middleware)
+func (s *Server) Use(middleware ...echo.MiddlewareFunc) {
+	s.echo.Use(middleware...)
 }
 
 // GET registers a route that matches GET requests

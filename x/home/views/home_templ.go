@@ -10,17 +10,16 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	ui "github.com/sonr-io/motr/nebula/base"
-	"github.com/sonr-io/motr/sink/options"
 	"github.com/sonr-io/motr/sink/types"
 )
 
 var meta = types.DefaultMetadata()
 
-func LoginView(opts options.LoginOptions) templ.Component {
-	return loginComponent()
+func HomeView() templ.Component {
+	return homeComponent()
 }
 
-func loginComponent() templ.Component {
+func homeComponent() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -129,10 +128,6 @@ func loginComponent() templ.Component {
 						}()
 					}
 					ctx = templ.InitializeContext(ctx)
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<sl-tab slot=\"nav\" panel=\"tab-1\">Time</sl-tab> <sl-tab slot=\"nav\" panel=\"tab-2\">Account</sl-tab> <sl-tab slot=\"nav\" panel=\"tab-3\">Prices</sl-tab>")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
 					return nil
 				})
 				templ_7745c5c3_Err = ui.NavRight().Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
@@ -157,6 +152,28 @@ func loginComponent() templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
+				templ_7745c5c3_Var8 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+					templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+					templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+					if !templ_7745c5c3_IsBuffer {
+						defer func() {
+							templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+							if templ_7745c5c3_Err == nil {
+								templ_7745c5c3_Err = templ_7745c5c3_BufErr
+							}
+						}()
+					}
+					ctx = templ.InitializeContext(ctx)
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<sl-card><div slot=\"header\"><h3 class=\"card-title\">Welcome to Motr</h3></div><div class=\"card-body\"><p>This is a demo of the Motr web app.</p><p>You can use this app to manage your Motr account.</p></div><div class=\"card-footer\"><sl-button type=\"primary\" size=\"large\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"passkey\"></sl-icon> Register</sl-button></div></sl-card>")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					return nil
+				})
+				templ_7745c5c3_Err = ui.Container().Render(templ.WithChildren(ctx, templ_7745c5c3_Var8), templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
 				return nil
 			})
 			templ_7745c5c3_Err = ui.Body().Render(templ.WithChildren(ctx, templ_7745c5c3_Var7), templ_7745c5c3_Buffer)

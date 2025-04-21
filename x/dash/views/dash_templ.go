@@ -11,9 +11,11 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	ui "github.com/sonr-io/motr/nebula/base"
 	"github.com/sonr-io/motr/nebula/cards"
+	"github.com/sonr-io/motr/sink/types"
 	"time"
 )
 
+var meta = types.DefaultMetadata()
 var heliaCardScriptHandle = templ.NewOnceHandle()
 
 func DemoView(d time.Time) templ.Component {
