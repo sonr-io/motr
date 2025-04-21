@@ -3,9 +3,9 @@ package handlers
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/config/middleware"
-	"github.com/sonr-io/motr/x/home/views"
+	"github.com/sonr-io/motr/x/home/components"
 )
 
 func (h *Handler) HandleDefault(c echo.Context) error {
-	return middleware.Render(c, views.HomeView())
+	return middleware.Render(c, components.HomeView())
 }
