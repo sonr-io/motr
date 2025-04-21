@@ -17,6 +17,6 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.UseSession(c))
 	e.GET("/", handlers.IndexHandler)
-	e.GET("/claim", handlers.RegisterHandler)
+	e.GET("/register", handlers.RegisterHandler)
 	workers.Serve(e)
 }
