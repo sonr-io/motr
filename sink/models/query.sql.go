@@ -24,6 +24,18 @@ func (q *Queries) CheckHandleExists(ctx context.Context, handle string) (bool, e
 	return handle_exists, err
 }
 
+const countBlockchainsByChainType = `-- name: CountBlockchainsByChainType :one
+SELECT COUNT(*) as count FROM blockchains
+WHERE chain_type LIKE '%' || ? || '%' AND deleted_at IS NULL
+`
+
+func (q *Queries) CountBlockchainsByChainType(ctx context.Context, dollar_1 sql.NullString) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countBlockchainsByChainType, dollar_1)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const getAccountByAddress = `-- name: GetAccountByAddress :one
 SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, block_created, controller, label, handle, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
 WHERE address = ? AND deleted_at IS NULL
@@ -553,6 +565,366 @@ func (q *Queries) GetAssetWithLatestPrice(ctx context.Context, id string) (GetAs
 		&i.MarketCapUsd,
 		&i.PercentChange24h,
 		&i.LastUpdated,
+	)
+	return i, err
+}
+
+const getBlockchainByChainName = `-- name: GetBlockchainByChainName :one
+SELECT id, created_at, updated_at, deleted_at, chain_name, chain_id_cosmos, chain_id_evm, api_name, bech_account_prefix, bech_validator_prefix, main_asset_symbol, main_asset_denom, staking_asset_symbol, staking_asset_denom, is_stake_enabled, chain_image, main_asset_image, staking_asset_image, chain_type, is_support_mobile_wallet, is_support_extension_wallet, is_support_erc20, description_en, description_ko, description_ja, origin_genesis_time, account_type, btc_staking, cosmos_fee_info, evm_fee_info, lcd_endpoint, grpc_endpoint, evm_rpc_endpoint, explorer, about, forum FROM blockchains
+WHERE chain_name = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetBlockchainByChainName(ctx context.Context, chainName string) (Blockchain, error) {
+	row := q.db.QueryRowContext(ctx, getBlockchainByChainName, chainName)
+	var i Blockchain
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ChainName,
+		&i.ChainIDCosmos,
+		&i.ChainIDEvm,
+		&i.ApiName,
+		&i.BechAccountPrefix,
+		&i.BechValidatorPrefix,
+		&i.MainAssetSymbol,
+		&i.MainAssetDenom,
+		&i.StakingAssetSymbol,
+		&i.StakingAssetDenom,
+		&i.IsStakeEnabled,
+		&i.ChainImage,
+		&i.MainAssetImage,
+		&i.StakingAssetImage,
+		&i.ChainType,
+		&i.IsSupportMobileWallet,
+		&i.IsSupportExtensionWallet,
+		&i.IsSupportErc20,
+		&i.DescriptionEn,
+		&i.DescriptionKo,
+		&i.DescriptionJa,
+		&i.OriginGenesisTime,
+		&i.AccountType,
+		&i.BtcStaking,
+		&i.CosmosFeeInfo,
+		&i.EvmFeeInfo,
+		&i.LcdEndpoint,
+		&i.GrpcEndpoint,
+		&i.EvmRpcEndpoint,
+		&i.Explorer,
+		&i.About,
+		&i.Forum,
+	)
+	return i, err
+}
+
+const getBlockchainByCosmosChainID = `-- name: GetBlockchainByCosmosChainID :one
+SELECT id, created_at, updated_at, deleted_at, chain_name, chain_id_cosmos, chain_id_evm, api_name, bech_account_prefix, bech_validator_prefix, main_asset_symbol, main_asset_denom, staking_asset_symbol, staking_asset_denom, is_stake_enabled, chain_image, main_asset_image, staking_asset_image, chain_type, is_support_mobile_wallet, is_support_extension_wallet, is_support_erc20, description_en, description_ko, description_ja, origin_genesis_time, account_type, btc_staking, cosmos_fee_info, evm_fee_info, lcd_endpoint, grpc_endpoint, evm_rpc_endpoint, explorer, about, forum FROM blockchains
+WHERE chain_id_cosmos = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetBlockchainByCosmosChainID(ctx context.Context, chainIDCosmos sql.NullString) (Blockchain, error) {
+	row := q.db.QueryRowContext(ctx, getBlockchainByCosmosChainID, chainIDCosmos)
+	var i Blockchain
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ChainName,
+		&i.ChainIDCosmos,
+		&i.ChainIDEvm,
+		&i.ApiName,
+		&i.BechAccountPrefix,
+		&i.BechValidatorPrefix,
+		&i.MainAssetSymbol,
+		&i.MainAssetDenom,
+		&i.StakingAssetSymbol,
+		&i.StakingAssetDenom,
+		&i.IsStakeEnabled,
+		&i.ChainImage,
+		&i.MainAssetImage,
+		&i.StakingAssetImage,
+		&i.ChainType,
+		&i.IsSupportMobileWallet,
+		&i.IsSupportExtensionWallet,
+		&i.IsSupportErc20,
+		&i.DescriptionEn,
+		&i.DescriptionKo,
+		&i.DescriptionJa,
+		&i.OriginGenesisTime,
+		&i.AccountType,
+		&i.BtcStaking,
+		&i.CosmosFeeInfo,
+		&i.EvmFeeInfo,
+		&i.LcdEndpoint,
+		&i.GrpcEndpoint,
+		&i.EvmRpcEndpoint,
+		&i.Explorer,
+		&i.About,
+		&i.Forum,
+	)
+	return i, err
+}
+
+const getBlockchainByEvmChainID = `-- name: GetBlockchainByEvmChainID :one
+SELECT id, created_at, updated_at, deleted_at, chain_name, chain_id_cosmos, chain_id_evm, api_name, bech_account_prefix, bech_validator_prefix, main_asset_symbol, main_asset_denom, staking_asset_symbol, staking_asset_denom, is_stake_enabled, chain_image, main_asset_image, staking_asset_image, chain_type, is_support_mobile_wallet, is_support_extension_wallet, is_support_erc20, description_en, description_ko, description_ja, origin_genesis_time, account_type, btc_staking, cosmos_fee_info, evm_fee_info, lcd_endpoint, grpc_endpoint, evm_rpc_endpoint, explorer, about, forum FROM blockchains
+WHERE chain_id_evm = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetBlockchainByEvmChainID(ctx context.Context, chainIDEvm sql.NullString) (Blockchain, error) {
+	row := q.db.QueryRowContext(ctx, getBlockchainByEvmChainID, chainIDEvm)
+	var i Blockchain
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ChainName,
+		&i.ChainIDCosmos,
+		&i.ChainIDEvm,
+		&i.ApiName,
+		&i.BechAccountPrefix,
+		&i.BechValidatorPrefix,
+		&i.MainAssetSymbol,
+		&i.MainAssetDenom,
+		&i.StakingAssetSymbol,
+		&i.StakingAssetDenom,
+		&i.IsStakeEnabled,
+		&i.ChainImage,
+		&i.MainAssetImage,
+		&i.StakingAssetImage,
+		&i.ChainType,
+		&i.IsSupportMobileWallet,
+		&i.IsSupportExtensionWallet,
+		&i.IsSupportErc20,
+		&i.DescriptionEn,
+		&i.DescriptionKo,
+		&i.DescriptionJa,
+		&i.OriginGenesisTime,
+		&i.AccountType,
+		&i.BtcStaking,
+		&i.CosmosFeeInfo,
+		&i.EvmFeeInfo,
+		&i.LcdEndpoint,
+		&i.GrpcEndpoint,
+		&i.EvmRpcEndpoint,
+		&i.Explorer,
+		&i.About,
+		&i.Forum,
+	)
+	return i, err
+}
+
+const getBlockchainByID = `-- name: GetBlockchainByID :one
+SELECT id, created_at, updated_at, deleted_at, chain_name, chain_id_cosmos, chain_id_evm, api_name, bech_account_prefix, bech_validator_prefix, main_asset_symbol, main_asset_denom, staking_asset_symbol, staking_asset_denom, is_stake_enabled, chain_image, main_asset_image, staking_asset_image, chain_type, is_support_mobile_wallet, is_support_extension_wallet, is_support_erc20, description_en, description_ko, description_ja, origin_genesis_time, account_type, btc_staking, cosmos_fee_info, evm_fee_info, lcd_endpoint, grpc_endpoint, evm_rpc_endpoint, explorer, about, forum FROM blockchains
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetBlockchainByID(ctx context.Context, id string) (Blockchain, error) {
+	row := q.db.QueryRowContext(ctx, getBlockchainByID, id)
+	var i Blockchain
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ChainName,
+		&i.ChainIDCosmos,
+		&i.ChainIDEvm,
+		&i.ApiName,
+		&i.BechAccountPrefix,
+		&i.BechValidatorPrefix,
+		&i.MainAssetSymbol,
+		&i.MainAssetDenom,
+		&i.StakingAssetSymbol,
+		&i.StakingAssetDenom,
+		&i.IsStakeEnabled,
+		&i.ChainImage,
+		&i.MainAssetImage,
+		&i.StakingAssetImage,
+		&i.ChainType,
+		&i.IsSupportMobileWallet,
+		&i.IsSupportExtensionWallet,
+		&i.IsSupportErc20,
+		&i.DescriptionEn,
+		&i.DescriptionKo,
+		&i.DescriptionJa,
+		&i.OriginGenesisTime,
+		&i.AccountType,
+		&i.BtcStaking,
+		&i.CosmosFeeInfo,
+		&i.EvmFeeInfo,
+		&i.LcdEndpoint,
+		&i.GrpcEndpoint,
+		&i.EvmRpcEndpoint,
+		&i.Explorer,
+		&i.About,
+		&i.Forum,
+	)
+	return i, err
+}
+
+const getBlockchainEndpoints = `-- name: GetBlockchainEndpoints :one
+SELECT id, chain_name, lcd_endpoint, grpc_endpoint, evm_rpc_endpoint 
+FROM blockchains
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+type GetBlockchainEndpointsRow struct {
+	ID             string         `json:"id"`
+	ChainName      string         `json:"chain_name"`
+	LcdEndpoint    sql.NullString `json:"lcd_endpoint"`
+	GrpcEndpoint   sql.NullString `json:"grpc_endpoint"`
+	EvmRpcEndpoint sql.NullString `json:"evm_rpc_endpoint"`
+}
+
+func (q *Queries) GetBlockchainEndpoints(ctx context.Context, id string) (GetBlockchainEndpointsRow, error) {
+	row := q.db.QueryRowContext(ctx, getBlockchainEndpoints, id)
+	var i GetBlockchainEndpointsRow
+	err := row.Scan(
+		&i.ID,
+		&i.ChainName,
+		&i.LcdEndpoint,
+		&i.GrpcEndpoint,
+		&i.EvmRpcEndpoint,
+	)
+	return i, err
+}
+
+const getBlockchainExplorer = `-- name: GetBlockchainExplorer :one
+SELECT id, chain_name, explorer 
+FROM blockchains
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+type GetBlockchainExplorerRow struct {
+	ID        string         `json:"id"`
+	ChainName string         `json:"chain_name"`
+	Explorer  sql.NullString `json:"explorer"`
+}
+
+func (q *Queries) GetBlockchainExplorer(ctx context.Context, id string) (GetBlockchainExplorerRow, error) {
+	row := q.db.QueryRowContext(ctx, getBlockchainExplorer, id)
+	var i GetBlockchainExplorerRow
+	err := row.Scan(&i.ID, &i.ChainName, &i.Explorer)
+	return i, err
+}
+
+const getBlockchainWithAssetInfo = `-- name: GetBlockchainWithAssetInfo :one
+SELECT b.id, b.created_at, b.updated_at, b.deleted_at, b.chain_name, b.chain_id_cosmos, b.chain_id_evm, b.api_name, b.bech_account_prefix, b.bech_validator_prefix, b.main_asset_symbol, b.main_asset_denom, b.staking_asset_symbol, b.staking_asset_denom, b.is_stake_enabled, b.chain_image, b.main_asset_image, b.staking_asset_image, b.chain_type, b.is_support_mobile_wallet, b.is_support_extension_wallet, b.is_support_erc20, b.description_en, b.description_ko, b.description_ja, b.origin_genesis_time, b.account_type, b.btc_staking, b.cosmos_fee_info, b.evm_fee_info, b.lcd_endpoint, b.grpc_endpoint, b.evm_rpc_endpoint, b.explorer, b.about, b.forum, a.id as asset_id, a.symbol, a.decimals, p.price_usd, p.price_btc
+FROM blockchains b
+LEFT JOIN assets a ON b.main_asset_symbol = a.symbol
+LEFT JOIN (
+    SELECT p1.id, p1.created_at, p1.updated_at, p1.deleted_at, p1.asset_id, p1.price_usd, p1.price_btc, p1.volume_24h_usd, p1.market_cap_usd, p1.percent_change_1h, p1.percent_change_24h, p1.percent_change_7d, p1.last_updated
+    FROM prices p1
+    INNER JOIN (
+        SELECT asset_id, MAX(last_updated) as max_date
+        FROM prices
+        WHERE deleted_at IS NULL
+        GROUP BY asset_id
+    ) p2 ON p1.asset_id = p2.asset_id AND p1.last_updated = p2.max_date
+    WHERE p1.deleted_at IS NULL
+) p ON a.id = p.asset_id
+WHERE b.id = ? AND b.deleted_at IS NULL
+LIMIT 1
+`
+
+type GetBlockchainWithAssetInfoRow struct {
+	ID                       string          `json:"id"`
+	CreatedAt                time.Time       `json:"created_at"`
+	UpdatedAt                time.Time       `json:"updated_at"`
+	DeletedAt                sql.NullTime    `json:"deleted_at"`
+	ChainName                string          `json:"chain_name"`
+	ChainIDCosmos            sql.NullString  `json:"chain_id_cosmos"`
+	ChainIDEvm               sql.NullString  `json:"chain_id_evm"`
+	ApiName                  sql.NullString  `json:"api_name"`
+	BechAccountPrefix        sql.NullString  `json:"bech_account_prefix"`
+	BechValidatorPrefix      sql.NullString  `json:"bech_validator_prefix"`
+	MainAssetSymbol          sql.NullString  `json:"main_asset_symbol"`
+	MainAssetDenom           sql.NullString  `json:"main_asset_denom"`
+	StakingAssetSymbol       sql.NullString  `json:"staking_asset_symbol"`
+	StakingAssetDenom        sql.NullString  `json:"staking_asset_denom"`
+	IsStakeEnabled           bool            `json:"is_stake_enabled"`
+	ChainImage               sql.NullString  `json:"chain_image"`
+	MainAssetImage           sql.NullString  `json:"main_asset_image"`
+	StakingAssetImage        sql.NullString  `json:"staking_asset_image"`
+	ChainType                string          `json:"chain_type"`
+	IsSupportMobileWallet    bool            `json:"is_support_mobile_wallet"`
+	IsSupportExtensionWallet bool            `json:"is_support_extension_wallet"`
+	IsSupportErc20           bool            `json:"is_support_erc20"`
+	DescriptionEn            sql.NullString  `json:"description_en"`
+	DescriptionKo            sql.NullString  `json:"description_ko"`
+	DescriptionJa            sql.NullString  `json:"description_ja"`
+	OriginGenesisTime        sql.NullTime    `json:"origin_genesis_time"`
+	AccountType              string          `json:"account_type"`
+	BtcStaking               sql.NullString  `json:"btc_staking"`
+	CosmosFeeInfo            sql.NullString  `json:"cosmos_fee_info"`
+	EvmFeeInfo               sql.NullString  `json:"evm_fee_info"`
+	LcdEndpoint              sql.NullString  `json:"lcd_endpoint"`
+	GrpcEndpoint             sql.NullString  `json:"grpc_endpoint"`
+	EvmRpcEndpoint           sql.NullString  `json:"evm_rpc_endpoint"`
+	Explorer                 sql.NullString  `json:"explorer"`
+	About                    sql.NullString  `json:"about"`
+	Forum                    sql.NullString  `json:"forum"`
+	AssetID                  sql.NullString  `json:"asset_id"`
+	Symbol                   sql.NullString  `json:"symbol"`
+	Decimals                 sql.NullInt64   `json:"decimals"`
+	PriceUsd                 sql.NullFloat64 `json:"price_usd"`
+	PriceBtc                 sql.NullFloat64 `json:"price_btc"`
+}
+
+func (q *Queries) GetBlockchainWithAssetInfo(ctx context.Context, id string) (GetBlockchainWithAssetInfoRow, error) {
+	row := q.db.QueryRowContext(ctx, getBlockchainWithAssetInfo, id)
+	var i GetBlockchainWithAssetInfoRow
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ChainName,
+		&i.ChainIDCosmos,
+		&i.ChainIDEvm,
+		&i.ApiName,
+		&i.BechAccountPrefix,
+		&i.BechValidatorPrefix,
+		&i.MainAssetSymbol,
+		&i.MainAssetDenom,
+		&i.StakingAssetSymbol,
+		&i.StakingAssetDenom,
+		&i.IsStakeEnabled,
+		&i.ChainImage,
+		&i.MainAssetImage,
+		&i.StakingAssetImage,
+		&i.ChainType,
+		&i.IsSupportMobileWallet,
+		&i.IsSupportExtensionWallet,
+		&i.IsSupportErc20,
+		&i.DescriptionEn,
+		&i.DescriptionKo,
+		&i.DescriptionJa,
+		&i.OriginGenesisTime,
+		&i.AccountType,
+		&i.BtcStaking,
+		&i.CosmosFeeInfo,
+		&i.EvmFeeInfo,
+		&i.LcdEndpoint,
+		&i.GrpcEndpoint,
+		&i.EvmRpcEndpoint,
+		&i.Explorer,
+		&i.About,
+		&i.Forum,
+		&i.AssetID,
+		&i.Symbol,
+		&i.Decimals,
+		&i.PriceUsd,
+		&i.PriceBtc,
 	)
 	return i, err
 }
@@ -1192,6 +1564,163 @@ func (q *Queries) InsertAsset(ctx context.Context, arg InsertAssetParams) (Asset
 	return i, err
 }
 
+const insertBlockchain = `-- name: InsertBlockchain :one
+
+INSERT INTO blockchains (
+    id,
+    chain_name,
+    chain_id_cosmos,
+    chain_id_evm,
+    api_name,
+    bech_account_prefix,
+    bech_validator_prefix,
+    main_asset_symbol,
+    main_asset_denom,
+    staking_asset_symbol,
+    staking_asset_denom,
+    is_stake_enabled,
+    chain_image,
+    main_asset_image,
+    staking_asset_image,
+    chain_type,
+    is_support_mobile_wallet,
+    is_support_extension_wallet,
+    is_support_erc20,
+    description_en,
+    description_ko,
+    description_ja,
+    origin_genesis_time,
+    account_type,
+    btc_staking,
+    cosmos_fee_info,
+    evm_fee_info,
+    lcd_endpoint,
+    grpc_endpoint,
+    evm_rpc_endpoint,
+    explorer,
+    about,
+    forum
+) VALUES (
+    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+)
+RETURNING id, created_at, updated_at, deleted_at, chain_name, chain_id_cosmos, chain_id_evm, api_name, bech_account_prefix, bech_validator_prefix, main_asset_symbol, main_asset_denom, staking_asset_symbol, staking_asset_denom, is_stake_enabled, chain_image, main_asset_image, staking_asset_image, chain_type, is_support_mobile_wallet, is_support_extension_wallet, is_support_erc20, description_en, description_ko, description_ja, origin_genesis_time, account_type, btc_staking, cosmos_fee_info, evm_fee_info, lcd_endpoint, grpc_endpoint, evm_rpc_endpoint, explorer, about, forum
+`
+
+type InsertBlockchainParams struct {
+	ID                       string         `json:"id"`
+	ChainName                string         `json:"chain_name"`
+	ChainIDCosmos            sql.NullString `json:"chain_id_cosmos"`
+	ChainIDEvm               sql.NullString `json:"chain_id_evm"`
+	ApiName                  sql.NullString `json:"api_name"`
+	BechAccountPrefix        sql.NullString `json:"bech_account_prefix"`
+	BechValidatorPrefix      sql.NullString `json:"bech_validator_prefix"`
+	MainAssetSymbol          sql.NullString `json:"main_asset_symbol"`
+	MainAssetDenom           sql.NullString `json:"main_asset_denom"`
+	StakingAssetSymbol       sql.NullString `json:"staking_asset_symbol"`
+	StakingAssetDenom        sql.NullString `json:"staking_asset_denom"`
+	IsStakeEnabled           bool           `json:"is_stake_enabled"`
+	ChainImage               sql.NullString `json:"chain_image"`
+	MainAssetImage           sql.NullString `json:"main_asset_image"`
+	StakingAssetImage        sql.NullString `json:"staking_asset_image"`
+	ChainType                string         `json:"chain_type"`
+	IsSupportMobileWallet    bool           `json:"is_support_mobile_wallet"`
+	IsSupportExtensionWallet bool           `json:"is_support_extension_wallet"`
+	IsSupportErc20           bool           `json:"is_support_erc20"`
+	DescriptionEn            sql.NullString `json:"description_en"`
+	DescriptionKo            sql.NullString `json:"description_ko"`
+	DescriptionJa            sql.NullString `json:"description_ja"`
+	OriginGenesisTime        sql.NullTime   `json:"origin_genesis_time"`
+	AccountType              string         `json:"account_type"`
+	BtcStaking               sql.NullString `json:"btc_staking"`
+	CosmosFeeInfo            sql.NullString `json:"cosmos_fee_info"`
+	EvmFeeInfo               sql.NullString `json:"evm_fee_info"`
+	LcdEndpoint              sql.NullString `json:"lcd_endpoint"`
+	GrpcEndpoint             sql.NullString `json:"grpc_endpoint"`
+	EvmRpcEndpoint           sql.NullString `json:"evm_rpc_endpoint"`
+	Explorer                 sql.NullString `json:"explorer"`
+	About                    sql.NullString `json:"about"`
+	Forum                    sql.NullString `json:"forum"`
+}
+
+// BLOCKCHAIN QUERIES
+func (q *Queries) InsertBlockchain(ctx context.Context, arg InsertBlockchainParams) (Blockchain, error) {
+	row := q.db.QueryRowContext(ctx, insertBlockchain,
+		arg.ID,
+		arg.ChainName,
+		arg.ChainIDCosmos,
+		arg.ChainIDEvm,
+		arg.ApiName,
+		arg.BechAccountPrefix,
+		arg.BechValidatorPrefix,
+		arg.MainAssetSymbol,
+		arg.MainAssetDenom,
+		arg.StakingAssetSymbol,
+		arg.StakingAssetDenom,
+		arg.IsStakeEnabled,
+		arg.ChainImage,
+		arg.MainAssetImage,
+		arg.StakingAssetImage,
+		arg.ChainType,
+		arg.IsSupportMobileWallet,
+		arg.IsSupportExtensionWallet,
+		arg.IsSupportErc20,
+		arg.DescriptionEn,
+		arg.DescriptionKo,
+		arg.DescriptionJa,
+		arg.OriginGenesisTime,
+		arg.AccountType,
+		arg.BtcStaking,
+		arg.CosmosFeeInfo,
+		arg.EvmFeeInfo,
+		arg.LcdEndpoint,
+		arg.GrpcEndpoint,
+		arg.EvmRpcEndpoint,
+		arg.Explorer,
+		arg.About,
+		arg.Forum,
+	)
+	var i Blockchain
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ChainName,
+		&i.ChainIDCosmos,
+		&i.ChainIDEvm,
+		&i.ApiName,
+		&i.BechAccountPrefix,
+		&i.BechValidatorPrefix,
+		&i.MainAssetSymbol,
+		&i.MainAssetDenom,
+		&i.StakingAssetSymbol,
+		&i.StakingAssetDenom,
+		&i.IsStakeEnabled,
+		&i.ChainImage,
+		&i.MainAssetImage,
+		&i.StakingAssetImage,
+		&i.ChainType,
+		&i.IsSupportMobileWallet,
+		&i.IsSupportExtensionWallet,
+		&i.IsSupportErc20,
+		&i.DescriptionEn,
+		&i.DescriptionKo,
+		&i.DescriptionJa,
+		&i.OriginGenesisTime,
+		&i.AccountType,
+		&i.BtcStaking,
+		&i.CosmosFeeInfo,
+		&i.EvmFeeInfo,
+		&i.LcdEndpoint,
+		&i.GrpcEndpoint,
+		&i.EvmRpcEndpoint,
+		&i.Explorer,
+		&i.About,
+		&i.Forum,
+	)
+	return i, err
+}
+
 const insertCredential = `-- name: InsertCredential :one
 INSERT INTO credentials (
     handle,
@@ -1672,6 +2201,72 @@ func (q *Queries) ListActivitiesByType(ctx context.Context, arg ListActivitiesBy
 	return items, nil
 }
 
+const listAllBlockchains = `-- name: ListAllBlockchains :many
+SELECT id, created_at, updated_at, deleted_at, chain_name, chain_id_cosmos, chain_id_evm, api_name, bech_account_prefix, bech_validator_prefix, main_asset_symbol, main_asset_denom, staking_asset_symbol, staking_asset_denom, is_stake_enabled, chain_image, main_asset_image, staking_asset_image, chain_type, is_support_mobile_wallet, is_support_extension_wallet, is_support_erc20, description_en, description_ko, description_ja, origin_genesis_time, account_type, btc_staking, cosmos_fee_info, evm_fee_info, lcd_endpoint, grpc_endpoint, evm_rpc_endpoint, explorer, about, forum FROM blockchains
+WHERE deleted_at IS NULL
+ORDER BY chain_name ASC
+`
+
+func (q *Queries) ListAllBlockchains(ctx context.Context) ([]Blockchain, error) {
+	rows, err := q.db.QueryContext(ctx, listAllBlockchains)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Blockchain
+	for rows.Next() {
+		var i Blockchain
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.ChainName,
+			&i.ChainIDCosmos,
+			&i.ChainIDEvm,
+			&i.ApiName,
+			&i.BechAccountPrefix,
+			&i.BechValidatorPrefix,
+			&i.MainAssetSymbol,
+			&i.MainAssetDenom,
+			&i.StakingAssetSymbol,
+			&i.StakingAssetDenom,
+			&i.IsStakeEnabled,
+			&i.ChainImage,
+			&i.MainAssetImage,
+			&i.StakingAssetImage,
+			&i.ChainType,
+			&i.IsSupportMobileWallet,
+			&i.IsSupportExtensionWallet,
+			&i.IsSupportErc20,
+			&i.DescriptionEn,
+			&i.DescriptionKo,
+			&i.DescriptionJa,
+			&i.OriginGenesisTime,
+			&i.AccountType,
+			&i.BtcStaking,
+			&i.CosmosFeeInfo,
+			&i.EvmFeeInfo,
+			&i.LcdEndpoint,
+			&i.GrpcEndpoint,
+			&i.EvmRpcEndpoint,
+			&i.Explorer,
+			&i.About,
+			&i.Forum,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listAssetsByChain = `-- name: ListAssetsByChain :many
 SELECT id, created_at, updated_at, deleted_at, name, symbol, decimals, chain_id, channel, asset_type, coingecko_id FROM assets
 WHERE chain_id = ? AND deleted_at IS NULL
@@ -1785,6 +2380,470 @@ func (q *Queries) ListAssetsWithLatestPrices(ctx context.Context, arg ListAssets
 			&i.MarketCapUsd,
 			&i.PercentChange24h,
 			&i.LastUpdated,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listBlockchainsByChainType = `-- name: ListBlockchainsByChainType :many
+SELECT id, created_at, updated_at, deleted_at, chain_name, chain_id_cosmos, chain_id_evm, api_name, bech_account_prefix, bech_validator_prefix, main_asset_symbol, main_asset_denom, staking_asset_symbol, staking_asset_denom, is_stake_enabled, chain_image, main_asset_image, staking_asset_image, chain_type, is_support_mobile_wallet, is_support_extension_wallet, is_support_erc20, description_en, description_ko, description_ja, origin_genesis_time, account_type, btc_staking, cosmos_fee_info, evm_fee_info, lcd_endpoint, grpc_endpoint, evm_rpc_endpoint, explorer, about, forum FROM blockchains
+WHERE chain_type LIKE '%' || ? || '%' AND deleted_at IS NULL
+ORDER BY chain_name ASC
+`
+
+func (q *Queries) ListBlockchainsByChainType(ctx context.Context, dollar_1 sql.NullString) ([]Blockchain, error) {
+	rows, err := q.db.QueryContext(ctx, listBlockchainsByChainType, dollar_1)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Blockchain
+	for rows.Next() {
+		var i Blockchain
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.ChainName,
+			&i.ChainIDCosmos,
+			&i.ChainIDEvm,
+			&i.ApiName,
+			&i.BechAccountPrefix,
+			&i.BechValidatorPrefix,
+			&i.MainAssetSymbol,
+			&i.MainAssetDenom,
+			&i.StakingAssetSymbol,
+			&i.StakingAssetDenom,
+			&i.IsStakeEnabled,
+			&i.ChainImage,
+			&i.MainAssetImage,
+			&i.StakingAssetImage,
+			&i.ChainType,
+			&i.IsSupportMobileWallet,
+			&i.IsSupportExtensionWallet,
+			&i.IsSupportErc20,
+			&i.DescriptionEn,
+			&i.DescriptionKo,
+			&i.DescriptionJa,
+			&i.OriginGenesisTime,
+			&i.AccountType,
+			&i.BtcStaking,
+			&i.CosmosFeeInfo,
+			&i.EvmFeeInfo,
+			&i.LcdEndpoint,
+			&i.GrpcEndpoint,
+			&i.EvmRpcEndpoint,
+			&i.Explorer,
+			&i.About,
+			&i.Forum,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listBlockchainsWithAssetInfo = `-- name: ListBlockchainsWithAssetInfo :many
+SELECT b.id, b.created_at, b.updated_at, b.deleted_at, b.chain_name, b.chain_id_cosmos, b.chain_id_evm, b.api_name, b.bech_account_prefix, b.bech_validator_prefix, b.main_asset_symbol, b.main_asset_denom, b.staking_asset_symbol, b.staking_asset_denom, b.is_stake_enabled, b.chain_image, b.main_asset_image, b.staking_asset_image, b.chain_type, b.is_support_mobile_wallet, b.is_support_extension_wallet, b.is_support_erc20, b.description_en, b.description_ko, b.description_ja, b.origin_genesis_time, b.account_type, b.btc_staking, b.cosmos_fee_info, b.evm_fee_info, b.lcd_endpoint, b.grpc_endpoint, b.evm_rpc_endpoint, b.explorer, b.about, b.forum, a.id as asset_id, a.symbol, a.decimals, p.price_usd, p.price_btc
+FROM blockchains b
+LEFT JOIN assets a ON b.main_asset_symbol = a.symbol
+LEFT JOIN (
+    SELECT p1.id, p1.created_at, p1.updated_at, p1.deleted_at, p1.asset_id, p1.price_usd, p1.price_btc, p1.volume_24h_usd, p1.market_cap_usd, p1.percent_change_1h, p1.percent_change_24h, p1.percent_change_7d, p1.last_updated
+    FROM prices p1
+    INNER JOIN (
+        SELECT asset_id, MAX(last_updated) as max_date
+        FROM prices
+        WHERE deleted_at IS NULL
+        GROUP BY asset_id
+    ) p2 ON p1.asset_id = p2.asset_id AND p1.last_updated = p2.max_date
+    WHERE p1.deleted_at IS NULL
+) p ON a.id = p.asset_id
+WHERE b.deleted_at IS NULL
+ORDER BY b.chain_name ASC
+LIMIT ? OFFSET ?
+`
+
+type ListBlockchainsWithAssetInfoParams struct {
+	Limit  int64 `json:"limit"`
+	Offset int64 `json:"offset"`
+}
+
+type ListBlockchainsWithAssetInfoRow struct {
+	ID                       string          `json:"id"`
+	CreatedAt                time.Time       `json:"created_at"`
+	UpdatedAt                time.Time       `json:"updated_at"`
+	DeletedAt                sql.NullTime    `json:"deleted_at"`
+	ChainName                string          `json:"chain_name"`
+	ChainIDCosmos            sql.NullString  `json:"chain_id_cosmos"`
+	ChainIDEvm               sql.NullString  `json:"chain_id_evm"`
+	ApiName                  sql.NullString  `json:"api_name"`
+	BechAccountPrefix        sql.NullString  `json:"bech_account_prefix"`
+	BechValidatorPrefix      sql.NullString  `json:"bech_validator_prefix"`
+	MainAssetSymbol          sql.NullString  `json:"main_asset_symbol"`
+	MainAssetDenom           sql.NullString  `json:"main_asset_denom"`
+	StakingAssetSymbol       sql.NullString  `json:"staking_asset_symbol"`
+	StakingAssetDenom        sql.NullString  `json:"staking_asset_denom"`
+	IsStakeEnabled           bool            `json:"is_stake_enabled"`
+	ChainImage               sql.NullString  `json:"chain_image"`
+	MainAssetImage           sql.NullString  `json:"main_asset_image"`
+	StakingAssetImage        sql.NullString  `json:"staking_asset_image"`
+	ChainType                string          `json:"chain_type"`
+	IsSupportMobileWallet    bool            `json:"is_support_mobile_wallet"`
+	IsSupportExtensionWallet bool            `json:"is_support_extension_wallet"`
+	IsSupportErc20           bool            `json:"is_support_erc20"`
+	DescriptionEn            sql.NullString  `json:"description_en"`
+	DescriptionKo            sql.NullString  `json:"description_ko"`
+	DescriptionJa            sql.NullString  `json:"description_ja"`
+	OriginGenesisTime        sql.NullTime    `json:"origin_genesis_time"`
+	AccountType              string          `json:"account_type"`
+	BtcStaking               sql.NullString  `json:"btc_staking"`
+	CosmosFeeInfo            sql.NullString  `json:"cosmos_fee_info"`
+	EvmFeeInfo               sql.NullString  `json:"evm_fee_info"`
+	LcdEndpoint              sql.NullString  `json:"lcd_endpoint"`
+	GrpcEndpoint             sql.NullString  `json:"grpc_endpoint"`
+	EvmRpcEndpoint           sql.NullString  `json:"evm_rpc_endpoint"`
+	Explorer                 sql.NullString  `json:"explorer"`
+	About                    sql.NullString  `json:"about"`
+	Forum                    sql.NullString  `json:"forum"`
+	AssetID                  sql.NullString  `json:"asset_id"`
+	Symbol                   sql.NullString  `json:"symbol"`
+	Decimals                 sql.NullInt64   `json:"decimals"`
+	PriceUsd                 sql.NullFloat64 `json:"price_usd"`
+	PriceBtc                 sql.NullFloat64 `json:"price_btc"`
+}
+
+func (q *Queries) ListBlockchainsWithAssetInfo(ctx context.Context, arg ListBlockchainsWithAssetInfoParams) ([]ListBlockchainsWithAssetInfoRow, error) {
+	rows, err := q.db.QueryContext(ctx, listBlockchainsWithAssetInfo, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListBlockchainsWithAssetInfoRow
+	for rows.Next() {
+		var i ListBlockchainsWithAssetInfoRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.ChainName,
+			&i.ChainIDCosmos,
+			&i.ChainIDEvm,
+			&i.ApiName,
+			&i.BechAccountPrefix,
+			&i.BechValidatorPrefix,
+			&i.MainAssetSymbol,
+			&i.MainAssetDenom,
+			&i.StakingAssetSymbol,
+			&i.StakingAssetDenom,
+			&i.IsStakeEnabled,
+			&i.ChainImage,
+			&i.MainAssetImage,
+			&i.StakingAssetImage,
+			&i.ChainType,
+			&i.IsSupportMobileWallet,
+			&i.IsSupportExtensionWallet,
+			&i.IsSupportErc20,
+			&i.DescriptionEn,
+			&i.DescriptionKo,
+			&i.DescriptionJa,
+			&i.OriginGenesisTime,
+			&i.AccountType,
+			&i.BtcStaking,
+			&i.CosmosFeeInfo,
+			&i.EvmFeeInfo,
+			&i.LcdEndpoint,
+			&i.GrpcEndpoint,
+			&i.EvmRpcEndpoint,
+			&i.Explorer,
+			&i.About,
+			&i.Forum,
+			&i.AssetID,
+			&i.Symbol,
+			&i.Decimals,
+			&i.PriceUsd,
+			&i.PriceBtc,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listBlockchainsWithERC20Support = `-- name: ListBlockchainsWithERC20Support :many
+SELECT id, created_at, updated_at, deleted_at, chain_name, chain_id_cosmos, chain_id_evm, api_name, bech_account_prefix, bech_validator_prefix, main_asset_symbol, main_asset_denom, staking_asset_symbol, staking_asset_denom, is_stake_enabled, chain_image, main_asset_image, staking_asset_image, chain_type, is_support_mobile_wallet, is_support_extension_wallet, is_support_erc20, description_en, description_ko, description_ja, origin_genesis_time, account_type, btc_staking, cosmos_fee_info, evm_fee_info, lcd_endpoint, grpc_endpoint, evm_rpc_endpoint, explorer, about, forum FROM blockchains
+WHERE is_support_erc20 = 1 AND deleted_at IS NULL
+ORDER BY chain_name ASC
+`
+
+func (q *Queries) ListBlockchainsWithERC20Support(ctx context.Context) ([]Blockchain, error) {
+	rows, err := q.db.QueryContext(ctx, listBlockchainsWithERC20Support)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Blockchain
+	for rows.Next() {
+		var i Blockchain
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.ChainName,
+			&i.ChainIDCosmos,
+			&i.ChainIDEvm,
+			&i.ApiName,
+			&i.BechAccountPrefix,
+			&i.BechValidatorPrefix,
+			&i.MainAssetSymbol,
+			&i.MainAssetDenom,
+			&i.StakingAssetSymbol,
+			&i.StakingAssetDenom,
+			&i.IsStakeEnabled,
+			&i.ChainImage,
+			&i.MainAssetImage,
+			&i.StakingAssetImage,
+			&i.ChainType,
+			&i.IsSupportMobileWallet,
+			&i.IsSupportExtensionWallet,
+			&i.IsSupportErc20,
+			&i.DescriptionEn,
+			&i.DescriptionKo,
+			&i.DescriptionJa,
+			&i.OriginGenesisTime,
+			&i.AccountType,
+			&i.BtcStaking,
+			&i.CosmosFeeInfo,
+			&i.EvmFeeInfo,
+			&i.LcdEndpoint,
+			&i.GrpcEndpoint,
+			&i.EvmRpcEndpoint,
+			&i.Explorer,
+			&i.About,
+			&i.Forum,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listBlockchainsWithExtensionSupport = `-- name: ListBlockchainsWithExtensionSupport :many
+SELECT id, created_at, updated_at, deleted_at, chain_name, chain_id_cosmos, chain_id_evm, api_name, bech_account_prefix, bech_validator_prefix, main_asset_symbol, main_asset_denom, staking_asset_symbol, staking_asset_denom, is_stake_enabled, chain_image, main_asset_image, staking_asset_image, chain_type, is_support_mobile_wallet, is_support_extension_wallet, is_support_erc20, description_en, description_ko, description_ja, origin_genesis_time, account_type, btc_staking, cosmos_fee_info, evm_fee_info, lcd_endpoint, grpc_endpoint, evm_rpc_endpoint, explorer, about, forum FROM blockchains
+WHERE is_support_extension_wallet = 1 AND deleted_at IS NULL
+ORDER BY chain_name ASC
+`
+
+func (q *Queries) ListBlockchainsWithExtensionSupport(ctx context.Context) ([]Blockchain, error) {
+	rows, err := q.db.QueryContext(ctx, listBlockchainsWithExtensionSupport)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Blockchain
+	for rows.Next() {
+		var i Blockchain
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.ChainName,
+			&i.ChainIDCosmos,
+			&i.ChainIDEvm,
+			&i.ApiName,
+			&i.BechAccountPrefix,
+			&i.BechValidatorPrefix,
+			&i.MainAssetSymbol,
+			&i.MainAssetDenom,
+			&i.StakingAssetSymbol,
+			&i.StakingAssetDenom,
+			&i.IsStakeEnabled,
+			&i.ChainImage,
+			&i.MainAssetImage,
+			&i.StakingAssetImage,
+			&i.ChainType,
+			&i.IsSupportMobileWallet,
+			&i.IsSupportExtensionWallet,
+			&i.IsSupportErc20,
+			&i.DescriptionEn,
+			&i.DescriptionKo,
+			&i.DescriptionJa,
+			&i.OriginGenesisTime,
+			&i.AccountType,
+			&i.BtcStaking,
+			&i.CosmosFeeInfo,
+			&i.EvmFeeInfo,
+			&i.LcdEndpoint,
+			&i.GrpcEndpoint,
+			&i.EvmRpcEndpoint,
+			&i.Explorer,
+			&i.About,
+			&i.Forum,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listBlockchainsWithMobileSupport = `-- name: ListBlockchainsWithMobileSupport :many
+SELECT id, created_at, updated_at, deleted_at, chain_name, chain_id_cosmos, chain_id_evm, api_name, bech_account_prefix, bech_validator_prefix, main_asset_symbol, main_asset_denom, staking_asset_symbol, staking_asset_denom, is_stake_enabled, chain_image, main_asset_image, staking_asset_image, chain_type, is_support_mobile_wallet, is_support_extension_wallet, is_support_erc20, description_en, description_ko, description_ja, origin_genesis_time, account_type, btc_staking, cosmos_fee_info, evm_fee_info, lcd_endpoint, grpc_endpoint, evm_rpc_endpoint, explorer, about, forum FROM blockchains
+WHERE is_support_mobile_wallet = 1 AND deleted_at IS NULL
+ORDER BY chain_name ASC
+`
+
+func (q *Queries) ListBlockchainsWithMobileSupport(ctx context.Context) ([]Blockchain, error) {
+	rows, err := q.db.QueryContext(ctx, listBlockchainsWithMobileSupport)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Blockchain
+	for rows.Next() {
+		var i Blockchain
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.ChainName,
+			&i.ChainIDCosmos,
+			&i.ChainIDEvm,
+			&i.ApiName,
+			&i.BechAccountPrefix,
+			&i.BechValidatorPrefix,
+			&i.MainAssetSymbol,
+			&i.MainAssetDenom,
+			&i.StakingAssetSymbol,
+			&i.StakingAssetDenom,
+			&i.IsStakeEnabled,
+			&i.ChainImage,
+			&i.MainAssetImage,
+			&i.StakingAssetImage,
+			&i.ChainType,
+			&i.IsSupportMobileWallet,
+			&i.IsSupportExtensionWallet,
+			&i.IsSupportErc20,
+			&i.DescriptionEn,
+			&i.DescriptionKo,
+			&i.DescriptionJa,
+			&i.OriginGenesisTime,
+			&i.AccountType,
+			&i.BtcStaking,
+			&i.CosmosFeeInfo,
+			&i.EvmFeeInfo,
+			&i.LcdEndpoint,
+			&i.GrpcEndpoint,
+			&i.EvmRpcEndpoint,
+			&i.Explorer,
+			&i.About,
+			&i.Forum,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listBlockchainsWithStaking = `-- name: ListBlockchainsWithStaking :many
+SELECT id, created_at, updated_at, deleted_at, chain_name, chain_id_cosmos, chain_id_evm, api_name, bech_account_prefix, bech_validator_prefix, main_asset_symbol, main_asset_denom, staking_asset_symbol, staking_asset_denom, is_stake_enabled, chain_image, main_asset_image, staking_asset_image, chain_type, is_support_mobile_wallet, is_support_extension_wallet, is_support_erc20, description_en, description_ko, description_ja, origin_genesis_time, account_type, btc_staking, cosmos_fee_info, evm_fee_info, lcd_endpoint, grpc_endpoint, evm_rpc_endpoint, explorer, about, forum FROM blockchains
+WHERE is_stake_enabled = 1 AND deleted_at IS NULL
+ORDER BY chain_name ASC
+`
+
+func (q *Queries) ListBlockchainsWithStaking(ctx context.Context) ([]Blockchain, error) {
+	rows, err := q.db.QueryContext(ctx, listBlockchainsWithStaking)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Blockchain
+	for rows.Next() {
+		var i Blockchain
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.ChainName,
+			&i.ChainIDCosmos,
+			&i.ChainIDEvm,
+			&i.ApiName,
+			&i.BechAccountPrefix,
+			&i.BechValidatorPrefix,
+			&i.MainAssetSymbol,
+			&i.MainAssetDenom,
+			&i.StakingAssetSymbol,
+			&i.StakingAssetDenom,
+			&i.IsStakeEnabled,
+			&i.ChainImage,
+			&i.MainAssetImage,
+			&i.StakingAssetImage,
+			&i.ChainType,
+			&i.IsSupportMobileWallet,
+			&i.IsSupportExtensionWallet,
+			&i.IsSupportErc20,
+			&i.DescriptionEn,
+			&i.DescriptionKo,
+			&i.DescriptionJa,
+			&i.OriginGenesisTime,
+			&i.AccountType,
+			&i.BtcStaking,
+			&i.CosmosFeeInfo,
+			&i.EvmFeeInfo,
+			&i.LcdEndpoint,
+			&i.GrpcEndpoint,
+			&i.EvmRpcEndpoint,
+			&i.Explorer,
+			&i.About,
+			&i.Forum,
 		); err != nil {
 			return nil, err
 		}
@@ -2237,6 +3296,94 @@ func (q *Queries) ListValidatorAccounts(ctx context.Context) ([]Account, error) 
 	return items, nil
 }
 
+const searchBlockchains = `-- name: SearchBlockchains :many
+SELECT id, created_at, updated_at, deleted_at, chain_name, chain_id_cosmos, chain_id_evm, api_name, bech_account_prefix, bech_validator_prefix, main_asset_symbol, main_asset_denom, staking_asset_symbol, staking_asset_denom, is_stake_enabled, chain_image, main_asset_image, staking_asset_image, chain_type, is_support_mobile_wallet, is_support_extension_wallet, is_support_erc20, description_en, description_ko, description_ja, origin_genesis_time, account_type, btc_staking, cosmos_fee_info, evm_fee_info, lcd_endpoint, grpc_endpoint, evm_rpc_endpoint, explorer, about, forum FROM blockchains
+WHERE (
+    chain_name LIKE '%' || ? || '%' OR
+    main_asset_symbol LIKE '%' || ? || '%' OR
+    staking_asset_symbol LIKE '%' || ? || '%' OR
+    description_en LIKE '%' || ? || '%'
+) AND deleted_at IS NULL
+ORDER BY chain_name ASC
+LIMIT ? OFFSET ?
+`
+
+type SearchBlockchainsParams struct {
+	Column1 sql.NullString `json:"column_1"`
+	Column2 sql.NullString `json:"column_2"`
+	Column3 sql.NullString `json:"column_3"`
+	Column4 sql.NullString `json:"column_4"`
+	Limit   int64          `json:"limit"`
+	Offset  int64          `json:"offset"`
+}
+
+func (q *Queries) SearchBlockchains(ctx context.Context, arg SearchBlockchainsParams) ([]Blockchain, error) {
+	rows, err := q.db.QueryContext(ctx, searchBlockchains,
+		arg.Column1,
+		arg.Column2,
+		arg.Column3,
+		arg.Column4,
+		arg.Limit,
+		arg.Offset,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Blockchain
+	for rows.Next() {
+		var i Blockchain
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.ChainName,
+			&i.ChainIDCosmos,
+			&i.ChainIDEvm,
+			&i.ApiName,
+			&i.BechAccountPrefix,
+			&i.BechValidatorPrefix,
+			&i.MainAssetSymbol,
+			&i.MainAssetDenom,
+			&i.StakingAssetSymbol,
+			&i.StakingAssetDenom,
+			&i.IsStakeEnabled,
+			&i.ChainImage,
+			&i.MainAssetImage,
+			&i.StakingAssetImage,
+			&i.ChainType,
+			&i.IsSupportMobileWallet,
+			&i.IsSupportExtensionWallet,
+			&i.IsSupportErc20,
+			&i.DescriptionEn,
+			&i.DescriptionKo,
+			&i.DescriptionJa,
+			&i.OriginGenesisTime,
+			&i.AccountType,
+			&i.BtcStaking,
+			&i.CosmosFeeInfo,
+			&i.EvmFeeInfo,
+			&i.LcdEndpoint,
+			&i.GrpcEndpoint,
+			&i.EvmRpcEndpoint,
+			&i.Explorer,
+			&i.About,
+			&i.Forum,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const softDeleteAccount = `-- name: SoftDeleteAccount :exec
 UPDATE accounts
 SET deleted_at = CURRENT_TIMESTAMP
@@ -2267,6 +3414,17 @@ WHERE id = ?
 
 func (q *Queries) SoftDeleteAsset(ctx context.Context, id string) error {
 	_, err := q.db.ExecContext(ctx, softDeleteAsset, id)
+	return err
+}
+
+const softDeleteBlockchain = `-- name: SoftDeleteBlockchain :exec
+UPDATE blockchains
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = ?
+`
+
+func (q *Queries) SoftDeleteBlockchain(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, softDeleteBlockchain, id)
 	return err
 }
 
@@ -2508,6 +3666,546 @@ func (q *Queries) UpdateAsset(ctx context.Context, arg UpdateAssetParams) (Asset
 		&i.Channel,
 		&i.AssetType,
 		&i.CoingeckoID,
+	)
+	return i, err
+}
+
+const updateBlockchain = `-- name: UpdateBlockchain :one
+UPDATE blockchains
+SET 
+    chain_name = ?,
+    chain_id_cosmos = ?,
+    chain_id_evm = ?,
+    api_name = ?,
+    bech_account_prefix = ?,
+    bech_validator_prefix = ?,
+    main_asset_symbol = ?,
+    main_asset_denom = ?,
+    staking_asset_symbol = ?,
+    staking_asset_denom = ?,
+    is_stake_enabled = ?,
+    chain_image = ?,
+    main_asset_image = ?,
+    staking_asset_image = ?,
+    chain_type = ?,
+    is_support_mobile_wallet = ?,
+    is_support_extension_wallet = ?,
+    is_support_erc20 = ?,
+    description_en = ?,
+    description_ko = ?,
+    description_ja = ?,
+    origin_genesis_time = ?,
+    account_type = ?,
+    btc_staking = ?,
+    cosmos_fee_info = ?,
+    evm_fee_info = ?,
+    lcd_endpoint = ?,
+    grpc_endpoint = ?,
+    evm_rpc_endpoint = ?,
+    explorer = ?,
+    about = ?,
+    forum = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? 
+AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, chain_name, chain_id_cosmos, chain_id_evm, api_name, bech_account_prefix, bech_validator_prefix, main_asset_symbol, main_asset_denom, staking_asset_symbol, staking_asset_denom, is_stake_enabled, chain_image, main_asset_image, staking_asset_image, chain_type, is_support_mobile_wallet, is_support_extension_wallet, is_support_erc20, description_en, description_ko, description_ja, origin_genesis_time, account_type, btc_staking, cosmos_fee_info, evm_fee_info, lcd_endpoint, grpc_endpoint, evm_rpc_endpoint, explorer, about, forum
+`
+
+type UpdateBlockchainParams struct {
+	ChainName                string         `json:"chain_name"`
+	ChainIDCosmos            sql.NullString `json:"chain_id_cosmos"`
+	ChainIDEvm               sql.NullString `json:"chain_id_evm"`
+	ApiName                  sql.NullString `json:"api_name"`
+	BechAccountPrefix        sql.NullString `json:"bech_account_prefix"`
+	BechValidatorPrefix      sql.NullString `json:"bech_validator_prefix"`
+	MainAssetSymbol          sql.NullString `json:"main_asset_symbol"`
+	MainAssetDenom           sql.NullString `json:"main_asset_denom"`
+	StakingAssetSymbol       sql.NullString `json:"staking_asset_symbol"`
+	StakingAssetDenom        sql.NullString `json:"staking_asset_denom"`
+	IsStakeEnabled           bool           `json:"is_stake_enabled"`
+	ChainImage               sql.NullString `json:"chain_image"`
+	MainAssetImage           sql.NullString `json:"main_asset_image"`
+	StakingAssetImage        sql.NullString `json:"staking_asset_image"`
+	ChainType                string         `json:"chain_type"`
+	IsSupportMobileWallet    bool           `json:"is_support_mobile_wallet"`
+	IsSupportExtensionWallet bool           `json:"is_support_extension_wallet"`
+	IsSupportErc20           bool           `json:"is_support_erc20"`
+	DescriptionEn            sql.NullString `json:"description_en"`
+	DescriptionKo            sql.NullString `json:"description_ko"`
+	DescriptionJa            sql.NullString `json:"description_ja"`
+	OriginGenesisTime        sql.NullTime   `json:"origin_genesis_time"`
+	AccountType              string         `json:"account_type"`
+	BtcStaking               sql.NullString `json:"btc_staking"`
+	CosmosFeeInfo            sql.NullString `json:"cosmos_fee_info"`
+	EvmFeeInfo               sql.NullString `json:"evm_fee_info"`
+	LcdEndpoint              sql.NullString `json:"lcd_endpoint"`
+	GrpcEndpoint             sql.NullString `json:"grpc_endpoint"`
+	EvmRpcEndpoint           sql.NullString `json:"evm_rpc_endpoint"`
+	Explorer                 sql.NullString `json:"explorer"`
+	About                    sql.NullString `json:"about"`
+	Forum                    sql.NullString `json:"forum"`
+	ID                       string         `json:"id"`
+}
+
+func (q *Queries) UpdateBlockchain(ctx context.Context, arg UpdateBlockchainParams) (Blockchain, error) {
+	row := q.db.QueryRowContext(ctx, updateBlockchain,
+		arg.ChainName,
+		arg.ChainIDCosmos,
+		arg.ChainIDEvm,
+		arg.ApiName,
+		arg.BechAccountPrefix,
+		arg.BechValidatorPrefix,
+		arg.MainAssetSymbol,
+		arg.MainAssetDenom,
+		arg.StakingAssetSymbol,
+		arg.StakingAssetDenom,
+		arg.IsStakeEnabled,
+		arg.ChainImage,
+		arg.MainAssetImage,
+		arg.StakingAssetImage,
+		arg.ChainType,
+		arg.IsSupportMobileWallet,
+		arg.IsSupportExtensionWallet,
+		arg.IsSupportErc20,
+		arg.DescriptionEn,
+		arg.DescriptionKo,
+		arg.DescriptionJa,
+		arg.OriginGenesisTime,
+		arg.AccountType,
+		arg.BtcStaking,
+		arg.CosmosFeeInfo,
+		arg.EvmFeeInfo,
+		arg.LcdEndpoint,
+		arg.GrpcEndpoint,
+		arg.EvmRpcEndpoint,
+		arg.Explorer,
+		arg.About,
+		arg.Forum,
+		arg.ID,
+	)
+	var i Blockchain
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ChainName,
+		&i.ChainIDCosmos,
+		&i.ChainIDEvm,
+		&i.ApiName,
+		&i.BechAccountPrefix,
+		&i.BechValidatorPrefix,
+		&i.MainAssetSymbol,
+		&i.MainAssetDenom,
+		&i.StakingAssetSymbol,
+		&i.StakingAssetDenom,
+		&i.IsStakeEnabled,
+		&i.ChainImage,
+		&i.MainAssetImage,
+		&i.StakingAssetImage,
+		&i.ChainType,
+		&i.IsSupportMobileWallet,
+		&i.IsSupportExtensionWallet,
+		&i.IsSupportErc20,
+		&i.DescriptionEn,
+		&i.DescriptionKo,
+		&i.DescriptionJa,
+		&i.OriginGenesisTime,
+		&i.AccountType,
+		&i.BtcStaking,
+		&i.CosmosFeeInfo,
+		&i.EvmFeeInfo,
+		&i.LcdEndpoint,
+		&i.GrpcEndpoint,
+		&i.EvmRpcEndpoint,
+		&i.Explorer,
+		&i.About,
+		&i.Forum,
+	)
+	return i, err
+}
+
+const updateBlockchainDescriptions = `-- name: UpdateBlockchainDescriptions :one
+UPDATE blockchains
+SET 
+    description_en = ?,
+    description_ko = ?,
+    description_ja = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? 
+AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, chain_name, chain_id_cosmos, chain_id_evm, api_name, bech_account_prefix, bech_validator_prefix, main_asset_symbol, main_asset_denom, staking_asset_symbol, staking_asset_denom, is_stake_enabled, chain_image, main_asset_image, staking_asset_image, chain_type, is_support_mobile_wallet, is_support_extension_wallet, is_support_erc20, description_en, description_ko, description_ja, origin_genesis_time, account_type, btc_staking, cosmos_fee_info, evm_fee_info, lcd_endpoint, grpc_endpoint, evm_rpc_endpoint, explorer, about, forum
+`
+
+type UpdateBlockchainDescriptionsParams struct {
+	DescriptionEn sql.NullString `json:"description_en"`
+	DescriptionKo sql.NullString `json:"description_ko"`
+	DescriptionJa sql.NullString `json:"description_ja"`
+	ID            string         `json:"id"`
+}
+
+func (q *Queries) UpdateBlockchainDescriptions(ctx context.Context, arg UpdateBlockchainDescriptionsParams) (Blockchain, error) {
+	row := q.db.QueryRowContext(ctx, updateBlockchainDescriptions,
+		arg.DescriptionEn,
+		arg.DescriptionKo,
+		arg.DescriptionJa,
+		arg.ID,
+	)
+	var i Blockchain
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ChainName,
+		&i.ChainIDCosmos,
+		&i.ChainIDEvm,
+		&i.ApiName,
+		&i.BechAccountPrefix,
+		&i.BechValidatorPrefix,
+		&i.MainAssetSymbol,
+		&i.MainAssetDenom,
+		&i.StakingAssetSymbol,
+		&i.StakingAssetDenom,
+		&i.IsStakeEnabled,
+		&i.ChainImage,
+		&i.MainAssetImage,
+		&i.StakingAssetImage,
+		&i.ChainType,
+		&i.IsSupportMobileWallet,
+		&i.IsSupportExtensionWallet,
+		&i.IsSupportErc20,
+		&i.DescriptionEn,
+		&i.DescriptionKo,
+		&i.DescriptionJa,
+		&i.OriginGenesisTime,
+		&i.AccountType,
+		&i.BtcStaking,
+		&i.CosmosFeeInfo,
+		&i.EvmFeeInfo,
+		&i.LcdEndpoint,
+		&i.GrpcEndpoint,
+		&i.EvmRpcEndpoint,
+		&i.Explorer,
+		&i.About,
+		&i.Forum,
+	)
+	return i, err
+}
+
+const updateBlockchainEndpoints = `-- name: UpdateBlockchainEndpoints :one
+UPDATE blockchains
+SET 
+    lcd_endpoint = ?,
+    grpc_endpoint = ?,
+    evm_rpc_endpoint = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? 
+AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, chain_name, chain_id_cosmos, chain_id_evm, api_name, bech_account_prefix, bech_validator_prefix, main_asset_symbol, main_asset_denom, staking_asset_symbol, staking_asset_denom, is_stake_enabled, chain_image, main_asset_image, staking_asset_image, chain_type, is_support_mobile_wallet, is_support_extension_wallet, is_support_erc20, description_en, description_ko, description_ja, origin_genesis_time, account_type, btc_staking, cosmos_fee_info, evm_fee_info, lcd_endpoint, grpc_endpoint, evm_rpc_endpoint, explorer, about, forum
+`
+
+type UpdateBlockchainEndpointsParams struct {
+	LcdEndpoint    sql.NullString `json:"lcd_endpoint"`
+	GrpcEndpoint   sql.NullString `json:"grpc_endpoint"`
+	EvmRpcEndpoint sql.NullString `json:"evm_rpc_endpoint"`
+	ID             string         `json:"id"`
+}
+
+func (q *Queries) UpdateBlockchainEndpoints(ctx context.Context, arg UpdateBlockchainEndpointsParams) (Blockchain, error) {
+	row := q.db.QueryRowContext(ctx, updateBlockchainEndpoints,
+		arg.LcdEndpoint,
+		arg.GrpcEndpoint,
+		arg.EvmRpcEndpoint,
+		arg.ID,
+	)
+	var i Blockchain
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ChainName,
+		&i.ChainIDCosmos,
+		&i.ChainIDEvm,
+		&i.ApiName,
+		&i.BechAccountPrefix,
+		&i.BechValidatorPrefix,
+		&i.MainAssetSymbol,
+		&i.MainAssetDenom,
+		&i.StakingAssetSymbol,
+		&i.StakingAssetDenom,
+		&i.IsStakeEnabled,
+		&i.ChainImage,
+		&i.MainAssetImage,
+		&i.StakingAssetImage,
+		&i.ChainType,
+		&i.IsSupportMobileWallet,
+		&i.IsSupportExtensionWallet,
+		&i.IsSupportErc20,
+		&i.DescriptionEn,
+		&i.DescriptionKo,
+		&i.DescriptionJa,
+		&i.OriginGenesisTime,
+		&i.AccountType,
+		&i.BtcStaking,
+		&i.CosmosFeeInfo,
+		&i.EvmFeeInfo,
+		&i.LcdEndpoint,
+		&i.GrpcEndpoint,
+		&i.EvmRpcEndpoint,
+		&i.Explorer,
+		&i.About,
+		&i.Forum,
+	)
+	return i, err
+}
+
+const updateBlockchainExplorer = `-- name: UpdateBlockchainExplorer :one
+UPDATE blockchains
+SET 
+    explorer = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? 
+AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, chain_name, chain_id_cosmos, chain_id_evm, api_name, bech_account_prefix, bech_validator_prefix, main_asset_symbol, main_asset_denom, staking_asset_symbol, staking_asset_denom, is_stake_enabled, chain_image, main_asset_image, staking_asset_image, chain_type, is_support_mobile_wallet, is_support_extension_wallet, is_support_erc20, description_en, description_ko, description_ja, origin_genesis_time, account_type, btc_staking, cosmos_fee_info, evm_fee_info, lcd_endpoint, grpc_endpoint, evm_rpc_endpoint, explorer, about, forum
+`
+
+type UpdateBlockchainExplorerParams struct {
+	Explorer sql.NullString `json:"explorer"`
+	ID       string         `json:"id"`
+}
+
+func (q *Queries) UpdateBlockchainExplorer(ctx context.Context, arg UpdateBlockchainExplorerParams) (Blockchain, error) {
+	row := q.db.QueryRowContext(ctx, updateBlockchainExplorer, arg.Explorer, arg.ID)
+	var i Blockchain
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ChainName,
+		&i.ChainIDCosmos,
+		&i.ChainIDEvm,
+		&i.ApiName,
+		&i.BechAccountPrefix,
+		&i.BechValidatorPrefix,
+		&i.MainAssetSymbol,
+		&i.MainAssetDenom,
+		&i.StakingAssetSymbol,
+		&i.StakingAssetDenom,
+		&i.IsStakeEnabled,
+		&i.ChainImage,
+		&i.MainAssetImage,
+		&i.StakingAssetImage,
+		&i.ChainType,
+		&i.IsSupportMobileWallet,
+		&i.IsSupportExtensionWallet,
+		&i.IsSupportErc20,
+		&i.DescriptionEn,
+		&i.DescriptionKo,
+		&i.DescriptionJa,
+		&i.OriginGenesisTime,
+		&i.AccountType,
+		&i.BtcStaking,
+		&i.CosmosFeeInfo,
+		&i.EvmFeeInfo,
+		&i.LcdEndpoint,
+		&i.GrpcEndpoint,
+		&i.EvmRpcEndpoint,
+		&i.Explorer,
+		&i.About,
+		&i.Forum,
+	)
+	return i, err
+}
+
+const updateBlockchainFeeInfo = `-- name: UpdateBlockchainFeeInfo :one
+UPDATE blockchains
+SET 
+    cosmos_fee_info = ?,
+    evm_fee_info = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? 
+AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, chain_name, chain_id_cosmos, chain_id_evm, api_name, bech_account_prefix, bech_validator_prefix, main_asset_symbol, main_asset_denom, staking_asset_symbol, staking_asset_denom, is_stake_enabled, chain_image, main_asset_image, staking_asset_image, chain_type, is_support_mobile_wallet, is_support_extension_wallet, is_support_erc20, description_en, description_ko, description_ja, origin_genesis_time, account_type, btc_staking, cosmos_fee_info, evm_fee_info, lcd_endpoint, grpc_endpoint, evm_rpc_endpoint, explorer, about, forum
+`
+
+type UpdateBlockchainFeeInfoParams struct {
+	CosmosFeeInfo sql.NullString `json:"cosmos_fee_info"`
+	EvmFeeInfo    sql.NullString `json:"evm_fee_info"`
+	ID            string         `json:"id"`
+}
+
+func (q *Queries) UpdateBlockchainFeeInfo(ctx context.Context, arg UpdateBlockchainFeeInfoParams) (Blockchain, error) {
+	row := q.db.QueryRowContext(ctx, updateBlockchainFeeInfo, arg.CosmosFeeInfo, arg.EvmFeeInfo, arg.ID)
+	var i Blockchain
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ChainName,
+		&i.ChainIDCosmos,
+		&i.ChainIDEvm,
+		&i.ApiName,
+		&i.BechAccountPrefix,
+		&i.BechValidatorPrefix,
+		&i.MainAssetSymbol,
+		&i.MainAssetDenom,
+		&i.StakingAssetSymbol,
+		&i.StakingAssetDenom,
+		&i.IsStakeEnabled,
+		&i.ChainImage,
+		&i.MainAssetImage,
+		&i.StakingAssetImage,
+		&i.ChainType,
+		&i.IsSupportMobileWallet,
+		&i.IsSupportExtensionWallet,
+		&i.IsSupportErc20,
+		&i.DescriptionEn,
+		&i.DescriptionKo,
+		&i.DescriptionJa,
+		&i.OriginGenesisTime,
+		&i.AccountType,
+		&i.BtcStaking,
+		&i.CosmosFeeInfo,
+		&i.EvmFeeInfo,
+		&i.LcdEndpoint,
+		&i.GrpcEndpoint,
+		&i.EvmRpcEndpoint,
+		&i.Explorer,
+		&i.About,
+		&i.Forum,
+	)
+	return i, err
+}
+
+const updateBlockchainImages = `-- name: UpdateBlockchainImages :one
+UPDATE blockchains
+SET 
+    chain_image = ?,
+    main_asset_image = ?,
+    staking_asset_image = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? 
+AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, chain_name, chain_id_cosmos, chain_id_evm, api_name, bech_account_prefix, bech_validator_prefix, main_asset_symbol, main_asset_denom, staking_asset_symbol, staking_asset_denom, is_stake_enabled, chain_image, main_asset_image, staking_asset_image, chain_type, is_support_mobile_wallet, is_support_extension_wallet, is_support_erc20, description_en, description_ko, description_ja, origin_genesis_time, account_type, btc_staking, cosmos_fee_info, evm_fee_info, lcd_endpoint, grpc_endpoint, evm_rpc_endpoint, explorer, about, forum
+`
+
+type UpdateBlockchainImagesParams struct {
+	ChainImage        sql.NullString `json:"chain_image"`
+	MainAssetImage    sql.NullString `json:"main_asset_image"`
+	StakingAssetImage sql.NullString `json:"staking_asset_image"`
+	ID                string         `json:"id"`
+}
+
+func (q *Queries) UpdateBlockchainImages(ctx context.Context, arg UpdateBlockchainImagesParams) (Blockchain, error) {
+	row := q.db.QueryRowContext(ctx, updateBlockchainImages,
+		arg.ChainImage,
+		arg.MainAssetImage,
+		arg.StakingAssetImage,
+		arg.ID,
+	)
+	var i Blockchain
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ChainName,
+		&i.ChainIDCosmos,
+		&i.ChainIDEvm,
+		&i.ApiName,
+		&i.BechAccountPrefix,
+		&i.BechValidatorPrefix,
+		&i.MainAssetSymbol,
+		&i.MainAssetDenom,
+		&i.StakingAssetSymbol,
+		&i.StakingAssetDenom,
+		&i.IsStakeEnabled,
+		&i.ChainImage,
+		&i.MainAssetImage,
+		&i.StakingAssetImage,
+		&i.ChainType,
+		&i.IsSupportMobileWallet,
+		&i.IsSupportExtensionWallet,
+		&i.IsSupportErc20,
+		&i.DescriptionEn,
+		&i.DescriptionKo,
+		&i.DescriptionJa,
+		&i.OriginGenesisTime,
+		&i.AccountType,
+		&i.BtcStaking,
+		&i.CosmosFeeInfo,
+		&i.EvmFeeInfo,
+		&i.LcdEndpoint,
+		&i.GrpcEndpoint,
+		&i.EvmRpcEndpoint,
+		&i.Explorer,
+		&i.About,
+		&i.Forum,
+	)
+	return i, err
+}
+
+const updateBlockchainSocialLinks = `-- name: UpdateBlockchainSocialLinks :one
+UPDATE blockchains
+SET 
+    about = ?,
+    forum = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? 
+AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, chain_name, chain_id_cosmos, chain_id_evm, api_name, bech_account_prefix, bech_validator_prefix, main_asset_symbol, main_asset_denom, staking_asset_symbol, staking_asset_denom, is_stake_enabled, chain_image, main_asset_image, staking_asset_image, chain_type, is_support_mobile_wallet, is_support_extension_wallet, is_support_erc20, description_en, description_ko, description_ja, origin_genesis_time, account_type, btc_staking, cosmos_fee_info, evm_fee_info, lcd_endpoint, grpc_endpoint, evm_rpc_endpoint, explorer, about, forum
+`
+
+type UpdateBlockchainSocialLinksParams struct {
+	About sql.NullString `json:"about"`
+	Forum sql.NullString `json:"forum"`
+	ID    string         `json:"id"`
+}
+
+func (q *Queries) UpdateBlockchainSocialLinks(ctx context.Context, arg UpdateBlockchainSocialLinksParams) (Blockchain, error) {
+	row := q.db.QueryRowContext(ctx, updateBlockchainSocialLinks, arg.About, arg.Forum, arg.ID)
+	var i Blockchain
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ChainName,
+		&i.ChainIDCosmos,
+		&i.ChainIDEvm,
+		&i.ApiName,
+		&i.BechAccountPrefix,
+		&i.BechValidatorPrefix,
+		&i.MainAssetSymbol,
+		&i.MainAssetDenom,
+		&i.StakingAssetSymbol,
+		&i.StakingAssetDenom,
+		&i.IsStakeEnabled,
+		&i.ChainImage,
+		&i.MainAssetImage,
+		&i.StakingAssetImage,
+		&i.ChainType,
+		&i.IsSupportMobileWallet,
+		&i.IsSupportExtensionWallet,
+		&i.IsSupportErc20,
+		&i.DescriptionEn,
+		&i.DescriptionKo,
+		&i.DescriptionJa,
+		&i.OriginGenesisTime,
+		&i.AccountType,
+		&i.BtcStaking,
+		&i.CosmosFeeInfo,
+		&i.EvmFeeInfo,
+		&i.LcdEndpoint,
+		&i.GrpcEndpoint,
+		&i.EvmRpcEndpoint,
+		&i.Explorer,
+		&i.About,
+		&i.Forum,
 	)
 	return i, err
 }

@@ -10,7 +10,6 @@ import (
 type AccountEntity interface {
 	GetModel() *models.Account
 	GetCard(handle string) templ.Component
-	GetAvatar() templ.Component
 }
 
 type AccountsEntity interface {
@@ -37,10 +36,6 @@ func (a *accountEntity) GetModel() *models.Account {
 
 func (a *accountEntity) GetCard(handle string) templ.Component {
 	return cardComponent(handle, a.Address, strconv.FormatInt(a.BlockCreated, 10), a.Label)
-}
-
-func (a *accountEntity) GetAvatar() templ.Component {
-	return nil
 }
 
 type accountsEntity struct {

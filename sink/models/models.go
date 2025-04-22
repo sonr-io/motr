@@ -63,6 +63,45 @@ type Asset struct {
 	CoingeckoID sql.NullString `json:"coingecko_id"`
 }
 
+type Blockchain struct {
+	ID                       string         `json:"id"`
+	CreatedAt                time.Time      `json:"created_at"`
+	UpdatedAt                time.Time      `json:"updated_at"`
+	DeletedAt                sql.NullTime   `json:"deleted_at"`
+	ChainName                string         `json:"chain_name"`
+	ChainIDCosmos            sql.NullString `json:"chain_id_cosmos"`
+	ChainIDEvm               sql.NullString `json:"chain_id_evm"`
+	ApiName                  sql.NullString `json:"api_name"`
+	BechAccountPrefix        sql.NullString `json:"bech_account_prefix"`
+	BechValidatorPrefix      sql.NullString `json:"bech_validator_prefix"`
+	MainAssetSymbol          sql.NullString `json:"main_asset_symbol"`
+	MainAssetDenom           sql.NullString `json:"main_asset_denom"`
+	StakingAssetSymbol       sql.NullString `json:"staking_asset_symbol"`
+	StakingAssetDenom        sql.NullString `json:"staking_asset_denom"`
+	IsStakeEnabled           bool           `json:"is_stake_enabled"`
+	ChainImage               sql.NullString `json:"chain_image"`
+	MainAssetImage           sql.NullString `json:"main_asset_image"`
+	StakingAssetImage        sql.NullString `json:"staking_asset_image"`
+	ChainType                string         `json:"chain_type"`
+	IsSupportMobileWallet    bool           `json:"is_support_mobile_wallet"`
+	IsSupportExtensionWallet bool           `json:"is_support_extension_wallet"`
+	IsSupportErc20           bool           `json:"is_support_erc20"`
+	DescriptionEn            sql.NullString `json:"description_en"`
+	DescriptionKo            sql.NullString `json:"description_ko"`
+	DescriptionJa            sql.NullString `json:"description_ja"`
+	OriginGenesisTime        sql.NullTime   `json:"origin_genesis_time"`
+	AccountType              string         `json:"account_type"`
+	BtcStaking               sql.NullString `json:"btc_staking"`
+	CosmosFeeInfo            sql.NullString `json:"cosmos_fee_info"`
+	EvmFeeInfo               sql.NullString `json:"evm_fee_info"`
+	LcdEndpoint              sql.NullString `json:"lcd_endpoint"`
+	GrpcEndpoint             sql.NullString `json:"grpc_endpoint"`
+	EvmRpcEndpoint           sql.NullString `json:"evm_rpc_endpoint"`
+	Explorer                 sql.NullString `json:"explorer"`
+	About                    sql.NullString `json:"about"`
+	Forum                    sql.NullString `json:"forum"`
+}
+
 type Credential struct {
 	ID                      string       `json:"id"`
 	CreatedAt               time.Time    `json:"created_at"`

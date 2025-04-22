@@ -11,6 +11,7 @@ import (
 
 type Querier interface {
 	CheckHandleExists(ctx context.Context, handle string) (bool, error)
+	CountBlockchainsByChainType(ctx context.Context, dollar_1 sql.NullString) (int64, error)
 	GetAccountByAddress(ctx context.Context, address string) (Account, error)
 	GetAccountByController(ctx context.Context, controller string) (Account, error)
 	GetAccountByID(ctx context.Context, id string) (Account, error)
@@ -26,6 +27,13 @@ type Querier interface {
 	GetAssetByID(ctx context.Context, id string) (Asset, error)
 	GetAssetBySymbol(ctx context.Context, symbol string) (Asset, error)
 	GetAssetWithLatestPrice(ctx context.Context, id string) (GetAssetWithLatestPriceRow, error)
+	GetBlockchainByChainName(ctx context.Context, chainName string) (Blockchain, error)
+	GetBlockchainByCosmosChainID(ctx context.Context, chainIDCosmos sql.NullString) (Blockchain, error)
+	GetBlockchainByEvmChainID(ctx context.Context, chainIDEvm sql.NullString) (Blockchain, error)
+	GetBlockchainByID(ctx context.Context, id string) (Blockchain, error)
+	GetBlockchainEndpoints(ctx context.Context, id string) (GetBlockchainEndpointsRow, error)
+	GetBlockchainExplorer(ctx context.Context, id string) (GetBlockchainExplorerRow, error)
+	GetBlockchainWithAssetInfo(ctx context.Context, id string) (GetBlockchainWithAssetInfoRow, error)
 	GetCredentialByID(ctx context.Context, credentialID string) (Credential, error)
 	GetCredentialsByHandle(ctx context.Context, handle string) ([]Credential, error)
 	GetHealthByEndpoint(ctx context.Context, endpointUrl string) (Health, error)
@@ -48,6 +56,8 @@ type Querier interface {
 	InsertActivity(ctx context.Context, arg InsertActivityParams) (Activity, error)
 	// ASSET QUERIES
 	InsertAsset(ctx context.Context, arg InsertAssetParams) (Asset, error)
+	// BLOCKCHAIN QUERIES
+	InsertBlockchain(ctx context.Context, arg InsertBlockchainParams) (Blockchain, error)
 	// CREDENTIAL QUERIES
 	InsertCredential(ctx context.Context, arg InsertCredentialParams) (Credential, error)
 	// HEALTH QUERIES
@@ -63,8 +73,15 @@ type Querier interface {
 	ListActivitiesByAccount(ctx context.Context, arg ListActivitiesByAccountParams) ([]Activity, error)
 	ListActivitiesByStatus(ctx context.Context, arg ListActivitiesByStatusParams) ([]Activity, error)
 	ListActivitiesByType(ctx context.Context, arg ListActivitiesByTypeParams) ([]Activity, error)
+	ListAllBlockchains(ctx context.Context) ([]Blockchain, error)
 	ListAssetsByChain(ctx context.Context, chainID string) ([]Asset, error)
 	ListAssetsWithLatestPrices(ctx context.Context, arg ListAssetsWithLatestPricesParams) ([]ListAssetsWithLatestPricesRow, error)
+	ListBlockchainsByChainType(ctx context.Context, dollar_1 sql.NullString) ([]Blockchain, error)
+	ListBlockchainsWithAssetInfo(ctx context.Context, arg ListBlockchainsWithAssetInfoParams) ([]ListBlockchainsWithAssetInfoRow, error)
+	ListBlockchainsWithERC20Support(ctx context.Context) ([]Blockchain, error)
+	ListBlockchainsWithExtensionSupport(ctx context.Context) ([]Blockchain, error)
+	ListBlockchainsWithMobileSupport(ctx context.Context) ([]Blockchain, error)
+	ListBlockchainsWithStaking(ctx context.Context) ([]Blockchain, error)
 	ListDelegatorAccounts(ctx context.Context) ([]Account, error)
 	ListHealthByChain(ctx context.Context, arg ListHealthByChainParams) ([]Health, error)
 	ListHealthByStatus(ctx context.Context, arg ListHealthByStatusParams) ([]Health, error)
@@ -74,9 +91,11 @@ type Querier interface {
 	ListServicesByChain(ctx context.Context, arg ListServicesByChainParams) ([]Service, error)
 	ListServicesByOwner(ctx context.Context, arg ListServicesByOwnerParams) ([]Service, error)
 	ListValidatorAccounts(ctx context.Context) ([]Account, error)
+	SearchBlockchains(ctx context.Context, arg SearchBlockchainsParams) ([]Blockchain, error)
 	SoftDeleteAccount(ctx context.Context, id string) error
 	SoftDeleteActivity(ctx context.Context, id string) error
 	SoftDeleteAsset(ctx context.Context, id string) error
+	SoftDeleteBlockchain(ctx context.Context, id string) error
 	SoftDeleteCredential(ctx context.Context, credentialID string) error
 	SoftDeleteHealth(ctx context.Context, id string) error
 	SoftDeleteProfile(ctx context.Context, address string) error
@@ -86,6 +105,13 @@ type Querier interface {
 	UpdateAccountSequence(ctx context.Context, arg UpdateAccountSequenceParams) (Account, error)
 	UpdateActivityStatus(ctx context.Context, arg UpdateActivityStatusParams) (Activity, error)
 	UpdateAsset(ctx context.Context, arg UpdateAssetParams) (Asset, error)
+	UpdateBlockchain(ctx context.Context, arg UpdateBlockchainParams) (Blockchain, error)
+	UpdateBlockchainDescriptions(ctx context.Context, arg UpdateBlockchainDescriptionsParams) (Blockchain, error)
+	UpdateBlockchainEndpoints(ctx context.Context, arg UpdateBlockchainEndpointsParams) (Blockchain, error)
+	UpdateBlockchainExplorer(ctx context.Context, arg UpdateBlockchainExplorerParams) (Blockchain, error)
+	UpdateBlockchainFeeInfo(ctx context.Context, arg UpdateBlockchainFeeInfoParams) (Blockchain, error)
+	UpdateBlockchainImages(ctx context.Context, arg UpdateBlockchainImagesParams) (Blockchain, error)
+	UpdateBlockchainSocialLinks(ctx context.Context, arg UpdateBlockchainSocialLinksParams) (Blockchain, error)
 	UpdateHealthCheck(ctx context.Context, arg UpdateHealthCheckParams) (Health, error)
 	UpdatePrice(ctx context.Context, arg UpdatePriceParams) (Price, error)
 	UpdateProfile(ctx context.Context, arg UpdateProfileParams) (Profile, error)
