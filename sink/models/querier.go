@@ -6,27 +6,89 @@ package models
 
 import (
 	"context"
+	"database/sql"
 )
 
 type Querier interface {
 	CheckHandleExists(ctx context.Context, handle string) (bool, error)
+	GetAccountByAddress(ctx context.Context, address string) (Account, error)
 	GetAccountByController(ctx context.Context, controller string) (Account, error)
+	GetAccountByID(ctx context.Context, id string) (Account, error)
 	GetAccountByNumber(ctx context.Context, number int64) (Account, error)
 	GetAccountByPublicKey(ctx context.Context, publicKey string) (Account, error)
 	GetAccountBySequence(ctx context.Context, sequence int64) (Account, error)
 	GetAccountsByChainID(ctx context.Context, chainID string) ([]Account, error)
+	GetActivityByID(ctx context.Context, id string) (Activity, error)
+	GetActivityByTxHash(ctx context.Context, txHash sql.NullString) (Activity, error)
+	GetAssetByChainAndSymbol(ctx context.Context, arg GetAssetByChainAndSymbolParams) (Asset, error)
+	GetAssetByID(ctx context.Context, id string) (Asset, error)
+	GetAssetBySymbol(ctx context.Context, symbol string) (Asset, error)
+	GetAssetWithLatestPrice(ctx context.Context, id string) (GetAssetWithLatestPriceRow, error)
 	GetCredentialByID(ctx context.Context, credentialID string) (Credential, error)
 	GetCredentialsByHandle(ctx context.Context, handle string) ([]Credential, error)
+	GetHealthByEndpoint(ctx context.Context, endpointUrl string) (Health, error)
+	GetHealthByID(ctx context.Context, id string) (Health, error)
+	GetPriceByAssetID(ctx context.Context, assetID string) (Price, error)
+	GetPriceByID(ctx context.Context, id string) (Price, error)
 	GetProfileByAddress(ctx context.Context, address string) (Profile, error)
 	GetProfileByHandle(ctx context.Context, handle string) (Profile, error)
 	GetProfileByID(ctx context.Context, id string) (Profile, error)
+	GetServiceByAddress(ctx context.Context, address string) (Service, error)
+	GetServiceByChainAndAddress(ctx context.Context, arg GetServiceByChainAndAddressParams) (Service, error)
+	GetServiceByID(ctx context.Context, id string) (Service, error)
+	GetVaultByID(ctx context.Context, id string) (Vault, error)
 	GetVaultConfigByCID(ctx context.Context, cid string) (Vault, error)
 	GetVaultRedirectURIBySessionID(ctx context.Context, sessionID string) (string, error)
+	GetVaultsByHandle(ctx context.Context, handle string) ([]Vault, error)
+	// ACCOUNT QUERIES
+	InsertAccount(ctx context.Context, arg InsertAccountParams) (Account, error)
+	// ACTIVITY QUERIES
+	InsertActivity(ctx context.Context, arg InsertActivityParams) (Activity, error)
+	// ASSET QUERIES
+	InsertAsset(ctx context.Context, arg InsertAssetParams) (Asset, error)
+	// CREDENTIAL QUERIES
 	InsertCredential(ctx context.Context, arg InsertCredentialParams) (Credential, error)
+	// HEALTH QUERIES
+	InsertHealth(ctx context.Context, arg InsertHealthParams) (Health, error)
+	// PRICE QUERIES
+	InsertPrice(ctx context.Context, arg InsertPriceParams) (Price, error)
+	// PROFILE QUERIES
 	InsertProfile(ctx context.Context, arg InsertProfileParams) (Profile, error)
+	// SERVICE QUERIES
+	InsertService(ctx context.Context, arg InsertServiceParams) (Service, error)
+	// VAULT QUERIES
+	InsertVault(ctx context.Context, arg InsertVaultParams) (Vault, error)
+	ListActivitiesByAccount(ctx context.Context, arg ListActivitiesByAccountParams) ([]Activity, error)
+	ListActivitiesByStatus(ctx context.Context, arg ListActivitiesByStatusParams) ([]Activity, error)
+	ListActivitiesByType(ctx context.Context, arg ListActivitiesByTypeParams) ([]Activity, error)
+	ListAssetsByChain(ctx context.Context, chainID string) ([]Asset, error)
+	ListAssetsWithLatestPrices(ctx context.Context, arg ListAssetsWithLatestPricesParams) ([]ListAssetsWithLatestPricesRow, error)
+	ListDelegatorAccounts(ctx context.Context) ([]Account, error)
+	ListHealthByChain(ctx context.Context, arg ListHealthByChainParams) ([]Health, error)
+	ListHealthByStatus(ctx context.Context, arg ListHealthByStatusParams) ([]Health, error)
+	ListHealthChecksNeedingUpdate(ctx context.Context, limit int64) ([]Health, error)
+	ListPriceHistoryByAssetID(ctx context.Context, arg ListPriceHistoryByAssetIDParams) ([]Price, error)
+	ListProfiles(ctx context.Context, arg ListProfilesParams) ([]Profile, error)
+	ListServicesByChain(ctx context.Context, arg ListServicesByChainParams) ([]Service, error)
+	ListServicesByOwner(ctx context.Context, arg ListServicesByOwnerParams) ([]Service, error)
+	ListValidatorAccounts(ctx context.Context) ([]Account, error)
+	SoftDeleteAccount(ctx context.Context, id string) error
+	SoftDeleteActivity(ctx context.Context, id string) error
+	SoftDeleteAsset(ctx context.Context, id string) error
 	SoftDeleteCredential(ctx context.Context, credentialID string) error
+	SoftDeleteHealth(ctx context.Context, id string) error
 	SoftDeleteProfile(ctx context.Context, address string) error
+	SoftDeleteService(ctx context.Context, id string) error
+	SoftDeleteVault(ctx context.Context, id string) error
+	UpdateAccountLabel(ctx context.Context, arg UpdateAccountLabelParams) (Account, error)
+	UpdateAccountSequence(ctx context.Context, arg UpdateAccountSequenceParams) (Account, error)
+	UpdateActivityStatus(ctx context.Context, arg UpdateActivityStatusParams) (Activity, error)
+	UpdateAsset(ctx context.Context, arg UpdateAssetParams) (Asset, error)
+	UpdateHealthCheck(ctx context.Context, arg UpdateHealthCheckParams) (Health, error)
+	UpdatePrice(ctx context.Context, arg UpdatePriceParams) (Price, error)
 	UpdateProfile(ctx context.Context, arg UpdateProfileParams) (Profile, error)
+	UpdateService(ctx context.Context, arg UpdateServiceParams) (Service, error)
+	UpdateVault(ctx context.Context, arg UpdateVaultParams) (Vault, error)
 }
 
 var _ Querier = (*Queries)(nil)

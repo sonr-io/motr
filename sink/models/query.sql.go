@@ -7,6 +7,8 @@ package models
 
 import (
 	"context"
+	"database/sql"
+	"time"
 )
 
 const checkHandleExists = `-- name: CheckHandleExists :one
@@ -22,6 +24,36 @@ func (q *Queries) CheckHandleExists(ctx context.Context, handle string) (bool, e
 	return handle_exists, err
 }
 
+const getAccountByAddress = `-- name: GetAccountByAddress :one
+SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, block_created, controller, label, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
+WHERE address = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetAccountByAddress(ctx context.Context, address string) (Account, error) {
+	row := q.db.QueryRowContext(ctx, getAccountByAddress, address)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Number,
+		&i.Sequence,
+		&i.Address,
+		&i.PublicKey,
+		&i.ChainID,
+		&i.BlockCreated,
+		&i.Controller,
+		&i.Label,
+		&i.IsSubsidiary,
+		&i.IsValidator,
+		&i.IsDelegator,
+		&i.IsAccountable,
+	)
+	return i, err
+}
+
 const getAccountByController = `-- name: GetAccountByController :one
 SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, block_created, controller, label, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
 WHERE controller = ? AND deleted_at IS NULL
@@ -30,6 +62,36 @@ LIMIT 1
 
 func (q *Queries) GetAccountByController(ctx context.Context, controller string) (Account, error) {
 	row := q.db.QueryRowContext(ctx, getAccountByController, controller)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Number,
+		&i.Sequence,
+		&i.Address,
+		&i.PublicKey,
+		&i.ChainID,
+		&i.BlockCreated,
+		&i.Controller,
+		&i.Label,
+		&i.IsSubsidiary,
+		&i.IsValidator,
+		&i.IsDelegator,
+		&i.IsAccountable,
+	)
+	return i, err
+}
+
+const getAccountByID = `-- name: GetAccountByID :one
+SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, block_created, controller, label, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetAccountByID(ctx context.Context, id string) (Account, error) {
+	row := q.db.QueryRowContext(ctx, getAccountByID, id)
 	var i Account
 	err := row.Scan(
 		&i.ID,
@@ -188,6 +250,212 @@ func (q *Queries) GetAccountsByChainID(ctx context.Context, chainID string) ([]A
 	return items, nil
 }
 
+const getActivityByID = `-- name: GetActivityByID :one
+SELECT id, created_at, updated_at, deleted_at, account_id, tx_hash, tx_type, status, amount, fee, gas_used, gas_wanted, memo, block_height, timestamp, raw_log, error FROM activities
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetActivityByID(ctx context.Context, id string) (Activity, error) {
+	row := q.db.QueryRowContext(ctx, getActivityByID, id)
+	var i Activity
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.AccountID,
+		&i.TxHash,
+		&i.TxType,
+		&i.Status,
+		&i.Amount,
+		&i.Fee,
+		&i.GasUsed,
+		&i.GasWanted,
+		&i.Memo,
+		&i.BlockHeight,
+		&i.Timestamp,
+		&i.RawLog,
+		&i.Error,
+	)
+	return i, err
+}
+
+const getActivityByTxHash = `-- name: GetActivityByTxHash :one
+SELECT id, created_at, updated_at, deleted_at, account_id, tx_hash, tx_type, status, amount, fee, gas_used, gas_wanted, memo, block_height, timestamp, raw_log, error FROM activities
+WHERE tx_hash = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetActivityByTxHash(ctx context.Context, txHash sql.NullString) (Activity, error) {
+	row := q.db.QueryRowContext(ctx, getActivityByTxHash, txHash)
+	var i Activity
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.AccountID,
+		&i.TxHash,
+		&i.TxType,
+		&i.Status,
+		&i.Amount,
+		&i.Fee,
+		&i.GasUsed,
+		&i.GasWanted,
+		&i.Memo,
+		&i.BlockHeight,
+		&i.Timestamp,
+		&i.RawLog,
+		&i.Error,
+	)
+	return i, err
+}
+
+const getAssetByChainAndSymbol = `-- name: GetAssetByChainAndSymbol :one
+SELECT id, created_at, updated_at, deleted_at, name, symbol, decimals, chain_id, channel, asset_type, coingecko_id FROM assets
+WHERE chain_id = ? AND symbol = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+type GetAssetByChainAndSymbolParams struct {
+	ChainID string `json:"chain_id"`
+	Symbol  string `json:"symbol"`
+}
+
+func (q *Queries) GetAssetByChainAndSymbol(ctx context.Context, arg GetAssetByChainAndSymbolParams) (Asset, error) {
+	row := q.db.QueryRowContext(ctx, getAssetByChainAndSymbol, arg.ChainID, arg.Symbol)
+	var i Asset
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Name,
+		&i.Symbol,
+		&i.Decimals,
+		&i.ChainID,
+		&i.Channel,
+		&i.AssetType,
+		&i.CoingeckoID,
+	)
+	return i, err
+}
+
+const getAssetByID = `-- name: GetAssetByID :one
+SELECT id, created_at, updated_at, deleted_at, name, symbol, decimals, chain_id, channel, asset_type, coingecko_id FROM assets
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetAssetByID(ctx context.Context, id string) (Asset, error) {
+	row := q.db.QueryRowContext(ctx, getAssetByID, id)
+	var i Asset
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Name,
+		&i.Symbol,
+		&i.Decimals,
+		&i.ChainID,
+		&i.Channel,
+		&i.AssetType,
+		&i.CoingeckoID,
+	)
+	return i, err
+}
+
+const getAssetBySymbol = `-- name: GetAssetBySymbol :one
+SELECT id, created_at, updated_at, deleted_at, name, symbol, decimals, chain_id, channel, asset_type, coingecko_id FROM assets
+WHERE symbol = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetAssetBySymbol(ctx context.Context, symbol string) (Asset, error) {
+	row := q.db.QueryRowContext(ctx, getAssetBySymbol, symbol)
+	var i Asset
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Name,
+		&i.Symbol,
+		&i.Decimals,
+		&i.ChainID,
+		&i.Channel,
+		&i.AssetType,
+		&i.CoingeckoID,
+	)
+	return i, err
+}
+
+const getAssetWithLatestPrice = `-- name: GetAssetWithLatestPrice :one
+SELECT a.id, a.created_at, a.updated_at, a.deleted_at, a.name, a.symbol, a.decimals, a.chain_id, a.channel, a.asset_type, a.coingecko_id, p.price_usd, p.price_btc, p.volume_24h_usd, p.market_cap_usd, 
+       p.percent_change_24h, p.last_updated
+FROM assets a
+LEFT JOIN (
+    SELECT p1.id, p1.created_at, p1.updated_at, p1.deleted_at, p1.asset_id, p1.price_usd, p1.price_btc, p1.volume_24h_usd, p1.market_cap_usd, p1.percent_change_1h, p1.percent_change_24h, p1.percent_change_7d, p1.last_updated
+    FROM prices p1
+    INNER JOIN (
+        SELECT asset_id, MAX(last_updated) as max_date
+        FROM prices
+        WHERE deleted_at IS NULL
+        GROUP BY asset_id
+    ) p2 ON p1.asset_id = p2.asset_id AND p1.last_updated = p2.max_date
+    WHERE p1.deleted_at IS NULL
+) p ON a.id = p.asset_id
+WHERE a.id = ? AND a.deleted_at IS NULL
+LIMIT 1
+`
+
+type GetAssetWithLatestPriceRow struct {
+	ID               string          `json:"id"`
+	CreatedAt        time.Time       `json:"created_at"`
+	UpdatedAt        time.Time       `json:"updated_at"`
+	DeletedAt        sql.NullTime    `json:"deleted_at"`
+	Name             string          `json:"name"`
+	Symbol           string          `json:"symbol"`
+	Decimals         int64           `json:"decimals"`
+	ChainID          string          `json:"chain_id"`
+	Channel          string          `json:"channel"`
+	AssetType        string          `json:"asset_type"`
+	CoingeckoID      sql.NullString  `json:"coingecko_id"`
+	PriceUsd         sql.NullFloat64 `json:"price_usd"`
+	PriceBtc         sql.NullFloat64 `json:"price_btc"`
+	Volume24hUsd     sql.NullFloat64 `json:"volume_24h_usd"`
+	MarketCapUsd     sql.NullFloat64 `json:"market_cap_usd"`
+	PercentChange24h sql.NullFloat64 `json:"percent_change_24h"`
+	LastUpdated      time.Time       `json:"last_updated"`
+}
+
+func (q *Queries) GetAssetWithLatestPrice(ctx context.Context, id string) (GetAssetWithLatestPriceRow, error) {
+	row := q.db.QueryRowContext(ctx, getAssetWithLatestPrice, id)
+	var i GetAssetWithLatestPriceRow
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Name,
+		&i.Symbol,
+		&i.Decimals,
+		&i.ChainID,
+		&i.Channel,
+		&i.AssetType,
+		&i.CoingeckoID,
+		&i.PriceUsd,
+		&i.PriceBtc,
+		&i.Volume24hUsd,
+		&i.MarketCapUsd,
+		&i.PercentChange24h,
+		&i.LastUpdated,
+	)
+	return i, err
+}
+
 const getCredentialByID = `-- name: GetCredentialByID :one
 SELECT id, created_at, updated_at, deleted_at, handle, credential_id, authenticator_attachment, origin, type, transports FROM credentials
 WHERE credential_id = ?
@@ -251,6 +519,120 @@ func (q *Queries) GetCredentialsByHandle(ctx context.Context, handle string) ([]
 		return nil, err
 	}
 	return items, nil
+}
+
+const getHealthByEndpoint = `-- name: GetHealthByEndpoint :one
+SELECT id, created_at, updated_at, deleted_at, endpoint_url, endpoint_type, chain_id, status, response_time_ms, last_checked, next_check, failure_count, success_count, response_data, error_message FROM health
+WHERE endpoint_url = ? AND deleted_at IS NULL
+ORDER BY last_checked DESC
+LIMIT 1
+`
+
+func (q *Queries) GetHealthByEndpoint(ctx context.Context, endpointUrl string) (Health, error) {
+	row := q.db.QueryRowContext(ctx, getHealthByEndpoint, endpointUrl)
+	var i Health
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.EndpointUrl,
+		&i.EndpointType,
+		&i.ChainID,
+		&i.Status,
+		&i.ResponseTimeMs,
+		&i.LastChecked,
+		&i.NextCheck,
+		&i.FailureCount,
+		&i.SuccessCount,
+		&i.ResponseData,
+		&i.ErrorMessage,
+	)
+	return i, err
+}
+
+const getHealthByID = `-- name: GetHealthByID :one
+SELECT id, created_at, updated_at, deleted_at, endpoint_url, endpoint_type, chain_id, status, response_time_ms, last_checked, next_check, failure_count, success_count, response_data, error_message FROM health
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetHealthByID(ctx context.Context, id string) (Health, error) {
+	row := q.db.QueryRowContext(ctx, getHealthByID, id)
+	var i Health
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.EndpointUrl,
+		&i.EndpointType,
+		&i.ChainID,
+		&i.Status,
+		&i.ResponseTimeMs,
+		&i.LastChecked,
+		&i.NextCheck,
+		&i.FailureCount,
+		&i.SuccessCount,
+		&i.ResponseData,
+		&i.ErrorMessage,
+	)
+	return i, err
+}
+
+const getPriceByAssetID = `-- name: GetPriceByAssetID :one
+SELECT id, created_at, updated_at, deleted_at, asset_id, price_usd, price_btc, volume_24h_usd, market_cap_usd, percent_change_1h, percent_change_24h, percent_change_7d, last_updated FROM prices
+WHERE asset_id = ? AND deleted_at IS NULL
+ORDER BY last_updated DESC
+LIMIT 1
+`
+
+func (q *Queries) GetPriceByAssetID(ctx context.Context, assetID string) (Price, error) {
+	row := q.db.QueryRowContext(ctx, getPriceByAssetID, assetID)
+	var i Price
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.AssetID,
+		&i.PriceUsd,
+		&i.PriceBtc,
+		&i.Volume24hUsd,
+		&i.MarketCapUsd,
+		&i.PercentChange1h,
+		&i.PercentChange24h,
+		&i.PercentChange7d,
+		&i.LastUpdated,
+	)
+	return i, err
+}
+
+const getPriceByID = `-- name: GetPriceByID :one
+SELECT id, created_at, updated_at, deleted_at, asset_id, price_usd, price_btc, volume_24h_usd, market_cap_usd, percent_change_1h, percent_change_24h, percent_change_7d, last_updated FROM prices
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetPriceByID(ctx context.Context, id string) (Price, error) {
+	row := q.db.QueryRowContext(ctx, getPriceByID, id)
+	var i Price
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.AssetID,
+		&i.PriceUsd,
+		&i.PriceBtc,
+		&i.Volume24hUsd,
+		&i.MarketCapUsd,
+		&i.PercentChange1h,
+		&i.PercentChange24h,
+		&i.PercentChange7d,
+		&i.LastUpdated,
+	)
+	return i, err
 }
 
 const getProfileByAddress = `-- name: GetProfileByAddress :one
@@ -320,6 +702,115 @@ func (q *Queries) GetProfileByID(ctx context.Context, id string) (Profile, error
 	return i, err
 }
 
+const getServiceByAddress = `-- name: GetServiceByAddress :one
+SELECT id, created_at, updated_at, deleted_at, name, description, chain_id, address, owner_address, metadata, status, block_height FROM services
+WHERE address = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetServiceByAddress(ctx context.Context, address string) (Service, error) {
+	row := q.db.QueryRowContext(ctx, getServiceByAddress, address)
+	var i Service
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Name,
+		&i.Description,
+		&i.ChainID,
+		&i.Address,
+		&i.OwnerAddress,
+		&i.Metadata,
+		&i.Status,
+		&i.BlockHeight,
+	)
+	return i, err
+}
+
+const getServiceByChainAndAddress = `-- name: GetServiceByChainAndAddress :one
+SELECT id, created_at, updated_at, deleted_at, name, description, chain_id, address, owner_address, metadata, status, block_height FROM services
+WHERE chain_id = ? AND address = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+type GetServiceByChainAndAddressParams struct {
+	ChainID string `json:"chain_id"`
+	Address string `json:"address"`
+}
+
+func (q *Queries) GetServiceByChainAndAddress(ctx context.Context, arg GetServiceByChainAndAddressParams) (Service, error) {
+	row := q.db.QueryRowContext(ctx, getServiceByChainAndAddress, arg.ChainID, arg.Address)
+	var i Service
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Name,
+		&i.Description,
+		&i.ChainID,
+		&i.Address,
+		&i.OwnerAddress,
+		&i.Metadata,
+		&i.Status,
+		&i.BlockHeight,
+	)
+	return i, err
+}
+
+const getServiceByID = `-- name: GetServiceByID :one
+SELECT id, created_at, updated_at, deleted_at, name, description, chain_id, address, owner_address, metadata, status, block_height FROM services
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetServiceByID(ctx context.Context, id string) (Service, error) {
+	row := q.db.QueryRowContext(ctx, getServiceByID, id)
+	var i Service
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Name,
+		&i.Description,
+		&i.ChainID,
+		&i.Address,
+		&i.OwnerAddress,
+		&i.Metadata,
+		&i.Status,
+		&i.BlockHeight,
+	)
+	return i, err
+}
+
+const getVaultByID = `-- name: GetVaultByID :one
+SELECT id, created_at, updated_at, deleted_at, handle, origin, address, cid, config, session_id, redirect_uri FROM vaults
+WHERE id = ? 
+AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetVaultByID(ctx context.Context, id string) (Vault, error) {
+	row := q.db.QueryRowContext(ctx, getVaultByID, id)
+	var i Vault
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Handle,
+		&i.Origin,
+		&i.Address,
+		&i.Cid,
+		&i.Config,
+		&i.SessionID,
+		&i.RedirectUri,
+	)
+	return i, err
+}
+
 const getVaultConfigByCID = `-- name: GetVaultConfigByCID :one
 SELECT id, created_at, updated_at, deleted_at, handle, origin, address, cid, config, session_id, redirect_uri FROM vaults
 WHERE cid = ? 
@@ -360,29 +851,272 @@ func (q *Queries) GetVaultRedirectURIBySessionID(ctx context.Context, sessionID 
 	return redirect_uri, err
 }
 
+const getVaultsByHandle = `-- name: GetVaultsByHandle :many
+SELECT id, created_at, updated_at, deleted_at, handle, origin, address, cid, config, session_id, redirect_uri FROM vaults
+WHERE handle = ? 
+AND deleted_at IS NULL
+ORDER BY created_at DESC
+`
+
+func (q *Queries) GetVaultsByHandle(ctx context.Context, handle string) ([]Vault, error) {
+	rows, err := q.db.QueryContext(ctx, getVaultsByHandle, handle)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Vault
+	for rows.Next() {
+		var i Vault
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.Handle,
+			&i.Origin,
+			&i.Address,
+			&i.Cid,
+			&i.Config,
+			&i.SessionID,
+			&i.RedirectUri,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const insertAccount = `-- name: InsertAccount :one
+INSERT INTO accounts (
+    number,
+    sequence,
+    address,
+    public_key,
+    chain_id,
+    block_created,
+    controller,
+    label,
+    is_subsidiary,
+    is_validator,
+    is_delegator,
+    is_accountable
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+RETURNING id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, block_created, controller, label, is_subsidiary, is_validator, is_delegator, is_accountable
+`
+
+type InsertAccountParams struct {
+	Number        int64  `json:"number"`
+	Sequence      int64  `json:"sequence"`
+	Address       string `json:"address"`
+	PublicKey     string `json:"public_key"`
+	ChainID       string `json:"chain_id"`
+	BlockCreated  int64  `json:"block_created"`
+	Controller    string `json:"controller"`
+	Label         string `json:"label"`
+	IsSubsidiary  bool   `json:"is_subsidiary"`
+	IsValidator   bool   `json:"is_validator"`
+	IsDelegator   bool   `json:"is_delegator"`
+	IsAccountable bool   `json:"is_accountable"`
+}
+
+// ACCOUNT QUERIES
+func (q *Queries) InsertAccount(ctx context.Context, arg InsertAccountParams) (Account, error) {
+	row := q.db.QueryRowContext(ctx, insertAccount,
+		arg.Number,
+		arg.Sequence,
+		arg.Address,
+		arg.PublicKey,
+		arg.ChainID,
+		arg.BlockCreated,
+		arg.Controller,
+		arg.Label,
+		arg.IsSubsidiary,
+		arg.IsValidator,
+		arg.IsDelegator,
+		arg.IsAccountable,
+	)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Number,
+		&i.Sequence,
+		&i.Address,
+		&i.PublicKey,
+		&i.ChainID,
+		&i.BlockCreated,
+		&i.Controller,
+		&i.Label,
+		&i.IsSubsidiary,
+		&i.IsValidator,
+		&i.IsDelegator,
+		&i.IsAccountable,
+	)
+	return i, err
+}
+
+const insertActivity = `-- name: InsertActivity :one
+INSERT INTO activities (
+    account_id,
+    tx_hash,
+    tx_type,
+    status,
+    amount,
+    fee,
+    gas_used,
+    gas_wanted,
+    memo,
+    block_height,
+    timestamp,
+    raw_log,
+    error
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+RETURNING id, created_at, updated_at, deleted_at, account_id, tx_hash, tx_type, status, amount, fee, gas_used, gas_wanted, memo, block_height, timestamp, raw_log, error
+`
+
+type InsertActivityParams struct {
+	AccountID   string         `json:"account_id"`
+	TxHash      sql.NullString `json:"tx_hash"`
+	TxType      string         `json:"tx_type"`
+	Status      string         `json:"status"`
+	Amount      sql.NullString `json:"amount"`
+	Fee         sql.NullString `json:"fee"`
+	GasUsed     sql.NullInt64  `json:"gas_used"`
+	GasWanted   sql.NullInt64  `json:"gas_wanted"`
+	Memo        sql.NullString `json:"memo"`
+	BlockHeight sql.NullInt64  `json:"block_height"`
+	Timestamp   time.Time      `json:"timestamp"`
+	RawLog      sql.NullString `json:"raw_log"`
+	Error       sql.NullString `json:"error"`
+}
+
+// ACTIVITY QUERIES
+func (q *Queries) InsertActivity(ctx context.Context, arg InsertActivityParams) (Activity, error) {
+	row := q.db.QueryRowContext(ctx, insertActivity,
+		arg.AccountID,
+		arg.TxHash,
+		arg.TxType,
+		arg.Status,
+		arg.Amount,
+		arg.Fee,
+		arg.GasUsed,
+		arg.GasWanted,
+		arg.Memo,
+		arg.BlockHeight,
+		arg.Timestamp,
+		arg.RawLog,
+		arg.Error,
+	)
+	var i Activity
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.AccountID,
+		&i.TxHash,
+		&i.TxType,
+		&i.Status,
+		&i.Amount,
+		&i.Fee,
+		&i.GasUsed,
+		&i.GasWanted,
+		&i.Memo,
+		&i.BlockHeight,
+		&i.Timestamp,
+		&i.RawLog,
+		&i.Error,
+	)
+	return i, err
+}
+
+const insertAsset = `-- name: InsertAsset :one
+INSERT INTO assets (
+    name,
+    symbol,
+    decimals,
+    chain_id,
+    channel,
+    asset_type,
+    coingecko_id
+) VALUES (?, ?, ?, ?, ?, ?, ?)
+RETURNING id, created_at, updated_at, deleted_at, name, symbol, decimals, chain_id, channel, asset_type, coingecko_id
+`
+
+type InsertAssetParams struct {
+	Name        string         `json:"name"`
+	Symbol      string         `json:"symbol"`
+	Decimals    int64          `json:"decimals"`
+	ChainID     string         `json:"chain_id"`
+	Channel     string         `json:"channel"`
+	AssetType   string         `json:"asset_type"`
+	CoingeckoID sql.NullString `json:"coingecko_id"`
+}
+
+// ASSET QUERIES
+func (q *Queries) InsertAsset(ctx context.Context, arg InsertAssetParams) (Asset, error) {
+	row := q.db.QueryRowContext(ctx, insertAsset,
+		arg.Name,
+		arg.Symbol,
+		arg.Decimals,
+		arg.ChainID,
+		arg.Channel,
+		arg.AssetType,
+		arg.CoingeckoID,
+	)
+	var i Asset
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Name,
+		&i.Symbol,
+		&i.Decimals,
+		&i.ChainID,
+		&i.Channel,
+		&i.AssetType,
+		&i.CoingeckoID,
+	)
+	return i, err
+}
+
 const insertCredential = `-- name: InsertCredential :one
 INSERT INTO credentials (
     handle,
     credential_id,
+    authenticator_attachment,
     origin,
     type,
     transports
-) VALUES (?, ?, ?, ?, ?)
+) VALUES (?, ?, ?, ?, ?, ?)
 RETURNING id, created_at, updated_at, deleted_at, handle, credential_id, authenticator_attachment, origin, type, transports
 `
 
 type InsertCredentialParams struct {
-	Handle       string `json:"handle"`
-	CredentialID string `json:"credential_id"`
-	Origin       string `json:"origin"`
-	Type         string `json:"type"`
-	Transports   string `json:"transports"`
+	Handle                  string `json:"handle"`
+	CredentialID            string `json:"credential_id"`
+	AuthenticatorAttachment string `json:"authenticator_attachment"`
+	Origin                  string `json:"origin"`
+	Type                    string `json:"type"`
+	Transports              string `json:"transports"`
 }
 
+// CREDENTIAL QUERIES
 func (q *Queries) InsertCredential(ctx context.Context, arg InsertCredentialParams) (Credential, error) {
 	row := q.db.QueryRowContext(ctx, insertCredential,
 		arg.Handle,
 		arg.CredentialID,
+		arg.AuthenticatorAttachment,
 		arg.Origin,
 		arg.Type,
 		arg.Transports,
@@ -399,6 +1133,132 @@ func (q *Queries) InsertCredential(ctx context.Context, arg InsertCredentialPara
 		&i.Origin,
 		&i.Type,
 		&i.Transports,
+	)
+	return i, err
+}
+
+const insertHealth = `-- name: InsertHealth :one
+INSERT INTO health (
+    endpoint_url,
+    endpoint_type,
+    chain_id,
+    status,
+    response_time_ms,
+    last_checked,
+    next_check,
+    failure_count,
+    success_count,
+    response_data,
+    error_message
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+RETURNING id, created_at, updated_at, deleted_at, endpoint_url, endpoint_type, chain_id, status, response_time_ms, last_checked, next_check, failure_count, success_count, response_data, error_message
+`
+
+type InsertHealthParams struct {
+	EndpointUrl    string         `json:"endpoint_url"`
+	EndpointType   string         `json:"endpoint_type"`
+	ChainID        sql.NullString `json:"chain_id"`
+	Status         string         `json:"status"`
+	ResponseTimeMs sql.NullInt64  `json:"response_time_ms"`
+	LastChecked    time.Time      `json:"last_checked"`
+	NextCheck      sql.NullTime   `json:"next_check"`
+	FailureCount   int64          `json:"failure_count"`
+	SuccessCount   int64          `json:"success_count"`
+	ResponseData   sql.NullString `json:"response_data"`
+	ErrorMessage   sql.NullString `json:"error_message"`
+}
+
+// HEALTH QUERIES
+func (q *Queries) InsertHealth(ctx context.Context, arg InsertHealthParams) (Health, error) {
+	row := q.db.QueryRowContext(ctx, insertHealth,
+		arg.EndpointUrl,
+		arg.EndpointType,
+		arg.ChainID,
+		arg.Status,
+		arg.ResponseTimeMs,
+		arg.LastChecked,
+		arg.NextCheck,
+		arg.FailureCount,
+		arg.SuccessCount,
+		arg.ResponseData,
+		arg.ErrorMessage,
+	)
+	var i Health
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.EndpointUrl,
+		&i.EndpointType,
+		&i.ChainID,
+		&i.Status,
+		&i.ResponseTimeMs,
+		&i.LastChecked,
+		&i.NextCheck,
+		&i.FailureCount,
+		&i.SuccessCount,
+		&i.ResponseData,
+		&i.ErrorMessage,
+	)
+	return i, err
+}
+
+const insertPrice = `-- name: InsertPrice :one
+INSERT INTO prices (
+    asset_id,
+    price_usd,
+    price_btc,
+    volume_24h_usd,
+    market_cap_usd,
+    percent_change_1h,
+    percent_change_24h,
+    percent_change_7d,
+    last_updated
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+RETURNING id, created_at, updated_at, deleted_at, asset_id, price_usd, price_btc, volume_24h_usd, market_cap_usd, percent_change_1h, percent_change_24h, percent_change_7d, last_updated
+`
+
+type InsertPriceParams struct {
+	AssetID          string          `json:"asset_id"`
+	PriceUsd         sql.NullFloat64 `json:"price_usd"`
+	PriceBtc         sql.NullFloat64 `json:"price_btc"`
+	Volume24hUsd     sql.NullFloat64 `json:"volume_24h_usd"`
+	MarketCapUsd     sql.NullFloat64 `json:"market_cap_usd"`
+	PercentChange1h  sql.NullFloat64 `json:"percent_change_1h"`
+	PercentChange24h sql.NullFloat64 `json:"percent_change_24h"`
+	PercentChange7d  sql.NullFloat64 `json:"percent_change_7d"`
+	LastUpdated      time.Time       `json:"last_updated"`
+}
+
+// PRICE QUERIES
+func (q *Queries) InsertPrice(ctx context.Context, arg InsertPriceParams) (Price, error) {
+	row := q.db.QueryRowContext(ctx, insertPrice,
+		arg.AssetID,
+		arg.PriceUsd,
+		arg.PriceBtc,
+		arg.Volume24hUsd,
+		arg.MarketCapUsd,
+		arg.PercentChange1h,
+		arg.PercentChange24h,
+		arg.PercentChange7d,
+		arg.LastUpdated,
+	)
+	var i Price
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.AssetID,
+		&i.PriceUsd,
+		&i.PriceBtc,
+		&i.Volume24hUsd,
+		&i.MarketCapUsd,
+		&i.PercentChange1h,
+		&i.PercentChange24h,
+		&i.PercentChange7d,
+		&i.LastUpdated,
 	)
 	return i, err
 }
@@ -420,6 +1280,7 @@ type InsertProfileParams struct {
 	Name    string `json:"name"`
 }
 
+// PROFILE QUERIES
 func (q *Queries) InsertProfile(ctx context.Context, arg InsertProfileParams) (Profile, error) {
 	row := q.db.QueryRowContext(ctx, insertProfile,
 		arg.Address,
@@ -441,6 +1302,870 @@ func (q *Queries) InsertProfile(ctx context.Context, arg InsertProfileParams) (P
 	return i, err
 }
 
+const insertService = `-- name: InsertService :one
+INSERT INTO services (
+    name,
+    description,
+    chain_id,
+    address,
+    owner_address,
+    metadata,
+    status,
+    block_height
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+RETURNING id, created_at, updated_at, deleted_at, name, description, chain_id, address, owner_address, metadata, status, block_height
+`
+
+type InsertServiceParams struct {
+	Name         string         `json:"name"`
+	Description  sql.NullString `json:"description"`
+	ChainID      string         `json:"chain_id"`
+	Address      string         `json:"address"`
+	OwnerAddress string         `json:"owner_address"`
+	Metadata     sql.NullString `json:"metadata"`
+	Status       string         `json:"status"`
+	BlockHeight  int64          `json:"block_height"`
+}
+
+// SERVICE QUERIES
+func (q *Queries) InsertService(ctx context.Context, arg InsertServiceParams) (Service, error) {
+	row := q.db.QueryRowContext(ctx, insertService,
+		arg.Name,
+		arg.Description,
+		arg.ChainID,
+		arg.Address,
+		arg.OwnerAddress,
+		arg.Metadata,
+		arg.Status,
+		arg.BlockHeight,
+	)
+	var i Service
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Name,
+		&i.Description,
+		&i.ChainID,
+		&i.Address,
+		&i.OwnerAddress,
+		&i.Metadata,
+		&i.Status,
+		&i.BlockHeight,
+	)
+	return i, err
+}
+
+const insertVault = `-- name: InsertVault :one
+INSERT INTO vaults (
+    handle,
+    origin,
+    address,
+    cid,
+    config,
+    session_id,
+    redirect_uri
+) VALUES (?, ?, ?, ?, ?, ?, ?)
+RETURNING id, created_at, updated_at, deleted_at, handle, origin, address, cid, config, session_id, redirect_uri
+`
+
+type InsertVaultParams struct {
+	Handle      string `json:"handle"`
+	Origin      string `json:"origin"`
+	Address     string `json:"address"`
+	Cid         string `json:"cid"`
+	Config      string `json:"config"`
+	SessionID   string `json:"session_id"`
+	RedirectUri string `json:"redirect_uri"`
+}
+
+// VAULT QUERIES
+func (q *Queries) InsertVault(ctx context.Context, arg InsertVaultParams) (Vault, error) {
+	row := q.db.QueryRowContext(ctx, insertVault,
+		arg.Handle,
+		arg.Origin,
+		arg.Address,
+		arg.Cid,
+		arg.Config,
+		arg.SessionID,
+		arg.RedirectUri,
+	)
+	var i Vault
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Handle,
+		&i.Origin,
+		&i.Address,
+		&i.Cid,
+		&i.Config,
+		&i.SessionID,
+		&i.RedirectUri,
+	)
+	return i, err
+}
+
+const listActivitiesByAccount = `-- name: ListActivitiesByAccount :many
+SELECT id, created_at, updated_at, deleted_at, account_id, tx_hash, tx_type, status, amount, fee, gas_used, gas_wanted, memo, block_height, timestamp, raw_log, error FROM activities
+WHERE account_id = ? AND deleted_at IS NULL
+ORDER BY timestamp DESC
+LIMIT ? OFFSET ?
+`
+
+type ListActivitiesByAccountParams struct {
+	AccountID string `json:"account_id"`
+	Limit     int64  `json:"limit"`
+	Offset    int64  `json:"offset"`
+}
+
+func (q *Queries) ListActivitiesByAccount(ctx context.Context, arg ListActivitiesByAccountParams) ([]Activity, error) {
+	rows, err := q.db.QueryContext(ctx, listActivitiesByAccount, arg.AccountID, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Activity
+	for rows.Next() {
+		var i Activity
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.AccountID,
+			&i.TxHash,
+			&i.TxType,
+			&i.Status,
+			&i.Amount,
+			&i.Fee,
+			&i.GasUsed,
+			&i.GasWanted,
+			&i.Memo,
+			&i.BlockHeight,
+			&i.Timestamp,
+			&i.RawLog,
+			&i.Error,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listActivitiesByStatus = `-- name: ListActivitiesByStatus :many
+SELECT id, created_at, updated_at, deleted_at, account_id, tx_hash, tx_type, status, amount, fee, gas_used, gas_wanted, memo, block_height, timestamp, raw_log, error FROM activities
+WHERE status = ? AND deleted_at IS NULL
+ORDER BY timestamp DESC
+LIMIT ? OFFSET ?
+`
+
+type ListActivitiesByStatusParams struct {
+	Status string `json:"status"`
+	Limit  int64  `json:"limit"`
+	Offset int64  `json:"offset"`
+}
+
+func (q *Queries) ListActivitiesByStatus(ctx context.Context, arg ListActivitiesByStatusParams) ([]Activity, error) {
+	rows, err := q.db.QueryContext(ctx, listActivitiesByStatus, arg.Status, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Activity
+	for rows.Next() {
+		var i Activity
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.AccountID,
+			&i.TxHash,
+			&i.TxType,
+			&i.Status,
+			&i.Amount,
+			&i.Fee,
+			&i.GasUsed,
+			&i.GasWanted,
+			&i.Memo,
+			&i.BlockHeight,
+			&i.Timestamp,
+			&i.RawLog,
+			&i.Error,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listActivitiesByType = `-- name: ListActivitiesByType :many
+SELECT id, created_at, updated_at, deleted_at, account_id, tx_hash, tx_type, status, amount, fee, gas_used, gas_wanted, memo, block_height, timestamp, raw_log, error FROM activities
+WHERE tx_type = ? AND deleted_at IS NULL
+ORDER BY timestamp DESC
+LIMIT ? OFFSET ?
+`
+
+type ListActivitiesByTypeParams struct {
+	TxType string `json:"tx_type"`
+	Limit  int64  `json:"limit"`
+	Offset int64  `json:"offset"`
+}
+
+func (q *Queries) ListActivitiesByType(ctx context.Context, arg ListActivitiesByTypeParams) ([]Activity, error) {
+	rows, err := q.db.QueryContext(ctx, listActivitiesByType, arg.TxType, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Activity
+	for rows.Next() {
+		var i Activity
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.AccountID,
+			&i.TxHash,
+			&i.TxType,
+			&i.Status,
+			&i.Amount,
+			&i.Fee,
+			&i.GasUsed,
+			&i.GasWanted,
+			&i.Memo,
+			&i.BlockHeight,
+			&i.Timestamp,
+			&i.RawLog,
+			&i.Error,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listAssetsByChain = `-- name: ListAssetsByChain :many
+SELECT id, created_at, updated_at, deleted_at, name, symbol, decimals, chain_id, channel, asset_type, coingecko_id FROM assets
+WHERE chain_id = ? AND deleted_at IS NULL
+ORDER BY symbol ASC
+`
+
+func (q *Queries) ListAssetsByChain(ctx context.Context, chainID string) ([]Asset, error) {
+	rows, err := q.db.QueryContext(ctx, listAssetsByChain, chainID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Asset
+	for rows.Next() {
+		var i Asset
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.Name,
+			&i.Symbol,
+			&i.Decimals,
+			&i.ChainID,
+			&i.Channel,
+			&i.AssetType,
+			&i.CoingeckoID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listAssetsWithLatestPrices = `-- name: ListAssetsWithLatestPrices :many
+SELECT a.id, a.created_at, a.updated_at, a.deleted_at, a.name, a.symbol, a.decimals, a.chain_id, a.channel, a.asset_type, a.coingecko_id, p.price_usd, p.price_btc, p.volume_24h_usd, p.market_cap_usd, 
+       p.percent_change_24h, p.last_updated
+FROM assets a
+LEFT JOIN (
+    SELECT p1.id, p1.created_at, p1.updated_at, p1.deleted_at, p1.asset_id, p1.price_usd, p1.price_btc, p1.volume_24h_usd, p1.market_cap_usd, p1.percent_change_1h, p1.percent_change_24h, p1.percent_change_7d, p1.last_updated
+    FROM prices p1
+    INNER JOIN (
+        SELECT asset_id, MAX(last_updated) as max_date
+        FROM prices
+        WHERE deleted_at IS NULL
+        GROUP BY asset_id
+    ) p2 ON p1.asset_id = p2.asset_id AND p1.last_updated = p2.max_date
+    WHERE p1.deleted_at IS NULL
+) p ON a.id = p.asset_id
+WHERE a.deleted_at IS NULL
+ORDER BY a.symbol ASC
+LIMIT ? OFFSET ?
+`
+
+type ListAssetsWithLatestPricesParams struct {
+	Limit  int64 `json:"limit"`
+	Offset int64 `json:"offset"`
+}
+
+type ListAssetsWithLatestPricesRow struct {
+	ID               string          `json:"id"`
+	CreatedAt        time.Time       `json:"created_at"`
+	UpdatedAt        time.Time       `json:"updated_at"`
+	DeletedAt        sql.NullTime    `json:"deleted_at"`
+	Name             string          `json:"name"`
+	Symbol           string          `json:"symbol"`
+	Decimals         int64           `json:"decimals"`
+	ChainID          string          `json:"chain_id"`
+	Channel          string          `json:"channel"`
+	AssetType        string          `json:"asset_type"`
+	CoingeckoID      sql.NullString  `json:"coingecko_id"`
+	PriceUsd         sql.NullFloat64 `json:"price_usd"`
+	PriceBtc         sql.NullFloat64 `json:"price_btc"`
+	Volume24hUsd     sql.NullFloat64 `json:"volume_24h_usd"`
+	MarketCapUsd     sql.NullFloat64 `json:"market_cap_usd"`
+	PercentChange24h sql.NullFloat64 `json:"percent_change_24h"`
+	LastUpdated      time.Time       `json:"last_updated"`
+}
+
+func (q *Queries) ListAssetsWithLatestPrices(ctx context.Context, arg ListAssetsWithLatestPricesParams) ([]ListAssetsWithLatestPricesRow, error) {
+	rows, err := q.db.QueryContext(ctx, listAssetsWithLatestPrices, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListAssetsWithLatestPricesRow
+	for rows.Next() {
+		var i ListAssetsWithLatestPricesRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.Name,
+			&i.Symbol,
+			&i.Decimals,
+			&i.ChainID,
+			&i.Channel,
+			&i.AssetType,
+			&i.CoingeckoID,
+			&i.PriceUsd,
+			&i.PriceBtc,
+			&i.Volume24hUsd,
+			&i.MarketCapUsd,
+			&i.PercentChange24h,
+			&i.LastUpdated,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listDelegatorAccounts = `-- name: ListDelegatorAccounts :many
+SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, block_created, controller, label, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
+WHERE is_delegator = 1
+AND deleted_at IS NULL
+ORDER BY created_at DESC
+`
+
+func (q *Queries) ListDelegatorAccounts(ctx context.Context) ([]Account, error) {
+	rows, err := q.db.QueryContext(ctx, listDelegatorAccounts)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Account
+	for rows.Next() {
+		var i Account
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.Number,
+			&i.Sequence,
+			&i.Address,
+			&i.PublicKey,
+			&i.ChainID,
+			&i.BlockCreated,
+			&i.Controller,
+			&i.Label,
+			&i.IsSubsidiary,
+			&i.IsValidator,
+			&i.IsDelegator,
+			&i.IsAccountable,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listHealthByChain = `-- name: ListHealthByChain :many
+SELECT id, created_at, updated_at, deleted_at, endpoint_url, endpoint_type, chain_id, status, response_time_ms, last_checked, next_check, failure_count, success_count, response_data, error_message FROM health
+WHERE chain_id = ? AND deleted_at IS NULL
+ORDER BY last_checked DESC
+LIMIT ? OFFSET ?
+`
+
+type ListHealthByChainParams struct {
+	ChainID sql.NullString `json:"chain_id"`
+	Limit   int64          `json:"limit"`
+	Offset  int64          `json:"offset"`
+}
+
+func (q *Queries) ListHealthByChain(ctx context.Context, arg ListHealthByChainParams) ([]Health, error) {
+	rows, err := q.db.QueryContext(ctx, listHealthByChain, arg.ChainID, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Health
+	for rows.Next() {
+		var i Health
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.EndpointUrl,
+			&i.EndpointType,
+			&i.ChainID,
+			&i.Status,
+			&i.ResponseTimeMs,
+			&i.LastChecked,
+			&i.NextCheck,
+			&i.FailureCount,
+			&i.SuccessCount,
+			&i.ResponseData,
+			&i.ErrorMessage,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listHealthByStatus = `-- name: ListHealthByStatus :many
+SELECT id, created_at, updated_at, deleted_at, endpoint_url, endpoint_type, chain_id, status, response_time_ms, last_checked, next_check, failure_count, success_count, response_data, error_message FROM health
+WHERE status = ? AND deleted_at IS NULL
+ORDER BY last_checked DESC
+LIMIT ? OFFSET ?
+`
+
+type ListHealthByStatusParams struct {
+	Status string `json:"status"`
+	Limit  int64  `json:"limit"`
+	Offset int64  `json:"offset"`
+}
+
+func (q *Queries) ListHealthByStatus(ctx context.Context, arg ListHealthByStatusParams) ([]Health, error) {
+	rows, err := q.db.QueryContext(ctx, listHealthByStatus, arg.Status, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Health
+	for rows.Next() {
+		var i Health
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.EndpointUrl,
+			&i.EndpointType,
+			&i.ChainID,
+			&i.Status,
+			&i.ResponseTimeMs,
+			&i.LastChecked,
+			&i.NextCheck,
+			&i.FailureCount,
+			&i.SuccessCount,
+			&i.ResponseData,
+			&i.ErrorMessage,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listHealthChecksNeedingUpdate = `-- name: ListHealthChecksNeedingUpdate :many
+SELECT id, created_at, updated_at, deleted_at, endpoint_url, endpoint_type, chain_id, status, response_time_ms, last_checked, next_check, failure_count, success_count, response_data, error_message FROM health
+WHERE next_check <= CURRENT_TIMESTAMP AND deleted_at IS NULL
+ORDER BY next_check ASC
+LIMIT ?
+`
+
+func (q *Queries) ListHealthChecksNeedingUpdate(ctx context.Context, limit int64) ([]Health, error) {
+	rows, err := q.db.QueryContext(ctx, listHealthChecksNeedingUpdate, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Health
+	for rows.Next() {
+		var i Health
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.EndpointUrl,
+			&i.EndpointType,
+			&i.ChainID,
+			&i.Status,
+			&i.ResponseTimeMs,
+			&i.LastChecked,
+			&i.NextCheck,
+			&i.FailureCount,
+			&i.SuccessCount,
+			&i.ResponseData,
+			&i.ErrorMessage,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listPriceHistoryByAssetID = `-- name: ListPriceHistoryByAssetID :many
+SELECT id, created_at, updated_at, deleted_at, asset_id, price_usd, price_btc, volume_24h_usd, market_cap_usd, percent_change_1h, percent_change_24h, percent_change_7d, last_updated FROM prices
+WHERE asset_id = ? AND deleted_at IS NULL
+ORDER BY last_updated DESC
+LIMIT ? OFFSET ?
+`
+
+type ListPriceHistoryByAssetIDParams struct {
+	AssetID string `json:"asset_id"`
+	Limit   int64  `json:"limit"`
+	Offset  int64  `json:"offset"`
+}
+
+func (q *Queries) ListPriceHistoryByAssetID(ctx context.Context, arg ListPriceHistoryByAssetIDParams) ([]Price, error) {
+	rows, err := q.db.QueryContext(ctx, listPriceHistoryByAssetID, arg.AssetID, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Price
+	for rows.Next() {
+		var i Price
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.AssetID,
+			&i.PriceUsd,
+			&i.PriceBtc,
+			&i.Volume24hUsd,
+			&i.MarketCapUsd,
+			&i.PercentChange1h,
+			&i.PercentChange24h,
+			&i.PercentChange7d,
+			&i.LastUpdated,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listProfiles = `-- name: ListProfiles :many
+SELECT id, created_at, updated_at, deleted_at, address, handle, origin, name FROM profiles
+WHERE deleted_at IS NULL
+ORDER BY created_at DESC
+LIMIT ? OFFSET ?
+`
+
+type ListProfilesParams struct {
+	Limit  int64 `json:"limit"`
+	Offset int64 `json:"offset"`
+}
+
+func (q *Queries) ListProfiles(ctx context.Context, arg ListProfilesParams) ([]Profile, error) {
+	rows, err := q.db.QueryContext(ctx, listProfiles, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Profile
+	for rows.Next() {
+		var i Profile
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.Address,
+			&i.Handle,
+			&i.Origin,
+			&i.Name,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listServicesByChain = `-- name: ListServicesByChain :many
+SELECT id, created_at, updated_at, deleted_at, name, description, chain_id, address, owner_address, metadata, status, block_height FROM services
+WHERE chain_id = ? AND deleted_at IS NULL
+ORDER BY name ASC
+LIMIT ? OFFSET ?
+`
+
+type ListServicesByChainParams struct {
+	ChainID string `json:"chain_id"`
+	Limit   int64  `json:"limit"`
+	Offset  int64  `json:"offset"`
+}
+
+func (q *Queries) ListServicesByChain(ctx context.Context, arg ListServicesByChainParams) ([]Service, error) {
+	rows, err := q.db.QueryContext(ctx, listServicesByChain, arg.ChainID, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Service
+	for rows.Next() {
+		var i Service
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.Name,
+			&i.Description,
+			&i.ChainID,
+			&i.Address,
+			&i.OwnerAddress,
+			&i.Metadata,
+			&i.Status,
+			&i.BlockHeight,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listServicesByOwner = `-- name: ListServicesByOwner :many
+SELECT id, created_at, updated_at, deleted_at, name, description, chain_id, address, owner_address, metadata, status, block_height FROM services
+WHERE owner_address = ? AND deleted_at IS NULL
+ORDER BY created_at DESC
+LIMIT ? OFFSET ?
+`
+
+type ListServicesByOwnerParams struct {
+	OwnerAddress string `json:"owner_address"`
+	Limit        int64  `json:"limit"`
+	Offset       int64  `json:"offset"`
+}
+
+func (q *Queries) ListServicesByOwner(ctx context.Context, arg ListServicesByOwnerParams) ([]Service, error) {
+	rows, err := q.db.QueryContext(ctx, listServicesByOwner, arg.OwnerAddress, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Service
+	for rows.Next() {
+		var i Service
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.Name,
+			&i.Description,
+			&i.ChainID,
+			&i.Address,
+			&i.OwnerAddress,
+			&i.Metadata,
+			&i.Status,
+			&i.BlockHeight,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listValidatorAccounts = `-- name: ListValidatorAccounts :many
+SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, block_created, controller, label, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
+WHERE is_validator = 1
+AND deleted_at IS NULL
+ORDER BY created_at DESC
+`
+
+func (q *Queries) ListValidatorAccounts(ctx context.Context) ([]Account, error) {
+	rows, err := q.db.QueryContext(ctx, listValidatorAccounts)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Account
+	for rows.Next() {
+		var i Account
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.Number,
+			&i.Sequence,
+			&i.Address,
+			&i.PublicKey,
+			&i.ChainID,
+			&i.BlockCreated,
+			&i.Controller,
+			&i.Label,
+			&i.IsSubsidiary,
+			&i.IsValidator,
+			&i.IsDelegator,
+			&i.IsAccountable,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const softDeleteAccount = `-- name: SoftDeleteAccount :exec
+UPDATE accounts
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = ?
+`
+
+func (q *Queries) SoftDeleteAccount(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, softDeleteAccount, id)
+	return err
+}
+
+const softDeleteActivity = `-- name: SoftDeleteActivity :exec
+UPDATE activities
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = ?
+`
+
+func (q *Queries) SoftDeleteActivity(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, softDeleteActivity, id)
+	return err
+}
+
+const softDeleteAsset = `-- name: SoftDeleteAsset :exec
+UPDATE assets
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = ?
+`
+
+func (q *Queries) SoftDeleteAsset(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, softDeleteAsset, id)
+	return err
+}
+
 const softDeleteCredential = `-- name: SoftDeleteCredential :exec
 UPDATE credentials
 SET deleted_at = CURRENT_TIMESTAMP
@@ -449,6 +2174,17 @@ WHERE credential_id = ?
 
 func (q *Queries) SoftDeleteCredential(ctx context.Context, credentialID string) error {
 	_, err := q.db.ExecContext(ctx, softDeleteCredential, credentialID)
+	return err
+}
+
+const softDeleteHealth = `-- name: SoftDeleteHealth :exec
+UPDATE health
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = ?
+`
+
+func (q *Queries) SoftDeleteHealth(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, softDeleteHealth, id)
 	return err
 }
 
@@ -461,6 +2197,329 @@ WHERE address = ?
 func (q *Queries) SoftDeleteProfile(ctx context.Context, address string) error {
 	_, err := q.db.ExecContext(ctx, softDeleteProfile, address)
 	return err
+}
+
+const softDeleteService = `-- name: SoftDeleteService :exec
+UPDATE services
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = ?
+`
+
+func (q *Queries) SoftDeleteService(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, softDeleteService, id)
+	return err
+}
+
+const softDeleteVault = `-- name: SoftDeleteVault :exec
+UPDATE vaults
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = ?
+`
+
+func (q *Queries) SoftDeleteVault(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, softDeleteVault, id)
+	return err
+}
+
+const updateAccountLabel = `-- name: UpdateAccountLabel :one
+UPDATE accounts
+SET 
+    label = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? 
+AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, block_created, controller, label, is_subsidiary, is_validator, is_delegator, is_accountable
+`
+
+type UpdateAccountLabelParams struct {
+	Label string `json:"label"`
+	ID    string `json:"id"`
+}
+
+func (q *Queries) UpdateAccountLabel(ctx context.Context, arg UpdateAccountLabelParams) (Account, error) {
+	row := q.db.QueryRowContext(ctx, updateAccountLabel, arg.Label, arg.ID)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Number,
+		&i.Sequence,
+		&i.Address,
+		&i.PublicKey,
+		&i.ChainID,
+		&i.BlockCreated,
+		&i.Controller,
+		&i.Label,
+		&i.IsSubsidiary,
+		&i.IsValidator,
+		&i.IsDelegator,
+		&i.IsAccountable,
+	)
+	return i, err
+}
+
+const updateAccountSequence = `-- name: UpdateAccountSequence :one
+UPDATE accounts
+SET 
+    sequence = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE address = ? 
+AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, block_created, controller, label, is_subsidiary, is_validator, is_delegator, is_accountable
+`
+
+type UpdateAccountSequenceParams struct {
+	Sequence int64  `json:"sequence"`
+	Address  string `json:"address"`
+}
+
+func (q *Queries) UpdateAccountSequence(ctx context.Context, arg UpdateAccountSequenceParams) (Account, error) {
+	row := q.db.QueryRowContext(ctx, updateAccountSequence, arg.Sequence, arg.Address)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Number,
+		&i.Sequence,
+		&i.Address,
+		&i.PublicKey,
+		&i.ChainID,
+		&i.BlockCreated,
+		&i.Controller,
+		&i.Label,
+		&i.IsSubsidiary,
+		&i.IsValidator,
+		&i.IsDelegator,
+		&i.IsAccountable,
+	)
+	return i, err
+}
+
+const updateActivityStatus = `-- name: UpdateActivityStatus :one
+UPDATE activities
+SET 
+    status = ?,
+    tx_hash = ?,
+    block_height = ?,
+    gas_used = ?,
+    raw_log = ?,
+    error = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? 
+AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, account_id, tx_hash, tx_type, status, amount, fee, gas_used, gas_wanted, memo, block_height, timestamp, raw_log, error
+`
+
+type UpdateActivityStatusParams struct {
+	Status      string         `json:"status"`
+	TxHash      sql.NullString `json:"tx_hash"`
+	BlockHeight sql.NullInt64  `json:"block_height"`
+	GasUsed     sql.NullInt64  `json:"gas_used"`
+	RawLog      sql.NullString `json:"raw_log"`
+	Error       sql.NullString `json:"error"`
+	ID          string         `json:"id"`
+}
+
+func (q *Queries) UpdateActivityStatus(ctx context.Context, arg UpdateActivityStatusParams) (Activity, error) {
+	row := q.db.QueryRowContext(ctx, updateActivityStatus,
+		arg.Status,
+		arg.TxHash,
+		arg.BlockHeight,
+		arg.GasUsed,
+		arg.RawLog,
+		arg.Error,
+		arg.ID,
+	)
+	var i Activity
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.AccountID,
+		&i.TxHash,
+		&i.TxType,
+		&i.Status,
+		&i.Amount,
+		&i.Fee,
+		&i.GasUsed,
+		&i.GasWanted,
+		&i.Memo,
+		&i.BlockHeight,
+		&i.Timestamp,
+		&i.RawLog,
+		&i.Error,
+	)
+	return i, err
+}
+
+const updateAsset = `-- name: UpdateAsset :one
+UPDATE assets
+SET 
+    name = ?,
+    decimals = ?,
+    channel = ?,
+    asset_type = ?,
+    coingecko_id = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? 
+AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, name, symbol, decimals, chain_id, channel, asset_type, coingecko_id
+`
+
+type UpdateAssetParams struct {
+	Name        string         `json:"name"`
+	Decimals    int64          `json:"decimals"`
+	Channel     string         `json:"channel"`
+	AssetType   string         `json:"asset_type"`
+	CoingeckoID sql.NullString `json:"coingecko_id"`
+	ID          string         `json:"id"`
+}
+
+func (q *Queries) UpdateAsset(ctx context.Context, arg UpdateAssetParams) (Asset, error) {
+	row := q.db.QueryRowContext(ctx, updateAsset,
+		arg.Name,
+		arg.Decimals,
+		arg.Channel,
+		arg.AssetType,
+		arg.CoingeckoID,
+		arg.ID,
+	)
+	var i Asset
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Name,
+		&i.Symbol,
+		&i.Decimals,
+		&i.ChainID,
+		&i.Channel,
+		&i.AssetType,
+		&i.CoingeckoID,
+	)
+	return i, err
+}
+
+const updateHealthCheck = `-- name: UpdateHealthCheck :one
+UPDATE health
+SET 
+    status = ?,
+    response_time_ms = ?,
+    last_checked = CURRENT_TIMESTAMP,
+    next_check = ?,
+    failure_count = CASE WHEN status = 'failed' THEN failure_count + 1 ELSE failure_count END,
+    success_count = CASE WHEN status = 'success' THEN success_count + 1 ELSE success_count END,
+    response_data = ?,
+    error_message = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? 
+AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, endpoint_url, endpoint_type, chain_id, status, response_time_ms, last_checked, next_check, failure_count, success_count, response_data, error_message
+`
+
+type UpdateHealthCheckParams struct {
+	Status         string         `json:"status"`
+	ResponseTimeMs sql.NullInt64  `json:"response_time_ms"`
+	NextCheck      sql.NullTime   `json:"next_check"`
+	ResponseData   sql.NullString `json:"response_data"`
+	ErrorMessage   sql.NullString `json:"error_message"`
+	ID             string         `json:"id"`
+}
+
+func (q *Queries) UpdateHealthCheck(ctx context.Context, arg UpdateHealthCheckParams) (Health, error) {
+	row := q.db.QueryRowContext(ctx, updateHealthCheck,
+		arg.Status,
+		arg.ResponseTimeMs,
+		arg.NextCheck,
+		arg.ResponseData,
+		arg.ErrorMessage,
+		arg.ID,
+	)
+	var i Health
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.EndpointUrl,
+		&i.EndpointType,
+		&i.ChainID,
+		&i.Status,
+		&i.ResponseTimeMs,
+		&i.LastChecked,
+		&i.NextCheck,
+		&i.FailureCount,
+		&i.SuccessCount,
+		&i.ResponseData,
+		&i.ErrorMessage,
+	)
+	return i, err
+}
+
+const updatePrice = `-- name: UpdatePrice :one
+UPDATE prices
+SET 
+    price_usd = ?,
+    price_btc = ?,
+    volume_24h_usd = ?,
+    market_cap_usd = ?,
+    percent_change_1h = ?,
+    percent_change_24h = ?,
+    percent_change_7d = ?,
+    last_updated = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? 
+AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, asset_id, price_usd, price_btc, volume_24h_usd, market_cap_usd, percent_change_1h, percent_change_24h, percent_change_7d, last_updated
+`
+
+type UpdatePriceParams struct {
+	PriceUsd         sql.NullFloat64 `json:"price_usd"`
+	PriceBtc         sql.NullFloat64 `json:"price_btc"`
+	Volume24hUsd     sql.NullFloat64 `json:"volume_24h_usd"`
+	MarketCapUsd     sql.NullFloat64 `json:"market_cap_usd"`
+	PercentChange1h  sql.NullFloat64 `json:"percent_change_1h"`
+	PercentChange24h sql.NullFloat64 `json:"percent_change_24h"`
+	PercentChange7d  sql.NullFloat64 `json:"percent_change_7d"`
+	LastUpdated      time.Time       `json:"last_updated"`
+	ID               string          `json:"id"`
+}
+
+func (q *Queries) UpdatePrice(ctx context.Context, arg UpdatePriceParams) (Price, error) {
+	row := q.db.QueryRowContext(ctx, updatePrice,
+		arg.PriceUsd,
+		arg.PriceBtc,
+		arg.Volume24hUsd,
+		arg.MarketCapUsd,
+		arg.PercentChange1h,
+		arg.PercentChange24h,
+		arg.PercentChange7d,
+		arg.LastUpdated,
+		arg.ID,
+	)
+	var i Price
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.AssetID,
+		&i.PriceUsd,
+		&i.PriceBtc,
+		&i.Volume24hUsd,
+		&i.MarketCapUsd,
+		&i.PercentChange1h,
+		&i.PercentChange24h,
+		&i.PercentChange7d,
+		&i.LastUpdated,
+	)
+	return i, err
 }
 
 const updateProfile = `-- name: UpdateProfile :one
@@ -492,6 +2551,93 @@ func (q *Queries) UpdateProfile(ctx context.Context, arg UpdateProfileParams) (P
 		&i.Handle,
 		&i.Origin,
 		&i.Name,
+	)
+	return i, err
+}
+
+const updateService = `-- name: UpdateService :one
+UPDATE services
+SET 
+    name = ?,
+    description = ?,
+    owner_address = ?,
+    metadata = ?,
+    status = ?,
+    block_height = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? 
+AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, name, description, chain_id, address, owner_address, metadata, status, block_height
+`
+
+type UpdateServiceParams struct {
+	Name         string         `json:"name"`
+	Description  sql.NullString `json:"description"`
+	OwnerAddress string         `json:"owner_address"`
+	Metadata     sql.NullString `json:"metadata"`
+	Status       string         `json:"status"`
+	BlockHeight  int64          `json:"block_height"`
+	ID           string         `json:"id"`
+}
+
+func (q *Queries) UpdateService(ctx context.Context, arg UpdateServiceParams) (Service, error) {
+	row := q.db.QueryRowContext(ctx, updateService,
+		arg.Name,
+		arg.Description,
+		arg.OwnerAddress,
+		arg.Metadata,
+		arg.Status,
+		arg.BlockHeight,
+		arg.ID,
+	)
+	var i Service
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Name,
+		&i.Description,
+		&i.ChainID,
+		&i.Address,
+		&i.OwnerAddress,
+		&i.Metadata,
+		&i.Status,
+		&i.BlockHeight,
+	)
+	return i, err
+}
+
+const updateVault = `-- name: UpdateVault :one
+UPDATE vaults
+SET 
+    config = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? 
+AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, handle, origin, address, cid, config, session_id, redirect_uri
+`
+
+type UpdateVaultParams struct {
+	Config string `json:"config"`
+	ID     string `json:"id"`
+}
+
+func (q *Queries) UpdateVault(ctx context.Context, arg UpdateVaultParams) (Vault, error) {
+	row := q.db.QueryRowContext(ctx, updateVault, arg.Config, arg.ID)
+	var i Vault
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Handle,
+		&i.Origin,
+		&i.Address,
+		&i.Cid,
+		&i.Config,
+		&i.SessionID,
+		&i.RedirectUri,
 	)
 	return i, err
 }

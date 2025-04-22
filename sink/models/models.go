@@ -28,6 +28,26 @@ type Account struct {
 	IsAccountable bool         `json:"is_accountable"`
 }
 
+type Activity struct {
+	ID          string         `json:"id"`
+	CreatedAt   time.Time      `json:"created_at"`
+	UpdatedAt   time.Time      `json:"updated_at"`
+	DeletedAt   sql.NullTime   `json:"deleted_at"`
+	AccountID   string         `json:"account_id"`
+	TxHash      sql.NullString `json:"tx_hash"`
+	TxType      string         `json:"tx_type"`
+	Status      string         `json:"status"`
+	Amount      sql.NullString `json:"amount"`
+	Fee         sql.NullString `json:"fee"`
+	GasUsed     sql.NullInt64  `json:"gas_used"`
+	GasWanted   sql.NullInt64  `json:"gas_wanted"`
+	Memo        sql.NullString `json:"memo"`
+	BlockHeight sql.NullInt64  `json:"block_height"`
+	Timestamp   time.Time      `json:"timestamp"`
+	RawLog      sql.NullString `json:"raw_log"`
+	Error       sql.NullString `json:"error"`
+}
+
 type Asset struct {
 	ID          string         `json:"id"`
 	CreatedAt   time.Time      `json:"created_at"`
@@ -55,6 +75,40 @@ type Credential struct {
 	Transports              string       `json:"transports"`
 }
 
+type Health struct {
+	ID             string         `json:"id"`
+	CreatedAt      time.Time      `json:"created_at"`
+	UpdatedAt      time.Time      `json:"updated_at"`
+	DeletedAt      sql.NullTime   `json:"deleted_at"`
+	EndpointUrl    string         `json:"endpoint_url"`
+	EndpointType   string         `json:"endpoint_type"`
+	ChainID        sql.NullString `json:"chain_id"`
+	Status         string         `json:"status"`
+	ResponseTimeMs sql.NullInt64  `json:"response_time_ms"`
+	LastChecked    time.Time      `json:"last_checked"`
+	NextCheck      sql.NullTime   `json:"next_check"`
+	FailureCount   int64          `json:"failure_count"`
+	SuccessCount   int64          `json:"success_count"`
+	ResponseData   sql.NullString `json:"response_data"`
+	ErrorMessage   sql.NullString `json:"error_message"`
+}
+
+type Price struct {
+	ID               string          `json:"id"`
+	CreatedAt        time.Time       `json:"created_at"`
+	UpdatedAt        time.Time       `json:"updated_at"`
+	DeletedAt        sql.NullTime    `json:"deleted_at"`
+	AssetID          string          `json:"asset_id"`
+	PriceUsd         sql.NullFloat64 `json:"price_usd"`
+	PriceBtc         sql.NullFloat64 `json:"price_btc"`
+	Volume24hUsd     sql.NullFloat64 `json:"volume_24h_usd"`
+	MarketCapUsd     sql.NullFloat64 `json:"market_cap_usd"`
+	PercentChange1h  sql.NullFloat64 `json:"percent_change_1h"`
+	PercentChange24h sql.NullFloat64 `json:"percent_change_24h"`
+	PercentChange7d  sql.NullFloat64 `json:"percent_change_7d"`
+	LastUpdated      time.Time       `json:"last_updated"`
+}
+
 type Profile struct {
 	ID        string       `json:"id"`
 	CreatedAt time.Time    `json:"created_at"`
@@ -64,6 +118,21 @@ type Profile struct {
 	Handle    string       `json:"handle"`
 	Origin    string       `json:"origin"`
 	Name      string       `json:"name"`
+}
+
+type Service struct {
+	ID           string         `json:"id"`
+	CreatedAt    time.Time      `json:"created_at"`
+	UpdatedAt    time.Time      `json:"updated_at"`
+	DeletedAt    sql.NullTime   `json:"deleted_at"`
+	Name         string         `json:"name"`
+	Description  sql.NullString `json:"description"`
+	ChainID      string         `json:"chain_id"`
+	Address      string         `json:"address"`
+	OwnerAddress string         `json:"owner_address"`
+	Metadata     sql.NullString `json:"metadata"`
+	Status       string         `json:"status"`
+	BlockHeight  int64          `json:"block_height"`
 }
 
 type Vault struct {
