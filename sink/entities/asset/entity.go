@@ -6,12 +6,12 @@ import (
 )
 
 type AssetEntity interface {
-	GetModel() *models.Asset
+	GetModel() models.Asset
 	GetCard(ticker, price string) templ.Component
 }
 
 type AssetsEntity interface {
-	GetModels() []*models.Asset
+	GetModels() []models.Asset
 	GetList() templ.Component
 	GetDropdown() templ.Component
 }

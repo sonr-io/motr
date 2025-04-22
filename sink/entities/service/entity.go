@@ -6,11 +6,11 @@ import (
 )
 
 type ServiceEntity interface {
-	GetModel() *models.Service
+	GetModel() models.Service
 	GetCard() templ.Component
 }
 
 type ServicesEntity interface {
-	GetModels() []*models.Service
+	GetModels() []models.Service
 	GetList() templ.Component
 }

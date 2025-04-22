@@ -6,12 +6,12 @@ import (
 )
 
 type BlockchainEntity interface {
-	GetModel() *models.Blockchain
+	GetModel() models.Blockchain
 	GetCard(ticker, price string) templ.Component
 }
 
 type BlockchainsEntity interface {
-	GetModels() []*models.Blockchain
+	GetModels() []models.Blockchain
 	GetList() templ.Component
 	GetDropdown() templ.Component
 }

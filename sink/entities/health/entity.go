@@ -6,11 +6,11 @@ import (
 )
 
 type HealthEntity interface {
-	GetModel() *models.Health
+	GetModel() models.Health
 	GetCard() templ.Component
 }
 
 type HealthsEntity interface {
-	GetModels() []*models.Health
+	GetModels() []models.Health
 	GetList() templ.Component
 }

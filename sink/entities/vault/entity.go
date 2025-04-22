@@ -5,5 +5,5 @@ import (
 )
 
 type VaultEntity interface {
-	GetModel() *models.Vault
+	GetModel() models.Vault
 }

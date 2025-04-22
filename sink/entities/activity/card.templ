@@ -1,4 +1,4 @@
-package account
+package activity
 
 import "github.com/sonr-io/motr/sink/models"
 
@@ -32,17 +32,17 @@ templ cardComponent(handle, addr, block, name string) {
 }
 
 // option is a single option in the dropdown
-templ optionComponent(account models.Account) {
+templ optionComponent(account models.Activity) {
 	<div class="flex justify-between items-center">
-		{ account.Address }
+		{ account.Status }
 		<sl-icon style="font-size: 24px;" library="sonr" name="chevron-right"></sl-icon>
 	</div>
 }
 
 // row is a single row in the list with a basic card
-templ rowComponent(account models.Account) {
+templ rowComponent(account models.Activity) {
 	<div class="flex justify-between items-center">
-		{ account.Address }
+		{ account.Status }
 		<sl-icon style="font-size: 24px;" library="sonr" name="chevron-right"></sl-icon>
 	</div>
 }

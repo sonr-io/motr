@@ -1,4 +1,5 @@
 export { default } from "./build/worker.mjs";
+import { DurableObject } from "cloudflare:workers";
 import createPlugin from "@extism/extism";
 import { createHelia } from "helia";
 import { strings } from "@helia/strings";
@@ -6,15 +7,16 @@ import { json } from "@helia/json";
 import { dagJson } from "@helia/dag-json";
 import { dagCbor } from "@helia/dag-cbor";
 import { unixfs } from "@helia/unixfs";
-import { serialiseSignDoc, signDirect, verifyECDSA } from "sonr-cosmes/codec";
+import { serialiseSignDoc } from "sonr-cosmes/codec";
 import { broadcastTx, RpcClient } from "sonr-cosmes/client";
 import {
   MsgRegisterController,
   QuerySpawnRequest,
 } from "sonr-cosmes/protobufs";
 
-export class Vault {
+export class Vault extends DurableObject {
   constructor(ctx, env) {
+    super(ctx, env);
     this.state = ctx;
     this.env = env;
 
@@ -29,7 +31,7 @@ export class Vault {
 
     // Initialize Helia node and related components when the DO is created
     this.initializeHelia();
-    this.initializePlugin();
+    this.initializePlugins();
   }
 
   // Helper method to add a log entry
@@ -112,18 +114,42 @@ export class Vault {
     }
   }
 
-  // initializePlugin initializes the signer plugin
-  async initializePlugin() {
+  // initializePlugins initializes the signer plugin
+  async initializePlugins() {
     try {
+      // 1. Initialize the enclave plugin
+      this.addLog("Initializing enclave plugin...");
+      this.enclavePlugin = await createPlugin(
+        "https://cdn.sonr.io/bin/enclave.wasm",
+        {
+          useWasi: true,
+        },
+      );
+      this.addLog("Enclave plugin initialized successfully");
+
+      // 2. Initialize the signer plugin
       this.addLog("Initializing signer plugin...");
-      this.plugin = await createPlugin("https://cdn.sonr.io/bin/signer.wasm", {
-        useWasi: true,
-      });
+      this.signerPlugin = await createPlugin(
+        "https://cdn.sonr.io/bin/signer.wasm",
+        {
+          useWasi: true,
+        },
+      );
       this.addLog("Signer plugin initialized successfully");
+
+      // 3. Initialize the verifier plugin
+      this.addLog("Initializing verifier plugin...");
+      this.verifierPlugin = await createPlugin(
+        "https://cdn.sonr.io/bin/verifier.wasm",
+        {
+          useWasi: true,
+        },
+      );
+      this.addLog("Verifier plugin initialized successfully");
       return true;
     } catch (error) {
-      this.addLog(`Failed to initialize signer plugin: ${error.message}`);
-      console.error("Failed to initialize signer plugin:", error);
+      this.addLog(`Failed to initialize plugin: ${error.message}`);
+      console.error("Failed to initialize plugin:", error);
       return false;
     }
   }
@@ -206,7 +232,7 @@ export class Vault {
   // Creates and signs a transaction
   async createAndSignTx(msg, signer, options = {}) {
     this.addLog(`Creating transaction with message type: ${msg.typeUrl}`);
-    
+
     try {
       // Default options
       const defaultOptions = {
@@ -217,9 +243,9 @@ export class Vault {
         },
         chainId: this.env.SONR_CHAIN_ID || "sonr-testnet-1",
       };
-      
+
       const txOptions = { ...defaultOptions, ...options };
-      
+
       // Create the sign doc
       const signDoc = {
         chainId: txOptions.chainId,
@@ -229,17 +255,17 @@ export class Vault {
         msgs: [msg],
         memo: txOptions.memo,
       };
-      
+
       // Serialize the sign doc
       const signBytes = serialiseSignDoc(signDoc);
-      
+
       // Sign the transaction
       this.addLog(`Signing transaction for ${signer}`);
       const signature = await this.sign({
-        bytes: Buffer.from(signBytes).toString('base64'),
+        bytes: Buffer.from(signBytes).toString("base64"),
         publicKey: options.publicKey,
       });
-      
+
       // Create the signed transaction
       const signedTx = {
         signDoc,
@@ -251,7 +277,7 @@ export class Vault {
           },
         },
       };
-      
+
       this.addLog("Transaction created and signed successfully");
       return signedTx;
     } catch (error) {
@@ -263,19 +289,23 @@ export class Vault {
   // Broadcasts a signed transaction to the network
   async broadcastTransaction(signedTx, broadcastMode = "BROADCAST_MODE_SYNC") {
     this.addLog("Broadcasting transaction to network");
-    
+
     try {
       const rpcUrl = this.env.SONR_RPC_URL || "https://rpc.sonr.io";
       this.addLog(`Using RPC URL: ${rpcUrl}`);
-      
+
       const response = await broadcastTx(rpcUrl, signedTx, broadcastMode);
-      
+
       if (response.tx_response && response.tx_response.code === 0) {
-        this.addLog(`Transaction broadcast successful. Hash: ${response.tx_response.txhash}`);
+        this.addLog(
+          `Transaction broadcast successful. Hash: ${response.tx_response.txhash}`,
+        );
       } else {
-        this.addLog(`Transaction broadcast failed: ${JSON.stringify(response.tx_response)}`);
+        this.addLog(
+          `Transaction broadcast failed: ${JSON.stringify(response.tx_response)}`,
+        );
       }
-      
+
       return response;
     } catch (error) {
       this.addLog(`Failed to broadcast transaction: ${error.message}`);
@@ -397,21 +427,23 @@ export class Vault {
 
   async registerDidController(did, controller, signer, options = {}) {
     this.addLog(`Registering DID controller: ${controller} for DID: ${did}`);
-    
+
     try {
       // Create the message
       const msg = MsgRegisterController.create({
         did: did,
         controller: controller,
       });
-      
+
       // Create and sign transaction
       const signedTx = await this.createAndSignTx(msg, signer, options);
-      
+
       // Broadcast transaction
       const response = await this.broadcastTransaction(signedTx);
-      
-      this.addLog(`DID controller registration response: ${JSON.stringify(response)}`);
+
+      this.addLog(
+        `DID controller registration response: ${JSON.stringify(response)}`,
+      );
       return response;
     } catch (error) {
       this.addLog(`Failed to register DID controller: ${error.message}`);
@@ -420,13 +452,16 @@ export class Vault {
   }
 
   async spawnDwnVault(address, redirect, options = {}) {
-    this.addLog(`Spawning DWN vault for address: ${address}, redirect: ${redirect}`);
-    
+    this.addLog(
+      `Spawning DWN vault for address: ${address}, redirect: ${redirect}`,
+    );
+
     try {
       // Use RPC client to make the query
-      const rpcUrl = options.rpcUrl || this.env.SONR_RPC_URL || "https://rpc.sonr.io";
+      const rpcUrl =
+        options.rpcUrl || this.env.SONR_RPC_URL || "https://rpc.sonr.io";
       this.addLog(`Using RPC URL: ${rpcUrl}`);
-      
+
       return new Promise((resolve, reject) => {
         RpcClient.newBatchQuery(rpcUrl)
           .add(
@@ -452,17 +487,17 @@ export class Vault {
       throw new Error(`DWN vault spawn failed: ${error.message}`);
     }
   }
-  
+
   // Retrieves account information needed for transaction signing
   async getAccountInfo(address) {
     this.addLog(`Getting account info for address: ${address}`);
-    
+
     try {
       const rpcUrl = this.env.SONR_RPC_URL || "https://rpc.sonr.io";
-      
+
       const client = new RpcClient(rpcUrl);
       const accountInfo = await client.getAccount(address);
-      
+
       this.addLog(`Account info retrieved successfully`);
       return {
         accountNumber: accountInfo.account_number,
@@ -471,6 +506,181 @@ export class Vault {
     } catch (error) {
       this.addLog(`Failed to get account info: ${error.message}`);
       throw new Error(`Account info retrieval failed: ${error.message}`);
+    }
+  }
+
+  // Fetch handler for backward compatibility and Go WASM server interaction
+  async fetch(request) {
+    const url = new URL(request.url);
+    const path = url.pathname;
+    const method = request.method;
+
+    try {
+      // Handle different API endpoints based on the path
+
+      // Helia node status endpoints
+      if (path === "/helia/status") {
+        return new Response(JSON.stringify(await this.getNodeStatus()), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      if (path === "/helia/node-id") {
+        return new Response(JSON.stringify(await this.getNodeId()), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      if (path === "/helia/discovered-peers") {
+        return new Response(JSON.stringify(await this.getDiscoveredPeers()), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      if (path === "/helia/connected-peers") {
+        return new Response(JSON.stringify(await this.getConnectedPeers()), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      if (path === "/helia/logs") {
+        const limitParam = url.searchParams.get("limit");
+        const limit = limitParam ? parseInt(limitParam, 10) : 50;
+        return new Response(JSON.stringify(await this.getLogs(limit)), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      // IPFS content endpoints
+      if (path === "/ipfs/add/string" && method === "POST") {
+        const content = await request.text();
+        return new Response(JSON.stringify(await this.addString(content)), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      if (path === "/ipfs/add/json" && method === "POST") {
+        const content = await request.json();
+        return new Response(JSON.stringify(await this.addJson(content)), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      if (path.startsWith("/ipfs/get/") && method === "GET") {
+        const cid = path.replace("/ipfs/get/", "");
+        const result = await this.getContent(cid);
+
+        if (result.type === "json") {
+          return new Response(JSON.stringify(result.content), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          });
+        } else {
+          return new Response(result.content, {
+            status: 200,
+            headers: { "Content-Type": "text/plain" },
+          });
+        }
+      }
+
+      if (path === "/ipfs/dag/json" && method === "POST") {
+        const content = await request.json();
+        return new Response(JSON.stringify(await this.addDagJson(content)), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      if (path === "/ipfs/dag/cbor" && method === "POST") {
+        const content = await request.json();
+        return new Response(JSON.stringify(await this.addDagCbor(content)), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      // Signing endpoint
+      if (path === "/vault/sign" && method === "POST") {
+        const data = await request.json();
+        return new Response(JSON.stringify(await this.sign(data)), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      // DID controller registration endpoint
+      if (path === "/did/register-controller" && method === "POST") {
+        const data = await request.json();
+        const { did, controller, signer, options } = data;
+
+        return new Response(
+          JSON.stringify(
+            await this.registerDidController(did, controller, signer, options),
+          ),
+          {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          },
+        );
+      }
+
+      // DWN vault spawning endpoint
+      if (path === "/dwn/spawn" && method === "POST") {
+        const data = await request.json();
+        const { address, redirect, options } = data;
+
+        return new Response(
+          JSON.stringify(await this.spawnDwnVault(address, redirect, options)),
+          {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          },
+        );
+      }
+
+      // Account info endpoint
+      if (path === "/account/info" && method === "GET") {
+        const address = url.searchParams.get("address");
+        if (!address) {
+          return new Response(
+            JSON.stringify({ error: "Address parameter is required" }),
+            {
+              status: 400,
+              headers: { "Content-Type": "application/json" },
+            },
+          );
+        }
+
+        return new Response(
+          JSON.stringify(await this.getAccountInfo(address)),
+          {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          },
+        );
+      }
+
+      // Default response for unhandled paths
+      return new Response(JSON.stringify({ error: "Not found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (error) {
+      // Log the error
+      this.addLog(`Error handling request to ${path}: ${error.message}`);
+
+      // Return error response
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
     }
   }
 }

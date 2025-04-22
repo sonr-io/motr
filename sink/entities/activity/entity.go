@@ -6,11 +6,11 @@ import (
 )
 
 type ActivityEntity interface {
-	GetModel() *models.Activity
+	GetModel() models.Activity
 	GetCard() templ.Component
 }
 
 type ActivitiesEntity interface {
-	GetModels() []*models.Activity
+	GetModels() []models.Activity
 	GetList() templ.Component
 }

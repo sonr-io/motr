@@ -6,11 +6,11 @@ import (
 )
 
 type PriceEntity interface {
-	GetModel() *models.Price
+	GetModel() models.Price
 	GetCard() templ.Component
 }
 
 type PricesEntity interface {
-	GetModels() []*models.Price
+	GetModels() []models.Price
 	GetList() templ.Component
 }

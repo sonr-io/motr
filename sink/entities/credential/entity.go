@@ -2,17 +2,17 @@ package credential
 
 import (
 	"github.com/a-h/templ"
-	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/sonr-io/motr/sink/models"
 )
 
 type CredentialEntity interface {
-	GetModel() *models.Credential
-	GetDescriptor() *protocol.CredentialDescriptor
+	GetModel() models.Credential
+	GetDescriptor() *CredentialDescriptor
 	GetInfoModal() templ.Component
 }
 
 type CredentialsEntity interface {
-	GetModels() []*models.Credential
+	GetModels() []models.Credential
+	GetDescriptors() []*CredentialDescriptor
 	GetList() templ.Component
 }

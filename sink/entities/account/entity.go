@@ -8,27 +8,27 @@ import (
 )
 
 type AccountEntity interface {
-	GetModel() *models.Account
+	GetModel() models.Account
 	GetCard(handle string) templ.Component
 	ShortAddr() string
 }
 
 type AccountsEntity interface {
-	GetModels() []*models.Account
+	GetModels() []models.Account
 	GetList() templ.Component
 	GetDropdown() templ.Component
 }
 
-func NewAccountEntity(account *models.Account) AccountEntity {
+func NewAccountEntity(account models.Account) AccountEntity {
 	return &accountEntity{Account: account}
 }
 
-func NewAccountsEntity(accounts []*models.Account) AccountsEntity {
+func NewAccountsEntity(accounts []models.Account) AccountsEntity {
 	return &accountsEntity{Accounts: accounts}
 }
 
 type accountEntity struct {
-	*models.Account
+	models.Account
 }
 
 func (a *accountEntity) ShortAddr() string {
@@ -38,19 +38,19 @@ func (a *accountEntity) ShortAddr() string {
 	return a.Address[:16] + "..." + a.Address[len(a.Address)-4:]
 }
 
-func (a *accountEntity) GetModel() *models.Account {
+func (a *accountEntity) GetModel() models.Account {
 	return a.Account
 }
 
 func (a *accountEntity) GetCard(handle string) templ.Component {
-	return cardComponent(handle, a.Address, strconv.FormatInt(a.BlockCreated, 10), a.Label)
+	return cardComponent(handle, a.ShortAddr(), strconv.FormatInt(a.BlockCreated, 10), a.Label)
 }
 
 type accountsEntity struct {
-	Accounts []*models.Account
+	Accounts []models.Account
 }
 
-func (a *accountsEntity) GetModels() []*models.Account {
+func (a *accountsEntity) GetModels() []models.Account {
 	return a.Accounts
 }
 
