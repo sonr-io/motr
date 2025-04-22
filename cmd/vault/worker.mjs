@@ -196,10 +196,90 @@ export class Vault {
       await this.initializePlugin();
     }
     try {
-      let out = await plugin.call("sign", JSON.stringify(data));
+      let out = await this.plugin.call("sign", JSON.stringify(data));
       return JSON.parse(out.text());
     } catch (error) {
       throw new Error(`Signing failed: ${error.message}`);
+    }
+  }
+
+  // Creates and signs a transaction
+  async createAndSignTx(msg, signer, options = {}) {
+    this.addLog(`Creating transaction with message type: ${msg.typeUrl}`);
+    
+    try {
+      // Default options
+      const defaultOptions = {
+        memo: "",
+        fee: {
+          amount: [{ denom: "usnr", amount: "1000" }],
+          gas_limit: "200000",
+        },
+        chainId: this.env.SONR_CHAIN_ID || "sonr-testnet-1",
+      };
+      
+      const txOptions = { ...defaultOptions, ...options };
+      
+      // Create the sign doc
+      const signDoc = {
+        chainId: txOptions.chainId,
+        accountNumber: options.accountNumber || "0",
+        sequence: options.sequence || "0",
+        fee: txOptions.fee,
+        msgs: [msg],
+        memo: txOptions.memo,
+      };
+      
+      // Serialize the sign doc
+      const signBytes = serialiseSignDoc(signDoc);
+      
+      // Sign the transaction
+      this.addLog(`Signing transaction for ${signer}`);
+      const signature = await this.sign({
+        bytes: Buffer.from(signBytes).toString('base64'),
+        publicKey: options.publicKey,
+      });
+      
+      // Create the signed transaction
+      const signedTx = {
+        signDoc,
+        signature: {
+          signature: signature.signature,
+          pub_key: {
+            type: "tendermint/PubKeySecp256k1",
+            value: signature.publicKey,
+          },
+        },
+      };
+      
+      this.addLog("Transaction created and signed successfully");
+      return signedTx;
+    } catch (error) {
+      this.addLog(`Failed to create and sign transaction: ${error.message}`);
+      throw new Error(`Transaction creation failed: ${error.message}`);
+    }
+  }
+
+  // Broadcasts a signed transaction to the network
+  async broadcastTransaction(signedTx, broadcastMode = "BROADCAST_MODE_SYNC") {
+    this.addLog("Broadcasting transaction to network");
+    
+    try {
+      const rpcUrl = this.env.SONR_RPC_URL || "https://rpc.sonr.io";
+      this.addLog(`Using RPC URL: ${rpcUrl}`);
+      
+      const response = await broadcastTx(rpcUrl, signedTx, broadcastMode);
+      
+      if (response.tx_response && response.tx_response.code === 0) {
+        this.addLog(`Transaction broadcast successful. Hash: ${response.tx_response.txhash}`);
+      } else {
+        this.addLog(`Transaction broadcast failed: ${JSON.stringify(response.tx_response)}`);
+      }
+      
+      return response;
+    } catch (error) {
+      this.addLog(`Failed to broadcast transaction: ${error.message}`);
+      throw new Error(`Transaction broadcast failed: ${error.message}`);
     }
   }
 
@@ -315,28 +395,82 @@ export class Vault {
     }
   }
 
-  async registerDidController(did, controller) {
-    MsgRegisterController.create({
-      did: did,
-      controller: controller,
-    });
+  async registerDidController(did, controller, signer, options = {}) {
+    this.addLog(`Registering DID controller: ${controller} for DID: ${did}`);
+    
+    try {
+      // Create the message
+      const msg = MsgRegisterController.create({
+        did: did,
+        controller: controller,
+      });
+      
+      // Create and sign transaction
+      const signedTx = await this.createAndSignTx(msg, signer, options);
+      
+      // Broadcast transaction
+      const response = await this.broadcastTransaction(signedTx);
+      
+      this.addLog(`DID controller registration response: ${JSON.stringify(response)}`);
+      return response;
+    } catch (error) {
+      this.addLog(`Failed to register DID controller: ${error.message}`);
+      throw new Error(`DID controller registration failed: ${error.message}`);
+    }
   }
 
-  async spawnDwnVault(address, redirect) {
-    RpcClient.newBatchQuery("https://rpc.sonr.io")
-      .add(
-        QuerySpawnRequest,
-        {
-          cid: address,
-          redirect: redirect,
-        },
-        (err, res) => {
-          if (err) {
-            console.log(err);
-          }
-          return res;
-        },
-      )
-      .send();
+  async spawnDwnVault(address, redirect, options = {}) {
+    this.addLog(`Spawning DWN vault for address: ${address}, redirect: ${redirect}`);
+    
+    try {
+      // Use RPC client to make the query
+      const rpcUrl = options.rpcUrl || this.env.SONR_RPC_URL || "https://rpc.sonr.io";
+      this.addLog(`Using RPC URL: ${rpcUrl}`);
+      
+      return new Promise((resolve, reject) => {
+        RpcClient.newBatchQuery(rpcUrl)
+          .add(
+            QuerySpawnRequest,
+            {
+              cid: address,
+              redirect: redirect,
+            },
+            (err, res) => {
+              if (err) {
+                this.addLog(`Spawn DWN vault failed: ${err.message}`);
+                reject(err);
+              } else {
+                this.addLog(`Spawn DWN vault response: ${JSON.stringify(res)}`);
+                resolve(res);
+              }
+            },
+          )
+          .send();
+      });
+    } catch (error) {
+      this.addLog(`Failed to spawn DWN vault: ${error.message}`);
+      throw new Error(`DWN vault spawn failed: ${error.message}`);
+    }
+  }
+  
+  // Retrieves account information needed for transaction signing
+  async getAccountInfo(address) {
+    this.addLog(`Getting account info for address: ${address}`);
+    
+    try {
+      const rpcUrl = this.env.SONR_RPC_URL || "https://rpc.sonr.io";
+      
+      const client = new RpcClient(rpcUrl);
+      const accountInfo = await client.getAccount(address);
+      
+      this.addLog(`Account info retrieved successfully`);
+      return {
+        accountNumber: accountInfo.account_number,
+        sequence: accountInfo.sequence,
+      };
+    } catch (error) {
+      this.addLog(`Failed to get account info: ${error.message}`);
+      throw new Error(`Account info retrieval failed: ${error.message}`);
+    }
   }
 }
