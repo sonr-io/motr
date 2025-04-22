@@ -14,29 +14,15 @@ tasks:
       - go mod tidy
       - rm -rf .task
 
-  start:
-    desc: Start the development server
-    cmd: tmux new-window -c "#{pane_current_path}" "bunx mprocs"
-
   deploy:
     desc: Deploy all
     cmds:
       - task: deploy:vault
       - task: deploy:front
 
-  publish:
-    desc: Publish all packages
-    cmds:
-      - make -C packages/cosmes bump
-      - make -C packages/shoelace bump
-      - make -C packages/cosmes publish
-      - make -C packages/shoelace publish
-      - make -C signer publish
-
   build:
     desc: Build all
     cmds:
-      - task: build:packages
       - task: build:vault
       - task: build:front
 
@@ -79,22 +65,11 @@ tasks:
     dir: "{{.ROOT_DIR}}/cmd/front"
     cmd: bun run deploy
 
-  build:packages:
-    desc: Build all packages
-    cmds:
-      - make -C packages/cosmes build
-      - make -C packages/shoelace build
-      - make -C signer build
-
-  gen:proto:
-    desc: Generate proto
-    cmd: make -C packages/cosmes gen
-
   gen:templ:
     desc: Generate templ
     cmd: templ generate
 
-  db:sqlc:
+  gen:sqlc:
     desc: Generate sqlc
     cmd: sqlc generate
 
@@ -103,23 +78,13 @@ tasks:
     prompt:
       - Are you sure you want to run this command? This will delete all data in the database.
     cmds:
-      - task: migrate:vault
-      - task: migrate:common
+      - task: migrate:d1
       - task: gen:sqlc
 
-  migrate:vault:
-    desc: Migrate the vault database
-    dir: "{{.ROOT_DIR}}/cmd/vault"
-    cmd: npm run migrate
-    sources:
-      - schema.sql
-    generates:
-      - schema.sql
-
-  migrate:common:
+  migrate:d1:
     internal: true
     desc: Migrate the common database
-    dir: "{{.ROOT_DIR}}/sink"
+    dir: "{{.ROOT_DIR}}/cmd/vault"
     cmd: npm run migrate
     sources:
       - schema.sql
