@@ -6,10 +6,11 @@ import (
 )
 
 type Status struct {
-	SessionID string `json:"session_id"`
-	Status    string `json:"status"`
-	Expires   int64  `json:"expires"`
-	Handle    string `json:"handle"`
+	SessionID    string `json:"session_id"`
+	Status       string `json:"status"`
+	Expires      int64  `json:"expires"`
+	Handle       string `json:"handle"`
+	CaptchaValid bool   `json:"captcha_valid"`
 }
 
 func (s *Status) Marshal() ([]byte, error) {

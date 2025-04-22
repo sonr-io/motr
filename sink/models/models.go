@@ -19,7 +19,9 @@ type Account struct {
 	Address       string       `json:"address"`
 	PublicKey     string       `json:"public_key"`
 	ChainID       string       `json:"chain_id"`
+	BlockCreated  int64        `json:"block_created"`
 	Controller    string       `json:"controller"`
+	Label         string       `json:"label"`
 	IsSubsidiary  bool         `json:"is_subsidiary"`
 	IsValidator   bool         `json:"is_validator"`
 	IsDelegator   bool         `json:"is_delegator"`

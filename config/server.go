@@ -16,7 +16,7 @@ type Server struct {
 
 // New creates a new server
 func New() (*Server, Config) {
-	c := getConfig()
+	c := Get()
 	s := &Server{
 		echo:   echo.New(),
 		Config: c,

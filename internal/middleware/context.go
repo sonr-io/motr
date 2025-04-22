@@ -27,7 +27,7 @@ func NewSession(c echo.Context, cfg config.Config) *SessionContext {
 		Config:  cfg,
 		Status: &sink.Status{
 			SessionID: id,
-			Expires:   cfg.GetSessionExpiry(time.Now()),
+			Expires:   cfg.KV.GetSessionExpiry(time.Now()),
 			Status:    "default",
 			Handle:    "",
 		},

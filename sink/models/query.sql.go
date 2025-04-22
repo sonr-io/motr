@@ -23,7 +23,7 @@ func (q *Queries) CheckHandleExists(ctx context.Context, handle string) (bool, e
 }
 
 const getAccountByController = `-- name: GetAccountByController :one
-SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, controller, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
+SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, block_created, controller, label, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
 WHERE controller = ? AND deleted_at IS NULL
 LIMIT 1
 `
@@ -41,7 +41,9 @@ func (q *Queries) GetAccountByController(ctx context.Context, controller string)
 		&i.Address,
 		&i.PublicKey,
 		&i.ChainID,
+		&i.BlockCreated,
 		&i.Controller,
+		&i.Label,
 		&i.IsSubsidiary,
 		&i.IsValidator,
 		&i.IsDelegator,
@@ -51,7 +53,7 @@ func (q *Queries) GetAccountByController(ctx context.Context, controller string)
 }
 
 const getAccountByNumber = `-- name: GetAccountByNumber :one
-SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, controller, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
+SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, block_created, controller, label, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
 WHERE number = ? AND deleted_at IS NULL
 LIMIT 1
 `
@@ -69,7 +71,9 @@ func (q *Queries) GetAccountByNumber(ctx context.Context, number int64) (Account
 		&i.Address,
 		&i.PublicKey,
 		&i.ChainID,
+		&i.BlockCreated,
 		&i.Controller,
+		&i.Label,
 		&i.IsSubsidiary,
 		&i.IsValidator,
 		&i.IsDelegator,
@@ -79,7 +83,7 @@ func (q *Queries) GetAccountByNumber(ctx context.Context, number int64) (Account
 }
 
 const getAccountByPublicKey = `-- name: GetAccountByPublicKey :one
-SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, controller, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
+SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, block_created, controller, label, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
 WHERE public_key = ? AND deleted_at IS NULL
 LIMIT 1
 `
@@ -97,7 +101,9 @@ func (q *Queries) GetAccountByPublicKey(ctx context.Context, publicKey string) (
 		&i.Address,
 		&i.PublicKey,
 		&i.ChainID,
+		&i.BlockCreated,
 		&i.Controller,
+		&i.Label,
 		&i.IsSubsidiary,
 		&i.IsValidator,
 		&i.IsDelegator,
@@ -107,7 +113,7 @@ func (q *Queries) GetAccountByPublicKey(ctx context.Context, publicKey string) (
 }
 
 const getAccountBySequence = `-- name: GetAccountBySequence :one
-SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, controller, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
+SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, block_created, controller, label, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
 WHERE sequence = ? AND deleted_at IS NULL
 LIMIT 1
 `
@@ -125,7 +131,9 @@ func (q *Queries) GetAccountBySequence(ctx context.Context, sequence int64) (Acc
 		&i.Address,
 		&i.PublicKey,
 		&i.ChainID,
+		&i.BlockCreated,
 		&i.Controller,
+		&i.Label,
 		&i.IsSubsidiary,
 		&i.IsValidator,
 		&i.IsDelegator,
@@ -135,7 +143,7 @@ func (q *Queries) GetAccountBySequence(ctx context.Context, sequence int64) (Acc
 }
 
 const getAccountsByChainID = `-- name: GetAccountsByChainID :many
-SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, controller, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
+SELECT id, created_at, updated_at, deleted_at, number, sequence, address, public_key, chain_id, block_created, controller, label, is_subsidiary, is_validator, is_delegator, is_accountable FROM accounts
 WHERE chain_id = ? AND deleted_at IS NULL
 ORDER BY sequence DESC
 `
@@ -159,7 +167,9 @@ func (q *Queries) GetAccountsByChainID(ctx context.Context, chainID string) ([]A
 			&i.Address,
 			&i.PublicKey,
 			&i.ChainID,
+			&i.BlockCreated,
 			&i.Controller,
+			&i.Label,
 			&i.IsSubsidiary,
 			&i.IsValidator,
 			&i.IsDelegator,

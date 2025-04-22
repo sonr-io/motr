@@ -13,11 +13,11 @@ func Register(cfg config.Config, s *config.Server) error {
 	if err != nil {
 		return err
 	}
-	hkv, err := cfg.GetHandlesKV()
+	hkv, err := cfg.KV.GetHandles()
 	if err != nil {
 		return err
 	}
-	skv, err := cfg.GetSessionsKV()
+	skv, err := cfg.KV.GetSessions()
 	if err != nil {
 		return err
 	}

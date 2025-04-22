@@ -26,40 +26,24 @@ func (m MotrMode) String() string {
 }
 
 type Config struct {
-	Sonr                 SonrConfig    `json:"sonr"`
-	IPFS                 IPFSConfig    `json:"ipfs"`
-	Mode                 MotrMode      `json:"mode"`
-	DB                   DBConfig      `json:"db"`
-	Cache                CacheConfig   `json:"cache"`    // Added Cache configuration
-	KVSessions           string        `json:"sessions"` // Added KV configuration
-	KVHandles            string        `json:"handles"`  // Added KV configuration
-	DefaultSessionExpiry time.Duration `json:"default_session_expiry"`
+	Sonr  SonrConfig  `json:"sonr"`
+	IPFS  IPFSConfig  `json:"ipfs"`
+	Mode  MotrMode    `json:"mode"`
+	DB    DBConfig    `json:"db"`
+	Cache CacheConfig `json:"cache"` // Added Cache configuration
+	KV    KVConfig    `json:"kv"`    // Added KV configuration
 }
 
-func getConfig() Config {
+func Get() Config {
 	c := Config{
-		Sonr:                 getSonrConfig(),
-		IPFS:                 getIPFSConfig(),
-		Mode:                 getMotrMode(),
-		DB:                   getDBConfig(),
-		Cache:                getCacheConfig(), // Added Cache configuration
-		KVSessions:           "SESSIONS",
-		KVHandles:            "HANDLES",
-		DefaultSessionExpiry: time.Hour * 1, // 1 hour by default
+		Sonr:  getSonrConfig(),
+		IPFS:  getIPFSConfig(),
+		Mode:  getMotrMode(),
+		DB:    getDBConfig(),
+		Cache: getCacheConfig(), // Added Cache configuration
+		KV:    getKVConfig(),    // Added KV configuration
 	}
 	return c
-}
-
-func (c Config) GetSessionExpiry(t time.Time) int64 {
-	return c.DefaultSessionExpiry.Nanoseconds() + t.UnixNano()
-}
-
-func (c Config) GetSessionsKV() (*kv.Namespace, error) {
-	return kv.NewNamespace(c.KVSessions)
-}
-
-func (c Config) GetHandlesKV() (*kv.Namespace, error) {
-	return kv.NewNamespace(c.KVHandles)
 }
 
 type SonrConfig struct {
@@ -170,4 +154,30 @@ func getCacheConfig() CacheConfig {
 	}
 
 	return config
+}
+
+type KVConfig struct {
+	Sessions      string        `json:"sessions"`
+	Handles       string        `json:"handles"`
+	DefaultExpiry time.Duration `json:"expiry"`
+}
+
+func getKVConfig() KVConfig {
+	return KVConfig{
+		Sessions:      "SESSIONS",
+		Handles:       "HANDLES",
+		DefaultExpiry: time.Hour * 1, // 1 hour by default
+	}
+}
+
+func (c KVConfig) GetSessionExpiry(t time.Time) int64 {
+	return c.DefaultExpiry.Nanoseconds() + t.UnixNano()
+}
+
+func (c KVConfig) GetSessions() (*kv.Namespace, error) {
+	return kv.NewNamespace(c.Sessions)
+}
+
+func (c KVConfig) GetHandles() (*kv.Namespace, error) {
+	return kv.NewNamespace(c.Handles)
 }
