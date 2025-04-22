@@ -10,8 +10,8 @@ import { unixfs } from "@helia/unixfs";
 import { serialiseSignDoc } from "sonr-cosmes/codec";
 import { broadcastTx, RpcClient } from "sonr-cosmes/client";
 import {
-  MsgRegisterController,
-  QuerySpawnRequest,
+  DidV1MsgRegisterController,
+  DwnV1QuerySpawnRequest,
 } from "sonr-cosmes/protobufs";
 
 export class Vault extends DurableObject {
@@ -430,7 +430,7 @@ export class Vault extends DurableObject {
 
     try {
       // Create the message
-      const msg = MsgRegisterController.create({
+      const msg = DidV1MsgRegisterController.create({
         did: did,
         controller: controller,
       });
@@ -465,7 +465,7 @@ export class Vault extends DurableObject {
       return new Promise((resolve, reject) => {
         RpcClient.newBatchQuery(rpcUrl)
           .add(
-            QuerySpawnRequest,
+            DwnV1QuerySpawnRequest,
             {
               cid: address,
               redirect: redirect,

@@ -19,7 +19,7 @@
     "@helia/strings": "^1.0.1",
     "@helia/unixfs": "^1.4.1",
     "helia": "^2.1.0",
-    "sonr-cosmes": "^0.0.3"
+    "sonr-cosmes": "^0.0.5"
   },
   "devDependencies": {
     "wrangler": "^4.10.0"
