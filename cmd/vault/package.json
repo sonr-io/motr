@@ -13,12 +13,13 @@
   },
   "dependencies": {
     "@extism/extism": "^2.0.0-rc11",
-    "helia": "^2.1.0",
-    "@helia/strings": "^1.0.1",
-    "@helia/json": "^1.0.1",
-    "@helia/dag-json": "^1.0.1",
     "@helia/dag-cbor": "^1.0.1",
-    "@helia/unixfs": "^1.4.1"
+    "@helia/dag-json": "^1.0.1",
+    "@helia/json": "^1.0.1",
+    "@helia/strings": "^1.0.1",
+    "@helia/unixfs": "^1.4.1",
+    "helia": "^2.1.0",
+    "sonr-cosmes": "^0.0.3"
   },
   "devDependencies": {
     "wrangler": "^4.10.0"

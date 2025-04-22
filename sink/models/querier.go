@@ -18,6 +18,8 @@ type Querier interface {
 	GetAccountByPublicKey(ctx context.Context, publicKey string) (Account, error)
 	GetAccountBySequence(ctx context.Context, sequence int64) (Account, error)
 	GetAccountsByChainID(ctx context.Context, chainID string) ([]Account, error)
+	GetAccountsByHandle(ctx context.Context, handle string) ([]Account, error)
+	GetAccountsByLabel(ctx context.Context, label string) ([]Account, error)
 	GetActivityByID(ctx context.Context, id string) (Activity, error)
 	GetActivityByTxHash(ctx context.Context, txHash sql.NullString) (Activity, error)
 	GetAssetByChainAndSymbol(ctx context.Context, arg GetAssetByChainAndSymbolParams) (Asset, error)

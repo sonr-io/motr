@@ -6,6 +6,12 @@ import { json } from "@helia/json";
 import { dagJson } from "@helia/dag-json";
 import { dagCbor } from "@helia/dag-cbor";
 import { unixfs } from "@helia/unixfs";
+import { serialiseSignDoc, signDirect, verifyECDSA } from "sonr-cosmes/codec";
+import { broadcastTx, RpcClient } from "sonr-cosmes/client";
+import {
+  MsgRegisterController,
+  QuerySpawnRequest,
+} from "sonr-cosmes/protobufs";
 
 export class Vault {
   constructor(ctx, env) {
@@ -38,21 +44,6 @@ export class Vault {
     }
 
     return logEntry;
-  }
-
-  async initializePlugin() {
-    try {
-      this.addLog("Initializing signer plugin...");
-      this.plugin = await createPlugin("https://cdn.sonr.io/bin/signer.wasm", {
-        useWasi: true,
-      });
-      this.addLog("Signer plugin initialized successfully");
-      return true;
-    } catch (error) {
-      this.addLog(`Failed to initialize signer plugin: ${error.message}`);
-      console.error("Failed to initialize signer plugin:", error);
-      return false;
-    }
   }
 
   async initializeHelia() {
@@ -117,6 +108,22 @@ export class Vault {
     } catch (error) {
       this.addLog(`Failed to initialize Helia node: ${error.message}`);
       console.error("Failed to initialize Helia node:", error);
+      return false;
+    }
+  }
+
+  // initializePlugin initializes the signer plugin
+  async initializePlugin() {
+    try {
+      this.addLog("Initializing signer plugin...");
+      this.plugin = await createPlugin("https://cdn.sonr.io/bin/signer.wasm", {
+        useWasi: true,
+      });
+      this.addLog("Signer plugin initialized successfully");
+      return true;
+    } catch (error) {
+      this.addLog(`Failed to initialize signer plugin: ${error.message}`);
+      console.error("Failed to initialize signer plugin:", error);
       return false;
     }
   }
@@ -306,5 +313,30 @@ export class Vault {
       this.addLog(`Failed to add DAG-CBOR: ${error.message}`);
       throw new Error(`Failed to add DAG-CBOR: ${error.message}`);
     }
+  }
+
+  async registerDidController(did, controller) {
+    MsgRegisterController.create({
+      did: did,
+      controller: controller,
+    });
+  }
+
+  async spawnDwnVault(address, redirect) {
+    RpcClient.newBatchQuery("https://rpc.sonr.io")
+      .add(
+        QuerySpawnRequest,
+        {
+          cid: address,
+          redirect: redirect,
+        },
+        (err, res) => {
+          if (err) {
+            console.log(err);
+          }
+          return res;
+        },
+      )
+      .send();
   }
 }

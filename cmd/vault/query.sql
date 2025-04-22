@@ -154,6 +154,16 @@ SELECT * FROM accounts
 WHERE chain_id = ? AND deleted_at IS NULL
 ORDER BY sequence DESC;
 
+-- name: GetAccountsByHandle :many
+SELECT * FROM accounts
+WHERE handle = ? AND deleted_at IS NULL
+ORDER BY created_at DESC;
+
+-- name: GetAccountsByLabel :many
+SELECT * FROM accounts
+WHERE label = ? AND deleted_at IS NULL
+ORDER BY created_at DESC;
+
 -- name: UpdateAccountSequence :one
 UPDATE accounts
 SET 
