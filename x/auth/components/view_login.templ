@@ -3,12 +3,11 @@ package components
 import (
 	"github.com/sonr-io/motr/internal/ui"
 	"github.com/sonr-io/motr/sink"
-	"github.com/sonr-io/motr/x/auth/types"
 )
 
 var meta = sink.DefaultMetadata()
 
-templ LoginView(opts types.LoginOptions) {
+templ LoginView() {
 	@ui.HTML() {
 		@ui.Head() {
 			@ui.MetaComponent(meta)
