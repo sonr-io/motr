@@ -25,3 +25,8 @@ func (h *Handler) HandleLoginStart(c echo.Context) error {
 func (h *Handler) HandleLoginInitial(c echo.Context) error {
 	return ui.Render(c, components.LoginView(types.LoginOptions{}))
 }
+
+// HandleSubmitCredentialLogin handles the submit credential login request.
+func (h *Handler) HandleSubmitCredentialLogin(c echo.Context) error {
+	return ui.Render(c, components.RegisterView(types.RegisterOptions{}))
+}

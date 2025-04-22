@@ -10,6 +10,7 @@ import (
 type AccountEntity interface {
 	GetModel() *models.Account
 	GetCard(handle string) templ.Component
+	ShortAddr() string
 }
 
 type AccountsEntity interface {
@@ -28,6 +29,13 @@ func NewAccountsEntity(accounts []*models.Account) AccountsEntity {
 
 type accountEntity struct {
 	*models.Account
+}
+
+func (a *accountEntity) ShortAddr() string {
+	if len(a.Address) <= 20 {
+		return a.Address
+	}
+	return a.Address[:16] + "..." + a.Address[len(a.Address)-4:]
 }
 
 func (a *accountEntity) GetModel() *models.Account {

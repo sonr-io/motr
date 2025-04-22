@@ -6,7 +6,7 @@ import (
 	"github.com/sonr-io/motr/sink/models"
 )
 
-type AccountQueries interface {
+type Queries interface {
 	GetAccountByID(ctx context.Context, id string) (models.Account, error)
 	GetAccountByAddress(ctx context.Context, address string) (models.Account, error)
 	GetAccountByController(ctx context.Context, controller string) (models.Account, error)
@@ -23,10 +23,10 @@ type AccountQueries interface {
 	ListDelegatorAccounts(ctx context.Context) ([]models.Account, error)
 }
 
-func NewAccountQueries(q models.Querier) AccountQueries {
-	return &accountQueries{Querier: q}
+func NewQueries(q models.Querier) Queries {
+	return &queries{Querier: q}
 }
 
-type accountQueries struct {
+type queries struct {
 	models.Querier
 }
