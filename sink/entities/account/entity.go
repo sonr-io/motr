@@ -9,8 +9,8 @@ import (
 
 type AccountEntity interface {
 	GetModel() models.Account
-	GetCard(handle string) templ.Component
-	ShortAddr() string
+	GetCard() templ.Component
+	shortAddr() string
 }
 
 type AccountsEntity interface {
@@ -31,7 +31,7 @@ type accountEntity struct {
 	models.Account
 }
 
-func (a *accountEntity) ShortAddr() string {
+func (a *accountEntity) shortAddr() string {
 	if len(a.Address) <= 20 {
 		return a.Address
 	}
@@ -42,8 +42,8 @@ func (a *accountEntity) GetModel() models.Account {
 	return a.Account
 }
 
-func (a *accountEntity) GetCard(handle string) templ.Component {
-	return cardComponent(handle, a.ShortAddr(), strconv.FormatInt(a.BlockCreated, 10), a.Label)
+func (a *accountEntity) GetCard() templ.Component {
+	return cardComponent(a.Handle, a.shortAddr(), strconv.FormatInt(a.BlockCreated, 10), a.Label)
 }
 
 type accountsEntity struct {
