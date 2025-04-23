@@ -20,6 +20,7 @@ type Querier interface {
 	GetAccountBySequence(ctx context.Context, sequence int64) (Account, error)
 	GetAccountsByChainID(ctx context.Context, chainID string) ([]Account, error)
 	GetAccountsByController(ctx context.Context, controller string) ([]Account, error)
+	GetAccountsByHandle(ctx context.Context, handle string) ([]Account, error)
 	GetAccountsByLabel(ctx context.Context, label string) ([]Account, error)
 	GetActivityByID(ctx context.Context, id string) (Activity, error)
 	GetActivityByTxHash(ctx context.Context, txHash sql.NullString) (Activity, error)

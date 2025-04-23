@@ -42,6 +42,7 @@ CREATE TABLE accounts (
     block_created INTEGER NOT NULL,
     controller TEXT NOT NULL,
     label TEXT NOT NULL,
+    handle TEXT NOT NULL,
     is_subsidiary BOOLEAN NOT NULL DEFAULT FALSE CHECK(is_subsidiary IN (0,1)),
     is_validator BOOLEAN NOT NULL DEFAULT FALSE CHECK(is_validator IN (0,1)),
     is_delegator BOOLEAN NOT NULL DEFAULT FALSE CHECK(is_delegator IN (0,1)),

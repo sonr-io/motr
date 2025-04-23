@@ -22,6 +22,7 @@ type Account struct {
 	BlockCreated  int64        `json:"block_created"`
 	Controller    string       `json:"controller"`
 	Label         string       `json:"label"`
+	Handle        string       `json:"handle"`
 	IsSubsidiary  bool         `json:"is_subsidiary"`
 	IsValidator   bool         `json:"is_validator"`
 	IsDelegator   bool         `json:"is_delegator"`

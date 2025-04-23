@@ -129,6 +129,11 @@ SELECT * FROM accounts
 WHERE address = ? AND deleted_at IS NULL
 LIMIT 1;
 
+-- name: GetAccountsByHandle :many
+SELECT * FROM accounts
+WHERE handle = ? AND deleted_at IS NULL
+ORDER BY created_at DESC;
+
 -- name: GetAccountByController :one
 SELECT * FROM accounts
 WHERE controller = ? AND deleted_at IS NULL
