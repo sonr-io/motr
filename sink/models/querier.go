@@ -19,7 +19,7 @@ type Querier interface {
 	GetAccountByPublicKey(ctx context.Context, publicKey string) (Account, error)
 	GetAccountBySequence(ctx context.Context, sequence int64) (Account, error)
 	GetAccountsByChainID(ctx context.Context, chainID string) ([]Account, error)
-	GetAccountsByHandle(ctx context.Context, handle string) ([]Account, error)
+	GetAccountsByController(ctx context.Context, controller string) ([]Account, error)
 	GetAccountsByLabel(ctx context.Context, label string) ([]Account, error)
 	GetActivityByID(ctx context.Context, id string) (Activity, error)
 	GetActivityByTxHash(ctx context.Context, txHash sql.NullString) (Activity, error)
@@ -36,10 +36,21 @@ type Querier interface {
 	GetBlockchainWithAssetInfo(ctx context.Context, id string) (GetBlockchainWithAssetInfoRow, error)
 	GetCredentialByID(ctx context.Context, credentialID string) (Credential, error)
 	GetCredentialsByHandle(ctx context.Context, handle string) ([]Credential, error)
+	GetCryptoListingByApiID(ctx context.Context, apiID string) (CryptoListing, error)
+	GetCryptoListingByID(ctx context.Context, id string) (CryptoListing, error)
+	GetCryptoListingBySymbol(ctx context.Context, symbol string) (CryptoListing, error)
+	GetCryptoListingByWebsiteSlug(ctx context.Context, websiteSlug string) (CryptoListing, error)
+	GetFearGreedIndexByID(ctx context.Context, id string) (FearGreedIndex, error)
+	GetGlobalMarketByID(ctx context.Context, id string) (GlobalMarket, error)
 	GetHealthByEndpoint(ctx context.Context, endpointUrl string) (Health, error)
 	GetHealthByID(ctx context.Context, id string) (Health, error)
+	GetLatestFearGreedIndex(ctx context.Context) (FearGreedIndex, error)
+	GetLatestGlobalMarket(ctx context.Context) (GlobalMarket, error)
 	GetPriceByAssetID(ctx context.Context, assetID string) (Price, error)
 	GetPriceByID(ctx context.Context, id string) (Price, error)
+	GetPriceConversionByCurrency(ctx context.Context, arg GetPriceConversionByCurrencyParams) (PriceConversion, error)
+	GetPriceConversionByID(ctx context.Context, id string) (PriceConversion, error)
+	GetPriceConversionsByPriceID(ctx context.Context, priceID string) ([]PriceConversion, error)
 	GetProfileByAddress(ctx context.Context, address string) (Profile, error)
 	GetProfileByHandle(ctx context.Context, handle string) (Profile, error)
 	GetProfileByID(ctx context.Context, id string) (Profile, error)
@@ -60,10 +71,18 @@ type Querier interface {
 	InsertBlockchain(ctx context.Context, arg InsertBlockchainParams) (Blockchain, error)
 	// CREDENTIAL QUERIES
 	InsertCredential(ctx context.Context, arg InsertCredentialParams) (Credential, error)
+	// CRYPTO LISTINGS QUERIES (NEW)
+	InsertCryptoListing(ctx context.Context, arg InsertCryptoListingParams) (CryptoListing, error)
+	// FEAR AND GREED INDEX QUERIES (NEW)
+	InsertFearGreedIndex(ctx context.Context, arg InsertFearGreedIndexParams) (FearGreedIndex, error)
+	// GLOBAL MARKET QUERIES (NEW)
+	InsertGlobalMarket(ctx context.Context, arg InsertGlobalMarketParams) (GlobalMarket, error)
 	// HEALTH QUERIES
 	InsertHealth(ctx context.Context, arg InsertHealthParams) (Health, error)
-	// PRICE QUERIES
+	// PRICE QUERIES (UPDATED)
 	InsertPrice(ctx context.Context, arg InsertPriceParams) (Price, error)
+	// PRICE CONVERSION QUERIES (NEW)
+	InsertPriceConversion(ctx context.Context, arg InsertPriceConversionParams) (PriceConversion, error)
 	// PROFILE QUERIES
 	InsertProfile(ctx context.Context, arg InsertProfileParams) (Profile, error)
 	// SERVICE QUERIES
@@ -82,7 +101,10 @@ type Querier interface {
 	ListBlockchainsWithExtensionSupport(ctx context.Context) ([]Blockchain, error)
 	ListBlockchainsWithMobileSupport(ctx context.Context) ([]Blockchain, error)
 	ListBlockchainsWithStaking(ctx context.Context) ([]Blockchain, error)
+	ListCryptoListings(ctx context.Context, arg ListCryptoListingsParams) ([]CryptoListing, error)
 	ListDelegatorAccounts(ctx context.Context) ([]Account, error)
+	ListFearGreedIndexHistory(ctx context.Context, arg ListFearGreedIndexHistoryParams) ([]FearGreedIndex, error)
+	ListGlobalMarketHistory(ctx context.Context, arg ListGlobalMarketHistoryParams) ([]GlobalMarket, error)
 	ListHealthByChain(ctx context.Context, arg ListHealthByChainParams) ([]Health, error)
 	ListHealthByStatus(ctx context.Context, arg ListHealthByStatusParams) ([]Health, error)
 	ListHealthChecksNeedingUpdate(ctx context.Context, limit int64) ([]Health, error)
@@ -97,7 +119,11 @@ type Querier interface {
 	SoftDeleteAsset(ctx context.Context, id string) error
 	SoftDeleteBlockchain(ctx context.Context, id string) error
 	SoftDeleteCredential(ctx context.Context, credentialID string) error
+	SoftDeleteCryptoListing(ctx context.Context, id string) error
+	SoftDeleteFearGreedIndex(ctx context.Context, id string) error
+	SoftDeleteGlobalMarket(ctx context.Context, id string) error
 	SoftDeleteHealth(ctx context.Context, id string) error
+	SoftDeletePriceConversion(ctx context.Context, id string) error
 	SoftDeleteProfile(ctx context.Context, address string) error
 	SoftDeleteService(ctx context.Context, id string) error
 	SoftDeleteVault(ctx context.Context, id string) error
@@ -112,8 +138,12 @@ type Querier interface {
 	UpdateBlockchainFeeInfo(ctx context.Context, arg UpdateBlockchainFeeInfoParams) (Blockchain, error)
 	UpdateBlockchainImages(ctx context.Context, arg UpdateBlockchainImagesParams) (Blockchain, error)
 	UpdateBlockchainSocialLinks(ctx context.Context, arg UpdateBlockchainSocialLinksParams) (Blockchain, error)
+	UpdateCryptoListing(ctx context.Context, arg UpdateCryptoListingParams) (CryptoListing, error)
+	UpdateFearGreedIndex(ctx context.Context, arg UpdateFearGreedIndexParams) (FearGreedIndex, error)
+	UpdateGlobalMarket(ctx context.Context, arg UpdateGlobalMarketParams) (GlobalMarket, error)
 	UpdateHealthCheck(ctx context.Context, arg UpdateHealthCheckParams) (Health, error)
 	UpdatePrice(ctx context.Context, arg UpdatePriceParams) (Price, error)
+	UpdatePriceConversion(ctx context.Context, arg UpdatePriceConversionParams) (PriceConversion, error)
 	UpdateProfile(ctx context.Context, arg UpdateProfileParams) (Profile, error)
 	UpdateService(ctx context.Context, arg UpdateServiceParams) (Service, error)
 	UpdateVault(ctx context.Context, arg UpdateVaultParams) (Vault, error)

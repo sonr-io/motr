@@ -154,9 +154,9 @@ SELECT * FROM accounts
 WHERE chain_id = ? AND deleted_at IS NULL
 ORDER BY sequence DESC;
 
--- name: GetAccountsByHandle :many
+-- name: GetAccountsByController :many
 SELECT * FROM accounts
-WHERE handle = ? AND deleted_at IS NULL
+WHERE controller = ? AND deleted_at IS NULL
 ORDER BY created_at DESC;
 
 -- name: GetAccountsByLabel :many
@@ -278,7 +278,7 @@ UPDATE assets
 SET deleted_at = CURRENT_TIMESTAMP
 WHERE id = ?;
 
--- PRICE QUERIES
+-- PRICE QUERIES (UPDATED)
 -- name: InsertPrice :one
 INSERT INTO prices (
     asset_id,
@@ -286,11 +286,15 @@ INSERT INTO prices (
     price_btc,
     volume_24h_usd,
     market_cap_usd,
+    available_supply,
+    total_supply,
+    max_supply,
     percent_change_1h,
     percent_change_24h,
     percent_change_7d,
+    rank,
     last_updated
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 RETURNING *;
 
 -- name: GetPriceByAssetID :one
@@ -312,7 +316,9 @@ LIMIT ? OFFSET ?;
 
 -- name: GetAssetWithLatestPrice :one
 SELECT a.*, p.price_usd, p.price_btc, p.volume_24h_usd, p.market_cap_usd, 
-       p.percent_change_24h, p.last_updated
+       p.available_supply, p.total_supply, p.max_supply,
+       p.percent_change_1h, p.percent_change_24h, p.percent_change_7d, 
+       p.rank, p.last_updated
 FROM assets a
 LEFT JOIN (
     SELECT p1.*
@@ -330,7 +336,9 @@ LIMIT 1;
 
 -- name: ListAssetsWithLatestPrices :many
 SELECT a.*, p.price_usd, p.price_btc, p.volume_24h_usd, p.market_cap_usd, 
-       p.percent_change_24h, p.last_updated
+       p.available_supply, p.total_supply, p.max_supply,
+       p.percent_change_1h, p.percent_change_24h, p.percent_change_7d, 
+       p.rank, p.last_updated
 FROM assets a
 LEFT JOIN (
     SELECT p1.*
@@ -344,7 +352,7 @@ LEFT JOIN (
     WHERE p1.deleted_at IS NULL
 ) p ON a.id = p.asset_id
 WHERE a.deleted_at IS NULL
-ORDER BY a.symbol ASC
+ORDER BY p.rank ASC, a.symbol ASC
 LIMIT ? OFFSET ?;
 
 -- name: UpdatePrice :one
@@ -354,14 +362,208 @@ SET
     price_btc = ?,
     volume_24h_usd = ?,
     market_cap_usd = ?,
+    available_supply = ?,
+    total_supply = ?,
+    max_supply = ?,
     percent_change_1h = ?,
     percent_change_24h = ?,
     percent_change_7d = ?,
+    rank = ?,
     last_updated = ?,
     updated_at = CURRENT_TIMESTAMP
 WHERE id = ? 
 AND deleted_at IS NULL
 RETURNING *;
+
+-- PRICE CONVERSION QUERIES (NEW)
+-- name: InsertPriceConversion :one
+INSERT INTO price_conversions (
+    price_id,
+    currency_code,
+    price,
+    volume_24h,
+    market_cap,
+    last_updated
+) VALUES (?, ?, ?, ?, ?, ?)
+RETURNING *;
+
+-- name: GetPriceConversionByID :one
+SELECT * FROM price_conversions
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1;
+
+-- name: GetPriceConversionsByPriceID :many
+SELECT * FROM price_conversions
+WHERE price_id = ? AND deleted_at IS NULL
+ORDER BY currency_code ASC;
+
+-- name: GetPriceConversionByCurrency :one
+SELECT * FROM price_conversions
+WHERE price_id = ? AND currency_code = ? AND deleted_at IS NULL
+LIMIT 1;
+
+-- name: UpdatePriceConversion :one
+UPDATE price_conversions
+SET 
+    price = ?,
+    volume_24h = ?,
+    market_cap = ?,
+    last_updated = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? 
+AND deleted_at IS NULL
+RETURNING *;
+
+-- name: SoftDeletePriceConversion :exec
+UPDATE price_conversions
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = ?;
+
+-- GLOBAL MARKET QUERIES (NEW)
+-- name: InsertGlobalMarket :one
+INSERT INTO global_market (
+    total_market_cap_usd,
+    total_24h_volume_usd,
+    bitcoin_percentage_of_market_cap,
+    active_currencies,
+    active_assets,
+    active_markets,
+    last_updated
+) VALUES (?, ?, ?, ?, ?, ?, ?)
+RETURNING *;
+
+-- name: GetGlobalMarketByID :one
+SELECT * FROM global_market
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1;
+
+-- name: GetLatestGlobalMarket :one
+SELECT * FROM global_market
+WHERE deleted_at IS NULL
+ORDER BY last_updated DESC
+LIMIT 1;
+
+-- name: ListGlobalMarketHistory :many
+SELECT * FROM global_market
+WHERE deleted_at IS NULL
+ORDER BY last_updated DESC
+LIMIT ? OFFSET ?;
+
+-- name: UpdateGlobalMarket :one
+UPDATE global_market
+SET 
+    total_market_cap_usd = ?,
+    total_24h_volume_usd = ?,
+    bitcoin_percentage_of_market_cap = ?,
+    active_currencies = ?,
+    active_assets = ?,
+    active_markets = ?,
+    last_updated = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? 
+AND deleted_at IS NULL
+RETURNING *;
+
+-- name: SoftDeleteGlobalMarket :exec
+UPDATE global_market
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = ?;
+
+-- FEAR AND GREED INDEX QUERIES (NEW)
+-- name: InsertFearGreedIndex :one
+INSERT INTO fear_greed_index (
+    value,
+    value_classification,
+    timestamp,
+    time_until_update
+) VALUES (?, ?, ?, ?)
+RETURNING *;
+
+-- name: GetFearGreedIndexByID :one
+SELECT * FROM fear_greed_index
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1;
+
+-- name: GetLatestFearGreedIndex :one
+SELECT * FROM fear_greed_index
+WHERE deleted_at IS NULL
+ORDER BY timestamp DESC
+LIMIT 1;
+
+-- name: ListFearGreedIndexHistory :many
+SELECT * FROM fear_greed_index
+WHERE deleted_at IS NULL
+ORDER BY timestamp DESC
+LIMIT ? OFFSET ?;
+
+-- name: UpdateFearGreedIndex :one
+UPDATE fear_greed_index
+SET 
+    value = ?,
+    value_classification = ?,
+    timestamp = ?,
+    time_until_update = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? 
+AND deleted_at IS NULL
+RETURNING *;
+
+-- name: SoftDeleteFearGreedIndex :exec
+UPDATE fear_greed_index
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = ?;
+
+-- CRYPTO LISTINGS QUERIES (NEW)
+-- name: InsertCryptoListing :one
+INSERT INTO crypto_listings (
+    api_id,
+    name,
+    symbol,
+    website_slug
+) VALUES (?, ?, ?, ?)
+RETURNING *;
+
+-- name: GetCryptoListingByID :one
+SELECT * FROM crypto_listings
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1;
+
+-- name: GetCryptoListingByApiID :one
+SELECT * FROM crypto_listings
+WHERE api_id = ? AND deleted_at IS NULL
+LIMIT 1;
+
+-- name: GetCryptoListingBySymbol :one
+SELECT * FROM crypto_listings
+WHERE symbol = ? AND deleted_at IS NULL
+LIMIT 1;
+
+-- name: GetCryptoListingByWebsiteSlug :one
+SELECT * FROM crypto_listings
+WHERE website_slug = ? AND deleted_at IS NULL
+LIMIT 1;
+
+-- name: ListCryptoListings :many
+SELECT * FROM crypto_listings
+WHERE deleted_at IS NULL
+ORDER BY name ASC
+LIMIT ? OFFSET ?;
+
+-- name: UpdateCryptoListing :one
+UPDATE crypto_listings
+SET 
+    name = ?,
+    symbol = ?,
+    website_slug = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? 
+AND deleted_at IS NULL
+RETURNING *;
+
+-- name: SoftDeleteCryptoListing :exec
+UPDATE crypto_listings
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = ?;
 
 -- SERVICE QUERIES
 -- name: InsertService :one
@@ -557,7 +759,6 @@ SET deleted_at = CURRENT_TIMESTAMP
 WHERE id = ?;
 
 -- BLOCKCHAIN QUERIES
-
 -- name: InsertBlockchain :one
 INSERT INTO blockchains (
     id,

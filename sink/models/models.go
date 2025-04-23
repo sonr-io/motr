@@ -22,7 +22,6 @@ type Account struct {
 	BlockCreated  int64        `json:"block_created"`
 	Controller    string       `json:"controller"`
 	Label         string       `json:"label"`
-	Handle        string       `json:"handle"`
 	IsSubsidiary  bool         `json:"is_subsidiary"`
 	IsValidator   bool         `json:"is_validator"`
 	IsDelegator   bool         `json:"is_delegator"`
@@ -115,6 +114,42 @@ type Credential struct {
 	Transports              string       `json:"transports"`
 }
 
+type CryptoListing struct {
+	ID          string       `json:"id"`
+	CreatedAt   time.Time    `json:"created_at"`
+	UpdatedAt   time.Time    `json:"updated_at"`
+	DeletedAt   sql.NullTime `json:"deleted_at"`
+	ApiID       string       `json:"api_id"`
+	Name        string       `json:"name"`
+	Symbol      string       `json:"symbol"`
+	WebsiteSlug string       `json:"website_slug"`
+}
+
+type FearGreedIndex struct {
+	ID                  string         `json:"id"`
+	CreatedAt           time.Time      `json:"created_at"`
+	UpdatedAt           time.Time      `json:"updated_at"`
+	DeletedAt           sql.NullTime   `json:"deleted_at"`
+	Value               int64          `json:"value"`
+	ValueClassification string         `json:"value_classification"`
+	Timestamp           time.Time      `json:"timestamp"`
+	TimeUntilUpdate     sql.NullString `json:"time_until_update"`
+}
+
+type GlobalMarket struct {
+	ID                           string          `json:"id"`
+	CreatedAt                    time.Time       `json:"created_at"`
+	UpdatedAt                    time.Time       `json:"updated_at"`
+	DeletedAt                    sql.NullTime    `json:"deleted_at"`
+	TotalMarketCapUsd            sql.NullFloat64 `json:"total_market_cap_usd"`
+	Total24hVolumeUsd            sql.NullFloat64 `json:"total_24h_volume_usd"`
+	BitcoinPercentageOfMarketCap sql.NullFloat64 `json:"bitcoin_percentage_of_market_cap"`
+	ActiveCurrencies             sql.NullInt64   `json:"active_currencies"`
+	ActiveAssets                 sql.NullInt64   `json:"active_assets"`
+	ActiveMarkets                sql.NullInt64   `json:"active_markets"`
+	LastUpdated                  time.Time       `json:"last_updated"`
+}
+
 type Health struct {
 	ID             string         `json:"id"`
 	CreatedAt      time.Time      `json:"created_at"`
@@ -143,10 +178,27 @@ type Price struct {
 	PriceBtc         sql.NullFloat64 `json:"price_btc"`
 	Volume24hUsd     sql.NullFloat64 `json:"volume_24h_usd"`
 	MarketCapUsd     sql.NullFloat64 `json:"market_cap_usd"`
+	AvailableSupply  sql.NullFloat64 `json:"available_supply"`
+	TotalSupply      sql.NullFloat64 `json:"total_supply"`
+	MaxSupply        sql.NullFloat64 `json:"max_supply"`
 	PercentChange1h  sql.NullFloat64 `json:"percent_change_1h"`
 	PercentChange24h sql.NullFloat64 `json:"percent_change_24h"`
 	PercentChange7d  sql.NullFloat64 `json:"percent_change_7d"`
+	Rank             sql.NullInt64   `json:"rank"`
 	LastUpdated      time.Time       `json:"last_updated"`
+}
+
+type PriceConversion struct {
+	ID           string          `json:"id"`
+	CreatedAt    time.Time       `json:"created_at"`
+	UpdatedAt    time.Time       `json:"updated_at"`
+	DeletedAt    sql.NullTime    `json:"deleted_at"`
+	PriceID      string          `json:"price_id"`
+	CurrencyCode string          `json:"currency_code"`
+	Price        sql.NullFloat64 `json:"price"`
+	Volume24h    sql.NullFloat64 `json:"volume_24h"`
+	MarketCap    sql.NullFloat64 `json:"market_cap"`
+	LastUpdated  time.Time       `json:"last_updated"`
 }
 
 type Profile struct {
