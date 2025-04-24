@@ -67,7 +67,9 @@ tasks:
 
   gen:templ:
     desc: Generate templ
-    cmd: templ generate
+    cmds: 
+      - templ generate
+      - rm -rf .task
 
   gen:sqlc:
     desc: Generate sqlc
