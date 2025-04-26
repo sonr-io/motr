@@ -14,24 +14,16 @@ import (
 )
 
 // ╭───────────────────────────────────────────────────────────╮
-// │                   Register Initial  (/register)           │
+// │                   Register Handlers  (/register)           │
 // ╰───────────────────────────────────────────────────────────╯
 
 func (h *Handler) HandleRegisterInitial(c echo.Context) error {
 	return middleware.Render(c, components.RegisterView())
 }
 
-// ╭──────────────────────────────────────────────────────────────────╮
-// │            Register Start (/register/:handle/start)              │
-// ╰──────────────────────────────────────────────────────────────────╯
-
 func (h *Handler) HandleRegisterStart(c echo.Context) error {
 	return middleware.Render(c, components.RegisterView())
 }
-
-// ╭────────────────────────────────────────────────────────────────────╮
-// │            Register Finish (/register/:handle/finish)              │
-// ╰────────────────────────────────────────────────────────────────────╯
 
 func (h *Handler) HandleRegisterFinish(c echo.Context) error {
 	return middleware.Render(c, components.RegisterView())

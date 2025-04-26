@@ -9,6 +9,10 @@ import (
 	"github.com/sonr-io/motr/x/auth/components"
 )
 
+// ╭───────────────────────────────────────────────────────────╮
+// │                   Profile Handlers (/login)                 │
+// ╰───────────────────────────────────────────────────────────╯
+
 func (h *Handler) HandleRegisterUsernameCheck(c echo.Context) error {
 	handle := c.FormValue("handle")
 	ok := h.verifyHandle(handle, false)
