@@ -1,7 +1,7 @@
 //go:build js && wasm
 // +build js,wasm
 
-package auth
+package handlers
 
 import (
 	"context"
@@ -16,29 +16,6 @@ import (
 	"github.com/sonr-io/motr/x/auth/components"
 	"github.com/syumai/workers/cloudflare/kv"
 )
-
-// ╭───────────────────────────────────────────────────────────╮
-// │                   Auth Handler                            │
-// ╰───────────────────────────────────────────────────────────╯
-
-func Register(cfg config.Config, s *config.Server) error {
-	q, err := cfg.DB.GetQuerier()
-	if err != nil {
-		return err
-	}
-	hkv, err := cfg.KV.GetHandles()
-	if err != nil {
-		return err
-	}
-	skv, err := cfg.KV.GetSessions()
-	if err != nil {
-		return err
-	}
-
-	h := NewAuthHandler(q, hkv, skv)
-	h.SetupRoutes(s)
-	return nil
-}
 
 // ╭───────────────────────────────────────────────────────────╮
 // │                   Auth Handler                            │
@@ -68,6 +45,7 @@ func (h *AuthHandler) SetupRoutes(s *config.Server) {
 	s.POST("/register/:handle/finish", h.HandleRegisterFinish)
 }
 
+// VerifyHandle verifies if a handle is valid.
 func (c *AuthHandler) VerifyHandle(handle string, target bool) bool {
 	_, err := c.Handles.GetString(handle, nil)
 	if err != nil {

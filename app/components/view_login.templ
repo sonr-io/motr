@@ -1,0 +1,27 @@
+package components
+
+import (
+	"github.com/sonr-io/motr/sink"
+	"github.com/sonr-io/motr/ui"
+)
+
+var meta = sink.DefaultMetadata()
+
+templ LoginView() {
+	@ui.HTML() {
+		@ui.Head() {
+			@ui.MetaComponent(meta)
+		}
+		<sl-tab-group>
+			@ui.Nav() {
+				@ui.NavLeft() {
+					@ui.NavLogo("Motr")
+				}
+				@ui.NavRight() {
+				}
+			}
+			@ui.Body() {
+			}
+		</sl-tab-group>
+	}
+}
