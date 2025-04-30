@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	"github.com/sonr-io/motr/app/console/components"
 	"github.com/sonr-io/motr/middleware"
-	"github.com/sonr-io/motr/x/console/components"
 )
 
 func (h *Handler) HandleOverview(c echo.Context) error {

@@ -5,10 +5,13 @@ package handlers
 
 import (
 	"github.com/labstack/echo/v4"
+	"github.com/sonr-io/motr/app/landing/components"
 	"github.com/sonr-io/motr/middleware"
-	"github.com/sonr-io/motr/x/landing/components"
 )
 
-func (h *Handler) HandleAbout(c echo.Context) error {
+func (h *Handler) HandleIndex(c echo.Context) error {
+	if err := middleware.GetSession(c).SaveStatus(h.Sessions); err != nil {
+		return err
+	}
 	return middleware.Render(c, components.HomeView())
 }

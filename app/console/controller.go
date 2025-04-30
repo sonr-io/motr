@@ -1,11 +1,11 @@
 //go:build js && wasm
 // +build js,wasm
 
-package landing
+package dash
 
 import (
+	"github.com/sonr-io/motr/app/console/handlers"
 	"github.com/sonr-io/motr/config"
-	"github.com/sonr-io/motr/x/landing/handlers"
 )
 
 func Register(cfg config.Config, s *config.Server) error {
@@ -13,15 +13,11 @@ func Register(cfg config.Config, s *config.Server) error {
 	if err != nil {
 		return err
 	}
-	hkv, err := cfg.KV.GetHandles()
-	if err != nil {
-		return err
-	}
 	skv, err := cfg.KV.GetSessions()
 	if err != nil {
 		return err
 	}
-	h := handlers.New(q, hkv, skv)
+	h := handlers.New(q, skv)
 	h.SetupRoutes(s)
 	return nil
 }

@@ -4,10 +4,10 @@
 package main
 
 import (
+	"github.com/sonr-io/motr/app/auth"
+	"github.com/sonr-io/motr/app/landing"
 	"github.com/sonr-io/motr/config"
 	"github.com/sonr-io/motr/middleware"
-	"github.com/sonr-io/motr/x/auth"
-	"github.com/sonr-io/motr/x/landing"
 )
 
 func main() {
