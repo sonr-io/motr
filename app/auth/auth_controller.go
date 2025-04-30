@@ -11,8 +11,8 @@ import (
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/app/auth/components"
-	"github.com/sonr-io/motr/config"
-	"github.com/sonr-io/motr/middleware"
+	"github.com/sonr-io/motr/internal/config"
+	"github.com/sonr-io/motr/internal/middleware"
 	"github.com/sonr-io/motr/sink/models"
 	"github.com/syumai/workers/cloudflare/kv"
 )

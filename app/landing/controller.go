@@ -5,7 +5,7 @@ package landing
 
 import (
 	"github.com/sonr-io/motr/app/landing/handlers"
-	"github.com/sonr-io/motr/config"
+	"github.com/sonr-io/motr/internal/config"
 )
 
 func Register(cfg config.Config, s *config.Server) error {

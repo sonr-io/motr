@@ -6,7 +6,7 @@ package handlers
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/app/landing/components"
-	"github.com/sonr-io/motr/middleware"
+	"github.com/sonr-io/motr/internal/middleware"
 )
 
 func (h *Handler) HandleAbout(c echo.Context) error {

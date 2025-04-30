@@ -8,7 +8,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/segmentio/ksuid"
-	"github.com/sonr-io/motr/config"
+	"github.com/sonr-io/motr/internal/config"
 	"github.com/sonr-io/motr/sink"
 )
 
