@@ -30,21 +30,21 @@ func Register(cfg config.Config, s *config.Server) error {
 	return nil
 }
 
-type Handler struct {
+type LandingHandler struct {
 	DB       models.Querier
 	Handles  *kv.Namespace
 	Sessions *kv.Namespace
 }
 
-func New(q models.Querier, hkv *kv.Namespace, skv *kv.Namespace) *Handler {
-	return &Handler{DB: q, Handles: hkv, Sessions: skv}
+func New(q models.Querier, hkv *kv.Namespace, skv *kv.Namespace) *LandingHandler {
+	return &LandingHandler{DB: q, Handles: hkv, Sessions: skv}
 }
 
-func (h *Handler) SetupRoutes(s *config.Server) {
+func (h *LandingHandler) SetupRoutes(s *config.Server) {
 	s.GET("/", h.HandleIndex)
 }
 
-func (h *Handler) HandleIndex(c echo.Context) error {
+func (h *LandingHandler) HandleIndex(c echo.Context) error {
 	if err := middleware.GetSession(c).SaveStatus(h.Sessions); err != nil {
 		return err
 	}
