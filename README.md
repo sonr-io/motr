@@ -56,7 +56,7 @@ package main
 import (
  "database/sql"
  "log"
- 
+
  "github.com/sonr-io/motr/app"
  "github.com/sonr-io/motr/pkg/models"
  "github.com/sonr-io/motr/pkg/types"
@@ -67,18 +67,18 @@ func main() {
  if err != nil {
   log.Fatal(err)
  }
- 
+
  config := &types.Config{
   MotrToken: "your-token",
   SonrChainID: "sonr-testnet-1",
   // Other configuration options
  }
- 
+
  vault, err := app.New(config, dbq)
  if err != nil {
   log.Fatal(err)
  }
- 
+
  // Start the server
  vault.Start(":8080")
 }
@@ -125,11 +125,13 @@ Motr consists of several components:
 ### Component Details
 
 1. **Controller**
+
    - Manages user credentials and authentication
    - Integrates with WebAuthn for credential storage
    - Containerized for easy deployment
 
 2. **Resolver**
+
    - Resolves Sonr names to addresses and profiles
    - Serves as a gateway to the Sonr network
    - Implemented as a Cloudflare Worker
@@ -145,6 +147,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-[MIT](LICENSE)  
+[MIT](LICENSE)
 
 Copyright (c) 2024, Sonr Labs, Inc.
