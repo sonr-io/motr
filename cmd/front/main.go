@@ -4,24 +4,20 @@
 package main
 
 import (
-	"github.com/sonr-io/motr/handlers/auth"
-	"github.com/sonr-io/motr/handlers/landing"
+	"github.com/sonr-io/motr/controller"
 	"github.com/sonr-io/motr/internal/config"
 	"github.com/sonr-io/motr/internal/middleware"
+	"github.com/sonr-io/motr/routes"
 )
 
 func main() {
 	// Setup config
 	e, c := config.New()
 	e.Use(middleware.UseSession(c), middleware.UseCloudflareCache(c))
-
-	// Register controllers
-	if err := landing.Register(c, e); err != nil {
+	cn, err := controller.New(c, e)
+	if err != nil {
 		panic(err)
 	}
-	if err := auth.Register(c, e); err != nil {
-		panic(err)
-	}
-	// Start server
+	routes.SetupRoutes(cn)
 	e.Serve()
 }
