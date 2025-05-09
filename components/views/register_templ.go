@@ -10,7 +10,7 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"github.com/sonr-io/motr/components/inputs"
-	"github.com/sonr-io/motr/internal/ui"
+	"github.com/sonr-io/motr/ui"
 )
 
 func RegisterView() templ.Component {
