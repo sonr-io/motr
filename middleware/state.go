@@ -4,7 +4,7 @@
 package middleware
 
 import (
-	"github.com/sonr-io/motr/internal/sink"
+	"github.com/sonr-io/motr/sink"
 	"github.com/syumai/workers/cloudflare/kv"
 )
 

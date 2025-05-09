@@ -1,6 +1,6 @@
 package credential
 
-import "github.com/sonr-io/motr/internal/sink/models"
+import "github.com/sonr-io/motr/sink/models"
 
 // Define the credential structure matching our frontend data
 type CredentialDescriptor struct {

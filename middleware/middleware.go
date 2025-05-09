@@ -5,7 +5,7 @@ package middleware
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/sonr-io/motr/internal/config"
+	"github.com/sonr-io/motr/config"
 )
 
 // UseSession is a middleware that adds a new key to the context

@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/sonr-io/motr/internal/sink/models"
+	"github.com/sonr-io/motr/sink/models"
 	"github.com/syumai/workers/cloudflare"
 	_ "github.com/syumai/workers/cloudflare/d1"
 	"github.com/syumai/workers/cloudflare/kv"

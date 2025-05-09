@@ -2,7 +2,7 @@ package health
 
 import (
 	"github.com/a-h/templ"
-	"github.com/sonr-io/motr/internal/sink/models"
+	"github.com/sonr-io/motr/sink/models"
 )
 
 type HealthEntity interface {

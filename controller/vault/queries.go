@@ -3,7 +3,7 @@ package vault
 import (
 	"context"
 
-	"github.com/sonr-io/motr/internal/sink/models"
+	"github.com/sonr-io/motr/sink/models"
 )
 
 type Queries interface {

@@ -4,8 +4,8 @@
 package controller
 
 import (
-	"github.com/sonr-io/motr/internal/config"
-	"github.com/sonr-io/motr/internal/sink/models"
+	"github.com/sonr-io/motr/config"
+	"github.com/sonr-io/motr/sink/models"
 	"github.com/syumai/workers/cloudflare/kv"
 )
 
