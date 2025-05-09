@@ -1,0 +1,22 @@
+package charts
+
+import "fmt"
+
+type CategoryValue struct {
+	Category  string
+	Value     int
+	ColorFrom string
+	ColorTo   string
+}
+
+templ PieChart(data []CategoryValue) {
+	for _, d := range data {
+		<div class="flex flex-col">
+			<div class="flex justify-between">
+				<span class="text-sm font-medium text-gray-900">${ d.Category }</span>
+				<span class="text-sm font-medium text-gray-900">${ fmt.Sprintf("%d", d.Value) }</span>
+			</div>
+			<div class="h-1 bg-gray-200 rounded-full"></div>
+		</div>
+	}
+}

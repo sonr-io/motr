@@ -1,66 +1,120 @@
-# yaml-language-server: $schema=https://json.schemastore.org/taskfile
+#yaml-language-server: $schema=https://json.schemastore.org/taskfile
 version: "3"
 silent: true
-
-# vars:
-#   VERSION:
-#     sh: git describe --tags
-#   COMMIT:
-#     sh: git log -1 --format='%H'
-#
+vars:
+  ROOT_DIR:
+    sh: git rev-parse --show-toplevel
 
 tasks:
-  default:
+  clean:
+    desc: Remove build artifacts
     cmds:
-      - task: gen:templ
-      - task: gen:sqlc
-      - task: build
+      - task: tidy:vault
+      - task: tidy:front
+      - task: tidy:root
 
-  gen:templ:
-    desc: Generate code
-    sources:
-      - "**/*.templ"
-    generates:
-      - "**/*_templ.go"
+  deploy:
+    desc: Deploy all
     cmds:
-      - templ generate
-
-  gen:sqlc:
-    desc: Generate code
-    sources:
-      - x/**/model/*.sql
-    generates:
-      - x/**/model/*.go
-    cmds:
-      - sqlc generate -f "x/identity/model/sqlc.yaml"
-      - sqlc generate -f "x/portfolio/model/sqlc.yaml"
-      - sqlc generate -f "x/user/model/sqlc.yaml"
+      - task: deploy:vault
+      - task: deploy:front
 
   build:
-    desc: Build
-    watch: true
+    desc: Build all
+    cmds:
+      - task: build:vault
+      - task: build:front
+
+  start:vault:
+    desc: Start the vault
+    dir: "{{.ROOT_DIR}}/cmd/vault"
+    cmd: bun run start
+
+  start:front:
+    desc: Start the frontend
+    dir: "{{.ROOT_DIR}}/cmd/front"
+    cmd: bun run start
+
+  build:vault:
+    desc: Build the vault
+    dir: "{{.ROOT_DIR}}/cmd/vault"
+    cmd: bun run build
     sources:
-      - "**/*.go"
+      - main.go
     generates:
-      - web/app.wasm
-    deps:
-      - task: gen:templ
+      - build/app.wasm
+
+  build:front:
+    desc: Build the frontend
+    dir: "{{.ROOT_DIR}}/cmd/front"
+    cmd: bun run build
+    sources:
+      - main.go
+    generates:
+      - build/app.wasm
+
+  deploy:vault:
+    desc: Deploy the vault
+    dir: "{{.ROOT_DIR}}/cmd/vault"
+    cmds:
+      - bun run deploy
+
+  deploy:front:
+    desc: Deploy the frontend
+    dir: "{{.ROOT_DIR}}/cmd/front"
+    cmd: bun run deploy
+
+  gen:templ:
+    desc: Generate templ
+    cmds: 
+      - templ generate
+      - rm -rf .task
+
+  gen:sqlc:
+    desc: Generate sqlc
+    cmd: sqlc generate
+
+  db:migrate:
+    desc: Migrate the database
+    prompt:
+      - Are you sure you want to run this command? This will delete all data in the database.
+    cmds:
+      - task: migrate:d1
       - task: gen:sqlc
-    vars:
-      TIME:
-        sh: date
-    cmds:
-      - rm -rf web/vault.wasm
-      - GOOS=js GOARCH=wasm go build -o web/vault.wasm .
-      - gum log --time rfc822 --level info "[BUILD] WASM Complete"
 
-  serve:
-    desc: Serve
-    dir: web
-    cmds:
-      - bunx live-server
+  migrate:d1:
+    internal: true
+    desc: Migrate the common database
+    dir: "{{.ROOT_DIR}}/cmd/vault"
+    cmd: npm run migrate
+    sources:
+      - schema.sql
+    generates:
+      - schema.sql
 
-  test:
-    desc: Test
+
+  tidy:vault:
+    desc: Go mod tidy the vault
+    internal: true
+    dir: "{{.ROOT_DIR}}/cmd/vault"
     cmds:
-      - go test -v ./...
+      - bun run clean
+      - rm -rf ./build
+      - rm -rf ./dist
+
+  tidy:front:
+    desc: Go mod tidy the frontend
+    internal: true
+    dir: "{{.ROOT_DIR}}/cmd/front"
+    cmds:
+      - bun run clean
+      - rm -rf ./build
+      - rm -rf ./dist
+
+  tidy:root:
+    desc: Go mod tidy the root
+    internal: true
+    dir: "{{.ROOT_DIR}}"
+    cmds:
+      - go mod tidy
+      - rm -rf .task

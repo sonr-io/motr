@@ -1,10 +1,19 @@
 .DS_Store
+.tmp*
+go.work
 .aider*
 .vscode
 .idea
 bin
 tmp
 dist
+node_modules
+deploy/conf
+configs/logs.json
+go.work
+go.work.sum
+!.taskfile.yml
+!.taskfile.dist.yml
 
 # Aider related generated files
 .aider-context
@@ -99,19 +108,18 @@ cmd/gateway/node_modules
 pkg/nebula/node_modules
 configs/logs.json
 
-mprocs.yaml
 
 !devbox.lock
 !buf.lock
 
 .air.toml
-mprocs.yaml
 mprocs.log
 tools-stamp
 deploy/conf
 *.aiderscript
 *.wasm
-
 interchaintest-downloader
 .haptic
 
+packages/vault/.parcel-cache
+packages/vault/.parcel-cache
