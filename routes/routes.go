@@ -4,8 +4,8 @@
 package routes
 
 import (
-	"github.com/sonr-io/motr/controller"
 	"github.com/sonr-io/motr/handlers"
+	"github.com/sonr-io/motr/sink/controller"
 )
 
 func SetupRoutes(c *controller.Controller) {
