@@ -1,0 +1,106 @@
+package charts
+
+import (
+	"encoding/json"
+	"time"
+)
+
+type CandleData struct {
+	Open  float64
+	Close float64
+	High  float64
+	Low   float64
+	Date  time.Time
+}
+
+// D3 script handle for deduplication
+var d3Handle = templ.NewOnceHandle()
+
+// D3 component for loading D3.js
+templ D3() {
+	@d3Handle.Once() {
+		<script type="module">
+       
+            window.d3 = d3;
+        </script>
+	}
+}
+
+// CandleChart component
+templ CandleChart(data []CandleData) {
+	@D3()
+	<div id="candleChart" class="@container relative">
+		<div
+			class="relative h-72 w-full"
+			style="--marginTop: 10px; --marginRight: 60px; --marginBottom: 56px; --marginLeft: 30px;"
+		></div>
+	</div>
+	<script type="module">
+	     import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+        // Convert Go data to JavaScript
+            
+        // Declare the chart dimensions and margins.
+        const width = 640;
+        const height = 400;
+        const marginTop = 20;
+        const marginRight = 20;
+        const marginBottom = 30;
+        const marginLeft = 40;
+
+        // Declare the x (horizontal position) scale.
+        const x = d3.scaleUtc()
+            .domain([new Date("2023-01-01"), new Date("2024-01-01")])
+            .range([marginLeft, width - marginRight]);
+
+        // Declare the y (vertical position) scale.
+        const y = d3.scaleLinear()
+            .domain([0, 100])
+            .range([height - marginBottom, marginTop]);
+
+        // Create the SVG container.
+        const svg = d3.create("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        // Add the x-axis.
+        svg.append("g")
+            .attr("transform", `translate(0,${height - marginBottom})`)
+            .call(d3.axisBottom(x));
+
+        // Add the y-axis.
+        svg.append("g")
+            .attr("transform", `translate(${marginLeft},0)`)
+            .call(d3.axisLeft(y));
+
+        // Append the SVG element.
+        container.append(svg.node());    
+    </script>
+}
+
+// formatDataForJS converts the Go data structure to a JavaScript-compatible JSON string
+func formatDataForJS(data []CandleData) string {
+	type jsData struct {
+		Date  string  `json:"date"`
+		Open  float64 `json:"open"`
+		Close float64 `json:"close"`
+		High  float64 `json:"high"`
+		Low   float64 `json:"low"`
+	}
+
+	jsDataArray := make([]jsData, len(data))
+	for i, d := range data {
+		jsDataArray[i] = jsData{
+			Date:  d.Date.Format(time.RFC3339),
+			Open:  d.Open,
+			Close: d.Close,
+			High:  d.High,
+			Low:   d.Low,
+		}
+	}
+
+	jsonBytes, err := json.Marshal(jsDataArray)
+	if err != nil {
+		return "[]"
+	}
+	return string(jsonBytes)
+}

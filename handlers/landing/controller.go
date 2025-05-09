@@ -5,7 +5,7 @@ package landing
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/sonr-io/motr/handlers/landing/components"
+	"github.com/sonr-io/motr/components/views"
 	"github.com/sonr-io/motr/internal/config"
 	"github.com/sonr-io/motr/internal/middleware"
 	"github.com/sonr-io/motr/internal/sink/models"
@@ -48,5 +48,5 @@ func (h *LandingHandler) HandleIndex(c echo.Context) error {
 	if err := middleware.GetSession(c).SaveStatus(h.Sessions); err != nil {
 		return err
 	}
-	return middleware.Render(c, components.HomeView())
+	return middleware.Render(c, views.HomeView())
 }

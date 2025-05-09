@@ -1,0 +1,28 @@
+package views
+
+import (
+	"github.com/sonr-io/motr/internal/ui"
+	"github.com/sonr-io/motr/components/inputs"
+)
+
+templ RegisterView() {
+	@ui.HTML() {
+		@ui.Head() {
+			@ui.MetaComponent(meta)
+		}
+		<sl-tab-group>
+			@ui.Nav() {
+				@ui.NavLeft() {
+					@ui.NavLogo("Motr")
+				}
+				@ui.NavRight() {
+				}
+			}
+			@ui.Body() {
+				@ui.Container() {
+					@inputs.HandleInitial()
+				}
+			}
+		</sl-tab-group>
+	}
+}

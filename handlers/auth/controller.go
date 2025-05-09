@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/labstack/echo/v4"
-	"github.com/sonr-io/motr/handlers/auth/components"
+	"github.com/sonr-io/motr/components/views"
 	"github.com/sonr-io/motr/internal/config"
 	"github.com/sonr-io/motr/internal/middleware"
 	"github.com/sonr-io/motr/internal/sink/models"
@@ -86,21 +86,21 @@ func (c *AuthHandler) VerifyHandle(handle string, target bool) bool {
 
 // HandleLoginFinish handles the finish login request.
 func (h *AuthHandler) HandleLoginFinish(c echo.Context) error {
-	return middleware.Render(c, components.LoginView())
+	return middleware.Render(c, views.LoginView())
 }
 
 // HandleLoginStart handles the start login request.
 func (h *AuthHandler) HandleLoginStart(c echo.Context) error {
-	return middleware.Render(c, components.LoginView())
+	return middleware.Render(c, views.LoginView())
 }
 
 func (h *AuthHandler) HandleLoginInitial(c echo.Context) error {
-	return middleware.Render(c, components.LoginView())
+	return middleware.Render(c, views.LoginView())
 }
 
 // HandleSubmitCredentialLogin handles the submit credential login request.
 func (h *AuthHandler) HandleSubmitCredentialLogin(c echo.Context) error {
-	return middleware.Render(c, components.RegisterView())
+	return middleware.Render(c, views.RegisterView())
 }
 
 // ╭───────────────────────────────────────────────────────────╮
@@ -112,9 +112,9 @@ func (h *AuthHandler) HandleRegisterUsernameCheck(c echo.Context) error {
 	handle := c.FormValue("handle")
 	ok := h.VerifyHandle(handle, false)
 	if ok {
-		return middleware.Render(c, components.RegisterView())
+		return middleware.Render(c, views.RegisterView())
 	}
-	return middleware.Render(c, components.RegisterView())
+	return middleware.Render(c, views.RegisterView())
 }
 
 // HandleLoginUsernameCheck handles the username check request.
@@ -122,17 +122,17 @@ func (h *AuthHandler) HandleLoginUsernameCheck(c echo.Context) error {
 	handle := c.FormValue("handle")
 	ok := h.VerifyHandle(handle, true)
 	if ok {
-		return middleware.Render(c, components.RegisterView())
+		return middleware.Render(c, views.RegisterView())
 	}
-	return middleware.Render(c, components.RegisterView())
+	return middleware.Render(c, views.RegisterView())
 }
 
 func (h *AuthHandler) HandleSubmitUsernameClaim(c echo.Context) error {
-	return middleware.Render(c, components.RegisterView())
+	return middleware.Render(c, views.RegisterView())
 }
 
 func (h *AuthHandler) HandleSubmitProfile(c echo.Context) error {
-	return middleware.Render(c, components.RegisterView())
+	return middleware.Render(c, views.RegisterView())
 }
 
 // ╭────────────────────────────────────────────────────────╮
@@ -141,31 +141,31 @@ func (h *AuthHandler) HandleSubmitProfile(c echo.Context) error {
 
 // HandleRegisterInitial handles the initial register request.
 func (h *AuthHandler) HandleRegisterInitial(c echo.Context) error {
-	return middleware.Render(c, components.RegisterView())
+	return middleware.Render(c, views.RegisterView())
 }
 
 // HandleRegisterStart handles the start register request.
 func (h *AuthHandler) HandleRegisterStart(c echo.Context) error {
-	return middleware.Render(c, components.RegisterView())
+	return middleware.Render(c, views.RegisterView())
 }
 
 // HandleRegisterFinish handles the finish register request.
 func (h *AuthHandler) HandleRegisterFinish(c echo.Context) error {
-	return middleware.Render(c, components.RegisterView())
+	return middleware.Render(c, views.RegisterView())
 }
 
 // HandleSubmitCredentialRegister handles the submit credential register request.
 func (h *AuthHandler) HandleSubmitCredentialRegister(c echo.Context) error {
 	credJSON := c.FormValue("credentialJSON")
 	if credJSON == "" {
-		return middleware.Render(c, components.RegisterView())
+		return middleware.Render(c, views.RegisterView())
 	}
 	cred := webauthn.Credential{}
 	err := json.Unmarshal([]byte(credJSON), &cred)
 	if err != nil {
-		return middleware.Render(c, components.RegisterView())
+		return middleware.Render(c, views.RegisterView())
 	}
 	fmt.Println(cred)
 
-	return middleware.Render(c, components.RegisterView())
+	return middleware.Render(c, views.RegisterView())
 }
