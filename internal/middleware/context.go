@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/segmentio/ksuid"
 	"github.com/sonr-io/motr/internal/config"
-	"github.com/sonr-io/motr/sink"
+	"github.com/sonr-io/motr/internal/sink"
 )
 
 type SessionContext struct {

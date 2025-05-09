@@ -10,10 +10,10 @@ import (
 
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/labstack/echo/v4"
-	"github.com/sonr-io/motr/app/auth/components"
+	"github.com/sonr-io/motr/handlers/auth/components"
 	"github.com/sonr-io/motr/internal/config"
 	"github.com/sonr-io/motr/internal/middleware"
-	"github.com/sonr-io/motr/sink/models"
+	"github.com/sonr-io/motr/internal/sink/models"
 	"github.com/syumai/workers/cloudflare/kv"
 )
 

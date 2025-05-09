@@ -11,8 +11,7 @@ tasks:
     cmds:
       - task: tidy:vault
       - task: tidy:front
-      - go mod tidy
-      - rm -rf .task
+      - task: tidy:root
 
   deploy:
     desc: Deploy all
@@ -111,3 +110,11 @@ tasks:
       - bun run clean
       - rm -rf ./build
       - rm -rf ./dist
+
+  tidy:root:
+    desc: Go mod tidy the root
+    internal: true
+    dir: "{{.ROOT_DIR}}"
+    cmds:
+      - go mod tidy
+      - rm -rf .task

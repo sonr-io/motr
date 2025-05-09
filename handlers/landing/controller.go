@@ -5,10 +5,10 @@ package landing
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/sonr-io/motr/app/landing/components"
+	"github.com/sonr-io/motr/handlers/landing/components"
 	"github.com/sonr-io/motr/internal/config"
 	"github.com/sonr-io/motr/internal/middleware"
-	"github.com/sonr-io/motr/sink/models"
+	"github.com/sonr-io/motr/internal/sink/models"
 	"github.com/syumai/workers/cloudflare/kv"
 )
 
