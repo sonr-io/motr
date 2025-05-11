@@ -3,7 +3,7 @@ package handlers
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/middleware"
-	"github.com/sonr-io/motr/ui/components/views"
+	"github.com/sonr-io/motr/ui/views"
 )
 
 func HandleDefaultValid(c echo.Context) error {
