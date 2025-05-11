@@ -41,6 +41,17 @@ templ homeComponent() {
 								</sl-button>
 						</div>
 					</sl-card>
+				 	<style>
+  					.card-footer {
+    					max-width: 300px;
+  					}
+
+  					.card-footer [slot='footer'] {
+    					display: flex;
+    					justify-content: space-between;
+    					align-items: center;
+  					}
+					</style>
 				}
 			}
 		</sl-tab-group>

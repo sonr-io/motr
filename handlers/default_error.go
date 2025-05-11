@@ -6,6 +6,6 @@ import (
 	"github.com/sonr-io/motr/middleware"
 )
 
-func HandleDefaultExpired(c echo.Context) error {
+func HandleDefaultError(c echo.Context) error {
 	return middleware.Render(c, views.HomeView())
 }

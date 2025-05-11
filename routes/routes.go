@@ -11,7 +11,7 @@ import (
 func SetupRoutes(c *config.Server) {
 	// Home
 	c.GET("/", handlers.HandleDefaultIndex)
-	c.GET("/expired", handlers.HandleDefaultExpired)
+	c.GET("/expired", handlers.HandleDefaultError)
 	c.GET("/valid", handlers.HandleDefaultValid)
 
 	// Login
