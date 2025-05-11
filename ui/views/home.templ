@@ -19,7 +19,7 @@ templ homeComponent() {
 		<sl-tab-group>
 			@ui.Nav() {
 				@ui.NavLeft() {
-					@ui.NavLogo("Motr")
+					@ui.NavLogo("Sonr")
 				}
 				@ui.NavRight() {
 				}
@@ -35,13 +35,13 @@ templ homeComponent() {
 							<p>You can use this app to manage your Motr account.</p>
 						</div>
 						<div slot="footer">
-								<sl-button type="primary" size="large" href="/register">
-									<sl-icon slot="prefix" library="sonr" name="passkey"></sl-icon>
-									Register
-								</sl-button>
+							<sl-button type="primary" size="large" href="/register">
+								<sl-icon slot="prefix" library="sonr" name="passkey"></sl-icon>
+								Register
+							</sl-button>
 						</div>
 					</sl-card>
-				 	<style>
+					<style>
   					.card-footer [slot='footer'] {
     					display: flex;
     					justify-content: space-between;
