@@ -10,21 +10,29 @@ import (
 	"github.com/segmentio/ksuid"
 	"github.com/sonr-io/motr/config"
 	"github.com/sonr-io/motr/sink"
+	"github.com/sonr-io/motr/sink/models"
+	"github.com/syumai/workers/cloudflare/kv"
 )
 
 type SessionContext struct {
 	echo.Context
-	ID     string
-	Config config.Config
-	Status *sink.Status
+	ID       string
+	DB       models.Querier
+	Config   config.Config
+	Handles  *kv.Namespace
+	Sessions *kv.Namespace
+	Status   *sink.Status
 }
 
-func NewSession(c echo.Context, cfg config.Config) *SessionContext {
+func NewSession(c echo.Context, cfg config.Config, q models.Querier, hkv *kv.Namespace, skv *kv.Namespace) *SessionContext {
 	id := getOrCreateSessionID(c)
 	return &SessionContext{
-		Context: c,
-		ID:      id,
-		Config:  cfg,
+		Context:  c,
+		ID:       id,
+		Config:   cfg,
+		DB:       q,
+		Handles:  hkv,
+		Sessions: skv,
 		Status: &sink.Status{
 			SessionID: id,
 			Expires:   cfg.KV.GetSessionExpiry(time.Now()),

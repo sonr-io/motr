@@ -6,6 +6,6 @@ import (
 	"github.com/sonr-io/motr/middleware"
 )
 
-func HandleDefaultInitial(c echo.Context) error {
+func HandleDefaultIndex(c echo.Context) error {
 	return middleware.Render(c, views.HomeView())
 }
