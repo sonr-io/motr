@@ -26,7 +26,7 @@ templ homeComponent() {
 			}
 			@ui.Body() {
 				@ui.Container() {
-					<sl-card>
+					<sl-card class="card-footer">
 						<div slot="header">
 							<h3 class="card-title">Welcome to Motr</h3>
 						</div>
@@ -34,7 +34,7 @@ templ homeComponent() {
 							<p>This is a demo of the Motr web app.</p>
 							<p>You can use this app to manage your Motr account.</p>
 						</div>
-						<div class="card-footer">
+						<div slot="footer">
 								<sl-button type="primary" size="large" href="/register">
 									<sl-icon slot="prefix" library="sonr" name="passkey"></sl-icon>
 									Register
@@ -42,10 +42,6 @@ templ homeComponent() {
 						</div>
 					</sl-card>
 				 	<style>
-  					.card-footer {
-    					max-width: 300px;
-  					}
-
   					.card-footer [slot='footer'] {
     					display: flex;
     					justify-content: space-between;

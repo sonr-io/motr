@@ -164,7 +164,7 @@ func homeComponent() templ.Component {
 						}()
 					}
 					ctx = templ.InitializeContext(ctx)
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<sl-card><div slot=\"header\"><h3 class=\"card-title\">Welcome to Motr</h3></div><div class=\"card-body\"><p>This is a demo of the Motr web app.</p><p>You can use this app to manage your Motr account.</p></div><div class=\"card-footer\"><sl-button type=\"primary\" size=\"large\" href=\"/register\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"passkey\"></sl-icon> Register</sl-button></div></sl-card><style>\n  \t\t\t\t\t.card-footer {\n    \t\t\t\t\tmax-width: 300px;\n  \t\t\t\t\t}\n\n  \t\t\t\t\t.card-footer [slot='footer'] {\n    \t\t\t\t\tdisplay: flex;\n    \t\t\t\t\tjustify-content: space-between;\n    \t\t\t\t\talign-items: center;\n  \t\t\t\t\t}\n\t\t\t\t\t</style>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<sl-card class=\"card-footer\"><div slot=\"header\"><h3 class=\"card-title\">Welcome to Motr</h3></div><div class=\"card-body\"><p>This is a demo of the Motr web app.</p><p>You can use this app to manage your Motr account.</p></div><div slot=\"footer\"><sl-button type=\"primary\" size=\"large\" href=\"/register\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"passkey\"></sl-icon> Register</sl-button></div></sl-card><style>\n  \t\t\t\t\t.card-footer [slot='footer'] {\n    \t\t\t\t\tdisplay: flex;\n    \t\t\t\t\tjustify-content: space-between;\n    \t\t\t\t\talign-items: center;\n  \t\t\t\t\t}\n\t\t\t\t\t</style>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
