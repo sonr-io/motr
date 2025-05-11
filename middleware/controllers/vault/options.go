@@ -1,6 +1,6 @@
 package vault
 
-import "github.com/sonr-io/motr/controller/credential"
+import "github.com/sonr-io/motr/middleware/controllers/credential"
 
 type LoginOptions struct {
 	Account            string
