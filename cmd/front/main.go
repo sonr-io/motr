@@ -12,7 +12,14 @@ import (
 func main() {
 	// Setup config
 	e, c := config.New()
-	e.Use(middleware.UseSession(c), middleware.UseCloudflareCache(c))
+
+	// Setup middleware
+	e.Use(
+		middleware.UseSession(c),
+		middleware.UseCloudflareCache(c),
+	)
+
+	// Setup routes
 	routes.SetupRoutes(e)
 	e.Serve()
 }
