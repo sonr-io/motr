@@ -10,7 +10,7 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo/v4"
-	"github.com/sonr-io/motr/config"
+	"github.com/sonr-io/motr/sink/config"
 	"github.com/syumai/workers/cloudflare"
 	"github.com/syumai/workers/cloudflare/cache"
 )
