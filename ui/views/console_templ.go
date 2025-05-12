@@ -99,7 +99,25 @@ func demoComponent(d time.Time) templ.Component {
 						}()
 					}
 					ctx = templ.InitializeContext(ctx)
-					templ_7745c5c3_Err = ui.NavLogo("Sonr").Render(ctx, templ_7745c5c3_Buffer)
+					templ_7745c5c3_Var6 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+						templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+						templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+						if !templ_7745c5c3_IsBuffer {
+							defer func() {
+								templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+								if templ_7745c5c3_Err == nil {
+									templ_7745c5c3_Err = templ_7745c5c3_BufErr
+								}
+							}()
+						}
+						ctx = templ.InitializeContext(ctx)
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div style=\"font-size: 24px;\"><sl-icon library=\"sonr\" name=\"sonr\"></sl-icon></div>")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						return nil
+					})
+					templ_7745c5c3_Err = ui.NavLogo("Sonr").Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -109,11 +127,11 @@ func demoComponent(d time.Time) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " ")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, " ")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Var6 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+				templ_7745c5c3_Var7 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 					templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 					templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
 					if !templ_7745c5c3_IsBuffer {
@@ -125,13 +143,13 @@ func demoComponent(d time.Time) templ.Component {
 						}()
 					}
 					ctx = templ.InitializeContext(ctx)
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<sl-tab slot=\"nav\" panel=\"tab-1\">Time</sl-tab>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<sl-tab slot=\"nav\" panel=\"tab-1\">Time</sl-tab>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					return nil
 				})
-				templ_7745c5c3_Err = ui.NavRight().Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = ui.NavRight().Render(templ.WithChildren(ctx, templ_7745c5c3_Var7), templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -141,7 +159,7 @@ func demoComponent(d time.Time) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Var7 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+			templ_7745c5c3_Var8 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 				templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 				templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
 				if !templ_7745c5c3_IsBuffer {
@@ -153,11 +171,11 @@ func demoComponent(d time.Time) templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<sl-tab-panel name=\"tab-1\" active>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<sl-tab-panel name=\"tab-1\" active>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Var8 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+				templ_7745c5c3_Var9 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 					templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 					templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
 					if !templ_7745c5c3_IsBuffer {
@@ -169,7 +187,7 @@ func demoComponent(d time.Time) templ.Component {
 						}()
 					}
 					ctx = templ.InitializeContext(ctx)
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<div class=\"space-y-6\"><div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4\">")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<div class=\"space-y-6\"><div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -189,7 +207,7 @@ func demoComponent(d time.Time) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div><div class=\"grid grid-cols-1 lg:grid-cols-2 gap-4\">")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div><div class=\"grid grid-cols-1 lg:grid-cols-2 gap-4\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -201,11 +219,11 @@ func demoComponent(d time.Time) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Var9 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+					templ_7745c5c3_Var10 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 						templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 						templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
 						if !templ_7745c5c3_IsBuffer {
@@ -217,37 +235,37 @@ func demoComponent(d time.Time) templ.Component {
 							}()
 						}
 						ctx = templ.InitializeContext(ctx)
-						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<script>\n                document.addEventListener('DOMContentLoaded', async () => {\n                    try {\n                        // Use the globally available instantiateHeliaNode function\n                        const helia = window.helia = await window.instantiateHeliaNode()\n                        window.heliaFs = await HeliaUnixfs.unixfs(helia)\n\n                        helia.libp2p.addEventListener('peer:discovery', (evt) => {\n                            window.discoveredPeers.set(evt.detail.id.toString(), evt.detail)\n                            addToLog(`Discovered peer ${evt.detail.id.toString()}`)\n                        })\n\n                        helia.libp2p.addEventListener('peer:connect', (evt) => {\n                            addToLog(`Connected to ${evt.detail.toString()}`)\n                        })\n                        \n                        helia.libp2p.addEventListener('peer:disconnect', (evt) => {\n                            addToLog(`Disconnected from ${evt.detail.toString()}`)\n                        })\n\n                        setInterval(() => {\n                            const statusValueEl = document.getElementById('statusValue')\n                            if (statusValueEl) {\n                                statusValueEl.innerHTML = helia.libp2p.status === 'started' ? 'Online' : 'Offline'\n                            }\n                            updateConnectedPeers()\n                            updateDiscoveredPeers()\n                        }, 500)\n\n                        const id = await helia.libp2p.peerId.toString()\n                        const nodeIdEl = document.getElementById('nodeId')\n                        if (nodeIdEl) {\n                            nodeIdEl.innerHTML = id\n                        }\n                        addToLog('Helia node initialized successfully')\n                    } catch (err) {\n                        addToLog(`Error initializing Helia: ${err.message}`)\n                        console.error('Error initializing Helia:', err)\n                    }\n                })\n            \t</script>")
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<script>\n                document.addEventListener('DOMContentLoaded', async () => {\n                    try {\n                        // Use the globally available instantiateHeliaNode function\n                        const helia = window.helia = await window.instantiateHeliaNode()\n                        window.heliaFs = await HeliaUnixfs.unixfs(helia)\n\n                        helia.libp2p.addEventListener('peer:discovery', (evt) => {\n                            window.discoveredPeers.set(evt.detail.id.toString(), evt.detail)\n                            addToLog(`Discovered peer ${evt.detail.id.toString()}`)\n                        })\n\n                        helia.libp2p.addEventListener('peer:connect', (evt) => {\n                            addToLog(`Connected to ${evt.detail.toString()}`)\n                        })\n                        \n                        helia.libp2p.addEventListener('peer:disconnect', (evt) => {\n                            addToLog(`Disconnected from ${evt.detail.toString()}`)\n                        })\n\n                        setInterval(() => {\n                            const statusValueEl = document.getElementById('statusValue')\n                            if (statusValueEl) {\n                                statusValueEl.innerHTML = helia.libp2p.status === 'started' ? 'Online' : 'Offline'\n                            }\n                            updateConnectedPeers()\n                            updateDiscoveredPeers()\n                        }, 500)\n\n                        const id = await helia.libp2p.peerId.toString()\n                        const nodeIdEl = document.getElementById('nodeId')\n                        if (nodeIdEl) {\n                            nodeIdEl.innerHTML = id\n                        }\n                        addToLog('Helia node initialized successfully')\n                    } catch (err) {\n                        addToLog(`Error initializing Helia: ${err.message}`)\n                        console.error('Error initializing Helia:', err)\n                    }\n                })\n            \t</script>")
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
 						return nil
 					})
-					templ_7745c5c3_Err = heliaCardScriptHandle.Once().Render(templ.WithChildren(ctx, templ_7745c5c3_Var9), templ_7745c5c3_Buffer)
+					templ_7745c5c3_Err = heliaCardScriptHandle.Once().Render(templ.WithChildren(ctx, templ_7745c5c3_Var10), templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</div>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					return nil
 				})
-				templ_7745c5c3_Err = ui.Container().Render(templ.WithChildren(ctx, templ_7745c5c3_Var8), templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = ui.Container().Render(templ.WithChildren(ctx, templ_7745c5c3_Var9), templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</sl-tab-panel>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</sl-tab-panel>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				return nil
 			})
-			templ_7745c5c3_Err = ui.Body().Render(templ.WithChildren(ctx, templ_7745c5c3_Var7), templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = ui.Body().Render(templ.WithChildren(ctx, templ_7745c5c3_Var8), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</sl-tab-group>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "</sl-tab-group>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

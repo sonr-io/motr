@@ -10,19 +10,21 @@ templ RegisterView() {
 		@ui.Head() {
 			@ui.MetaComponent(meta)
 		}
-		<sl-tab-group>
-			@ui.Nav() {
-				@ui.NavLeft() {
-					@ui.NavLogo("Sonr")
-				}
-				@ui.NavRight() {
-				}
-			}
-			@ui.Body() {
-				@ui.Container() {
-					@inputs.HandleInitial()
+		@ui.Nav() {
+			@ui.NavLeft() {
+				@ui.NavLogo("Sonr") {
+					<div style="font-size: 24px;">
+						<sl-icon library="sonr" name="sonr"></sl-icon>
+					</div>
 				}
 			}
-		</sl-tab-group>
+			@ui.NavRight() {
+			}
+		}
+		@ui.Body() {
+			@ui.Container() {
+				@inputs.HandleInitial()
+			}
+		}
 	}
 }

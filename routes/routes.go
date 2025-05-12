@@ -25,4 +25,7 @@ func SetupRoutes(c *config.Server) {
 	c.GET("/register/:handle", handlers.HandleRegisterStart)
 	c.POST("/register/:handle/check", handlers.HandleRegisterCheck)
 	c.POST("/register/:handle/finish", handlers.HandleRegisterFinish)
+
+	// Status
+	c.GET("/status", handlers.HandleStatusCheck)
 }

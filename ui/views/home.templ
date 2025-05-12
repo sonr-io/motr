@@ -16,40 +16,42 @@ templ homeComponent() {
 		@ui.Head() {
 			@ui.MetaComponent(meta)
 		}
-		<sl-tab-group>
-			@ui.Nav() {
-				@ui.NavLeft() {
-					@ui.NavLogo("Sonr")
-				}
-				@ui.NavRight() {
+		@ui.Nav() {
+			@ui.NavLeft() {
+				@ui.NavLogo("Sonr") {
+					<div style="font-size: 24px;">
+						<sl-icon library="sonr" name="sonr"></sl-icon>
+					</div>
 				}
 			}
-			@ui.Body() {
-				@ui.Container() {
-					<sl-card class="card-footer">
-						<div slot="header">
-							<h3 class="card-title">Welcome to Motr</h3>
-						</div>
-						<div class="card-body">
-							<p>This is a demo of the Motr web app.</p>
-							<p>You can use this app to manage your Motr account.</p>
-						</div>
-						<div slot="footer">
-							<sl-button type="primary" size="large" href="/register">
-								<sl-icon slot="prefix" library="sonr" name="passkey"></sl-icon>
-								Register
-							</sl-button>
-						</div>
-					</sl-card>
-					<style>
+			@ui.NavRight() {
+			}
+		}
+		@ui.Body() {
+			@ui.Container() {
+				<sl-card class="card-footer">
+					<div slot="header">
+						<h3 class="card-title">Welcome to Motr</h3>
+					</div>
+					<div class="card-body">
+						<p>This is a demo of the Motr web app.</p>
+						<p>You can use this app to manage your Motr account.</p>
+					</div>
+					<div slot="footer">
+						<sl-button type="primary" size="large" href="/register">
+							<sl-icon slot="prefix" library="sonr" name="passkey"></sl-icon>
+							Register
+						</sl-button>
+					</div>
+				</sl-card>
+				<style>
   					.card-footer [slot='footer'] {
     					display: flex;
     					justify-content: space-between;
     					align-items: center;
   					}
 					</style>
-				}
 			}
-		</sl-tab-group>
+		}
 	}
 }
