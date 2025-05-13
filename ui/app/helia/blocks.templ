@@ -1,7 +1,7 @@
-package app
+package helia
 
 // StatusCard component for displaying Helia node status
-templ HeliaStatusCard() {
+templ StatusCard() {
 	<div class="p-4 flex flex-col bg-white border border-gray-200 rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
 		<div class="flex justify-between items-center mb-1">
 			<h2 class="text-4xl font-semibold text-gray-800 dark:text-neutral-200">
@@ -18,7 +18,7 @@ templ HeliaStatusCard() {
 }
 
 // NodeIDCard component for displaying Helia node ID
-templ HeliaNodeIDCard() {
+templ NodeIDCard() {
 	<div>
 		<div class="p-4 flex flex-col bg-white border border-gray-200 rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
 			<div class="flex justify-between items-center mb-1">
@@ -36,7 +36,7 @@ templ HeliaNodeIDCard() {
 }
 
 // DiscoveredPeersCard component for displaying discovered peers count
-templ HeliaDiscoveredPeersCard() {
+templ DiscoveredPeersCard() {
 	<div class="p-4 flex flex-col bg-white border border-gray-200 rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
 		<div class="flex justify-between items-center mb-1">
 			<h2 class="text-4xl font-semibold text-gray-800 dark:text-neutral-200">
@@ -52,7 +52,7 @@ templ HeliaDiscoveredPeersCard() {
 }
 
 // ConnectedPeersCard component for displaying connected peers count
-templ HeliaConnectedPeersCard() {
+templ ConnectedPeersCard() {
 	<div class="p-4 flex flex-col bg-white border border-gray-200 rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
 		<div class="flex justify-between items-center mb-1">
 			<h2 class="text-4xl font-semibold text-gray-800 dark:text-neutral-200">
@@ -67,7 +67,7 @@ templ HeliaConnectedPeersCard() {
 }
 
 // Optional: Create a component for a connected peers list if needed
-templ HeliaConnectedPeersList() {
+templ ConnectedPeersList() {
 	<div class="p-4 bg-white border border-gray-200 rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
 		<h3 class="text-lg font-medium text-gray-800 dark:text-neutral-200 mb-2">Connected Peers List</h3>
 		<ul id="connectedPeersList" class="text-sm text-gray-600 dark:text-neutral-400"></ul>
@@ -75,7 +75,7 @@ templ HeliaConnectedPeersList() {
 }
 
 // Optional: Create a component for the running log
-templ HeliaRunningLog() {
+templ RunningLog() {
 	<div class="p-4 bg-white border border-gray-200 rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
 		<h3 class="text-lg font-medium text-gray-800 dark:text-neutral-200 mb-2">Running Log</h3>
 		<div id="runningLog" class="text-sm text-gray-600 dark:text-neutral-400 h-40 overflow-y-auto font-mono"></div>
