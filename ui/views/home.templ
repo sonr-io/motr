@@ -29,28 +29,26 @@ templ homeComponent() {
 		}
 		@ui.Body() {
 			@ui.Container() {
-				<sl-card class="card-footer">
-					<div slot="header">
-						<h3 class="card-title">Welcome to Motr</h3>
+				<div class="relative group">
+					<div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+					<div class="relative px-7 py-6 bg-white dark:bg-gray-800 ring-1 ring-gray-900/5 rounded-lg leading-none">
+						<div class="flex flex-col">
+							<div class="mb-4">
+								<h3 class="text-xl font-bold text-gray-900 dark:text-white">Welcome to Motr</h3>
+							</div>
+							<div class="mb-6">
+								<p class="text-gray-700 dark:text-gray-300 mb-2">This is a demo of the Motr web app.</p>
+								<p class="text-gray-700 dark:text-gray-300">You can use this app to manage your Motr account.</p>
+							</div>
+							<div class="flex justify-between items-center">
+								<sl-button type="primary" size="large" href="/register" class="group-hover:bg-blue-700 transition duration-200">
+									<sl-icon slot="prefix" library="sonr" name="passkey"></sl-icon>
+									Register
+								</sl-button>
+							</div>
+						</div>
 					</div>
-					<div class="card-body">
-						<p>This is a demo of the Motr web app.</p>
-						<p>You can use this app to manage your Motr account.</p>
-					</div>
-					<div slot="footer">
-						<sl-button type="primary" size="large" href="/register">
-							<sl-icon slot="prefix" library="sonr" name="passkey"></sl-icon>
-							Register
-						</sl-button>
-					</div>
-				</sl-card>
-				<style>
-  					.card-footer [slot='footer'] {
-    					display: flex;
-    					justify-content: space-between;
-    					align-items: center;
-  					}
-					</style>
+				</div>
 			}
 		}
 	}
