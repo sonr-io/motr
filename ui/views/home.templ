@@ -24,7 +24,10 @@ templ homeComponent() {
 				</button>
 			}
 			@ui.NavRight() {
-				<sl-badge variant="success" pill>Connected</sl-badge>
+				<sl-badge class="gap-2 space-x-2 p-0.5" variant="success" pill>
+					<sl-icon class="p-0.5" name="check"></sl-icon>
+					Connected
+				</sl-badge>
 			}
 		}
 		@ui.Body() {

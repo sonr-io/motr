@@ -128,7 +128,7 @@ func homeComponent() templ.Component {
 						}()
 					}
 					ctx = templ.InitializeContext(ctx)
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<sl-badge variant=\"success\" pill>Connected</sl-badge>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<sl-badge class=\"gap-2 space-x-2 p-0.5\" variant=\"success\" pill><sl-icon class=\"p-0.5\" name=\"check\"></sl-icon> Connected</sl-badge>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
