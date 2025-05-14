@@ -102,25 +102,7 @@ func homeComponent() templ.Component {
 						}()
 					}
 					ctx = templ.InitializeContext(ctx)
-					templ_7745c5c3_Var6 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
-						templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
-						templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
-						if !templ_7745c5c3_IsBuffer {
-							defer func() {
-								templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
-								if templ_7745c5c3_Err == nil {
-									templ_7745c5c3_Err = templ_7745c5c3_BufErr
-								}
-							}()
-						}
-						ctx = templ.InitializeContext(ctx)
-						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div style=\"font-size: 24px;\"><sl-icon library=\"sonr\" name=\"sonr\"></sl-icon></div>")
-						if templ_7745c5c3_Err != nil {
-							return templ_7745c5c3_Err
-						}
-						return nil
-					})
-					templ_7745c5c3_Err = ui.NavLogo("Sonr").Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<button class=\"flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white\"><sl-icon name=\"arrow-left\"></sl-icon> Return Home</button>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -134,7 +116,7 @@ func homeComponent() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Var7 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+				templ_7745c5c3_Var6 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 					templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 					templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
 					if !templ_7745c5c3_IsBuffer {
@@ -146,9 +128,13 @@ func homeComponent() templ.Component {
 						}()
 					}
 					ctx = templ.InitializeContext(ctx)
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"flex items-center gap-2\"><span class=\"bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium\">Connected</span> <sl-badge variant=\"neutral\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"nav-status\"></sl-icon> Nav Status</sl-badge></div>")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
 					return nil
 				})
-				templ_7745c5c3_Err = ui.NavRight().Render(templ.WithChildren(ctx, templ_7745c5c3_Var7), templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = ui.NavRight().Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -158,11 +144,11 @@ func homeComponent() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, " ")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, " ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Var8 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+			templ_7745c5c3_Var7 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 				templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 				templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
 				if !templ_7745c5c3_IsBuffer {
@@ -174,7 +160,7 @@ func homeComponent() templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Var9 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+				templ_7745c5c3_Var8 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 					templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 					templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
 					if !templ_7745c5c3_IsBuffer {
@@ -186,19 +172,19 @@ func homeComponent() templ.Component {
 						}()
 					}
 					ctx = templ.InitializeContext(ctx)
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<div class=\"relative group\"><div class=\"absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200\"></div><div class=\"relative px-7 py-6 bg-white dark:bg-gray-800 ring-1 ring-gray-900/5 rounded-lg leading-none\"><div class=\"flex flex-col\"><div class=\"mb-4\"><h3 class=\"text-xl font-bold text-gray-900 dark:text-white\">Welcome to Motr</h3></div><div class=\"mb-6\"><p class=\"text-gray-700 dark:text-gray-300 mb-2\">This is a demo of the Motr web app.</p><p class=\"text-gray-700 dark:text-gray-300\">You can use this app to manage your Motr account.</p></div><div class=\"flex justify-between items-center\"><sl-button type=\"primary\" size=\"large\" href=\"/register\" class=\"group-hover:bg-blue-700 transition duration-200\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"passkey\"></sl-icon> Register</sl-button></div></div></div></div>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<div class=\"relative group overflow-hidden rounded-lg max-w-md mx-auto mt-10\"><div class=\"absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200\"></div><div class=\"relative px-7 py-8 bg-white dark:bg-gray-800 ring-1 ring-gray-900/5 rounded-lg leading-none\"><div class=\"flex flex-col items-center\"><!-- Center Logo --><div class=\"mb-6 p-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg transform rotate-45\"><div class=\"transform -rotate-45\"><sl-icon library=\"sonr\" name=\"sonr-fill\" style=\"font-size: 32px;\" class=\"text-blue-600 dark:text-blue-400\"></sl-icon></div></div><h2 class=\"text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center\">CREATE A SONR IDENTITY</h2><!-- Form Fields --><div class=\"w-full space-y-4 mb-6\"><div class=\"w-full\"><sl-input class=\"w-full\" placeholder=\".sonr\" label=\"Username\"></sl-input></div><div class=\"w-full\"><sl-input class=\"w-full\" placeholder=\"Claim your handle\" label=\"User Handle\"></sl-input></div><div class=\"text-center text-sm text-gray-600 dark:text-gray-400\">Already have an account? <a href=\"/login\" class=\"text-blue-600 dark:text-blue-400 hover:underline\">Login</a></div></div><!-- Terms --><div class=\"text-xs text-gray-500 dark:text-gray-400 text-center mb-6\">By signing up you agree to our Terms of Service and Privacy Policy</div><!-- Register Button --><sl-button type=\"primary\" size=\"large\" class=\"w-full\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"passkey\"></sl-icon> Register</sl-button></div></div></div><!-- Connected Status Section --> <div class=\"mt-8 max-w-md mx-auto\"><div class=\"flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2\"><sl-icon name=\"check-circle-fill\" class=\"text-green-500\"></sl-icon> <span class=\"font-medium\">CONNECTED</span></div><div class=\"flex items-center gap-2 text-gray-700 dark:text-gray-300\"><sl-icon name=\"cloud\" class=\"text-blue-500\"></sl-icon> <span class=\"font-medium\">IPFS (some.id)</span></div></div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					return nil
 				})
-				templ_7745c5c3_Err = ui.Container().Render(templ.WithChildren(ctx, templ_7745c5c3_Var9), templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = ui.Container().Render(templ.WithChildren(ctx, templ_7745c5c3_Var8), templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				return nil
 			})
-			templ_7745c5c3_Err = ui.Body().Render(templ.WithChildren(ctx, templ_7745c5c3_Var8), templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = ui.Body().Render(templ.WithChildren(ctx, templ_7745c5c3_Var7), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
