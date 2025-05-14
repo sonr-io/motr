@@ -102,7 +102,7 @@ func homeComponent() templ.Component {
 						}()
 					}
 					ctx = templ.InitializeContext(ctx)
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<button class=\"flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white\"><sl-icon name=\"arrow-left\"></sl-icon> Return Home</button>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<button class=\"flex items-center gap-2 text-gray-300 hover:text-white\"><sl-icon name=\"arrow-left\"></sl-icon> Return Home</button>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -128,7 +128,7 @@ func homeComponent() templ.Component {
 						}()
 					}
 					ctx = templ.InitializeContext(ctx)
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"flex items-center gap-2\"><span class=\"bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium\">Connected</span> <sl-badge variant=\"neutral\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"nav-status\"></sl-icon> Nav Status</sl-badge></div>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"flex items-center gap-2\"><span class=\"bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium\">Connected</span></div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -172,7 +172,7 @@ func homeComponent() templ.Component {
 						}()
 					}
 					ctx = templ.InitializeContext(ctx)
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<div class=\"relative group overflow-hidden rounded-lg max-w-md mx-auto mt-10\"><div class=\"absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200\"></div><div class=\"relative px-7 py-8 bg-white dark:bg-gray-800 ring-1 ring-gray-900/5 rounded-lg leading-none\"><div class=\"flex flex-col items-center\"><!-- Center Logo --><div class=\"mb-6 p-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg transform rotate-45\"><div class=\"transform -rotate-45\"><sl-icon library=\"sonr\" name=\"sonr-fill\" style=\"font-size: 32px;\" class=\"text-blue-600 dark:text-blue-400\"></sl-icon></div></div><h2 class=\"text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center\">CREATE A SONR IDENTITY</h2><!-- Form Fields --><div class=\"w-full space-y-4 mb-6\"><div class=\"w-full\"><sl-input class=\"w-full\" placeholder=\".sonr\" label=\"Username\"></sl-input></div><div class=\"w-full\"><sl-input class=\"w-full\" placeholder=\"Claim your handle\" label=\"User Handle\"></sl-input></div><div class=\"text-center text-sm text-gray-600 dark:text-gray-400\">Already have an account? <a href=\"/login\" class=\"text-blue-600 dark:text-blue-400 hover:underline\">Login</a></div></div><!-- Terms --><div class=\"text-xs text-gray-500 dark:text-gray-400 text-center mb-6\">By signing up you agree to our Terms of Service and Privacy Policy</div><!-- Register Button --><sl-button type=\"primary\" size=\"large\" class=\"w-full\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"passkey\"></sl-icon> Register</sl-button></div></div></div><!-- Connected Status Section --> <div class=\"mt-8 max-w-md mx-auto\"><div class=\"flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2\"><sl-icon name=\"check-circle-fill\" class=\"text-green-500\"></sl-icon> <span class=\"font-medium\">CONNECTED</span></div><div class=\"flex items-center gap-2 text-gray-700 dark:text-gray-300\"><sl-icon name=\"cloud\" class=\"text-blue-500\"></sl-icon> <span class=\"font-medium\">IPFS (some.id)</span></div></div>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<!-- Main Card with Glowing Border --> <div class=\"max-w-md mx-auto mt-10 relative\"><!-- Glowing Border Effect --><div class=\"absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg opacity-100 blur\"></div><!-- Card Content --><div class=\"relative bg-gray-900 rounded-lg px-7 py-8\"><div class=\"flex flex-col items-center\"><!-- Center Logo --><div class=\"mb-6 p-2 border border-blue-400/30 rounded-lg transform rotate-45 bg-gray-800/50\"><div class=\"transform -rotate-45\"><sl-icon library=\"sonr\" style=\"font-size: 60px;\" class=\"text-blue-400\" name=\"sonr\"></sl-icon></div></div><h2 class=\"text-2xl font-bold text-white mb-8 text-center\">CREATE A SONR IDENTITY</h2><!-- Form Fields --><div class=\"w-full mb-6\"><label for=\"user-handle\" class=\"block text-sm font-medium text-gray-300 mb-2\">User Handle</label> <sl-input id=\"user-handle\" class=\"w-full\" placeholder=\"Claim your handle\"></sl-input></div><!-- Register Button --><sl-button type=\"primary\" size=\"large\" class=\"w-full mb-4\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"passkey\"></sl-icon> Claim Handle</sl-button><!-- Terms --><div class=\"text-xs text-gray-400 text-center mb-4\">By signing up you agree to our Terms of Service and Privacy Policy</div><div class=\"text-center text-sm text-gray-400\">Already have an account? <a href=\"/login\" class=\"text-blue-400 hover:underline\">Login</a></div></div></div></div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
