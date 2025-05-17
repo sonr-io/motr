@@ -9,10 +9,10 @@ import (
 var heliaCardScriptHandle = templ.NewOnceHandle()
 
 func ConsoleView(d time.Time) templ.Component {
-	return appComponent(d)
+	return consoleComponent(d)
 }
 
-templ appComponent(d time.Time) {
+templ consoleComponent(d time.Time) {
 	@ui.HTML() {
 		@ui.Head() {
 		}
