@@ -11,6 +11,7 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"github.com/sonr-io/motr/sink"
 	"github.com/sonr-io/motr/ui"
+	"github.com/sonr-io/motr/ui/inputs"
 )
 
 var meta = sink.DefaultMetadata()
@@ -172,7 +173,15 @@ func homeComponent() templ.Component {
 						}()
 					}
 					ctx = templ.InitializeContext(ctx)
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<!-- Main Card with Glowing Border --> <div class=\"max-w-md mx-auto mt-10 relative\"><!-- Glowing Border Effect --><div class=\"absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg opacity-100 blur\"></div><!-- Card Content --><div class=\"relative bg-gray-900 rounded-lg px-7 py-8\"><div class=\"flex flex-col items-center\"><!-- Center Logo --><div class=\"mb-6 p-2 border border-blue-400/30 rounded-lg transform rotate-45 bg-gray-800/50\"><div class=\"transform -rotate-45\"><sl-icon library=\"sonr\" style=\"font-size: 60px;\" class=\"text-blue-400\" name=\"sonr\"></sl-icon></div></div><h2 class=\"text-2xl font-bold text-white mb-8 text-center\">CREATE A SONR IDENTITY</h2><!-- Form Fields --><div class=\"w-full mb-6\"><label for=\"user-handle\" class=\"block text-sm font-medium text-gray-300 mb-2\">User Handle</label> <sl-input id=\"user-handle\" class=\"w-full\" placeholder=\"Claim your handle\"></sl-input></div><!-- Register Button --><sl-button type=\"primary\" size=\"large\" class=\"w-full mb-4\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"passkey\"></sl-icon> Claim Handle</sl-button><!-- Terms --><div class=\"text-xs text-gray-400 text-center mb-4\">By signing up you agree to our Terms of Service and Privacy Policy</div><div class=\"text-center text-sm text-gray-400\">Already have an account? <a href=\"/login\" class=\"text-blue-400 hover:underline\">Login</a></div></div></div></div>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<!-- Main Card with Glowing Border --> <div class=\"max-w-md mx-auto mt-10 relative\"><!-- Glowing Border Effect --><div class=\"absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg opacity-100 blur\"></div><!-- Card Content --><div class=\"relative bg-gray-900 rounded-lg px-7 py-8\"><div class=\"flex flex-col items-center\"><!-- Center Logo --><div class=\"mb-6 p-2 border border-blue-400/30 rounded-lg transform rotate-45 bg-gray-800/50\"><div class=\"transform -rotate-45\"><sl-icon library=\"sonr\" style=\"font-size: 60px;\" class=\"text-blue-400\" name=\"sonr\"></sl-icon></div></div><h2 class=\"text-2xl font-bold text-white mb-8 text-center\">CREATE A SONR IDENTITY</h2><!-- Form Fields --><div class=\"w-full mb-4\">")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = inputs.HandleInitial().Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div><!-- Register Button --><sl-button type=\"primary\" size=\"large\" class=\"w-full mb-4\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"passkey\"></sl-icon> Claim Handle</sl-button><!-- Terms --><div class=\"text-xs text-gray-400 text-center mb-4\">By signing up you agree to our Terms of Service and Privacy Policy</div><div class=\"text-center text-sm text-gray-400\">Already have an account? <a href=\"/login\" class=\"text-blue-400 hover:underline\">Login</a></div></div></div></div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
