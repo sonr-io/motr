@@ -1,6 +1,7 @@
 name: Deploy Worker
 on:
   push:
+  workflow_dispatch:
 
 jobs:
   wrangler:
