@@ -13,6 +13,10 @@ tasks:
       - task: tidy:front
       - task: tidy:root
 
+  serve:
+    desc: Serve the app with air
+    cmd: air
+
   deploy:
     desc: Deploy all
     cmds:

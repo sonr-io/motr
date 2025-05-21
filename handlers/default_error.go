@@ -6,6 +6,6 @@ import (
 	"github.com/sonr-io/motr/ui/views"
 )
 
-func HandleRegisterInitial(c echo.Context) error {
-	return middleware.Render(c, views.RegisterView())
+func HandleDefaultError(c echo.Context) error {
+	return middleware.Render(c, views.HomeView())
 }

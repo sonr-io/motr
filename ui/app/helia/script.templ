@@ -1,0 +1,49 @@
+package helia
+
+var heliaCardScriptHandle = templ.NewOnceHandle()
+
+templ ScriptTag() {
+	@heliaCardScriptHandle.Once() {
+		<script>
+      document.addEventListener('DOMContentLoaded', async () => {
+          try {
+              // Use the globally available instantiateHeliaNode function
+              const helia = window.helia = await window.instantiateHeliaNode()
+              window.heliaFs = await HeliaUnixfs.unixfs(helia)
+
+              helia.libp2p.addEventListener('peer:discovery', (evt) => {
+                  window.discoveredPeers.set(evt.detail.id.toString(), evt.detail)
+                  addToLog(`Discovered peer ${evt.detail.id.toString()}`)
+              })
+
+              helia.libp2p.addEventListener('peer:connect', (evt) => {
+                  addToLog(`Connected to ${evt.detail.toString()}`)
+              })
+              
+              helia.libp2p.addEventListener('peer:disconnect', (evt) => {
+                  addToLog(`Disconnected from ${evt.detail.toString()}`)
+              })
+
+              setInterval(() => {
+                  const statusValueEl = document.getElementById('statusValue')
+                  if (statusValueEl) {
+                      statusValueEl.innerHTML = helia.libp2p.status === 'started' ? 'Online' : 'Offline'
+                  }
+                  updateConnectedPeers()
+                  updateDiscoveredPeers()
+              }, 500)
+
+              const id = await helia.libp2p.peerId.toString()
+              const nodeIdEl = document.getElementById('nodeId')
+              if (nodeIdEl) {
+                  nodeIdEl.innerHTML = id
+              }
+              addToLog('Helia node initialized successfully')
+          } catch (err) {
+              addToLog(`Error initializing Helia: ${err.message}`)
+              console.error('Error initializing Helia:', err)
+          }
+      })
+    </script>
+	}
+}

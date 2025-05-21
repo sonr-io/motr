@@ -4,14 +4,14 @@
 package routes
 
 import (
-	"github.com/sonr-io/motr/config"
 	"github.com/sonr-io/motr/handlers"
+	"github.com/sonr-io/motr/sink/config"
 )
 
 func SetupRoutes(c *config.Server) {
 	// Home
 	c.GET("/", handlers.HandleDefaultIndex)
-	c.GET("/expired", handlers.HandleDefaultExpired)
+	c.GET("/expired", handlers.HandleDefaultError)
 	c.GET("/valid", handlers.HandleDefaultValid)
 
 	// Login
@@ -25,4 +25,7 @@ func SetupRoutes(c *config.Server) {
 	c.GET("/register/:handle", handlers.HandleRegisterStart)
 	c.POST("/register/:handle/check", handlers.HandleRegisterCheck)
 	c.POST("/register/:handle/finish", handlers.HandleRegisterFinish)
+
+	// Status
+	c.GET("/status", handlers.HandleStatusCheck)
 }

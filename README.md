@@ -33,63 +33,55 @@ docker-compose up -d
 
 ## Usage
 
-### Run Using Docker
+### Development Setup
 
-The simplest way to run the full Motr system is with Docker Compose:
+Motr uses [Task](https://taskfile.dev) for managing development workflows. Here are the primary commands:
 
 ```bash
-# Start all services
-docker-compose up -d
+# Clean build artifacts
+task clean
 
-# View logs
-docker-compose logs -f
+# Build all components
+task build
 
-# Stop services
-docker-compose down
+# Deploy all components to Cloudflare
+task deploy
+
+# Start the local development server
+task serve
 ```
 
-### Run as a Local Server
+### Component-specific commands
 
-```go
-package main
+```bash
+# Start the Vault component (Cloudflare Worker)
+task start:vault
 
-import (
- "database/sql"
- "log"
+# Start the Frontend component
+task start:front
 
- "github.com/sonr-io/motr/app"
- "github.com/sonr-io/motr/pkg/models"
- "github.com/sonr-io/motr/pkg/types"
-)
+# Build specific components
+task build:vault
+task build:front
 
-func main() {
- dbq, err := setupDatabase()
- if err != nil {
-  log.Fatal(err)
- }
+# Deploy specific components to Cloudflare
+task deploy:vault
+task deploy:front
+```
 
- config := &types.Config{
-  MotrToken: "your-token",
-  SonrChainID: "sonr-testnet-1",
-  // Other configuration options
- }
+### Database operations
 
- vault, err := app.New(config, dbq)
- if err != nil {
-  log.Fatal(err)
- }
+```bash
+# Generate SQL models using sqlc
+task gen:sqlc
 
- // Start the server
- vault.Start(":8080")
-}
-
-func setupDatabase() (*models.Queries, error) {
- // Initialize your database connection
- // ...
-}
+# Migrate the database
+task db:migrate
 ```
 
 ### Compile to WebAssembly
+
+The project uses WebAssembly for cross-platform compatibility. Components are compiled automatically when using the Task commands above, but you can also build manually:
 
 ```sh
 # Build the signer as WASM
@@ -115,6 +107,7 @@ Motr can be integrated into progressive web applications, providing:
 
 Motr consists of several components:
 
+- **Vault**: Core component deployed as a Cloudflare Worker with WebAssembly
 - **Controller**: Manages WebAuthn credential creation and verification
 - **Resolver**: Handles name resolution and identity lookups
 - **Signer**: WebAssembly-based cryptographic operations for secure signing
@@ -124,26 +117,61 @@ Motr consists of several components:
 
 ### Component Details
 
-1. **Controller**
+1. **Vault**
+   - Core component deployed as a Cloudflare Worker
+   - Manages decentralized identity and authentication
+   - Integrates with IPFS/Helia for decentralized storage
+   - Uses WebAssembly plugins for cryptographic operations
+   - Package located at `cmd/vault/`
 
+2. **Controller**
    - Manages user credentials and authentication
    - Integrates with WebAuthn for credential storage
-   - Containerized for easy deployment
+   - Uses SQLite via D1 database for persistent storage
 
-2. **Resolver**
-
+3. **Resolver**
    - Resolves Sonr names to addresses and profiles
    - Serves as a gateway to the Sonr network
    - Implemented as a Cloudflare Worker
 
-3. **Signer**
+4. **Signer**
    - Secure cryptographic operations
    - WebAssembly-based for cross-platform compatibility
    - Handles key management and signatures
 
+## Development
+
+### Build System
+
+Motr uses the following build tools:
+
+- **Task**: Task runner for development workflows
+- **GoReleaser**: Handles building and releasing Go applications
+- **SQLC**: Generates type-safe Go code from SQL
+- **Templ**: Template engine for Go HTML templates
+- **Air**: Live reload for Go applications during development
+- **Bun**: JavaScript runtime and package manager
+
+### Release Process
+
+```bash
+# Create a new release
+task release
+```
+
+The release process uses GoReleaser with configuration in `.goreleaser.yaml`.
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+To contribute:
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes using conventional commits (`git commit -m 'feat: add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## License
 

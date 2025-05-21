@@ -34,9 +34,9 @@ templ NavItem(href string, text string) {
 }
 
 templ NavLogo(title string) {
-	<a href="/" class="flex items-center gap-2">
+	<a href="/" class="flex items-center justify-center gap-1.5 px-2 py-2">
 		{ children... }
-		<span class="text-xl font-bold">{ title }</span>
+		<span class="text-xl font-bold pb-1.5">{ title }</span>
 	</a>
 }
 
