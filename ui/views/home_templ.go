@@ -181,7 +181,7 @@ func homeComponent() templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div><!-- Register Button --><sl-button type=\"primary\" size=\"large\" class=\"w-full mb-4\">Claim Handle <sl-icon slot=\"suffix\" library=\"sonr\" name=\"arrow-right\"></sl-icon></sl-button><!-- Terms --><div class=\"text-xs text-gray-400 text-center mb-4\">By signing up you agree to our Terms of Service and Privacy Policy</div><div class=\"text-center text-sm text-gray-400\">Already have an account? <a href=\"/login\" class=\"text-blue-400 hover:underline\">Login</a></div></div></div></div>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div><!-- Register Button --><sl-button href=\"/register\" type=\"primary\" size=\"large\" class=\"w-full mb-4\">Claim Handle <sl-icon slot=\"suffix\" library=\"sonr\" name=\"arrow-right\"></sl-icon></sl-button><!-- Terms --><div class=\"text-xs text-gray-400 text-center mb-4\">By signing up you agree to our Terms of Service and Privacy Policy</div><div class=\"text-center text-sm text-gray-400\">Already have an account? <a href=\"/login\" class=\"text-blue-400 hover:underline\">Login</a></div></div></div></div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
