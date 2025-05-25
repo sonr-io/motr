@@ -8,7 +8,7 @@ import (
 	"github.com/sonr-io/motr/sink/config"
 )
 
-func SetupRoutes(c *config.Server) {
+func SetupViewRoutes(c *config.Server) {
 	// Home
 	c.GET("/", handlers.HandleDefaultIndex)
 	c.GET("/expired", handlers.HandleDefaultError)

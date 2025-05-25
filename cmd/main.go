@@ -13,6 +13,7 @@ func main() {
 	// Setup config
 	e, c := config.New()
 	e.Use(middleware.UseSession(c), middleware.UseCloudflareCache(c))
-	routes.SetupRoutes(e)
+	routes.SetupAPIRoutes(e)
+	routes.SetupViewRoutes(e)
 	e.Serve()
 }
