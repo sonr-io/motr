@@ -9,64 +9,49 @@ tasks:
   clean:
     desc: Remove build artifacts
     cmds:
-      - task: tidy:vault
-      - task: tidy:front
+      - task: tidy:cmd
       - task: tidy:root
 
   serve:
     desc: Serve the app with air
     cmd: air
 
-  deploy:
-    desc: Deploy all
-    cmds:
-      - task: deploy:vault
-      - task: deploy:front
+  start:
+    desc: Start the vault
+    dir: "{{.ROOT_DIR}}/cmd"
+    cmd: bun run start
 
   build:
-    desc: Build all
-    cmds:
-      - task: build:vault
-      - task: build:front
-
-  start:vault:
-    desc: Start the vault
-    dir: "{{.ROOT_DIR}}/cmd/vault"
-    cmd: bun run start
-
-  start:front:
-    desc: Start the frontend
-    dir: "{{.ROOT_DIR}}/cmd/front"
-    cmd: bun run start
-
-  build:vault:
-    desc: Build the vault
-    dir: "{{.ROOT_DIR}}/cmd/vault"
+    desc: Build the binary
+    dir: "{{.ROOT_DIR}}/cmd"
     cmd: bun run build
     sources:
       - main.go
     generates:
       - build/app.wasm
 
-  build:front:
-    desc: Build the frontend
-    dir: "{{.ROOT_DIR}}/cmd/front"
-    cmd: bun run build
-    sources:
-      - main.go
-    generates:
-      - build/app.wasm
-
-  deploy:vault:
+  deploy:
     desc: Deploy the vault
-    dir: "{{.ROOT_DIR}}/cmd/vault"
+    dir: "{{.ROOT_DIR}}/cmd"
     cmds:
       - bun run deploy
 
-  deploy:front:
-    desc: Deploy the frontend
-    dir: "{{.ROOT_DIR}}/cmd/front"
-    cmd: bun run deploy
+  tidy:cmd:
+    desc: Go mod tidy the cmd
+    internal: true
+    dir: "{{.ROOT_DIR}}/cmd"
+    cmds:
+      - bun run clean
+      - rm -rf ./build
+      - rm -rf ./dist
+
+  tidy:root:
+    desc: Go mod tidy the root
+    internal: true
+    dir: "{{.ROOT_DIR}}"
+    cmds:
+      - go mod tidy
+      - rm -rf .task
 
   gen:templ:
     desc: Generate templ
@@ -89,36 +74,10 @@ tasks:
   migrate:d1:
     internal: true
     desc: Migrate the common database
-    dir: "{{.ROOT_DIR}}/cmd/vault"
+    dir: "{{.ROOT_DIR}}/cmd"
     cmd: npm run migrate
     sources:
       - schema.sql
     generates:
       - schema.sql
 
-
-  tidy:vault:
-    desc: Go mod tidy the vault
-    internal: true
-    dir: "{{.ROOT_DIR}}/cmd/vault"
-    cmds:
-      - bun run clean
-      - rm -rf ./build
-      - rm -rf ./dist
-
-  tidy:front:
-    desc: Go mod tidy the frontend
-    internal: true
-    dir: "{{.ROOT_DIR}}/cmd/front"
-    cmds:
-      - bun run clean
-      - rm -rf ./build
-      - rm -rf ./dist
-
-  tidy:root:
-    desc: Go mod tidy the root
-    internal: true
-    dir: "{{.ROOT_DIR}}"
-    cmds:
-      - go mod tidy
-      - rm -rf .task
