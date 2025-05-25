@@ -1,0 +1,11 @@
+package vault
+
+templ ListComponent(accounts VaultsEntity) {
+	<div class="flex flex-col gap-4 mt-4">
+		for _,account := range accounts.GetModels() {
+			<div class="flex justify-between items-center">
+				@RowComponent(account)
+			</div>
+		}
+	</div>
+}

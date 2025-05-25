@@ -14,21 +14,9 @@ import (
 	"github.com/syumai/workers/cloudflare/kv"
 )
 
-type MotrMode string
-
-const (
-	ControllerMode MotrMode = "controller"
-	ResolverMode   MotrMode = "resolver"
-)
-
-func (m MotrMode) String() string {
-	return string(m)
-}
-
 type Config struct {
 	Sonr  SonrConfig  `json:"sonr"`
 	IPFS  IPFSConfig  `json:"ipfs"`
-	Mode  MotrMode    `json:"mode"`
 	DB    DBConfig    `json:"db"`
 	Cache CacheConfig `json:"cache"` // Added Cache configuration
 	KV    KVConfig    `json:"kv"`    // Added KV configuration
@@ -38,7 +26,6 @@ func Get() Config {
 	c := Config{
 		Sonr:  getSonrConfig(),
 		IPFS:  getIPFSConfig(),
-		Mode:  getMotrMode(),
 		DB:    getDBConfig(),
 		Cache: getCacheConfig(), // Added Cache configuration
 		KV:    getKVConfig(),    // Added KV configuration
@@ -68,14 +55,6 @@ func getIPFSConfig() IPFSConfig {
 	return IPFSConfig{
 		GatewayURL: cloudflare.Getenv("IPFS_GATEWAY"),
 	}
-}
-
-func getMotrMode() MotrMode {
-	mode := cloudflare.Getenv("MOTR_MODE")
-	if mode == "" {
-		return ControllerMode
-	}
-	return MotrMode(mode)
 }
 
 type DBConfig struct {

@@ -1,0 +1,15 @@
+package handlers
+
+import (
+	"github.com/labstack/echo/v4"
+	"github.com/sonr-io/motr/internal/middleware"
+	"github.com/sonr-io/motr/internal/pages"
+)
+
+func HandleDefaultIndex(c echo.Context) error {
+	return middleware.Render(c, pages.HomeView())
+}
+
+func HandleDefaultValid(c echo.Context) error {
+	return middleware.Render(c, pages.HomeView())
+}

@@ -1,0 +1,11 @@
+package prices
+
+templ ListComponent(prices PricesEntity) {
+	<div class="flex flex-col gap-4 mt-4">
+		for _,price := range prices.GetModels() {
+			<div class="flex justify-between items-center">
+				@RowComponent(price)
+			</div>
+		}
+	</div>
+}

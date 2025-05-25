@@ -1,0 +1,49 @@
+package middleware
+
+templ DefaultMetaComponent() {
+	<title>Motr</title>
+	<link rel="icon" type="image/png" href="https://cdn.sonr.id/favicon.png"/>
+	<meta name="description" content="Sonr is a decentralized social network that allows you to create your own personalized digital identity."/>
+	<meta name="keywords" content="Sonr, social network, decentralized, identity, decentralized social network, decentralized identity, self-sovereign identity, self-sovereign, self-sovereign social network, self-sovereign identity network, sso, sso network, sso identity, sso social network, digital identity, digital social network"/>
+	<meta name="author" content="Sonr"/>
+	<meta name="robots" content="index, follow"/>
+	<meta name="googlebot" content="index, follow"/>
+	<meta name="google" content="nositelinkssearchbox"/>
+	<meta property="og:title" content="Motr"/>
+	<meta property="og:description" content="Sonr is a decentralized social network that allows you to create your own personalized digital identity."/>
+	<meta property="og:image" content="https://cdn.sonr.id/og.png"/>
+	<meta property="og:url" content="https://sonr.io"/>
+	<meta property="og:site_name" content="Sonr"/>
+	<meta property="og:type" content="website"/>
+	<meta property="og:locale" content="en_US"/>
+	<meta name="twitter:card" content="summary_large_image"/>
+	<meta name="twitter:site" content="@sonr_io"/>
+	<meta name="twitter:creator" content="@sonr_io"/>
+	<meta name="twitter:title" content="Motr"/>
+	<meta name="twitter:description" content="Sonr is a decentralized social network that allows you to create your own personalized digital identity."/>
+	<meta name="twitter:image" content="https://cdn.sonr.id/og.png"/>
+}
+
+templ MetaComponent(m Metadata) {
+	<title>{ m.Title }</title>
+	<link rel="icon" type="image/png" href={ m.Favicon }/>
+	<meta name="description" content={ m.Description }/>
+	<meta name="keywords" content={ m.Keywords }/>
+	<meta name="author" content={ m.Author }/>
+	<meta name="robots" content={ m.Robots }/>
+	<meta name="googlebot" content={ m.Googlebot }/>
+	<meta name="google" content={ m.Google }/>
+	<meta property="og:title" content={ m.Title }/>
+	<meta property="og:description" content={ m.Description }/>
+	<meta property="og:image" content={ m.OGImage }/>
+	<meta property="og:url" content={ m.OGURL }/>
+	<meta property="og:site_name" content={ m.OGSiteName }/>
+	<meta property="og:type" content="website"/>
+	<meta property="og:locale" content="en_US"/>
+	<meta name="twitter:card" content="summary_large_image"/>
+	<meta name="twitter:site" content={ m.TwitterSite }/>
+	<meta name="twitter:creator" content={ m.TwitterCreator }/>
+	<meta name="twitter:title" content={ m.Title }/>
+	<meta name="twitter:description" content={ m.Description }/>
+	<meta name="twitter:image" content={ m.TwitterImage }/>
+}

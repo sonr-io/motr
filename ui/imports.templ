@@ -8,12 +8,20 @@ var (
 	dexieHandle      = templ.NewOnceHandle()
 	heliaHandle      = templ.NewOnceHandle()
 	htmxHandle       = templ.NewOnceHandle()
+	tailwindHandle   = templ.NewOnceHandle()
 )
+
+// ApexCharts is a component that renders the ApexCharts.js library
+templ ApexCharts() {
+	@apexChartsHandle.Once() {
+		<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+	}
+}
 
 // d3 is a component that renders the D3.js library
 templ D3() {
 	@d3Handle.Once() {
-	    <script type="module">
+		<script type="module">
             import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 	    </script>
 	}
@@ -24,12 +32,6 @@ templ Dexie() {
 	@dexieHandle.Once() {
 		<script src={ jsDelivrURL("dexie", "4.0.10", "dist/dexie.min.js") }></script>
 		<script src={ jsDelivrURL("dexie-export-import", "4.1.4", "dist/dexie-export-import.min.js") }></script>
-	}
-}
-
-templ ApexCharts() {
-	@apexChartsHandle.Once() {
-		<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	}
 }
 
@@ -71,7 +73,6 @@ templ Helia() {
 
             // Peer management
             window.discoveredPeers = new Map()
-
             const updateConnectedPeers = () => {
                 if (!window.helia || !window.helia.libp2p) return
                 
@@ -93,14 +94,12 @@ templ Helia() {
                     }
                 }
             }
-
             const updateDiscoveredPeers = () => {
                 const discoveredPeerCountEl = document.getElementById('discoveredPeerCount')
                 if (discoveredPeerCountEl) {
                     discoveredPeerCountEl.innerHTML = window.discoveredPeers.size
                 }
             }
-
             // Helia node instantiation
             let heliaInstance = null
             window.instantiateHeliaNode = async () => {
@@ -111,13 +110,11 @@ templ Helia() {
                 if (heliaInstance != null) {
                     return heliaInstance
                 }
-
                 heliaInstance = await Helia.createHelia({
                     datastore,
                     blockstore
                 })
                 addToLog('Created Helia instance')
-
                 return heliaInstance
             }
         </script>
@@ -136,6 +133,7 @@ templ Htmx() {
 	}
 }
 
+// jsDelivrURL returns the URL of a package on jsDelivr
 func jsDelivrURL(pkg string, version string, path string) string {
 	return fmt.Sprintf("https://cdn.jsdelivr.net/npm/%s/%s/%s", pkg, version, path)
 }

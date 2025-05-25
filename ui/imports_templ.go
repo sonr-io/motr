@@ -16,10 +16,11 @@ var (
 	dexieHandle      = templ.NewOnceHandle()
 	heliaHandle      = templ.NewOnceHandle()
 	htmxHandle       = templ.NewOnceHandle()
+	tailwindHandle   = templ.NewOnceHandle()
 )
 
-// d3 is a component that renders the D3.js library
-func D3() templ.Component {
+// ApexCharts is a component that renders the ApexCharts.js library
+func ApexCharts() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -52,13 +53,13 @@ func D3() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<script type=\"module\">\n            import * as d3 from \"https://cdn.jsdelivr.net/npm/d3@7/+esm\";\n\t    </script>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<script src=\"https://cdn.jsdelivr.net/npm/apexcharts\"></script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = d3Handle.Once().Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = apexChartsHandle.Once().Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -66,8 +67,8 @@ func D3() templ.Component {
 	})
 }
 
-// dexie is a component that renders the Dexie.js library
-func Dexie() templ.Component {
+// d3 is a component that renders the D3.js library
+func D3() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -100,39 +101,13 @@ func Dexie() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<script src=\"")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var5 string
-			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(jsDelivrURL("dexie", "4.0.10", "dist/dexie.min.js"))
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/imports.templ`, Line: 25, Col: 67}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"></script> <script src=\"")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var6 string
-			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(jsDelivrURL("dexie-export-import", "4.1.4", "dist/dexie-export-import.min.js"))
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/imports.templ`, Line: 26, Col: 94}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\"></script>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<script type=\"module\">\n            import * as d3 from \"https://cdn.jsdelivr.net/npm/d3@7/+esm\";\n\t    </script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = dexieHandle.Once().Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = d3Handle.Once().Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -140,7 +115,8 @@ func Dexie() templ.Component {
 	})
 }
 
-func ApexCharts() templ.Component {
+// dexie is a component that renders the Dexie.js library
+func Dexie() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -156,12 +132,12 @@ func ApexCharts() templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var7 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var7 == nil {
-			templ_7745c5c3_Var7 = templ.NopComponent
+		templ_7745c5c3_Var5 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var5 == nil {
+			templ_7745c5c3_Var5 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Var8 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_Var6 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
 			if !templ_7745c5c3_IsBuffer {
@@ -173,13 +149,39 @@ func ApexCharts() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<script src=\"https://cdn.jsdelivr.net/npm/apexcharts\"></script>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<script src=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var7 string
+			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(jsDelivrURL("dexie", "4.0.10", "dist/dexie.min.js"))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/imports.templ`, Line: 33, Col: 67}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\"></script> <script src=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var8 string
+			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(jsDelivrURL("dexie-export-import", "4.1.4", "dist/dexie-export-import.min.js"))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/imports.templ`, Line: 34, Col: 94}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "\"></script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = apexChartsHandle.Once().Render(templ.WithChildren(ctx, templ_7745c5c3_Var8), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = dexieHandle.Once().Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -221,7 +223,7 @@ func Helia() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<script src=\"https://unpkg.com/@helia/unixfs/dist/index.min.js\"></script> <script src=\"https://unpkg.com/blockstore-core/dist/index.min.js\"></script> <script src=\"https://unpkg.com/datastore-core/dist/index.min.js\"></script> <script src=\"https://unpkg.com/helia/dist/index.min.js\"></script> <script>\n            // Time formatting helper\n            function ms2TimeString(a) {\n                const k = a % 1e3\n                const s = a / 1e3 % 60 | 0\n                const m = a / 6e4 % 60 | 0\n                const h = a / 36e5 % 24 | 0\n\n                return (h ? (h < 10 ? '0' + h : h) + ':' : '00:') +\n                    (m < 10 ? 0 : '') + m + ':' +\n                    (s < 10 ? 0 : '') + s + ':' +\n                    (k < 100 ? k < 10 ? '00' : 0 : '') + k\n            }\n\n            // Log management\n            const getLogLineEl = (msg) => {\n                const logLine = document.createElement('span')\n                logLine.innerHTML = `${ms2TimeString(performance.now())} - ${msg}`\n                return logLine\n            }\n            \n            const addToLog = (msg) => {\n                const logEl = document.getElementById('runningLog')\n                if (logEl) {\n                    logEl.appendChild(getLogLineEl(msg))\n                    logEl.appendChild(document.createElement('br'))\n                }\n            }\n\n            // Peer management\n            window.discoveredPeers = new Map()\n\n            const updateConnectedPeers = () => {\n                if (!window.helia || !window.helia.libp2p) return\n                \n                const peers = window.helia.libp2p.getPeers()\n                const connectedPeerCountEl = document.getElementById('connectedPeerCount')\n                const connectedPeersListEl = document.getElementById('connectedPeersList')\n                \n                if (connectedPeerCountEl) {\n                    connectedPeerCountEl.innerHTML = peers.length\n                }\n                \n                if (connectedPeersListEl) {\n                    connectedPeersListEl.innerHTML = ''\n                    \n                    for (const peer of peers) {\n                        const peerEl = document.createElement('li')\n                        peerEl.innerText = peer.toString()\n                        connectedPeersListEl.appendChild(peerEl)\n                    }\n                }\n            }\n\n            const updateDiscoveredPeers = () => {\n                const discoveredPeerCountEl = document.getElementById('discoveredPeerCount')\n                if (discoveredPeerCountEl) {\n                    discoveredPeerCountEl.innerHTML = window.discoveredPeers.size\n                }\n            }\n\n            // Helia node instantiation\n            let heliaInstance = null\n            window.instantiateHeliaNode = async () => {\n                // application-specific data lives in the datastore\n                const datastore = new DatastoreCore.MemoryDatastore()\n                const blockstore = new BlockstoreCore.MemoryBlockstore()\n\n                if (heliaInstance != null) {\n                    return heliaInstance\n                }\n\n                heliaInstance = await Helia.createHelia({\n                    datastore,\n                    blockstore\n                })\n                addToLog('Created Helia instance')\n\n                return heliaInstance\n            }\n        </script>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<script src=\"https://unpkg.com/@helia/unixfs/dist/index.min.js\"></script> <script src=\"https://unpkg.com/blockstore-core/dist/index.min.js\"></script> <script src=\"https://unpkg.com/datastore-core/dist/index.min.js\"></script> <script src=\"https://unpkg.com/helia/dist/index.min.js\"></script> <script>\n            // Time formatting helper\n            function ms2TimeString(a) {\n                const k = a % 1e3\n                const s = a / 1e3 % 60 | 0\n                const m = a / 6e4 % 60 | 0\n                const h = a / 36e5 % 24 | 0\n\n                return (h ? (h < 10 ? '0' + h : h) + ':' : '00:') +\n                    (m < 10 ? 0 : '') + m + ':' +\n                    (s < 10 ? 0 : '') + s + ':' +\n                    (k < 100 ? k < 10 ? '00' : 0 : '') + k\n            }\n\n            // Log management\n            const getLogLineEl = (msg) => {\n                const logLine = document.createElement('span')\n                logLine.innerHTML = `${ms2TimeString(performance.now())} - ${msg}`\n                return logLine\n            }\n            \n            const addToLog = (msg) => {\n                const logEl = document.getElementById('runningLog')\n                if (logEl) {\n                    logEl.appendChild(getLogLineEl(msg))\n                    logEl.appendChild(document.createElement('br'))\n                }\n            }\n\n            // Peer management\n            window.discoveredPeers = new Map()\n            const updateConnectedPeers = () => {\n                if (!window.helia || !window.helia.libp2p) return\n                \n                const peers = window.helia.libp2p.getPeers()\n                const connectedPeerCountEl = document.getElementById('connectedPeerCount')\n                const connectedPeersListEl = document.getElementById('connectedPeersList')\n                \n                if (connectedPeerCountEl) {\n                    connectedPeerCountEl.innerHTML = peers.length\n                }\n                \n                if (connectedPeersListEl) {\n                    connectedPeersListEl.innerHTML = ''\n                    \n                    for (const peer of peers) {\n                        const peerEl = document.createElement('li')\n                        peerEl.innerText = peer.toString()\n                        connectedPeersListEl.appendChild(peerEl)\n                    }\n                }\n            }\n            const updateDiscoveredPeers = () => {\n                const discoveredPeerCountEl = document.getElementById('discoveredPeerCount')\n                if (discoveredPeerCountEl) {\n                    discoveredPeerCountEl.innerHTML = window.discoveredPeers.size\n                }\n            }\n            // Helia node instantiation\n            let heliaInstance = null\n            window.instantiateHeliaNode = async () => {\n                // application-specific data lives in the datastore\n                const datastore = new DatastoreCore.MemoryDatastore()\n                const blockstore = new BlockstoreCore.MemoryBlockstore()\n\n                if (heliaInstance != null) {\n                    return heliaInstance\n                }\n                heliaInstance = await Helia.createHelia({\n                    datastore,\n                    blockstore\n                })\n                addToLog('Created Helia instance')\n                return heliaInstance\n            }\n        </script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -276,7 +278,7 @@ func Htmx() templ.Component {
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(jsDelivrURL("htmx.org", "1.9.12", "dist/htmx.min.js"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/imports.templ`, Line: 130, Col: 69}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/imports.templ`, Line: 127, Col: 69}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 			if templ_7745c5c3_Err != nil {
@@ -289,7 +291,7 @@ func Htmx() templ.Component {
 			var templ_7745c5c3_Var14 string
 			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(jsDelivrURL("htmx-ext-include-vals", "2.0.0", "include-vals.min.js"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/imports.templ`, Line: 131, Col: 84}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/imports.templ`, Line: 128, Col: 84}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 			if templ_7745c5c3_Err != nil {
@@ -302,7 +304,7 @@ func Htmx() templ.Component {
 			var templ_7745c5c3_Var15 string
 			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(jsDelivrURL("htmx-ext-path-params", "2.0.0", "path-params.min.js"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/imports.templ`, Line: 132, Col: 82}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/imports.templ`, Line: 129, Col: 82}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 			if templ_7745c5c3_Err != nil {
@@ -315,7 +317,7 @@ func Htmx() templ.Component {
 			var templ_7745c5c3_Var16 string
 			templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(jsDelivrURL("htmx-ext-alpine-morph", "2.0.0", "alpine-morph.min.js"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/imports.templ`, Line: 133, Col: 84}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/imports.templ`, Line: 130, Col: 84}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 			if templ_7745c5c3_Err != nil {
@@ -328,7 +330,7 @@ func Htmx() templ.Component {
 			var templ_7745c5c3_Var17 string
 			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(jsDelivrURL("htmx-ext-sse", "2.2.2", "sse.min.js"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/imports.templ`, Line: 134, Col: 66}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/imports.templ`, Line: 131, Col: 66}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 			if templ_7745c5c3_Err != nil {
@@ -341,7 +343,7 @@ func Htmx() templ.Component {
 			var templ_7745c5c3_Var18 string
 			templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(jsDelivrURL("htmx-ext-ws", "2.0.2", "ws.min.js"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/imports.templ`, Line: 135, Col: 64}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/imports.templ`, Line: 132, Col: 64}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 			if templ_7745c5c3_Err != nil {
@@ -361,6 +363,7 @@ func Htmx() templ.Component {
 	})
 }
 
+// jsDelivrURL returns the URL of a package on jsDelivr
 func jsDelivrURL(pkg string, version string, path string) string {
 	return fmt.Sprintf("https://cdn.jsdelivr.net/npm/%s/%s/%s", pkg, version, path)
 }
