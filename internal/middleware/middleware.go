@@ -4,7 +4,10 @@
 package middleware
 
 import (
+	"time"
+
 	"github.com/labstack/echo/v4"
+	"github.com/sonr-io/motr/internal/shared"
 	"github.com/sonr-io/motr/sink/config"
 )
 
@@ -24,7 +27,21 @@ func UseSession(cnfg config.Config) echo.MiddlewareFunc {
 	}
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			ctx := NewSession(c, cnfg, q, hkv, skv)
+			id := shared.FindOrCreateSessionID(c)
+			ctx := &SessionContext{
+				Context:  c,
+				ID:       id,
+				Config:   cnfg,
+				DB:       q,
+				Handles:  hkv,
+				Sessions: skv,
+				Status: &Status{
+					SessionID: id,
+					Expires:   cnfg.KV.GetSessionExpiry(time.Now()),
+					Status:    "default",
+					Handle:    "",
+				},
+			}
 			return next(ctx)
 		}
 	}

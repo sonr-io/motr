@@ -3,7 +3,7 @@ package handlers
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/internal/middleware"
-	"github.com/sonr-io/motr/internal/pages"
+	"github.com/sonr-io/motr/internal/views"
 )
 
 type RegisterOptions struct {
@@ -13,17 +13,17 @@ type RegisterOptions struct {
 }
 
 func HandleRegisterInitial(c echo.Context) error {
-	return middleware.Render(c, pages.RegisterView())
+	return middleware.Render(c, views.RegisterView())
 }
 
 func HandleRegisterCheck(c echo.Context) error {
-	return middleware.Render(c, pages.RegisterView())
+	return middleware.Render(c, views.RegisterView())
 }
 
 func HandleRegisterFinish(c echo.Context) error {
-	return middleware.Render(c, pages.RegisterView())
+	return middleware.Render(c, views.RegisterView())
 }
 
 func HandleRegisterStart(c echo.Context) error {
-	return middleware.Render(c, pages.RegisterView())
+	return middleware.Render(c, views.RegisterView())
 }

@@ -4,11 +4,7 @@
 package middleware
 
 import (
-	"time"
-
-	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
-	"github.com/segmentio/ksuid"
 	"github.com/sonr-io/motr/sink/config"
 	"github.com/sonr-io/motr/sink/models"
 	"github.com/syumai/workers/cloudflare/kv"
@@ -24,33 +20,7 @@ type SessionContext struct {
 	Status   *Status
 }
 
-func NewSession(c echo.Context, cfg config.Config, q models.Querier, hkv *kv.Namespace, skv *kv.Namespace) *SessionContext {
-	id := getOrCreateSessionID(c)
-	return &SessionContext{
-		Context:  c,
-		ID:       id,
-		Config:   cfg,
-		DB:       q,
-		Handles:  hkv,
-		Sessions: skv,
-		Status: &Status{
-			SessionID: id,
-			Expires:   cfg.KV.GetSessionExpiry(time.Now()),
-			Status:    "default",
-			Handle:    "",
-		},
-	}
-}
-
-func GetMetadata(c echo.Context) Metadata {
-	return DefaultMetadata()
-}
-
-func GetMetaComponent(c echo.Context) templ.Component {
-	return MetaComponent(GetMetadata(c))
-}
-
-func GetSession(c echo.Context) *SessionContext {
+func UnwrapSession(c echo.Context) *SessionContext {
 	cc := c.(*SessionContext)
 	if cc == nil {
 		panic("Session Context not found")
@@ -58,20 +28,29 @@ func GetSession(c echo.Context) *SessionContext {
 	return cc
 }
 
-// getOrCreateSessionID returns the session ID from the cookie or creates a new one if it doesn't exist
-func getOrCreateSessionID(c echo.Context) string {
-	if ok := CookieExists(c, SessionID); !ok {
-		sessionID := ksuid.New().String()
-		WriteCookie(c, SessionID, sessionID)
-		c.Echo().Logger.Debug("Wrote session ID to cookie")
-		return sessionID
-	}
-	c.Echo().Logger.Debug("Has session ID in cookie")
-	sessionID, err := ReadCookie(c, SessionID)
+// SaveStatus saves the state of the current session into the KV store
+func (sc *SessionContext) SaveStatus(kv *kv.Namespace) error {
+	stbz, err := sc.Status.Marshal()
 	if err != nil {
-		sessionID = ksuid.New().String()
-		WriteCookie(c, SessionID, sessionID)
-		c.Echo().Logger.Debug("Failed to read session ID from cookie, wrote new one")
+		return err
 	}
-	return sessionID
+	if err := kv.PutString(sc.ID, string(stbz), nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+// LoadStatus loads the state of the current session from the KV store
+func (sc *SessionContext) LoadStatus(kv *kv.Namespace) (*Status, error) {
+	ststr, err := kv.GetString(sc.ID, nil)
+	if err != nil {
+		return nil, err
+	}
+	st := &Status{}
+	err = st.Unmarshal([]byte(ststr))
+	if err != nil {
+		return nil, err
+	}
+	sc.Status = st
+	return st, nil
 }

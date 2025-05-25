@@ -1,7 +1,7 @@
 package prices
 
 import (
-	"github.com/sonr-io/motr/internal/util"
+	"github.com/sonr-io/motr/internal/shared"
 	"github.com/sonr-io/motr/sink/models"
 )
 
@@ -13,11 +13,11 @@ templ CardComponent(assetID string, price float64, change float64) {
 		</div>
 		<div class="flex items-center gap-2">
 			<sl-icon style="font-size: 24px;" library="sonr" name="chevron-right"></sl-icon>
-			<span class="text-lg font-mono">{ util.Float64ToPercent(price) }</span>
+			<span class="text-lg font-mono">{ shared.Float64ToPercent(price) }</span>
 		</div>
 		<div class="flex items-center gap-2">
 			<sl-icon style="font-size: 24px;" library="sonr" name="chevron-right"></sl-icon>
-			<span class="text-lg font-mono">{ util.Float64ToPercent(change) }</span>
+			<span class="text-lg font-mono">{ shared.Float64ToPercent(change) }</span>
 		</div>
 	</div>
 }
