@@ -3,6 +3,10 @@
 
 package cflare
 
+import (
+	"encoding/json"
+)
+
 type KVNamespace interface {
 	// Generic Operations
 	Has(key string) (bool, error)
