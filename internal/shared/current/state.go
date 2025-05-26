@@ -1,4 +1,4 @@
-package shared
+package current
 
 type Current struct {
 	SelectedHandle  string

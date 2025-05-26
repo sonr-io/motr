@@ -1,4 +1,4 @@
-package shared
+package cookies
 
 import (
 	"encoding/base64"
@@ -8,34 +8,34 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// CookieKey is a type alias for string.
-type CookieKey string
+// Key is a type alias for string.
+type Key string
 
 const (
 	// SessionID is the key for the session ID cookie.
-	SessionID CookieKey = "session.id"
+	SessionID Key = "session.id"
 
 	// SessionChallenge is the key for the session challenge cookie.
-	SessionChallenge CookieKey = "session.challenge"
+	SessionChallenge Key = "session.challenge"
 
 	// SessionRole is the key for the session role cookie.
-	SessionRole CookieKey = "session.role"
+	SessionRole Key = "session.role"
 
 	// UserHandle is the key for the User Handle cookie.
-	UserHandle CookieKey = "user.handle"
+	UserHandle Key = "user.handle"
 
 	// VaultAddress is the key for the Vault address cookie.
-	VaultAddress CookieKey = "vault.address"
+	VaultAddress Key = "vault.address"
 
 	// VaultCID is the key for the Vault CID cookie.
-	VaultCID CookieKey = "vault.cid"
+	VaultCID Key = "vault.cid"
 
 	// VaultSchema is the key for the Vault schema cookie.
-	VaultSchema CookieKey = "vault.schema"
+	VaultSchema Key = "vault.schema"
 )
 
 // String returns the string representation of the CookieKey.
-func (c CookieKey) String() string {
+func (c Key) String() string {
 	return string(c)
 }
 
@@ -43,7 +43,7 @@ func (c CookieKey) String() string {
 // │                      Utility Methods                      │
 // ╰───────────────────────────────────────────────────────────╯
 
-func CookieExists(c echo.Context, key CookieKey) bool {
+func Exists(c echo.Context, key Key) bool {
 	ck, err := c.Cookie(key.String())
 	if err != nil {
 		return false
@@ -51,7 +51,7 @@ func CookieExists(c echo.Context, key CookieKey) bool {
 	return ck != nil
 }
 
-func ReadCookie(c echo.Context, key CookieKey) (string, error) {
+func Read(c echo.Context, key Key) (string, error) {
 	cookie, err := c.Cookie(key.String())
 	if err != nil {
 		// Cookie not found or other error
@@ -64,7 +64,7 @@ func ReadCookie(c echo.Context, key CookieKey) (string, error) {
 	return cookie.Value, nil
 }
 
-func ReadCookieBytes(c echo.Context, key CookieKey) ([]byte, error) {
+func ReadBytes(c echo.Context, key Key) ([]byte, error) {
 	cookie, err := c.Cookie(key.String())
 	if err != nil {
 		// Cookie not found or other error
@@ -77,7 +77,7 @@ func ReadCookieBytes(c echo.Context, key CookieKey) ([]byte, error) {
 	return base64.RawURLEncoding.DecodeString(cookie.Value)
 }
 
-func ReadCookieUnsafe(c echo.Context, key CookieKey) string {
+func ReadUnsafe(c echo.Context, key Key) string {
 	ck, err := c.Cookie(key.String())
 	if err != nil {
 		return ""
@@ -85,7 +85,7 @@ func ReadCookieUnsafe(c echo.Context, key CookieKey) string {
 	return ck.Value
 }
 
-func WriteCookie(c echo.Context, key CookieKey, value string) error {
+func Write(c echo.Context, key Key, value string) error {
 	cookie := &http.Cookie{
 		Name:     key.String(),
 		Value:    value,
@@ -98,7 +98,7 @@ func WriteCookie(c echo.Context, key CookieKey, value string) error {
 	return nil
 }
 
-func WriteCookieBytes(c echo.Context, key CookieKey, value []byte) error {
+func WriteBytes(c echo.Context, key Key, value []byte) error {
 	cookie := &http.Cookie{
 		Name:     key.String(),
 		Value:    base64.RawURLEncoding.EncodeToString(value),

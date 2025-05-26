@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
-	"github.com/sonr-io/motr/internal/shared"
+	"github.com/sonr-io/motr/internal/shared/current"
 	"github.com/sonr-io/motr/sink/config"
 )
 
@@ -27,7 +27,7 @@ func UseSession(cnfg config.Config) echo.MiddlewareFunc {
 	}
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			id := shared.FindOrCreateSessionID(c)
+			id := current.FindOrCreateSessionID(c)
 			ctx := &SessionContext{
 				Context:  c,
 				ID:       id,
