@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "build": "npm run clean && npm run assets && npm run wasm",
-    "assets": "go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go",
-    "wasm": "GOOS=js GOARCH=wasm go build -o ./build/app.wasm .",
+    "assets": "go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go -o=./cmd/build",
+    "wasm": "GOOS=js GOARCH=wasm go build -o ./build/app.wasm ./cmd/main.go",
     "migrate": "npx wrangler d1 execute motr-db --remote --file=./schema.sql",
     "deploy": "npx wrangler deploy",
     "start": "npx wrangler dev",

@@ -1,0 +1,97 @@
+package ui
+
+import "github.com/labstack/echo/v4"
+
+func GetMetadata(c echo.Context) Metadata {
+	return DefaultMetadata()
+}
+
+func GetMetaComponent(c echo.Context) templ.Component {
+	return MetaComponent(GetMetadata(c))
+}
+
+func DefaultMetadata() Metadata {
+	return Metadata{
+		Title:          "Motr",
+		Author:         "Sonr",
+		Favicon:        "https://cdn.sonr.id/favicon.png",
+		Robots:         "index, follow",
+		Googlebot:      "index, follow",
+		Google:         "nositelinkssearchbox",
+		Description:    "Sonr is a decentralized social network that allows you to create your own personalized digital identity.",
+		Keywords:       "Sonr, social network, decentralized, identity, decentralized social network, decentralized identity, self-sovereign identity, self-sovereign, self-sovereign social network, self-sovereign identity network, sso, sso network, sso identity, sso social network, digital identity, digital social network",
+		CanonicalURL:   "https://sonr.io",
+		OGImage:        "https://cdn.sonr.id/og.png",
+		OGURL:          "https://sonr.io",
+		OGSiteName:     "Sonr",
+		TwitterSite:    "@sonr_io",
+		TwitterCreator: "@sonr_io",
+		TwitterImage:   "https://cdn.sonr.id/og.png",
+	}
+}
+
+type Metadata struct {
+	Title          string
+	Author         string
+	Favicon        string
+	Robots         string
+	Googlebot      string
+	Google         string
+	Description    string
+	Keywords       string
+	CanonicalURL   string
+	OGImage        string
+	OGURL          string
+	OGSiteName     string
+	TwitterSite    string
+	TwitterCreator string
+	TwitterImage   string
+}
+
+templ DefaultMetaComponent() {
+	<title>Motr</title>
+	<link rel="icon" type="image/png" href="https://cdn.sonr.id/favicon.png"/>
+	<meta name="description" content="Sonr is a decentralized social network that allows you to create your own personalized digital identity."/>
+	<meta name="keywords" content="Sonr, social network, decentralized, identity, decentralized social network, decentralized identity, self-sovereign identity, self-sovereign, self-sovereign social network, self-sovereign identity network, sso, sso network, sso identity, sso social network, digital identity, digital social network"/>
+	<meta name="author" content="Sonr"/>
+	<meta name="robots" content="index, follow"/>
+	<meta name="googlebot" content="index, follow"/>
+	<meta name="google" content="nositelinkssearchbox"/>
+	<meta property="og:title" content="Motr"/>
+	<meta property="og:description" content="Sonr is a decentralized social network that allows you to create your own personalized digital identity."/>
+	<meta property="og:image" content="https://cdn.sonr.id/og.png"/>
+	<meta property="og:url" content="https://sonr.io"/>
+	<meta property="og:site_name" content="Sonr"/>
+	<meta property="og:type" content="website"/>
+	<meta property="og:locale" content="en_US"/>
+	<meta name="twitter:card" content="summary_large_image"/>
+	<meta name="twitter:site" content="@sonr_io"/>
+	<meta name="twitter:creator" content="@sonr_io"/>
+	<meta name="twitter:title" content="Motr"/>
+	<meta name="twitter:description" content="Sonr is a decentralized social network that allows you to create your own personalized digital identity."/>
+	<meta name="twitter:image" content="https://cdn.sonr.id/og.png"/>
+}
+
+templ MetaComponent(m Metadata) {
+	<title>{ m.Title }</title>
+	<link rel="icon" type="image/png" href={ m.Favicon }/>
+	<meta name="description" content={ m.Description }/>
+	<meta name="keywords" content={ m.Keywords }/>
+	<meta name="author" content={ m.Author }/>
+	<meta name="robots" content={ m.Robots }/>
+	<meta name="googlebot" content={ m.Googlebot }/>
+	<meta name="google" content={ m.Google }/>
+	<meta property="og:title" content={ m.Title }/>
+	<meta property="og:description" content={ m.Description }/>
+	<meta property="og:image" content={ m.OGImage }/>
+	<meta property="og:url" content={ m.OGURL }/>
+	<meta property="og:site_name" content={ m.OGSiteName }/>
+	<meta property="og:type" content="website"/>
+	<meta property="og:locale" content="en_US"/>
+	<meta name="twitter:card" content="summary_large_image"/>
+	<meta name="twitter:site" content={ m.TwitterSite }/>
+	<meta name="twitter:creator" content={ m.TwitterCreator }/>
+	<meta name="twitter:title" content={ m.Title }/>
+	<meta name="twitter:description" content={ m.Description }/>
+	<meta name="twitter:image" content={ m.TwitterImage }/>
+}

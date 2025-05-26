@@ -4,7 +4,7 @@
 package routes
 
 import (
-	"github.com/sonr-io/motr/internal/handlers"
+	"github.com/sonr-io/motr/handlers"
 	"github.com/sonr-io/motr/sink/config"
 )
 

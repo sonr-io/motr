@@ -1,0 +1,53 @@
+# Top-level configuration
+name = "motr-vault"
+main = "./cmd/worker.mjs"
+compatibility_date = "2025-04-14"
+
+routes = [
+  { pattern = "did.run", custom_domain = true },
+]
+
+[build]
+command = "npm run build"
+
+[dev]
+port = 6969
+
+[observability]
+enabled = true
+logpush = true
+
+[[d1_databases]]
+binding = "DB" # available in your Worker on env.DB
+database_name = "motr-controller-db"
+database_id = "872a4b08-7e07-4978-b227-5b60940238ed"
+
+[[kv_namespaces]]
+binding = "SESSIONS" # available in your Worker on env.KV
+id = "ea5de66fcfc14b5eba170395e29432ee"
+
+[[kv_namespaces]]
+binding = "HANDLES" # available in your Worker on env.KV
+id = "271d47087a8842b2aac5ee79cf7bb203"
+
+[[r2_buckets]]
+binding = 'PROFILES'
+bucket_name = 'profiles'
+
+[vars]
+SONR_CHAIN_ID = 'sonr-testnet-1'
+IPFS_GATEWAY = 'https://ipfs.sonr.land'
+SONR_API_URL = 'https://api.sonr.land'
+SONR_RPC_URL = 'https://rpc.sonr.land'
+SONR_GRPC_URL = 'https://grpc.sonr.land'
+MATRIX_SERVER = 'https://bm.chat'
+MOTR_GATEWAY = 'https://sonr.id'
+MOTR_VAULT = 'https://did.run'
+MOTR_MODE = 'controller'
+
+[durable_objects]
+bindings = [{name = "VAULT", class_name = "Vault"}]
+
+[[migrations]]
+tag = "v1" # Should be unique for each entry
+new_classes = ["Vault"] # List the classes that should be created

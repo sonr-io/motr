@@ -1,0 +1,55 @@
+package views
+
+import "github.com/sonr-io/motr/ui"
+
+templ RegisterView() {
+	@ui.HTML() {
+		@ui.Head() {
+			@ui.DefaultMetaComponent()
+		}
+		@ui.Nav() {
+			@ui.NavLeft() {
+				@ui.NavLogo("Sonr") {
+					<div style="font-size: 24px;">
+						<sl-icon library="sonr" name="sonr"></sl-icon>
+					</div>
+				}
+			}
+			@ui.NavRight() {
+			}
+		}
+		// Body
+		@ui.Body() {
+			@ui.Container() {
+				<sl-input class="label-on-left" label="Name" help-text="Enter your name"></sl-input>
+				<sl-input class="label-on-left" label="Email" type="email" help-text="Enter your email"></sl-input>
+				<sl-textarea class="label-on-left" label="Bio" help-text="Tell us something about yourself"></sl-textarea>
+				<style>
+  				.label-on-left {
+    				--label-width: 3.75rem;
+    				--gap-width: 1rem;
+  				}
+
+  				.label-on-left + .label-on-left {
+    				margin-top: var(--sl-spacing-medium);
+  				}
+
+  				.label-on-left::part(form-control) {
+    				display: grid;
+    				grid: auto / var(--label-width) 1fr;
+    				gap: var(--sl-spacing-3x-small) var(--gap-width);
+    				align-items: center;
+  				}
+
+  				.label-on-left::part(form-control-label) {
+    				text-align: right;
+  				}
+
+  				.label-on-left::part(form-control-help-text) {
+    				grid-column-start: 2;
+  				}
+				</style>
+			}
+		}
+	}
+}
