@@ -1,14 +1,14 @@
 //go:build js && wasm
 // +build js,wasm
 
-package current
+package session
 
 import (
 	"encoding/json"
 	"time"
 )
 
-type Status struct {
+type Health struct {
 	SessionID    string `json:"session_id"`
 	Status       string `json:"status"`
 	Expires      int64  `json:"expires"`
@@ -16,26 +16,26 @@ type Status struct {
 	CaptchaValid bool   `json:"captcha_valid"`
 }
 
-func (s *Status) Marshal() ([]byte, error) {
+func (s *Health) Marshal() ([]byte, error) {
 	return json.Marshal(s)
 }
 
-func (s *Status) Unmarshal(b []byte) error {
+func (s *Health) Unmarshal(b []byte) error {
 	return json.Unmarshal(b, s)
 }
 
-func (s *Status) IsExpired() bool {
+func (s *Health) IsExpired() bool {
 	return s.Expires < time.Now().Unix()
 }
 
-func (s *Status) IsNewUser() bool {
+func (s *Health) IsNewUser() bool {
 	return s.Status == "default"
 }
 
-func (s *Status) IsExpiredUser() bool {
+func (s *Health) IsExpiredUser() bool {
 	return s.Status == "expired"
 }
 
-func (s *Status) IsValidUser() bool {
+func (s *Health) IsValidUser() bool {
 	return s.Status == "valid"
 }

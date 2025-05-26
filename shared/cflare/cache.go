@@ -1,7 +1,7 @@
 //go:build js && wasm
 // +build js,wasm
 
-package middleware
+package cflare
 
 import (
 	"bytes"
@@ -26,9 +26,9 @@ type CloudflareCache struct {
 }
 
 // UseCloudflareCache creates a new CloudflareCache middleware
-func UseCloudflareCache(cfg config.CacheConfig) echo.MiddlewareFunc {
+func UseCloudflareCache(cfg config.Config) echo.MiddlewareFunc {
 	// If cache is disabled, return a pass-through middleware
-	if !cfg.Enabled {
+	if !cfg.Cache.Enabled {
 		return func(next echo.HandlerFunc) echo.HandlerFunc {
 			return func(c echo.Context) error {
 				return next(c)
@@ -38,17 +38,17 @@ func UseCloudflareCache(cfg config.CacheConfig) echo.MiddlewareFunc {
 
 	// Convert slice to map for faster lookups
 	cacheableStatusCodes := make(map[int]bool)
-	for _, code := range cfg.CacheableStatusCodes {
+	for _, code := range cfg.Cache.CacheableStatusCodes {
 		cacheableStatusCodes[code] = true
 	}
 
 	cacheableContentTypes := make(map[string]bool)
-	for _, contentType := range cfg.CacheableContentTypes {
+	for _, contentType := range cfg.Cache.CacheableContentTypes {
 		cacheableContentTypes[contentType] = true
 	}
 
 	cacheMiddleware := &CloudflareCache{
-		Config:                cfg,
+		Config:                cfg.Cache,
 		CacheableStatusCodes:  cacheableStatusCodes,
 		CacheableContentTypes: cacheableContentTypes,
 	}

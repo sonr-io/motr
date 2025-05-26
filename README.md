@@ -103,6 +103,31 @@ Motr can be integrated into progressive web applications, providing:
 - Seamless blockchain account management
 - Cross-device synchronization
 
+## Commands
+
+- Build: `task build` - Compiles WASM with `GOOS=js GOARCH=wasm go build -o web/vault.wasm .`
+- Generate: `task gen:templ` - Generate Go code from templ templates
+- Generate: `task gen:sqlc` - Generate Go code from SQL queries
+- Test: `task test` - Run all tests with `go test -v ./...`
+- Run single test: `go test -v ./path/to/package -run TestName`
+- Serve: `task serve` - Run development server with `bunx live-server` in web directory
+
+## Code Style
+
+- **Imports**: Standard library first, external packages second, local packages last
+- **Formatting**: Use gofmt
+- **Types**: Prefer explicit types over interface{}
+- **Naming**: Follow Go conventions (CamelCase for exported, camelCase for unexported)
+- **Error Handling**: Always check errors and return them when appropriate
+- **Domain Structure**: Keep domain logic in `/x` directory with handler.go, model/ and view/ subdirectories
+- **Templates**: Use templ for HTML templating
+- **Database**: Use sqlc for type-safe SQL queries
+- **Middleware**: Place middleware in pkg/[service]/middleware.go
+
+## Architecture
+
+MOTR follows a modular architecture with domain-driven design principles. WebAssembly is used for browser execution with progressive web app capabilities.
+
 ## Architecture
 
 Motr consists of several components:
@@ -118,6 +143,7 @@ Motr consists of several components:
 ### Component Details
 
 1. **Vault**
+
    - Core component deployed as a Cloudflare Worker
    - Manages decentralized identity and authentication
    - Integrates with IPFS/Helia for decentralized storage
@@ -125,11 +151,13 @@ Motr consists of several components:
    - Package located at `cmd/vault/`
 
 2. **Controller**
+
    - Manages user credentials and authentication
    - Integrates with WebAuthn for credential storage
    - Uses SQLite via D1 database for persistent storage
 
 3. **Resolver**
+
    - Resolves Sonr names to addresses and profiles
    - Serves as a gateway to the Sonr network
    - Implemented as a Cloudflare Worker

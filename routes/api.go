@@ -4,8 +4,8 @@
 package routes
 
 import (
-	"github.com/sonr-io/motr/sink/config"
+	"github.com/sonr-io/motr/sink/web"
 )
 
-func SetupAPIRoutes(c *config.Server) {
+func SetupAPIRoutes(c *web.Server) {
 }

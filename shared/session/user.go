@@ -1,4 +1,4 @@
-package current
+package session
 
 type Current struct {
 	SelectedHandle  string

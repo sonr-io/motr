@@ -9,6 +9,7 @@ routes = [
 
 [build]
 command = "npm run build"
+watch_dir = "ui"
 
 [dev]
 port = 6969

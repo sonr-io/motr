@@ -5,10 +5,10 @@ package routes
 
 import (
 	"github.com/sonr-io/motr/handlers"
-	"github.com/sonr-io/motr/sink/config"
+	"github.com/sonr-io/motr/sink/web"
 )
 
-func SetupPartialRoutes(c *config.Server) {
+func SetupPartialRoutes(c *web.Server) {
 	c.POST("/login/:handle/check", handlers.HandleLoginCheck)
 	c.POST("/login/:handle/finish", handlers.HandleLoginFinish)
 

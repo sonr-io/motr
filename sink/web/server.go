@@ -1,7 +1,7 @@
 //go:build js && wasm
 // +build js,wasm
 
-package config
+package web
 
 import (
 	"github.com/labstack/echo/v4"
@@ -10,18 +10,15 @@ import (
 
 // Server is a wrapper around the Echo server
 type Server struct {
-	echo   *echo.Echo
-	Config Config
+	echo *echo.Echo
 }
 
 // New creates a new server
-func New() (*Server, Config) {
-	c := Get()
+func New() *Server {
 	s := &Server{
-		echo:   echo.New(),
-		Config: c,
+		echo: echo.New(),
 	}
-	return s, c
+	return s
 }
 
 // Use registers a middleware
