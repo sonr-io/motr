@@ -35,7 +35,7 @@ func UseSession(cnfg config.Config) echo.MiddlewareFunc {
 				DB:       q,
 				Handles:  hkv,
 				Sessions: skv,
-				Status: &Status{
+				Status: &current.Status{
 					SessionID: id,
 					Expires:   cnfg.KV.GetSessionExpiry(time.Now()),
 					Status:    "default",

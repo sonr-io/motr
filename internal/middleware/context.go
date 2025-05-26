@@ -5,6 +5,7 @@ package middleware
 
 import (
 	"github.com/labstack/echo/v4"
+	"github.com/sonr-io/motr/internal/shared/current"
 	"github.com/sonr-io/motr/sink/config"
 	"github.com/sonr-io/motr/sink/models"
 	"github.com/syumai/workers/cloudflare/kv"
@@ -17,7 +18,7 @@ type SessionContext struct {
 	Config   config.Config
 	Handles  *kv.Namespace
 	Sessions *kv.Namespace
-	Status   *Status
+	Status   *current.Status
 }
 
 func UnwrapSession(c echo.Context) *SessionContext {
@@ -41,12 +42,12 @@ func (sc *SessionContext) SaveStatus(kv *kv.Namespace) error {
 }
 
 // LoadStatus loads the state of the current session from the KV store
-func (sc *SessionContext) LoadStatus(kv *kv.Namespace) (*Status, error) {
+func (sc *SessionContext) LoadStatus(kv *kv.Namespace) (*current.Status, error) {
 	ststr, err := kv.GetString(sc.ID, nil)
 	if err != nil {
 		return nil, err
 	}
-	st := &Status{}
+	st := &current.Status{}
 	err = st.Unmarshal([]byte(ststr))
 	if err != nil {
 		return nil, err
