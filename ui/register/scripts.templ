@@ -1,25 +1,5 @@
 package register
 
-templ PasskeyInitial(clickHandler templ.ComponentScript) {
-	<sl-button style="width: 100%;" onclick={ clickHandler }>
-		<sl-icon slot="prefix" name="passkey" library="sonr" style="font-size: 24px;" class="text-neutral-500"></sl-icon>
-		Register Passkey
-	</sl-button>
-}
-
-templ PasskeyError(clickHandler templ.ComponentScript) {
-	<sl-button style="width: 100%;" onclick={ clickHandler }>
-		<sl-icon slot="prefix" name="passkey" library="sonr" style="font-size: 24px;" class="text-red-500"></sl-icon>
-		Register Passkey
-	</sl-button>
-}
-
-templ PasskeySuccess(clickHandler templ.ComponentScript) {
-	<sl-button style="width: 100%;" onclick={ clickHandler }>
-		<sl-icon slot="prefix" name="passkey" library="sonr" style="font-size: 24px;" class="text-green-500"></sl-icon>
-		Register Passkey
-	</sl-button>
-}
 
 script NavigatorCredentialsCreate(userId string, userHandle string, challenge string) {
   const publicKey = {

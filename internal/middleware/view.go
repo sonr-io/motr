@@ -7,6 +7,12 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+type (
+	EchoView        func(c echo.Context) error
+	EchoViewFunc    func(c echo.Context, b templ.Component) error
+	EchoPartialView func(c echo.Context) templ.Component
+)
+
 func Render(c echo.Context, cmp templ.Component) error {
 	// Create a buffer to store the rendered HTML
 	buf := &bytes.Buffer{}
