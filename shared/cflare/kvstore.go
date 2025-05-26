@@ -21,7 +21,7 @@ type KVNamespace interface {
 	DeleteString(key string) error
 
 	// JSON Operations
-	GetJSON(key string, value any) error
-	PutJSON(key string, value any) error
+	GetJSON[T any](key string) (T, error)
+	PutJSON[T json.Marshaler](key string, value T) error
 	DeleteJSON(key string) error
 }
