@@ -1,7 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.14.1/.schema/devbox.schema.json",
   "packages": [
-    "go@latest",
     "templ@latest",
     "sqlc@latest",
     "nodejs@latest",
@@ -26,13 +25,19 @@
         "check_vars",
         "publish_release"
       ],
+      "install:radar": [
+        "cd $RADAR_ROOT && npm install"
+      ],
+      "install:worker": [
+        "cd $WORKER_ROOT && npm install"
+      ],
       "build:radar": [
-        "cd $RADAR_ROOT && npm install",
-        "GOOS=js GOARCH=wasm go build -o $RADAR_OUT $RADAR_ROOT"
+        "templ generate",
+        "GOOS=js GOARCH=wasm go build -o ./cmd/radar/build/app.wasm ./cmd/radar/main.go"
       ],
       "build:worker": [
-        "cd $WORKER_ROOT && npm install",
-        "GOOS=js GOARCH=wasm go build -o $WORKER_OUT $WORKER_ROOT"
+        "templ generate",
+        "GOOS=js GOARCH=wasm go build -o ./cmd/worker/build/app.wasm ./cmd/worker/main.go"
       ],
       "gen:sqlc": [
         "sqlc generate"

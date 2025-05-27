@@ -5,7 +5,7 @@
   "scripts": {
     "preinstall": "go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go",
     "postinstall": "templ generate",
-    "build": "devbox run build:radar"
+    "build": "GOOS=js GOARCH=wasm go build -o ./build/app.wasm ."
   },
   "dependencies": {
     "@extism/extism": "^2.0.0-rc11",

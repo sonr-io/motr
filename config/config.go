@@ -4,7 +4,6 @@
 package config
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/syumai/workers/cloudflare"
@@ -91,8 +90,4 @@ func Get() Config {
 		DefaultExpiry: time.Hour * 1, // 1 hour by default
 	}
 	return c
-}
-
-func (c CloudflareConfig) OpenDB() (*sql.DB, error) {
-	return sql.Open("d1", c.Database)
 }
