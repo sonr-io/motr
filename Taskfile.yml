@@ -61,7 +61,6 @@ tasks:
 
   gen:sqlc:
     desc: Generate sqlc
-    dir: "{{.ROOT_DIR}}/sink"
     cmd: sqlc generate
 
   db:migrate:
