@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/sonr-io/motr/pkg/middleware"
+	"github.com/sonr-io/motr/middleware"
 	"github.com/sonr-io/motr/ui/register"
 )
 
