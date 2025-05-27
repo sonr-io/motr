@@ -1,15 +1,14 @@
 # Top-level configuration
-name = "motr-web"
-main = "worker.mjs"
+name = "motr-worker"
+main = "./worker.mjs"
 compatibility_date = "2025-04-14"
 
 routes = [
-  { pattern = "did.run", custom_domain = true },
   { pattern = "sonr.id", custom_domain = true },
 ]
 
 [build]
-command = "npm run generate && npm run build"
+command = "npm run build"
 
 [dev]
 port = 6969

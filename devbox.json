@@ -9,22 +9,27 @@
     "commitizen@latest"
   ],
   "shell": {
-    "init_hook": [],
+    "init_hook": [
+      "make tidy"
+    ],
     "scripts": {
-      "dist:radar": [
-        "go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go -o=./cmd/radar/build"
+      "build": [
+        "make build-radar",
+        "make build-worker"
       ],
-      "dist:web": [
-        "go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go -o=./cmd/web/build"
+      "deploy": [
+        "make deploy-radar",
+        "make deploy-worker"
       ],
-      "templ:generate": [
+      "release": [
+        "goreleaser check",
+        "goreleaser release --clean"
+      ],
+      "gen:sqlc": [
+        "sqlc generate -f ./internal/db/sqlc.yaml"
+      ],
+      "gen:templ": [
         "templ generate"
-      ],
-      "sqlc:generate": [
-        "sqlc generate"
-      ],
-      "d1:migrate": [
-        "npx wrangler d1 execute motr-db --remote --file=./internal/db/schema.sql"
       ]
     }
   }

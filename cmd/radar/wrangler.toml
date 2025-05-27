@@ -1,18 +1,17 @@
 # Top-level configuration
-name = "motr-web"
-main = "worker.mjs"
+name = "motr-radar"
+main = "./build/worker.mjs"
 compatibility_date = "2025-04-14"
 
 routes = [
   { pattern = "did.run", custom_domain = true },
-  { pattern = "sonr.id", custom_domain = true },
 ]
 
 [build]
-command = "npm run generate && npm run build"
+command = "npm run build"
 
 [dev]
-port = 6969
+port = 4242
 
 [observability]
 enabled = true
@@ -45,10 +44,3 @@ MATRIX_SERVER = 'https://bm.chat'
 MOTR_GATEWAY = 'https://sonr.id'
 MOTR_VAULT = 'https://did.run'
 MOTR_MODE = 'controller'
-
-[durable_objects]
-bindings = [{name = "VAULT", class_name = "Vault"}]
-
-[[migrations]]
-tag = "v1" # Should be unique for each entry
-new_classes = ["Vault"] # List the classes that should be created

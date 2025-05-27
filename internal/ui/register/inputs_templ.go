@@ -123,7 +123,7 @@ func HandleError(value string, helpText string) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(value)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/register/inputs.templ`, Line: 27, Col: 165}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/register/inputs.templ`, Line: 27, Col: 165}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -136,7 +136,7 @@ func HandleError(value string, helpText string) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(helpText)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/register/inputs.templ`, Line: 27, Col: 188}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/register/inputs.templ`, Line: 27, Col: 188}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -178,7 +178,7 @@ func HandleSuccess(value string) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(value)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/register/inputs.templ`, Line: 40, Col: 167}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/register/inputs.templ`, Line: 40, Col: 167}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {

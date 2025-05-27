@@ -1,15 +1,37 @@
-ROOT_DIR := $(shell git rev-parse --show-toplevel)
+export ROOT_DIR := $(shell git rev-parse --show-toplevel)
+export GUM_SPIN_SHOW_STDERRR := true
+export GUM_SPIN_SPINNER := dot
+export GUM_SPIN_ALIGN := right
 
-.PHONY: clean start build deploy tidy-cmd tidy-root gen-templ gen-sqlc db-migrate migrate-d1
+export RADAR_ROOT := $(ROOT_DIR)/cmd/radar
+export WORKER_ROOT := $(ROOT_DIR)/cmd/worker
 
-# Remove build artifacts
-clean: tidy-cmd tidy-root
+.PHONY: tidy templ sqlc worker radar
 
-# Build the binary
-build:
-	cd $(ROOT_DIR)/cmd && bun run build
+all: tidy radar worker
 
-# Deploy the vault
-deploy:
-	cd $(ROOT_DIR)/cmd && bun run deploy
+# Project Level
+tidy: 
+	@GUM_SPIN_TITLE="[*] Tidy go mod..." gum spin -- go mod tidy
+templ:
+	@GUM_SPIN_TITLE="[*] Templ Generate" gum spin -- devbox run gen:templ
+sqlc:
+	@GUM_SPIN_TITLE="[*] SQLC Generate" gum spin -- devbox run gen:sqlc
 
+# Radar
+radar: radar-install radar-build radar-deploy
+radar-install:
+	@make -C $(RADAR_ROOT) install
+radar-build: templ
+	@make -C $(RADAR_ROOT) build
+radar-deploy:
+	@make -C $(RADAR_ROOT) deploy
+
+# Worker
+worker: tidy worker-install worker-build worker-deploy
+worker-install:
+	@make -C $(WORKER_ROOT) install
+worker-build: templ	
+	@make -C $(WORKER_ROOT) build
+worker-deploy:
+	@make -C $(WORKER_ROOT) deploy

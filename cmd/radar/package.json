@@ -1,14 +1,12 @@
 {
-  "name": "@sonr-io/motr-web",
+  "name": "@sonr-io/radar-worker",
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dist": "go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go -o=./cmd/web/build",
-    "generate": "templ generate",
+    "assets": "go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go",
     "build": "GOOS=js GOARCH=wasm go build -o ./build/app.wasm .",
-    "migrate": "npx wrangler d1 execute motr-db --remote --file=./schema.sql",
-    "deploy": "npx wrangler deploy",
-    "start": "npx wrangler dev"
+    "deploy": "wrangler deploy",
+    "start": "wrangler dev"
   },
   "dependencies": {
     "@extism/extism": "^2.0.0-rc11",
