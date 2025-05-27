@@ -1,7 +1,7 @@
 //go:build js && wasm
 // +build js,wasm
 
-package cflare
+package flare
 
 import "github.com/labstack/echo/v4"
 

@@ -4,10 +4,37 @@
 package session
 
 import (
+	"time"
+
 	"github.com/labstack/echo/v4"
 	"github.com/segmentio/ksuid"
 	"github.com/sonr-io/motr/sink/web"
 )
+
+// New creates a new session
+func New(c echo.Context) *Context {
+	id := FindOrAssignID(c)
+	return &Context{
+		Context: c,
+		ID:      id,
+		Status: &Session{
+			ID:      id,
+			Expires: GetSessionExpiry(time.Now()),
+			Status:  "default",
+			Handle:  "",
+		},
+	}
+}
+
+type Current struct {
+	SelectedHandle  string
+	VaultAddress    string
+	SonrBlockHeight int64
+}
+
+func GetSessionExpiry(t time.Time) int64 {
+	return int64(DefaultTTL) + t.UnixNano()
+}
 
 // FindOrAssignID returns the session ID from the cookie or creates a new one if it doesn't exist
 func FindOrAssignID(c echo.Context) string {

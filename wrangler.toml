@@ -1,6 +1,6 @@
 # Top-level configuration
 name = "motr-vault"
-main = "./cmd/worker.mjs"
+main = "./cmd/web/worker.mjs"
 compatibility_date = "2025-04-14"
 
 routes = [
@@ -9,7 +9,6 @@ routes = [
 
 [build]
 command = "npm run build"
-watch_dir = "ui"
 
 [dev]
 port = 6969

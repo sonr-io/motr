@@ -96,29 +96,25 @@ func (k CookieKey) ReadUnsafe(c echo.Context) string {
 }
 
 // Write sets the cookie value for the Key.
-func (k CookieKey) Write(c echo.Context, value string) error {
+func (k CookieKey) Write(c echo.Context, value string) {
 	cookie := &http.Cookie{
 		Name:     k.String(),
 		Value:    value,
 		Expires:  time.Now().Add(24 * time.Hour),
 		HttpOnly: true,
 		Path:     "/",
-		// Add Secure and SameSite attributes as needed
 	}
 	c.SetCookie(cookie)
-	return nil
 }
 
 // WriteBytes sets the cookie value for the Key.
-func (k CookieKey) WriteBytes(c echo.Context, value []byte) error {
+func (k CookieKey) WriteBytes(c echo.Context, value []byte) {
 	cookie := &http.Cookie{
 		Name:     k.String(),
 		Value:    base64.RawURLEncoding.EncodeToString(value),
 		Expires:  time.Now().Add(24 * time.Hour),
 		HttpOnly: true,
 		Path:     "/",
-		// Add Secure and SameSite attributes as needed
 	}
 	c.SetCookie(cookie)
-	return nil
 }

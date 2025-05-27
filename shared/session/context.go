@@ -11,7 +11,7 @@ import (
 type Context struct {
 	echo.Context
 	ID     string
-	Status *Health
+	Status *Session
 }
 
 func UnwrapContext(c echo.Context) *Context {
@@ -35,12 +35,12 @@ func (sc *Context) SaveStatus(kv *kv.Namespace) error {
 }
 
 // LoadStatus loads the state of the current session from the KV store
-func (sc *Context) LoadStatus(kv *kv.Namespace) (*Health, error) {
+func (sc *Context) LoadStatus(kv *kv.Namespace) (*Session, error) {
 	ststr, err := kv.GetString(sc.ID, nil)
 	if err != nil {
 		return nil, err
 	}
-	st := &Health{}
+	st := &Session{}
 	err = st.Unmarshal([]byte(ststr))
 	if err != nil {
 		return nil, err

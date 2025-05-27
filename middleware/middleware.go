@@ -19,11 +19,11 @@ func UseSession(cnfg config.Config) echo.MiddlewareFunc {
 			ctx := &session.Context{
 				Context: c,
 				ID:      id,
-				Status: &session.Health{
-					SessionID: id,
-					Expires:   GetSessionExpiry(cnfg, time.Now()),
-					Status:    "default",
-					Handle:    "",
+				Status: &session.Session{
+					ID:      id,
+					Expires: GetSessionExpiry(cnfg, time.Now()),
+					Status:  "default",
+					Handle:  "",
 				},
 			}
 			return next(ctx)

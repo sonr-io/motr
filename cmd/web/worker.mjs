@@ -1,4 +1,4 @@
-export { default } from "../../build/worker.mjs";
+export { default } from "./build/worker.mjs";
 import { DurableObject } from "cloudflare:workers";
 import createPlugin from "@extism/extism";
 import { createHelia } from "helia";
