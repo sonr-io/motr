@@ -1,0 +1,10 @@
+package profile
+
+import "github.com/sonr-io/motr/pkg/models"
+
+templ RowComponent(account models.Profile) {
+	<div class="flex justify-between items-center">
+		{ account.Handle }
+		<sl-icon style="font-size: 24px;" library="sonr" name="chevron-right"></sl-icon>
+	</div>
+}

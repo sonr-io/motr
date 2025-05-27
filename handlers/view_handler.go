@@ -2,14 +2,14 @@ package handlers
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/sonr-io/motr/ui"
+	"github.com/sonr-io/motr/pkg/middleware"
 	"github.com/sonr-io/motr/ui/home"
 )
 
 func HandleDefaultIndex(c echo.Context) error {
-	return ui.Render(c, home.HomeView())
+	return middleware.Render(c, home.HomeView())
 }
 
 func HandleDefaultValid(c echo.Context) error {
-	return ui.Render(c, home.HomeView())
+	return middleware.Render(c, home.HomeView())
 }

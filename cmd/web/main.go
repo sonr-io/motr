@@ -4,18 +4,50 @@
 package main
 
 import (
+	"github.com/labstack/echo/v4"
+	"github.com/sonr-io/motr/config"
+	"github.com/sonr-io/motr/handlers"
 	"github.com/sonr-io/motr/middleware"
-	"github.com/sonr-io/motr/routes"
-	"github.com/sonr-io/motr/sink/config"
-	"github.com/sonr-io/motr/sink/web"
+	"github.com/syumai/workers"
 )
 
+var (
+	// Version is the current version of the application.
+	Version = "0.0.1"
+
+	// Config is the current configuration of the application.
+	cfg config.Config
+
+	// Echo is the main Echo instance
+	e *echo.Echo
+)
+
+func init() {
+	cfg = config.Get()
+}
+
 func main() {
-	// Setup config
-	c := config.Get()
-	e := web.New()
-	e.Use(middleware.UseSession(c), middleware.UseCloudflareCache(config.Cache))
-	routes.SetupAPIRoutes(e)
-	routes.SetupViewRoutes(e)
-	e.Serve()
+	e := echo.New()
+	e.Use(middleware.UseSession(cfg), middleware.UseCloudflareCache(config.Cache))
+	setupViewRoutes(e)
+	setupPartialRoutes(e)
+	workers.Serve(e)
+}
+
+func setupViewRoutes(e *echo.Echo) {
+	e.GET("/", handlers.HandleDefaultIndex)
+	e.GET("/login", handlers.HandleLoginInitial)
+	e.GET("/register", handlers.HandleRegisterInitial)
+}
+
+func setupPartialRoutes(e *echo.Echo) {
+	e.POST("/login/:handle/check", handlers.HandleLoginCheck)
+	e.POST("/login/:handle/finish", handlers.HandleLoginFinish)
+
+	// Register
+	e.POST("/register/:handle", handlers.HandleRegisterStart)
+	e.POST("/register/:handle/check", handlers.HandleRegisterCheck)
+	e.POST("/register/:handle/finish", handlers.HandleRegisterFinish)
+
+	e.POST("/status", handlers.HandleStatusCheck)
 }
