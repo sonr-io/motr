@@ -4,7 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/middleware"
 	"github.com/sonr-io/motr/pkg/webauth"
-	"github.com/sonr-io/motr/ui/login"
+	"github.com/sonr-io/motr/internal/ui/login"
 )
 
 type LoginOptions struct {

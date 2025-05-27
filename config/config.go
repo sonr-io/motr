@@ -7,7 +7,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/sonr-io/motr/internal/models"
+	"github.com/sonr-io/motr/pkg/models"
 	"github.com/syumai/workers/cloudflare"
 	_ "github.com/syumai/workers/cloudflare/d1"
 	"github.com/syumai/workers/cloudflare/kv"
