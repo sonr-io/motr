@@ -1,6 +1,118 @@
 {
   "lockfile_version": "1",
   "packages": {
+    "commitizen@latest": {
+      "last_modified": "2025-05-21T01:27:34Z",
+      "resolved": "github:NixOS/nixpkgs/f0d925b947cca0bbe7f2d25115cbaf021844aba7#commitizen",
+      "source": "devbox-search",
+      "version": "4.7.1",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/m3307fx56ifajpg0qgqjj9dg71xjcfn4-python3.12-commitizen-4.7.1",
+              "default": true
+            },
+            {
+              "name": "dist",
+              "path": "/nix/store/1081mrd0v09sx6g2c12h2bsyyim0s204-python3.12-commitizen-4.7.1-dist"
+            }
+          ],
+          "store_path": "/nix/store/m3307fx56ifajpg0qgqjj9dg71xjcfn4-python3.12-commitizen-4.7.1"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/kiaab8hfkacad3nh3ygc9p6m02sskb0l-python3.12-commitizen-4.7.1",
+              "default": true
+            },
+            {
+              "name": "dist",
+              "path": "/nix/store/y7yqhxmmfnb5i012xvkzg8g5qkq8vrkj-python3.12-commitizen-4.7.1-dist"
+            }
+          ],
+          "store_path": "/nix/store/kiaab8hfkacad3nh3ygc9p6m02sskb0l-python3.12-commitizen-4.7.1"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/06s8d1qwgd1mw0jmp35fhfdznwpppb0l-python3.12-commitizen-4.7.1",
+              "default": true
+            },
+            {
+              "name": "dist",
+              "path": "/nix/store/nlvvhrsg465n918474zh3jirlifvqbww-python3.12-commitizen-4.7.1-dist"
+            }
+          ],
+          "store_path": "/nix/store/06s8d1qwgd1mw0jmp35fhfdznwpppb0l-python3.12-commitizen-4.7.1"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/gaqvcwn0dya1crk789s0xsf7s4knraxz-python3.12-commitizen-4.7.1",
+              "default": true
+            },
+            {
+              "name": "dist",
+              "path": "/nix/store/iagih5hd0nq8a5fh3naads5xc3gpg9jn-python3.12-commitizen-4.7.1-dist"
+            }
+          ],
+          "store_path": "/nix/store/gaqvcwn0dya1crk789s0xsf7s4knraxz-python3.12-commitizen-4.7.1"
+        }
+      }
+    },
+    "goreleaser@latest": {
+      "last_modified": "2025-05-16T20:19:48Z",
+      "resolved": "github:NixOS/nixpkgs/12a55407652e04dcf2309436eb06fef0d3713ef3#goreleaser",
+      "source": "devbox-search",
+      "version": "2.9.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/lqihz0f2h9zjqlhk74cayb9l74zgkxj2-goreleaser-2.9.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/lqihz0f2h9zjqlhk74cayb9l74zgkxj2-goreleaser-2.9.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/wg1ndxx3hq7lcxg0nkzgs3myrflr5jm0-goreleaser-2.9.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/wg1ndxx3hq7lcxg0nkzgs3myrflr5jm0-goreleaser-2.9.0"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/v17lq7ap19pajdhp04n4b7p4y5f2mxrr-goreleaser-2.9.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/v17lq7ap19pajdhp04n4b7p4y5f2mxrr-goreleaser-2.9.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/rvjwgy6zz5qwipcm709jvf3j38r552nw-goreleaser-2.9.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/rvjwgy6zz5qwipcm709jvf3j38r552nw-goreleaser-2.9.0"
+        }
+      }
+    },
     "gum@latest": {
       "last_modified": "2025-05-16T20:19:48Z",
       "resolved": "github:NixOS/nixpkgs/12a55407652e04dcf2309436eb06fef0d3713ef3#gum",

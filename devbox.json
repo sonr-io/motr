@@ -4,7 +4,9 @@
     "templ@latest",
     "sqlc@latest",
     "nodejs@latest",
-    "gum@latest"
+    "gum@latest",
+    "goreleaser@latest",
+    "commitizen@latest"
   ],
   "shell": {
     "init_hook": [],
