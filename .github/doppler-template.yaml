@@ -1,0 +1,33 @@
+projects:
+  - name: motr 
+    description: Your project description
+    environments:
+      - name: Development # Name may contain letters, spaces, numbers, hyphens, and underscores
+        slug: dev # Slug may contain letters, numbers, hyphens, and underscores
+        configs:
+          - slug: dev # First slug *must* match environment slug name
+
+      - name: CICD
+        slug: ci
+        configs:
+          - slug: ci
+
+      - name: Production
+        slug: prod
+        configs:
+          - slug: prod
+
+    secrets:
+      dev:
+        ENV: development
+
+      ci:
+        ENV: ci-cd
+        DOCKER_HUB_USERNAME: ""
+        DOCKER_HUB_TOKEN: ""
+        GITHUB_TOKEN: ""
+        CLOUDFLARE_API_TOKEN: ""
+        NPM_TOKEN: ""
+
+      prod:
+        ENV: production

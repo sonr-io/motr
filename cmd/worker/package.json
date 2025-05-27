@@ -3,10 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "assets": "go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go",
-    "build": "GOOS=js GOARCH=wasm go build -o ./build/app.wasm .",
-    "deploy": "wrangler deploy",
-    "start": "wrangler dev"
+    "preinstall": "go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go",
+    "postinstall": "templ generate",
+    "build": "devbox run build:worker"
   },
   "dependencies": {
     "@extism/extism": "^2.0.0-rc11",

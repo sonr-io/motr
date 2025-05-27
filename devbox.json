@@ -1,32 +1,41 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.14.1/.schema/devbox.schema.json",
   "packages": [
+    "go@latest",
     "templ@latest",
     "sqlc@latest",
     "nodejs@latest",
-    "gum@latest",
     "goreleaser@latest",
+    "doppler@latest",
     "commitizen@latest"
   ],
   "shell": {
     "init_hook": [
-      "make tidy"
+      "source .github/setup_env.sh",
+      "go_tidy"
     ],
     "scripts": {
-      "build": [
-        "make build-radar",
-        "make build-worker"
-      ],
       "deploy": [
-        "make deploy-radar",
-        "make deploy-worker"
+        "check_deps",
+        "check_vars",
+        "wrangler_deploy $RADAR_ROOT",
+        "wrangler_deploy $WORKER_ROOT"
       ],
       "release": [
-        "goreleaser check",
-        "goreleaser release --clean"
+        "check_deps",
+        "check_vars",
+        "publish_release"
+      ],
+      "build:radar": [
+        "cd $RADAR_ROOT && npm install",
+        "GOOS=js GOARCH=wasm go build -o $RADAR_OUT $RADAR_ROOT"
+      ],
+      "build:worker": [
+        "cd $WORKER_ROOT && npm install",
+        "GOOS=js GOARCH=wasm go build -o $WORKER_OUT $WORKER_ROOT"
       ],
       "gen:sqlc": [
-        "sqlc generate -f ./internal/db/sqlc.yaml"
+        "sqlc generate"
       ],
       "gen:templ": [
         "templ generate"
