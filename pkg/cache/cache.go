@@ -1,7 +1,7 @@
 //go:build js && wasm
 // +build js,wasm
 
-package middleware
+package cache
 
 import (
 	"bytes"
@@ -25,8 +25,8 @@ type CloudflareCache struct {
 	CacheableContentTypes map[string]bool
 }
 
-// UseCloudflareCache creates a new CloudflareCache middleware
-func UseCloudflareCache(cfg config.CacheConfig) echo.MiddlewareFunc {
+// Middleware creates a new CloudflareCache middleware
+func Middleware(cfg config.CacheConfig) echo.MiddlewareFunc {
 	// If cache is disabled, return a pass-through middleware
 	if !cfg.Enabled {
 		return func(next echo.HandlerFunc) echo.HandlerFunc {

@@ -3,9 +3,9 @@ package handlers
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/internal/ui/home"
-	"github.com/sonr-io/motr/middleware"
+	"github.com/sonr-io/motr/pkg/render"
 )
 
 func HandleItemNotFound(c echo.Context) error {
-	return middleware.Render(c, home.HomeView())
+	return render.View(c, home.HomeView())
 }

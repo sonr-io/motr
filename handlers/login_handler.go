@@ -2,9 +2,9 @@ package handlers
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/sonr-io/motr/middleware"
-	"github.com/sonr-io/motr/pkg/webauth"
 	"github.com/sonr-io/motr/internal/ui/login"
+	"github.com/sonr-io/motr/pkg/render"
+	"github.com/sonr-io/motr/pkg/webauth"
 )
 
 type LoginOptions struct {
@@ -17,17 +17,17 @@ type LoginOptions struct {
 }
 
 func HandleLoginCheck(c echo.Context) error {
-	return middleware.Render(c, login.LoginView())
+	return render.View(c, login.LoginView())
 }
 
 func HandleLoginInitial(c echo.Context) error {
-	return middleware.Render(c, login.LoginView())
+	return render.View(c, login.LoginView())
 }
 
 func HandleLoginFinish(c echo.Context) error {
-	return middleware.Render(c, login.LoginView())
+	return render.View(c, login.LoginView())
 }
 
 func HandleLoginStart(c echo.Context) error {
-	return middleware.Render(c, login.LoginView())
+	return render.View(c, login.LoginView())
 }

@@ -12,10 +12,6 @@ tasks:
       - task: tidy:cmd
       - task: tidy:root
 
-  serve:
-    desc: Serve the app with air
-    cmd: air
-
   start:
     desc: Start the vault
     dir: "{{.ROOT_DIR}}/cmd"

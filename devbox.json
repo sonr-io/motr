@@ -1,15 +1,29 @@
 {
-    "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.14.1/.schema/devbox.schema.json",
-    "packages": [],
-    "shell": {
-      "init_hook": [
-        "echo 'Welcome to devbox!' > /dev/null"
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.14.1/.schema/devbox.schema.json",
+  "packages": [
+    "templ@latest",
+    "sqlc@latest",
+    "nodejs@latest",
+    "gum@latest"
+  ],
+  "shell": {
+    "init_hook": [],
+    "scripts": {
+      "dist:radar": [
+        "go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go -o=./cmd/radar/build"
       ],
-      "scripts": {
-        "test": [
-          "echo \"Error: no test specified\" && exit 1"
-        ]
-      }
+      "dist:web": [
+        "go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go -o=./cmd/web/build"
+      ],
+      "templ:generate": [
+        "templ generate"
+      ],
+      "sqlc:generate": [
+        "sqlc generate"
+      ],
+      "d1:migrate": [
+        "npx wrangler d1 execute motr-db --remote --file=./internal/db/schema.sql"
+      ]
     }
   }
-  
+}

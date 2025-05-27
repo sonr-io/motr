@@ -7,7 +7,8 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/config"
 	"github.com/sonr-io/motr/handlers"
-	"github.com/sonr-io/motr/middleware"
+	"github.com/sonr-io/motr/pkg/cache"
+	"github.com/sonr-io/motr/pkg/session"
 	"github.com/syumai/workers"
 )
 
@@ -28,7 +29,7 @@ func init() {
 
 func main() {
 	e := echo.New()
-	e.Use(middleware.UseSession(cfg), middleware.UseCloudflareCache(config.Cache))
+	e.Use(session.Middleware(cfg), cache.Middleware(config.Cache))
 	setupViewRoutes(e)
 	setupPartialRoutes(e)
 	workers.Serve(e)

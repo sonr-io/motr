@@ -4,6 +4,8 @@
 package session
 
 import (
+	"time"
+
 	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/config"
 	"github.com/syumai/workers/cloudflare/kv"
@@ -11,17 +13,27 @@ import (
 
 type Context struct {
 	echo.Context
-	ID     string         `json:"id"`
-	Config *config.Config `json:"config"`
-	Status *Session       `json:"status"`
+	ID               string                  `json:"id"`
+	Config           *config.Config          `json:"config"`
+	SonrConfig       config.NetworkConfig    `json:"network"`
+	CloudflareConfig config.CloudflareConfig `json:"cloudflare"`
+
+	Status *Session `json:"status"`
 }
 
-func UnwrapContext(c echo.Context) *Context {
-	cc := c.(*Context)
-	if cc == nil {
-		panic("Session Context not found")
+// New creates a new session
+func New(c echo.Context) *Context {
+	id := FindOrAssignID(c)
+	return &Context{
+		Context: c,
+		ID:      id,
+		Status: &Session{
+			ID:      id,
+			Expires: GetTTL(time.Now()),
+			Status:  "default",
+			Handle:  "",
+		},
 	}
-	return cc
 }
 
 // SaveStatus saves the state of the current session into the KV store

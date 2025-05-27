@@ -1,4 +1,4 @@
-package middleware
+package render
 
 import (
 	"bytes"
@@ -13,7 +13,7 @@ type (
 	EchoPartialView func(c echo.Context) templ.Component
 )
 
-func Render(c echo.Context, cmp templ.Component) error {
+func View(c echo.Context, cmp templ.Component) error {
 	// Create a buffer to store the rendered HTML
 	buf := &bytes.Buffer{}
 	// Render the component to the buffer
