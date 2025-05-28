@@ -18,7 +18,7 @@ import (
 // CloudflareCache represents the middleware for Cloudflare cache
 type CloudflareCache struct {
 	// Config holds the cache configuration
-	Config config.CacheConfig
+	Config config.CacheSettings
 	// CacheableStatusCodes are HTTP status codes that should be cached (map for faster lookups)
 	CacheableStatusCodes map[int]bool
 	// CacheableContentTypes are content types that should be cached (map for faster lookups)
@@ -26,7 +26,7 @@ type CloudflareCache struct {
 }
 
 // Middleware creates a new CloudflareCache middleware
-func Middleware(cfg config.CacheConfig) echo.MiddlewareFunc {
+func Middleware(cfg config.CacheSettings) echo.MiddlewareFunc {
 	// If cache is disabled, return a pass-through middleware
 	if !cfg.Enabled {
 		return func(next echo.HandlerFunc) echo.HandlerFunc {

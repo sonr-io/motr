@@ -10,27 +10,20 @@ import (
 )
 
 type Config struct {
-	Cache         CacheConfig      `json:"cache"` // Added Cache configuration
-	Sonr          NetworkConfig    `json:"network"`
-	Cloudflare    CloudflareConfig `json:"cloudflare"`
-	DefaultExpiry time.Duration    `json:"expiry"`
+	Cache         CacheSettings `json:"cache"` // Added Cache configuration
+	Sonr          NetworkParams `json:"network"`
+	DefaultExpiry time.Duration `json:"expiry"`
 }
 
-type CloudflareConfig struct {
-	Database string `json:"database"`
-	Sessions string `json:"sessions"`
-	Handles  string `json:"handles"`
-}
-
-type NetworkConfig struct {
+type NetworkParams struct {
 	SonrChainID string `json:"sonr_chain_id"`
 	SonrAPIURL  string `json:"sonr_api_url"`
 	SonrRPCURL  string `json:"sonr_rpc_url"`
 	IPFSGateway string `json:"ipfs_gateway"`
 }
 
-// CacheConfig defines the configuration for Cloudflare cache
-type CacheConfig struct {
+// CacheSettings defines the configuration for Cloudflare cache
+type CacheSettings struct {
 	Enabled               bool     `json:"enabled"`
 	DefaultMaxAge         int      `json:"default_max_age"`
 	BypassHeader          string   `json:"bypass_header"`
@@ -40,7 +33,7 @@ type CacheConfig struct {
 }
 
 func Get() Config {
-	cache := CacheConfig{
+	cache := CacheSettings{
 		Enabled:       true,
 		DefaultMaxAge: 60, // 1 minute by default
 		BypassHeader:  "X-Cache-Bypass",
@@ -60,12 +53,8 @@ func Get() Config {
 			"image/webp",
 		},
 	}
-	flare := CloudflareConfig{
-		Database: "DB",
-		Sessions: "SESSIONS",
-		Handles:  "HANDLES",
-	}
-	sonr := NetworkConfig{
+
+	sonr := NetworkParams{
 		SonrChainID: cloudflare.Getenv("SONR_CHAIN_ID"),
 		SonrAPIURL:  cloudflare.Getenv("SONR_API_URL"),
 		SonrRPCURL:  cloudflare.Getenv("SONR_RPC_URL"),
@@ -74,7 +63,6 @@ func Get() Config {
 	c := Config{
 		Sonr:          sonr,
 		Cache:         cache,
-		Cloudflare:    flare,
 		DefaultExpiry: time.Hour * 1,
 	}
 	return c

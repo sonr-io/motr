@@ -9,24 +9,15 @@ import (
 	"github.com/sonr-io/motr/handlers"
 	"github.com/sonr-io/motr/pkg/cache"
 	"github.com/sonr-io/motr/pkg/database"
-	"github.com/sonr-io/motr/pkg/kvstore"
 	"github.com/sonr-io/motr/pkg/session"
 	"github.com/syumai/workers"
 	_ "github.com/syumai/workers/cloudflare/d1"
 )
 
-var (
-	// Version is the current version of the app.
-	Version = "0.0.1"
-
-	// Commit is the current commit hash of the app.
-	Commit = "none"
-)
-
 func main() {
 	cfg := config.Get()
 	e := echo.New()
-	e.Use(session.Middleware(cfg.Sonr), cache.Middleware(cfg.Cache), database.Middleware(cfg.Cloudflare), kvstore.Middleware(cfg.Cloudflare))
+	e.Use(session.Middleware(cfg.Sonr), cache.Middleware(cfg.Cache), database.Middleware())
 
 	setupViewRoutes(e)
 	setupPartialRoutes(e)

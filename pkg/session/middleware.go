@@ -13,11 +13,11 @@ import (
 // Context is a session context
 type Context struct {
 	echo.Context
-	Config config.NetworkConfig `json:"network"`
+	Config config.NetworkParams `json:"network"`
 }
 
 // Middleware is a middleware that adds a new key to the context
-func Middleware(cnfg config.NetworkConfig) echo.MiddlewareFunc {
+func Middleware(cnfg config.NetworkParams) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			ctx := Create(c, cnfg)
@@ -27,7 +27,7 @@ func Middleware(cnfg config.NetworkConfig) echo.MiddlewareFunc {
 }
 
 // Create creates a new session
-func Create(c echo.Context, cnfg config.NetworkConfig) *Context {
+func Create(c echo.Context, cnfg config.NetworkParams) *Context {
 	return &Context{
 		Context: c,
 		Config:  cnfg,
