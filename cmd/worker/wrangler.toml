@@ -8,7 +8,7 @@ routes = [
 ]
 
 [build]
-command = "npm run build"
+command = "devbox run build:worker"
 
 [dev]
 port = 6969

@@ -8,8 +8,11 @@ import (
 	"github.com/sonr-io/motr/config"
 	"github.com/sonr-io/motr/handlers"
 	"github.com/sonr-io/motr/pkg/cache"
+	"github.com/sonr-io/motr/pkg/database"
+	"github.com/sonr-io/motr/pkg/kvstore"
 	"github.com/sonr-io/motr/pkg/session"
 	"github.com/syumai/workers"
+	_ "github.com/syumai/workers/cloudflare/d1"
 )
 
 var (
@@ -23,7 +26,7 @@ var (
 func main() {
 	cfg := config.Get()
 	e := echo.New()
-	e.Use(session.Middleware(cfg), cache.Middleware(cfg.Cache))
+	e.Use(session.Middleware(cfg.Sonr), cache.Middleware(cfg.Cache), database.Middleware(cfg.Cloudflare), kvstore.Middleware(cfg.Cloudflare))
 
 	setupViewRoutes(e)
 	setupPartialRoutes(e)

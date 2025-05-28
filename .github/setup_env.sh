@@ -18,6 +18,7 @@ function go_tidy() {
   cd $ROOT_DIR
   go mod tidy
   go mod download
+  go install github.com/syumai/workers/cmd/workers-assets-gen@latest
 }
 
 function npm_install() {

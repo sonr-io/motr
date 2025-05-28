@@ -8,14 +8,13 @@ routes = [
 ]
 
 [build]
-command = "npm run build"
+command = "devbox run build:radar"
 
 [dev]
 port = 4242
 
 [observability]
 enabled = true
-logpush = true
 
 [[d1_databases]]
 binding = "DB" # available in your Worker on env.DB

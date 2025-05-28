@@ -11,12 +11,12 @@
   "shell": {
     "init_hook": [
       "source .github/setup_env.sh",
-      "go_tidy"
+      "go_tidy",
+      "npm_install $RADAR_ROOT",
+      "npm_install $WORKER_ROOT"
     ],
     "scripts": {
       "deploy": [
-        "check_deps",
-        "check_vars",
         "wrangler_deploy $RADAR_ROOT",
         "wrangler_deploy $WORKER_ROOT"
       ],
@@ -25,19 +25,15 @@
         "check_vars",
         "publish_release"
       ],
-      "install:radar": [
-        "cd $RADAR_ROOT && npm install"
-      ],
-      "install:worker": [
-        "cd $WORKER_ROOT && npm install"
-      ],
       "build:radar": [
-        "templ generate",
-        "GOOS=js GOARCH=wasm go build -o ./cmd/radar/build/app.wasm ./cmd/radar/main.go"
+        "cd $RADAR_ROOT",
+        "workers-assets-gen -mode=go",
+        "GOOS=js GOARCH=wasm go build -o ./build/app.wasm ."
       ],
       "build:worker": [
-        "templ generate",
-        "GOOS=js GOARCH=wasm go build -o ./cmd/worker/build/app.wasm ./cmd/worker/main.go"
+        "cd $WORKER_ROOT",
+        "workers-assets-gen -mode=go",
+        "GOOS=js GOARCH=wasm go build -o ./build/app.wasm ."
       ],
       "gen:sqlc": [
         "cd ./internal/sink && sqlc generate"

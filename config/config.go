@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/syumai/workers/cloudflare"
-	_ "github.com/syumai/workers/cloudflare/d1"
 )
 
 type Config struct {
@@ -61,20 +60,17 @@ func Get() Config {
 			"image/webp",
 		},
 	}
-
 	flare := CloudflareConfig{
 		Database: "DB",
 		Sessions: "SESSIONS",
 		Handles:  "HANDLES",
 	}
-
 	sonr := NetworkConfig{
 		SonrChainID: cloudflare.Getenv("SONR_CHAIN_ID"),
 		SonrAPIURL:  cloudflare.Getenv("SONR_API_URL"),
 		SonrRPCURL:  cloudflare.Getenv("SONR_RPC_URL"),
 		IPFSGateway: cloudflare.Getenv("IPFS_GATEWAY"),
 	}
-
 	c := Config{
 		Sonr:          sonr,
 		Cache:         cache,

@@ -3,9 +3,6 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "preinstall": "go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go",
-    "postinstall": "templ generate",
-    "build": "GOOS=js GOARCH=wasm go build -o ./build/app.wasm .",
     "deploy": "wrangler deploy",
     "start": "wrangler dev"
   },
