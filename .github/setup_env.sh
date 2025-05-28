@@ -28,7 +28,12 @@ function npm_install() {
 
 function wrangler_deploy() {
   cd $1
-  npx wrangler deploy
+  wrangler deploy
+}
+
+function wrangler_dev() {
+  cd $1
+  wrangler dev
 }
 
 function check_deps() {

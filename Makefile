@@ -19,11 +19,17 @@ templ:
 sqlc:
 	@devbox run gen:sqlc
 
-dev: 
-	@devbox run dev
+worker:
+	@devbox run serve:worker
+
+radar:
+	@devbox run serve:radar
 
 deploy: 
 	@devbox run deploy
 
 release: 
 	@devbox run release
+
+templ-watch:
+	@devbox run watch:templ
