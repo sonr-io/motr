@@ -4,41 +4,56 @@
 package session
 
 import (
-	"errors"
-
 	"github.com/labstack/echo/v4"
-	"github.com/sonr-io/motr/config"
+	"github.com/segmentio/ksuid"
+	"github.com/sonr-io/motr/pkg/cookies"
 )
 
 // Context is a session context
-type Context struct {
+type SessionContext struct {
 	echo.Context
-	Config config.NetworkParams `json:"network"`
+	ID string `json:"id"`
 }
 
 // Middleware is a middleware that adds a new key to the context
-func Middleware(cnfg config.NetworkParams) echo.MiddlewareFunc {
+func Middleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			ctx := Create(c, cnfg)
+			ctx := &SessionContext{
+				Context: c,
+				ID:      DetermineID(c),
+			}
 			return next(ctx)
 		}
 	}
 }
 
-// Create creates a new session
-func Create(c echo.Context, cnfg config.NetworkParams) *Context {
-	return &Context{
-		Context: c,
-		Config:  cnfg,
+// Unwrap unwraps the session context
+func Unwrap(c echo.Context) *SessionContext {
+	cc := c.(*SessionContext)
+	if cc == nil {
+		panic("failed to unwrap session context")
 	}
+	return cc
 }
 
-// Unwrap unwraps the session context
-func Unwrap(c echo.Context) (*Context, error) {
-	cc := c.(*Context)
-	if cc == nil {
-		return nil, errors.New("failed to unwrap session context")
+func DetermineID(c echo.Context) string {
+	if ok := cookies.SessionID.Exists(c); ok {
+		c.Echo().Logger.Debug("Has session ID in cookie")
+		sessionID, err := cookies.SessionID.Read(c)
+		if err != nil {
+			sessionID = ksuid.New().String()
+			cookies.SessionID.Write(c, sessionID)
+			c.Echo().Logger.Debug("Failed to read session ID from cookie, wrote new one")
+		}
+		return sessionID
 	}
-	return cc, nil
+	c.Echo().Logger.Debug("Has session ID in cookie")
+	sessionID, err := cookies.SessionID.Read(c)
+	if err != nil {
+		sessionID = ksuid.New().String()
+		cookies.SessionID.Write(c, sessionID)
+		c.Echo().Logger.Debug("Failed to read session ID from cookie, wrote new one")
+	}
+	return sessionID
 }

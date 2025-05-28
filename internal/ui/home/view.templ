@@ -1,6 +1,7 @@
 package home
 
 import "github.com/sonr-io/motr/internal/ui"
+import "github.com/sonr-io/motr/pkg/session"
 
 func HomeView() templ.Component {
 	return homeComponent()
@@ -9,7 +10,7 @@ func HomeView() templ.Component {
 templ homeComponent() {
 	@ui.HTML() {
 		@ui.Head() {
-			@ui.DefaultMetaComponent()
+			@session.DefaultMetaComponent()
 		}
 		@ui.Nav() {
 			@ui.NavLeft() {

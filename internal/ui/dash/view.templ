@@ -2,6 +2,7 @@ package dash
 
 import (
 	"github.com/sonr-io/motr/internal/ui"
+	"github.com/sonr-io/motr/pkg/session"
 	"time"
 )
 
@@ -12,6 +13,7 @@ func ConsoleView(d time.Time) templ.Component {
 templ consoleComponent(d time.Time) {
 	@ui.HTML() {
 		@ui.Head() {
+			@session.DefaultMetaComponent()
 		}
 		<sl-tab-group>
 			@ui.Nav() {
