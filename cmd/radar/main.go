@@ -18,9 +18,6 @@ var (
 
 	// Config is the current configuration of the application.
 	cfg config.Config
-
-	// Echo is the main Echo instance
-	e *echo.Echo
 )
 
 func init() {
