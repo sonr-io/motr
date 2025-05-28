@@ -2,7 +2,7 @@ package asset
 
 import (
 	"github.com/a-h/templ"
-	"github.com/sonr-io/motr/pkg/models"
+	models "github.com/sonr-io/motr/internal/sink/network"
 )
 
 type AssetEntity interface {

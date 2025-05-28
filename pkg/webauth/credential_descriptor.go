@@ -1,6 +1,6 @@
 package webauth
 
-import "github.com/sonr-io/motr/pkg/models"
+import models "github.com/sonr-io/motr/internal/sink/users"
 
 // Define the credential structure matching our frontend data
 type CredentialDescriptor struct {

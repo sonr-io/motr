@@ -1,7 +1,7 @@
 //go:build js && wasm
 // +build js,wasm
 
-package session
+package kvstore
 
 import (
 	"errors"
@@ -10,14 +10,8 @@ import (
 	"github.com/sonr-io/motr/config"
 )
 
-// Context is a session context
-type Context struct {
-	echo.Context
-	Config config.NetworkConfig `json:"network"`
-}
-
 // Middleware is a middleware that adds a new key to the context
-func Middleware(cnfg config.NetworkConfig) echo.MiddlewareFunc {
+func Middleware(cnfg config.CloudflareConfig) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			ctx := Create(c, cnfg)
@@ -27,7 +21,7 @@ func Middleware(cnfg config.NetworkConfig) echo.MiddlewareFunc {
 }
 
 // Create creates a new session
-func Create(c echo.Context, cnfg config.NetworkConfig) *Context {
+func Create(c echo.Context, cnfg config.CloudflareConfig) *Context {
 	return &Context{
 		Context: c,
 		Config:  cnfg,

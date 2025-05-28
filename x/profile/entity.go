@@ -2,7 +2,7 @@ package profile
 
 import (
 	"github.com/a-h/templ"
-	"github.com/sonr-io/motr/pkg/models"
+	models "github.com/sonr-io/motr/internal/sink/users"
 )
 
 type ProfileEntity interface {
