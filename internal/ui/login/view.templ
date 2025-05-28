@@ -1,13 +1,12 @@
 package login
 
 import "github.com/sonr-io/motr/internal/ui"
-import "github.com/sonr-io/motr/pkg/session"
+import "github.com/sonr-io/motr/middleware/session"
 
 templ LoginView() {
 	@ui.HTML() {
 		@ui.Head() {
 			@session.DefaultMetaComponent()
-			@ui.DefaultMetaComponent()
 		}
 		@ui.Nav() {
 			@ui.NavLeft() {
