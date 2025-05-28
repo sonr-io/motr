@@ -28,12 +28,12 @@
       "build:radar": [
         "cd $RADAR_ROOT",
         "workers-assets-gen -mode=go",
-        "GOOS=js GOARCH=wasm go build -o ./build/app.wasm ."
+        "GOOS=js GOARCH=wasm go build -ldflags=\"-s -w\" -o ./build/app.wasm ."
       ],
       "build:worker": [
         "cd $WORKER_ROOT",
         "workers-assets-gen -mode=go",
-        "GOOS=js GOARCH=wasm go build -o ./build/app.wasm ."
+        "GOOS=js GOARCH=wasm go build -ldflags=\"-s -w\" -o ./build/app.wasm ."
       ],
       "gen:sqlc": [
         "cd ./internal/sink && sqlc generate"
