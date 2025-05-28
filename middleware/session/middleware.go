@@ -6,7 +6,7 @@ package session
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/segmentio/ksuid"
-	"github.com/sonr-io/motr/pkg/cookies"
+	"github.com/sonr-io/motr/middleware/cookies"
 )
 
 // Context is a session context

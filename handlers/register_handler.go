@@ -3,7 +3,7 @@ package handlers
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/internal/ui/register"
-	"github.com/sonr-io/motr/pkg/render"
+	"github.com/sonr-io/motr/middleware/render"
 )
 
 type RegisterOptions struct {

@@ -3,8 +3,8 @@ package handlers
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/internal/ui/login"
-	"github.com/sonr-io/motr/pkg/render"
-	"github.com/sonr-io/motr/pkg/webauth"
+	"github.com/sonr-io/motr/middleware/render"
+	"github.com/sonr-io/motr/middleware/webauth"
 )
 
 type LoginOptions struct {

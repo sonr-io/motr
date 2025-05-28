@@ -3,7 +3,7 @@ package handlers
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/internal/ui/home"
-	"github.com/sonr-io/motr/pkg/render"
+	"github.com/sonr-io/motr/middleware/render"
 )
 
 func HandleItemNotFound(c echo.Context) error {
