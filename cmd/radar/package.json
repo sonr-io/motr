@@ -17,6 +17,7 @@
     "sonr-cosmes": "^0.0.5"
   },
   "devDependencies": {
+    "concurrently": "^9.1.2",
     "wrangler": "^4.10.0"
   }
 }

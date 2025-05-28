@@ -1,0 +1,11 @@
+version: "0.5"
+
+processes:
+  templ:
+    command: devbox run watch:templ
+
+  radar:
+    command: devbox run serve:radar
+
+  worker:
+    command: devbox run serve:worker

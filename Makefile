@@ -19,12 +19,8 @@ templ:
 sqlc:
 	@devbox run gen:sqlc
 
-# Radar
-radar: 
-	@cd ./cmd/radar && wrangler dev
-
-worker: 
-	@cd ./cmd/worker && wrangler dev
+dev: 
+	@devbox run dev
 
 deploy: 
 	@devbox run deploy
