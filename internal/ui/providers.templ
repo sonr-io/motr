@@ -1,0 +1,139 @@
+package ui
+
+import "fmt"
+
+var (
+	apexChartsHandle = templ.NewOnceHandle()
+	d3Handle         = templ.NewOnceHandle()
+	dexieHandle      = templ.NewOnceHandle()
+	heliaHandle      = templ.NewOnceHandle()
+	htmxHandle       = templ.NewOnceHandle()
+	tailwindHandle   = templ.NewOnceHandle()
+)
+
+// ApexCharts is a component that renders the ApexCharts.js library
+templ ApexCharts() {
+	@apexChartsHandle.Once() {
+		<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+	}
+}
+
+// d3 is a component that renders the D3.js library
+templ D3() {
+	@d3Handle.Once() {
+		<script type="module">
+            import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+	    </script>
+	}
+}
+
+// dexie is a component that renders the Dexie.js library
+templ Dexie() {
+	@dexieHandle.Once() {
+		<script src={ jsDelivrURL("dexie", "4.0.10", "dist/dexie.min.js") }></script>
+		<script src={ jsDelivrURL("dexie-export-import", "4.1.4", "dist/dexie-export-import.min.js") }></script>
+	}
+}
+
+// In package deps
+templ Helia() {
+	@heliaHandle.Once() {
+		<script src="https://unpkg.com/@helia/unixfs/dist/index.min.js"></script>
+		<script src="https://unpkg.com/blockstore-core/dist/index.min.js"></script>
+		<script src="https://unpkg.com/datastore-core/dist/index.min.js"></script>
+		<script src="https://unpkg.com/helia/dist/index.min.js"></script>
+		<script>
+            // Time formatting helper
+            function ms2TimeString(a) {
+                const k = a % 1e3
+                const s = a / 1e3 % 60 | 0
+                const m = a / 6e4 % 60 | 0
+                const h = a / 36e5 % 24 | 0
+
+                return (h ? (h < 10 ? '0' + h : h) + ':' : '00:') +
+                    (m < 10 ? 0 : '') + m + ':' +
+                    (s < 10 ? 0 : '') + s + ':' +
+                    (k < 100 ? k < 10 ? '00' : 0 : '') + k
+            }
+
+            // Log management
+            const getLogLineEl = (msg) => {
+                const logLine = document.createElement('span')
+                logLine.innerHTML = `${ms2TimeString(performance.now())} - ${msg}`
+                return logLine
+            }
+            
+            const addToLog = (msg) => {
+                const logEl = document.getElementById('runningLog')
+                if (logEl) {
+                    logEl.appendChild(getLogLineEl(msg))
+                    logEl.appendChild(document.createElement('br'))
+                }
+            }
+
+            // Peer management
+            window.discoveredPeers = new Map()
+            const updateConnectedPeers = () => {
+                if (!window.helia || !window.helia.libp2p) return
+                
+                const peers = window.helia.libp2p.getPeers()
+                const connectedPeerCountEl = document.getElementById('connectedPeerCount')
+                const connectedPeersListEl = document.getElementById('connectedPeersList')
+                
+                if (connectedPeerCountEl) {
+                    connectedPeerCountEl.innerHTML = peers.length
+                }
+                
+                if (connectedPeersListEl) {
+                    connectedPeersListEl.innerHTML = ''
+                    
+                    for (const peer of peers) {
+                        const peerEl = document.createElement('li')
+                        peerEl.innerText = peer.toString()
+                        connectedPeersListEl.appendChild(peerEl)
+                    }
+                }
+            }
+            const updateDiscoveredPeers = () => {
+                const discoveredPeerCountEl = document.getElementById('discoveredPeerCount')
+                if (discoveredPeerCountEl) {
+                    discoveredPeerCountEl.innerHTML = window.discoveredPeers.size
+                }
+            }
+            // Helia node instantiation
+            let heliaInstance = null
+            window.instantiateHeliaNode = async () => {
+                // application-specific data lives in the datastore
+                const datastore = new DatastoreCore.MemoryDatastore()
+                const blockstore = new BlockstoreCore.MemoryBlockstore()
+
+                if (heliaInstance != null) {
+                    return heliaInstance
+                }
+                heliaInstance = await Helia.createHelia({
+                    datastore,
+                    blockstore
+                })
+                addToLog('Created Helia instance')
+                return heliaInstance
+            }
+        </script>
+	}
+}
+
+// Htmx is a component that renders the Htmx.js library
+templ Htmx() {
+	@htmxHandle.Once() {
+		<script src={ jsDelivrURL("htmx.org", "1.9.12", "dist/htmx.min.js") }></script>
+		<script src={ jsDelivrURL("htmx-ext-include-vals", "2.0.0", "include-vals.min.js") }></script>
+		<script src={ jsDelivrURL("htmx-ext-path-params", "2.0.0", "path-params.min.js") }></script>
+		<script src={ jsDelivrURL("htmx-ext-alpine-morph", "2.0.0", "alpine-morph.min.js") }></script>
+		<script src={ jsDelivrURL("htmx-ext-sse", "2.2.2", "sse.min.js") }></script>
+		<script src={ jsDelivrURL("htmx-ext-ws", "2.0.2", "ws.min.js") }></script>
+	}
+}
+
+// jsDelivrURL returns the URL of a package on jsDelivr
+func jsDelivrURL(pkg string, version string, path string) string {
+	return fmt.Sprintf("https://cdn.jsdelivr.net/npm/%s/%s/%s", pkg, version, path)
+}

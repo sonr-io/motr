@@ -1,0 +1,61 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.14.1/.schema/devbox.schema.json",
+  "packages": [
+    "templ@latest",
+    "sqlc@latest",
+    "nodejs@latest",
+    "goreleaser@latest",
+    "doppler@latest",
+    "commitizen@latest",
+    "process-compose@latest"
+  ],
+  "shell": {
+    "init_hook": [
+      "source .github/setup_env.sh",
+      "go_tidy",
+      "npm_install $RADAR_ROOT",
+      "npm_install $WORKER_ROOT"
+    ],
+    "scripts": {
+      "dev": [
+        "process-compose up"
+      ],
+      "deploy": [
+        "wrangler_deploy $RADAR_ROOT",
+        "wrangler_deploy $WORKER_ROOT"
+      ],
+      "release": [
+        "check_deps",
+        "check_vars",
+        "publish_release"
+      ],
+      "build:radar": [
+        "cd $RADAR_ROOT",
+        "workers-assets-gen -mode=go",
+        "GOOS=js GOARCH=wasm go build -ldflags=\"-s -w\" -o ./build/app.wasm ."
+      ],
+      "build:worker": [
+        "cd $WORKER_ROOT",
+        "workers-assets-gen -mode=go",
+        "GOOS=js GOARCH=wasm go build -ldflags=\"-s -w\" -o ./build/app.wasm ."
+      ],
+      "serve:radar": [
+        "cd $RADAR_ROOT",
+        "npm run start"
+      ],
+      "serve:worker": [
+        "cd $WORKER_ROOT",
+        "npm run start"
+      ],
+      "gen:sqlc": [
+        "cd ./internal/sink && sqlc generate"
+      ],
+      "gen:templ": [
+        "templ generate"
+      ],
+      "watch:templ": [
+        "templ generate --watch"
+      ]
+    }
+  }
+}

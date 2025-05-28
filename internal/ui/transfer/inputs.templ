@@ -1,0 +1,80 @@
+package transfer
+
+templ AssetsDropdown() {
+	<sl-select
+		label="Accounts"
+		name="select-assets"
+		value="SNR BTC ETH"
+		help-text="Select Blockchains to connect with your Vault"
+		multiple
+		class="custom-tag py-2"
+	>
+		<sl-option value="SNR">
+			<sl-icon slot="prefix" name="SNR" library="crypto"></sl-icon>
+			Sonr
+		</sl-option>
+		<sl-option value="BTC">
+			<sl-icon slot="prefix" name="BTC" library="crypto"></sl-icon>
+			Bitcoin
+		</sl-option>
+		<sl-option value="ETH">
+			<sl-icon slot="prefix" name="ETH" library="crypto"></sl-icon>
+			Ethereum
+		</sl-option>
+		<sl-option value="SOL">
+			<sl-icon slot="prefix" name="SOL" library="crypto"></sl-icon>
+			Solana
+		</sl-option>
+		<sl-option value="LTC">
+			<sl-icon slot="prefix" name="LTC" library="crypto"></sl-icon>
+			Litecoin
+		</sl-option>
+		<sl-option value="DOGE">
+			<sl-icon slot="prefix" name="DOGE" library="crypto"></sl-icon>
+			Dogecoin
+		</sl-option>
+	</sl-select>
+}
+
+templ CoinsDropdown() {
+	<sl-select
+		label="Accounts"
+		name="selected_assets"
+		value="SNR BTC ETH"
+		help-text="Select Blockchains to connect with your Vault"
+		multiple
+		class="custom-tag py-2"
+	>
+		for _, a := range defaultCoins {
+			@CoinOption(a)
+		}
+	</sl-select>
+	<script>
+	  const select = document.querySelector('.custom-tag');
+      select.getTag = (option, index) => {
+      const name = option.querySelector('sl-icon[slot="prefix"]').name;
+      return `
+        <sl-tag removable>
+          <sl-icon name="${name}" library="crypto" style="padding-inline-end: .5rem;"></sl-icon>
+          ${option.getTextLabel()}
+        </sl-tag>
+      `;
+    };
+	</script>
+}
+
+templ CoinOption(a CoinInfo) {
+	if a.IsDefault {
+		<sl-option value={ a.Ticker } selected disabled>
+			<sl-icon slot="prefix" name={ a.Ticker } library="crypto"></sl-icon>
+			{ a.Name }
+		</sl-option>
+		<sl-divider></sl-divider>
+	} else {
+		<sl-option value={ a.Ticker }>
+			<sl-icon slot="prefix" name={ a.Ticker } library="crypto"></sl-icon>
+			{ a.Name }
+		</sl-option>
+		<sl-divider></sl-divider>
+	}
+}

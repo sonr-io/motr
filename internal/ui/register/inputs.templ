@@ -1,0 +1,67 @@
+package register
+
+templ InputAvatar(value string, helpText string) {
+	<sl-button variant="default" size="large" circle>
+		<sl-icon name="upload-2-fill"></sl-icon>
+	</sl-button>
+}
+
+templ InputAvatarSuccess(value string, url string) {
+	<sl-button variant="default" size="large" circle>
+		<sl-icon name="upload-2-fill"></sl-icon>
+	</sl-button>
+}
+
+templ HandleInitial() {
+	<div hx-target="this" hx-swap="outerHTML">
+		<label for="user-handle" class="block text-sm font-medium text-gray-300 mb-2">User Handle</label>
+		<sl-input size="large" name="handle" placeholder="digitalgold" type="text" minlength="4" maxlength="12" required hx-post="/register/profile" hx-indicator="#handle-indicator" autofocus>
+			<sl-icon class="p-0.5 ml-1.5" slot="prefix" name="at-sign" library="sonr"></sl-icon>
+		</sl-input>
+	</div>
+	<br/>
+}
+
+templ HandleError(value string, helpText string) {
+	<label for="user-handle" class="block text-sm font-medium text-gray-300 mb-2">User Handle</label>
+	<sl-input size="large" name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required class="border-red-500" value={ value } help-text={ helpText }>
+		<div slot="prefix">
+			<sl-icon name="at-sign" library="sonr"></sl-icon>
+		</div>
+		<div slot="suffix" style="color: #B54549;">
+			<sl-icon name="x"></sl-icon>
+		</div>
+	</sl-input>
+	<br/>
+}
+
+templ HandleSuccess(value string) {
+	<label for="user-handle" class="block text-sm font-medium text-gray-300 mb-2">User Handle</label>
+	<sl-input size="large" name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required class="border-green-500" value={ value } disabled>
+		<div slot="prefix" style="color: #46A758;">
+			<sl-icon name="at-sign" library="sonr"></sl-icon>
+		</div>
+	</sl-input>
+	<br/>
+}
+
+templ PasskeyInitial(clickHandler templ.ComponentScript) {
+	<sl-button style="width: 100%;" onclick={ clickHandler }>
+		<sl-icon slot="prefix" name="passkey" library="sonr" style="font-size: 24px;" class="text-neutral-500"></sl-icon>
+		Register Passkey
+	</sl-button>
+}
+
+templ PasskeyError(clickHandler templ.ComponentScript) {
+	<sl-button style="width: 100%;" onclick={ clickHandler }>
+		<sl-icon slot="prefix" name="passkey" library="sonr" style="font-size: 24px;" class="text-red-500"></sl-icon>
+		Register Passkey
+	</sl-button>
+}
+
+templ PasskeySuccess(clickHandler templ.ComponentScript) {
+	<sl-button style="width: 100%;" onclick={ clickHandler }>
+		<sl-icon slot="prefix" name="passkey" library="sonr" style="font-size: 24px;" class="text-green-500"></sl-icon>
+		Register Passkey
+	</sl-button>
+}

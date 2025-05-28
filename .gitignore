@@ -14,6 +14,7 @@ go.work
 go.work.sum
 !.taskfile.yml
 !.taskfile.dist.yml
+build
 
 # Aider related generated files
 .aider-context

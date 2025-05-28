@@ -4,28 +4,21 @@
 package routes
 
 import (
+	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/handlers"
-	"github.com/sonr-io/motr/sink/config"
 )
 
-func SetupRoutes(c *config.Server) {
-	// Home
-	c.GET("/", handlers.HandleDefaultIndex)
-	c.GET("/expired", handlers.HandleDefaultError)
-	c.GET("/valid", handlers.HandleDefaultValid)
+func SetupViews(e *echo.Echo) {
+	e.GET("/", handlers.HandleDefaultIndex)
+	e.GET("/login", handlers.HandleLoginInitial)
+	e.GET("/register", handlers.HandleRegisterInitial)
+}
 
-	// Login
-	c.GET("/login", handlers.HandleLoginInitial)
-	c.GET("/login/:handle", handlers.HandleLoginStart)
-	c.POST("/login/:handle/check", handlers.HandleLoginCheck)
-	c.POST("/login/:handle/finish", handlers.HandleLoginFinish)
-
-	// Register
-	c.GET("/register", handlers.HandleRegisterInitial)
-	c.GET("/register/:handle", handlers.HandleRegisterStart)
-	c.POST("/register/:handle/check", handlers.HandleRegisterCheck)
-	c.POST("/register/:handle/finish", handlers.HandleRegisterFinish)
-
-	// Status
-	c.GET("/status", handlers.HandleStatusCheck)
+func SetupPartials(e *echo.Echo) {
+	e.POST("/login/:handle/check", handlers.HandleLoginCheck)
+	e.POST("/login/:handle/finish", handlers.HandleLoginFinish)
+	e.POST("/register/:handle", handlers.HandleRegisterStart)
+	e.POST("/register/:handle/check", handlers.HandleRegisterCheck)
+	e.POST("/register/:handle/finish", handlers.HandleRegisterFinish)
+	e.POST("/status", handlers.HandleStatusCheck)
 }

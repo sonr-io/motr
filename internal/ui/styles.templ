@@ -1,0 +1,54 @@
+package ui
+
+templ DefaultStyles() {
+	<style>
+	    @theme {
+        --color-primary: #17c2ff;
+      }
+
+   		@keyframes fade-in {
+     		from { opacity: 0; }
+   		}
+
+   		@keyframes fade-out {
+     		to { opacity: 0; }
+   		}
+
+   		@keyframes slide-from-right {
+     		from { transform: translateX(90px); }
+   		}
+
+   		@keyframes slide-to-left {
+     		to { transform: translateX(-90px); }
+   		}
+
+   		.slide-it {
+     		view-transition-name: slide-it;
+   		}
+
+   		::view-transition-old(slide-it) {
+     		animation: 180ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
+     		600ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
+   		}
+   		::view-transition-new(slide-it) {
+     		animation: 420ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
+     		600ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
+   		}
+		</style>
+}
+
+// Shoelace dependencies
+templ Shoelace() {
+	<link
+		rel="stylesheet"
+		media="(prefers-color-scheme:light)"
+		href="https://cdn.jsdelivr.net/npm/sonr-shoelace/cdn/themes/light.css"
+	/>
+	<link
+		rel="stylesheet"
+		media="(prefers-color-scheme:dark)"
+		href="https://cdn.jsdelivr.net/npm/sonr-shoelace/cdn/themes/dark.css"
+		onload="document.documentElement.classList.add('sl-theme-dark');"
+	/>
+	<script type="module" src="https://cdn.jsdelivr.net/npm/sonr-shoelace/cdn/shoelace-autoloader.js"></script>
+}
