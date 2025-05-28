@@ -10,12 +10,6 @@ import (
 	_ "github.com/syumai/workers/cloudflare/d1"
 )
 
-var (
-	Sonr       NetworkConfig
-	Cache      CacheConfig
-	Cloudflare CloudflareConfig
-)
-
 type Config struct {
 	Cache         CacheConfig      `json:"cache"` // Added Cache configuration
 	Sonr          NetworkConfig    `json:"network"`
@@ -46,8 +40,8 @@ type CacheConfig struct {
 	CacheableContentTypes []string `json:"cacheable_content_types"`
 }
 
-func init() {
-	Cache = CacheConfig{
+func Get() Config {
+	cache := CacheConfig{
 		Enabled:       true,
 		DefaultMaxAge: 60, // 1 minute by default
 		BypassHeader:  "X-Cache-Bypass",
@@ -68,26 +62,24 @@ func init() {
 		},
 	}
 
-	Cloudflare = CloudflareConfig{
+	flare := CloudflareConfig{
 		Database: "DB",
 		Sessions: "SESSIONS",
 		Handles:  "HANDLES",
 	}
 
-	Sonr = NetworkConfig{
+	sonr := NetworkConfig{
 		SonrChainID: cloudflare.Getenv("SONR_CHAIN_ID"),
 		SonrAPIURL:  cloudflare.Getenv("SONR_API_URL"),
 		SonrRPCURL:  cloudflare.Getenv("SONR_RPC_URL"),
 		IPFSGateway: cloudflare.Getenv("IPFS_GATEWAY"),
 	}
-}
 
-func Get() Config {
 	c := Config{
-		Sonr:          Sonr,
-		Cache:         Cache,
-		Cloudflare:    Cloudflare,
-		DefaultExpiry: time.Hour * 1, // 1 hour by default
+		Sonr:          sonr,
+		Cache:         cache,
+		Cloudflare:    flare,
+		DefaultExpiry: time.Hour * 1,
 	}
 	return c
 }

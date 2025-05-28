@@ -23,7 +23,7 @@ var (
 func main() {
 	cfg := config.Get()
 	e := echo.New()
-	e.Use(session.Middleware(cfg), cache.Middleware(config.Cache))
+	e.Use(session.Middleware(cfg), cache.Middleware(cfg.Cache))
 
 	setupViewRoutes(e)
 	setupPartialRoutes(e)

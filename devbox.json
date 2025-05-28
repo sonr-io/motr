@@ -40,7 +40,7 @@
         "GOOS=js GOARCH=wasm go build -o ./cmd/worker/build/app.wasm ./cmd/worker/main.go"
       ],
       "gen:sqlc": [
-        "sqlc generate"
+        "cd ./internal/sink && sqlc generate"
       ],
       "gen:templ": [
         "templ generate"

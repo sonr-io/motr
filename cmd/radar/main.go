@@ -13,22 +13,21 @@ import (
 )
 
 var (
-	// Version is the current version of the application.
+	// Version is the current version of the app.
 	Version = "0.0.1"
 
-	// Config is the current configuration of the application.
-	cfg config.Config
+	// Commit is the current commit hash of the app.
+	Commit = "none"
 )
 
-func init() {
-	cfg = config.Get()
-}
-
 func main() {
+	cfg := config.Get()
 	e := echo.New()
-	e.Use(session.Middleware(cfg), cache.Middleware(config.Cache))
+	e.Use(session.Middleware(cfg), cache.Middleware(cfg.Cache))
+
 	setupViewRoutes(e)
 	setupPartialRoutes(e)
+
 	workers.Serve(e)
 }
 
@@ -41,11 +40,8 @@ func setupViewRoutes(e *echo.Echo) {
 func setupPartialRoutes(e *echo.Echo) {
 	e.POST("/login/:handle/check", handlers.HandleLoginCheck)
 	e.POST("/login/:handle/finish", handlers.HandleLoginFinish)
-
-	// Register
 	e.POST("/register/:handle", handlers.HandleRegisterStart)
 	e.POST("/register/:handle/check", handlers.HandleRegisterCheck)
 	e.POST("/register/:handle/finish", handlers.HandleRegisterFinish)
-
 	e.POST("/status", handlers.HandleStatusCheck)
 }
