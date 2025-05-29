@@ -11,9 +11,9 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/middleware/database"
 	"github.com/sonr-io/motr/middleware/kvstore"
-	"github.com/sonr-io/motr/middleware/marketapi"
 	"github.com/sonr-io/motr/middleware/session"
-	"github.com/sonr-io/motr/routes"
+	"github.com/sonr-io/motr/middleware/sonrapi"
+	"github.com/sonr-io/motr/middleware/webauthn"
 	"github.com/syumai/workers"
 	"github.com/syumai/workers/cloudflare/cron"
 
@@ -27,9 +27,15 @@ import (
 // Setup the HTTP handler
 func loadHandler() http.Handler {
 	e := echo.New()
-	e.Use(session.Middleware(), database.Middleware(), kvstore.Middleware(), marketapi.Middleware())
-	routes.SetupViews(e)
-	routes.SetupPartials(e)
+	e.Use(
+		session.Middleware(),
+		database.Middleware(),
+		kvstore.Middleware(),
+		sonrapi.Middleware(),
+		webauthn.Middleware(),
+	)
+	setupViews(e)
+	setupPartials(e)
 	return e
 }
 
@@ -55,8 +61,8 @@ func main() {
 	t := loadTask()
 
 	// Configure Worker
-	workers.ServeNonBlock(e)
 	cron.ScheduleTaskNonBlock(t)
+	workers.ServeNonBlock(e)
 	workers.Ready()
 
 	// Block until handler/task is done

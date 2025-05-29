@@ -13,7 +13,13 @@ type (
 	EchoPartialView func(c echo.Context) templ.Component
 )
 
-func View(c echo.Context, cmp templ.Component) error {
+func Page(cmp templ.Component) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		return Component(c, cmp)
+	}
+}
+
+func Component(c echo.Context, cmp templ.Component) error {
 	// Create a buffer to store the rendered HTML
 	buf := &bytes.Buffer{}
 	// Render the component to the buffer
