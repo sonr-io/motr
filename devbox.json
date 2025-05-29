@@ -5,9 +5,8 @@
     "sqlc@latest",
     "nodejs@latest",
     "goreleaser@latest",
-    "doppler@latest",
-    "commitizen@latest",
-    "process-compose@latest"
+    "go-task@latest",
+    "doppler@latest"
   ],
   "shell": {
     "init_hook": [
@@ -17,9 +16,6 @@
       "npm_install $WORKER_ROOT"
     ],
     "scripts": {
-      "dev": [
-        "process-compose up"
-      ],
       "deploy": [
         "wrangler_deploy $RADAR_ROOT",
         "wrangler_deploy $WORKER_ROOT"
@@ -49,6 +45,9 @@
       ],
       "gen:sqlc": [
         "cd $SQLC_ROOT && sqlc generate"
+      ],
+      "db:migrate": [
+        "cd $MIGRATE_ROOT && task"
       ],
       "gen:templ": [
         "templ generate"

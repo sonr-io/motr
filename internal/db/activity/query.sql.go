@@ -73,6 +73,141 @@ func (q *Queries) GetActivityByTxHash(ctx context.Context, txHash sql.NullString
 	return i, err
 }
 
+const getCryptoListingByApiID = `-- name: GetCryptoListingByApiID :one
+SELECT id, created_at, updated_at, deleted_at, api_id, name, symbol, website_slug FROM crypto_listings
+WHERE api_id = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetCryptoListingByApiID(ctx context.Context, apiID string) (CryptoListing, error) {
+	row := q.db.QueryRowContext(ctx, getCryptoListingByApiID, apiID)
+	var i CryptoListing
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ApiID,
+		&i.Name,
+		&i.Symbol,
+		&i.WebsiteSlug,
+	)
+	return i, err
+}
+
+const getCryptoListingByID = `-- name: GetCryptoListingByID :one
+SELECT id, created_at, updated_at, deleted_at, api_id, name, symbol, website_slug FROM crypto_listings
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetCryptoListingByID(ctx context.Context, id string) (CryptoListing, error) {
+	row := q.db.QueryRowContext(ctx, getCryptoListingByID, id)
+	var i CryptoListing
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ApiID,
+		&i.Name,
+		&i.Symbol,
+		&i.WebsiteSlug,
+	)
+	return i, err
+}
+
+const getCryptoListingBySymbol = `-- name: GetCryptoListingBySymbol :one
+SELECT id, created_at, updated_at, deleted_at, api_id, name, symbol, website_slug FROM crypto_listings
+WHERE symbol = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetCryptoListingBySymbol(ctx context.Context, symbol string) (CryptoListing, error) {
+	row := q.db.QueryRowContext(ctx, getCryptoListingBySymbol, symbol)
+	var i CryptoListing
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ApiID,
+		&i.Name,
+		&i.Symbol,
+		&i.WebsiteSlug,
+	)
+	return i, err
+}
+
+const getCryptoListingByWebsiteSlug = `-- name: GetCryptoListingByWebsiteSlug :one
+SELECT id, created_at, updated_at, deleted_at, api_id, name, symbol, website_slug FROM crypto_listings
+WHERE website_slug = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetCryptoListingByWebsiteSlug(ctx context.Context, websiteSlug string) (CryptoListing, error) {
+	row := q.db.QueryRowContext(ctx, getCryptoListingByWebsiteSlug, websiteSlug)
+	var i CryptoListing
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ApiID,
+		&i.Name,
+		&i.Symbol,
+		&i.WebsiteSlug,
+	)
+	return i, err
+}
+
+const getFearGreedIndexByID = `-- name: GetFearGreedIndexByID :one
+SELECT id, created_at, updated_at, deleted_at, value, value_classification, timestamp, time_until_update FROM fear_greed_index
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetFearGreedIndexByID(ctx context.Context, id string) (FearGreedIndex, error) {
+	row := q.db.QueryRowContext(ctx, getFearGreedIndexByID, id)
+	var i FearGreedIndex
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Value,
+		&i.ValueClassification,
+		&i.Timestamp,
+		&i.TimeUntilUpdate,
+	)
+	return i, err
+}
+
+const getGlobalMarketByID = `-- name: GetGlobalMarketByID :one
+SELECT id, created_at, updated_at, deleted_at, total_market_cap_usd, total_24h_volume_usd, bitcoin_percentage_of_market_cap, active_currencies, active_assets, active_markets, last_updated FROM global_market
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetGlobalMarketByID(ctx context.Context, id string) (GlobalMarket, error) {
+	row := q.db.QueryRowContext(ctx, getGlobalMarketByID, id)
+	var i GlobalMarket
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.TotalMarketCapUsd,
+		&i.Total24hVolumeUsd,
+		&i.BitcoinPercentageOfMarketCap,
+		&i.ActiveCurrencies,
+		&i.ActiveAssets,
+		&i.ActiveMarkets,
+		&i.LastUpdated,
+	)
+	return i, err
+}
+
 const getHealthByEndpoint = `-- name: GetHealthByEndpoint :one
 SELECT id, created_at, updated_at, deleted_at, endpoint_url, endpoint_type, chain_id, status, response_time_ms, last_checked, next_check, failure_count, success_count, response_data, error_message FROM health
 WHERE endpoint_url = ? AND deleted_at IS NULL
@@ -128,6 +263,55 @@ func (q *Queries) GetHealthByID(ctx context.Context, id string) (Health, error) 
 		&i.SuccessCount,
 		&i.ResponseData,
 		&i.ErrorMessage,
+	)
+	return i, err
+}
+
+const getLatestFearGreedIndex = `-- name: GetLatestFearGreedIndex :one
+SELECT id, created_at, updated_at, deleted_at, value, value_classification, timestamp, time_until_update FROM fear_greed_index
+WHERE deleted_at IS NULL
+ORDER BY timestamp DESC
+LIMIT 1
+`
+
+func (q *Queries) GetLatestFearGreedIndex(ctx context.Context) (FearGreedIndex, error) {
+	row := q.db.QueryRowContext(ctx, getLatestFearGreedIndex)
+	var i FearGreedIndex
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Value,
+		&i.ValueClassification,
+		&i.Timestamp,
+		&i.TimeUntilUpdate,
+	)
+	return i, err
+}
+
+const getLatestGlobalMarket = `-- name: GetLatestGlobalMarket :one
+SELECT id, created_at, updated_at, deleted_at, total_market_cap_usd, total_24h_volume_usd, bitcoin_percentage_of_market_cap, active_currencies, active_assets, active_markets, last_updated FROM global_market
+WHERE deleted_at IS NULL
+ORDER BY last_updated DESC
+LIMIT 1
+`
+
+func (q *Queries) GetLatestGlobalMarket(ctx context.Context) (GlobalMarket, error) {
+	row := q.db.QueryRowContext(ctx, getLatestGlobalMarket)
+	var i GlobalMarket
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.TotalMarketCapUsd,
+		&i.Total24hVolumeUsd,
+		&i.BitcoinPercentageOfMarketCap,
+		&i.ActiveCurrencies,
+		&i.ActiveAssets,
+		&i.ActiveMarkets,
+		&i.LastUpdated,
 	)
 	return i, err
 }
@@ -286,6 +470,134 @@ func (q *Queries) InsertActivity(ctx context.Context, arg InsertActivityParams) 
 		&i.Timestamp,
 		&i.RawLog,
 		&i.Error,
+	)
+	return i, err
+}
+
+const insertCryptoListing = `-- name: InsertCryptoListing :one
+INSERT INTO crypto_listings (
+    api_id,
+    name,
+    symbol,
+    website_slug
+) VALUES (?, ?, ?, ?)
+RETURNING id, created_at, updated_at, deleted_at, api_id, name, symbol, website_slug
+`
+
+type InsertCryptoListingParams struct {
+	ApiID       string `json:"api_id"`
+	Name        string `json:"name"`
+	Symbol      string `json:"symbol"`
+	WebsiteSlug string `json:"website_slug"`
+}
+
+// CRYPTO LISTINGS QUERIES (NEW)
+func (q *Queries) InsertCryptoListing(ctx context.Context, arg InsertCryptoListingParams) (CryptoListing, error) {
+	row := q.db.QueryRowContext(ctx, insertCryptoListing,
+		arg.ApiID,
+		arg.Name,
+		arg.Symbol,
+		arg.WebsiteSlug,
+	)
+	var i CryptoListing
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ApiID,
+		&i.Name,
+		&i.Symbol,
+		&i.WebsiteSlug,
+	)
+	return i, err
+}
+
+const insertFearGreedIndex = `-- name: InsertFearGreedIndex :one
+INSERT INTO fear_greed_index (
+    value,
+    value_classification,
+    timestamp,
+    time_until_update
+) VALUES (?, ?, ?, ?)
+RETURNING id, created_at, updated_at, deleted_at, value, value_classification, timestamp, time_until_update
+`
+
+type InsertFearGreedIndexParams struct {
+	Value               int64          `json:"value"`
+	ValueClassification string         `json:"value_classification"`
+	Timestamp           time.Time      `json:"timestamp"`
+	TimeUntilUpdate     sql.NullString `json:"time_until_update"`
+}
+
+// FEAR AND GREED INDEX QUERIES (NEW)
+func (q *Queries) InsertFearGreedIndex(ctx context.Context, arg InsertFearGreedIndexParams) (FearGreedIndex, error) {
+	row := q.db.QueryRowContext(ctx, insertFearGreedIndex,
+		arg.Value,
+		arg.ValueClassification,
+		arg.Timestamp,
+		arg.TimeUntilUpdate,
+	)
+	var i FearGreedIndex
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Value,
+		&i.ValueClassification,
+		&i.Timestamp,
+		&i.TimeUntilUpdate,
+	)
+	return i, err
+}
+
+const insertGlobalMarket = `-- name: InsertGlobalMarket :one
+INSERT INTO global_market (
+    total_market_cap_usd,
+    total_24h_volume_usd,
+    bitcoin_percentage_of_market_cap,
+    active_currencies,
+    active_assets,
+    active_markets,
+    last_updated
+) VALUES (?, ?, ?, ?, ?, ?, ?)
+RETURNING id, created_at, updated_at, deleted_at, total_market_cap_usd, total_24h_volume_usd, bitcoin_percentage_of_market_cap, active_currencies, active_assets, active_markets, last_updated
+`
+
+type InsertGlobalMarketParams struct {
+	TotalMarketCapUsd            sql.NullFloat64 `json:"total_market_cap_usd"`
+	Total24hVolumeUsd            sql.NullFloat64 `json:"total_24h_volume_usd"`
+	BitcoinPercentageOfMarketCap sql.NullFloat64 `json:"bitcoin_percentage_of_market_cap"`
+	ActiveCurrencies             sql.NullInt64   `json:"active_currencies"`
+	ActiveAssets                 sql.NullInt64   `json:"active_assets"`
+	ActiveMarkets                sql.NullInt64   `json:"active_markets"`
+	LastUpdated                  time.Time       `json:"last_updated"`
+}
+
+func (q *Queries) InsertGlobalMarket(ctx context.Context, arg InsertGlobalMarketParams) (GlobalMarket, error) {
+	row := q.db.QueryRowContext(ctx, insertGlobalMarket,
+		arg.TotalMarketCapUsd,
+		arg.Total24hVolumeUsd,
+		arg.BitcoinPercentageOfMarketCap,
+		arg.ActiveCurrencies,
+		arg.ActiveAssets,
+		arg.ActiveMarkets,
+		arg.LastUpdated,
+	)
+	var i GlobalMarket
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.TotalMarketCapUsd,
+		&i.Total24hVolumeUsd,
+		&i.BitcoinPercentageOfMarketCap,
+		&i.ActiveCurrencies,
+		&i.ActiveAssets,
+		&i.ActiveMarkets,
+		&i.LastUpdated,
 	)
 	return i, err
 }
@@ -573,6 +885,141 @@ func (q *Queries) ListActivitiesByType(ctx context.Context, arg ListActivitiesBy
 	return items, nil
 }
 
+const listCryptoListings = `-- name: ListCryptoListings :many
+SELECT id, created_at, updated_at, deleted_at, api_id, name, symbol, website_slug FROM crypto_listings
+WHERE deleted_at IS NULL
+ORDER BY name ASC
+LIMIT ? OFFSET ?
+`
+
+type ListCryptoListingsParams struct {
+	Limit  int64 `json:"limit"`
+	Offset int64 `json:"offset"`
+}
+
+func (q *Queries) ListCryptoListings(ctx context.Context, arg ListCryptoListingsParams) ([]CryptoListing, error) {
+	rows, err := q.db.QueryContext(ctx, listCryptoListings, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []CryptoListing
+	for rows.Next() {
+		var i CryptoListing
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.ApiID,
+			&i.Name,
+			&i.Symbol,
+			&i.WebsiteSlug,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listFearGreedIndexHistory = `-- name: ListFearGreedIndexHistory :many
+SELECT id, created_at, updated_at, deleted_at, value, value_classification, timestamp, time_until_update FROM fear_greed_index
+WHERE deleted_at IS NULL
+ORDER BY timestamp DESC
+LIMIT ? OFFSET ?
+`
+
+type ListFearGreedIndexHistoryParams struct {
+	Limit  int64 `json:"limit"`
+	Offset int64 `json:"offset"`
+}
+
+func (q *Queries) ListFearGreedIndexHistory(ctx context.Context, arg ListFearGreedIndexHistoryParams) ([]FearGreedIndex, error) {
+	rows, err := q.db.QueryContext(ctx, listFearGreedIndexHistory, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []FearGreedIndex
+	for rows.Next() {
+		var i FearGreedIndex
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.Value,
+			&i.ValueClassification,
+			&i.Timestamp,
+			&i.TimeUntilUpdate,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listGlobalMarketHistory = `-- name: ListGlobalMarketHistory :many
+SELECT id, created_at, updated_at, deleted_at, total_market_cap_usd, total_24h_volume_usd, bitcoin_percentage_of_market_cap, active_currencies, active_assets, active_markets, last_updated FROM global_market
+WHERE deleted_at IS NULL
+ORDER BY last_updated DESC
+LIMIT ? OFFSET ?
+`
+
+type ListGlobalMarketHistoryParams struct {
+	Limit  int64 `json:"limit"`
+	Offset int64 `json:"offset"`
+}
+
+func (q *Queries) ListGlobalMarketHistory(ctx context.Context, arg ListGlobalMarketHistoryParams) ([]GlobalMarket, error) {
+	rows, err := q.db.QueryContext(ctx, listGlobalMarketHistory, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GlobalMarket
+	for rows.Next() {
+		var i GlobalMarket
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.TotalMarketCapUsd,
+			&i.Total24hVolumeUsd,
+			&i.BitcoinPercentageOfMarketCap,
+			&i.ActiveCurrencies,
+			&i.ActiveAssets,
+			&i.ActiveMarkets,
+			&i.LastUpdated,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listHealthByChain = `-- name: ListHealthByChain :many
 SELECT id, created_at, updated_at, deleted_at, endpoint_url, endpoint_type, chain_id, status, response_time_ms, last_checked, next_check, failure_count, success_count, response_data, error_message FROM health
 WHERE chain_id = ? AND deleted_at IS NULL
@@ -832,6 +1279,39 @@ func (q *Queries) SoftDeleteActivity(ctx context.Context, id string) error {
 	return err
 }
 
+const softDeleteCryptoListing = `-- name: SoftDeleteCryptoListing :exec
+UPDATE crypto_listings
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = ?
+`
+
+func (q *Queries) SoftDeleteCryptoListing(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, softDeleteCryptoListing, id)
+	return err
+}
+
+const softDeleteFearGreedIndex = `-- name: SoftDeleteFearGreedIndex :exec
+UPDATE fear_greed_index
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = ?
+`
+
+func (q *Queries) SoftDeleteFearGreedIndex(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, softDeleteFearGreedIndex, id)
+	return err
+}
+
+const softDeleteGlobalMarket = `-- name: SoftDeleteGlobalMarket :exec
+UPDATE global_market
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = ?
+`
+
+func (q *Queries) SoftDeleteGlobalMarket(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, softDeleteGlobalMarket, id)
+	return err
+}
+
 const softDeleteHealth = `-- name: SoftDeleteHealth :exec
 UPDATE health
 SET deleted_at = CURRENT_TIMESTAMP
@@ -908,6 +1388,144 @@ func (q *Queries) UpdateActivityStatus(ctx context.Context, arg UpdateActivitySt
 		&i.Timestamp,
 		&i.RawLog,
 		&i.Error,
+	)
+	return i, err
+}
+
+const updateCryptoListing = `-- name: UpdateCryptoListing :one
+UPDATE crypto_listings
+SET 
+    name = ?,
+    symbol = ?,
+    website_slug = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? 
+AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, api_id, name, symbol, website_slug
+`
+
+type UpdateCryptoListingParams struct {
+	Name        string `json:"name"`
+	Symbol      string `json:"symbol"`
+	WebsiteSlug string `json:"website_slug"`
+	ID          string `json:"id"`
+}
+
+func (q *Queries) UpdateCryptoListing(ctx context.Context, arg UpdateCryptoListingParams) (CryptoListing, error) {
+	row := q.db.QueryRowContext(ctx, updateCryptoListing,
+		arg.Name,
+		arg.Symbol,
+		arg.WebsiteSlug,
+		arg.ID,
+	)
+	var i CryptoListing
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.ApiID,
+		&i.Name,
+		&i.Symbol,
+		&i.WebsiteSlug,
+	)
+	return i, err
+}
+
+const updateFearGreedIndex = `-- name: UpdateFearGreedIndex :one
+UPDATE fear_greed_index
+SET 
+    value = ?,
+    value_classification = ?,
+    timestamp = ?,
+    time_until_update = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? 
+AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, value, value_classification, timestamp, time_until_update
+`
+
+type UpdateFearGreedIndexParams struct {
+	Value               int64          `json:"value"`
+	ValueClassification string         `json:"value_classification"`
+	Timestamp           time.Time      `json:"timestamp"`
+	TimeUntilUpdate     sql.NullString `json:"time_until_update"`
+	ID                  string         `json:"id"`
+}
+
+func (q *Queries) UpdateFearGreedIndex(ctx context.Context, arg UpdateFearGreedIndexParams) (FearGreedIndex, error) {
+	row := q.db.QueryRowContext(ctx, updateFearGreedIndex,
+		arg.Value,
+		arg.ValueClassification,
+		arg.Timestamp,
+		arg.TimeUntilUpdate,
+		arg.ID,
+	)
+	var i FearGreedIndex
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Value,
+		&i.ValueClassification,
+		&i.Timestamp,
+		&i.TimeUntilUpdate,
+	)
+	return i, err
+}
+
+const updateGlobalMarket = `-- name: UpdateGlobalMarket :one
+UPDATE global_market
+SET 
+    total_market_cap_usd = ?,
+    total_24h_volume_usd = ?,
+    bitcoin_percentage_of_market_cap = ?,
+    active_currencies = ?,
+    active_assets = ?,
+    active_markets = ?,
+    last_updated = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ? 
+AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, total_market_cap_usd, total_24h_volume_usd, bitcoin_percentage_of_market_cap, active_currencies, active_assets, active_markets, last_updated
+`
+
+type UpdateGlobalMarketParams struct {
+	TotalMarketCapUsd            sql.NullFloat64 `json:"total_market_cap_usd"`
+	Total24hVolumeUsd            sql.NullFloat64 `json:"total_24h_volume_usd"`
+	BitcoinPercentageOfMarketCap sql.NullFloat64 `json:"bitcoin_percentage_of_market_cap"`
+	ActiveCurrencies             sql.NullInt64   `json:"active_currencies"`
+	ActiveAssets                 sql.NullInt64   `json:"active_assets"`
+	ActiveMarkets                sql.NullInt64   `json:"active_markets"`
+	LastUpdated                  time.Time       `json:"last_updated"`
+	ID                           string          `json:"id"`
+}
+
+func (q *Queries) UpdateGlobalMarket(ctx context.Context, arg UpdateGlobalMarketParams) (GlobalMarket, error) {
+	row := q.db.QueryRowContext(ctx, updateGlobalMarket,
+		arg.TotalMarketCapUsd,
+		arg.Total24hVolumeUsd,
+		arg.BitcoinPercentageOfMarketCap,
+		arg.ActiveCurrencies,
+		arg.ActiveAssets,
+		arg.ActiveMarkets,
+		arg.LastUpdated,
+		arg.ID,
+	)
+	var i GlobalMarket
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.TotalMarketCapUsd,
+		&i.Total24hVolumeUsd,
+		&i.BitcoinPercentageOfMarketCap,
+		&i.ActiveCurrencies,
+		&i.ActiveAssets,
+		&i.ActiveMarkets,
+		&i.LastUpdated,
 	)
 	return i, err
 }

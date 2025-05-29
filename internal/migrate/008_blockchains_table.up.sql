@@ -1,57 +1,3 @@
--- Assets represent tokens and coins
-CREATE TABLE assets (
-    id TEXT PRIMARY KEY,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP,
-    name TEXT NOT NULL,
-    symbol TEXT NOT NULL,
-    decimals INTEGER NOT NULL CHECK(decimals >= 0),
-    chain_id TEXT NOT NULL,
-    channel TEXT NOT NULL,
-    asset_type TEXT NOT NULL,
-    coingecko_id TEXT,
-    UNIQUE(chain_id, symbol)
-);
-
--- Prices entity based on the Alternative.me API for crypto prices
-CREATE TABLE prices (
-    id TEXT PRIMARY KEY,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP,
-    asset_id TEXT NOT NULL,
-    price_usd REAL,
-    price_btc REAL,
-    volume_24h_usd REAL,
-    market_cap_usd REAL,
-    available_supply REAL,
-    total_supply REAL,
-    max_supply REAL,
-    percent_change_1h REAL,
-    percent_change_24h REAL,
-    percent_change_7d REAL,
-    rank INTEGER,
-    last_updated TIMESTAMP NOT NULL,
-    FOREIGN KEY (asset_id) REFERENCES assets(id)
-);
-
--- Currency conversion rates for crypto prices
-CREATE TABLE price_conversions (
-    id TEXT PRIMARY KEY,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP,
-    price_id TEXT NOT NULL,
-    currency_code TEXT NOT NULL,
-    price REAL,
-    volume_24h REAL,
-    market_cap REAL,
-    last_updated TIMESTAMP NOT NULL,
-    FOREIGN KEY (price_id) REFERENCES prices(id),
-    UNIQUE(price_id, currency_code)
-);
-
 -- Blockchains table to store chain configuration parameters
 CREATE TABLE blockchains (
     id TEXT PRIMARY KEY,
@@ -117,20 +63,6 @@ CREATE TABLE blockchains (
     about TEXT CHECK(json_valid(about)),
     forum TEXT CHECK(json_valid(forum))
 );
-
--- Add all necessary indexes
-CREATE INDEX idx_assets_symbol ON assets(symbol);
-CREATE INDEX idx_assets_chain_id ON assets(chain_id);
-CREATE INDEX idx_assets_deleted_at ON assets(deleted_at);
-
-CREATE INDEX idx_prices_asset_id ON prices(asset_id);
-CREATE INDEX idx_prices_rank ON prices(rank);
-CREATE INDEX idx_prices_last_updated ON prices(last_updated);
-CREATE INDEX idx_prices_deleted_at ON prices(deleted_at);
-
-CREATE INDEX idx_price_conversions_price_id ON price_conversions(price_id);
-CREATE INDEX idx_price_conversions_currency_code ON price_conversions(currency_code);
-CREATE INDEX idx_price_conversions_deleted_at ON price_conversions(deleted_at);
 
 CREATE INDEX idx_blockchains_chain_name ON blockchains(chain_name);
 CREATE INDEX idx_blockchains_chain_id_cosmos ON blockchains(chain_id_cosmos);

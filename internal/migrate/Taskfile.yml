@@ -1,0 +1,199 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+silent: true
+
+tasks:
+  default:
+    cmd: task -l --json | jq -r '.tasks[].name' | fzf | xargs task
+
+  initialize:
+    cmds:
+      - task: migrate:accounts:up
+      - task: migrate:credentials:up
+      - task: migrate:profiles:up
+      - task: migrate:vaults:up
+      - task: migrate:assets:up
+      - task: migrate:prices:up
+      - task: migrate:price_conversions:up
+      - task: migrate:blockchains:up
+      - task: migrate:services:up
+      - task: migrate:activities:up
+      - task: migrate:health:up
+      - task: migrate:global_market:up
+      - task: migrate:fear_greed_index:up
+      - task: migrate:crypto_listings:up  
+
+  migrate:
+    cmds: 
+      - task: migrate:accounts
+      - task: migrate:credentials
+      - task: migrate:profiles
+      - task: migrate:vaults
+      - task: migrate:assets
+      - task: migrate:prices
+      - task: migrate:price_conversions
+      - task: migrate:blockchains
+      - task: migrate:services
+      - task: migrate:activities
+      - task: migrate:health
+      - task: migrate:global_market
+      - task: migrate:fear_greed_index
+      - task: migrate:crypto_listings
+
+  # ---------------
+  # Main Tasks
+  # ---------------
+  migrate:accounts:
+    cmds:
+      - task: migrate:accounts:down
+      - task: migrate:accounts:up
+
+  migrate:accounts:up:
+    cmd: wrangler d1 execute USERS_DB --file 001_accounts_table.up.sql --remote
+
+  migrate:accounts:down:
+    cmd: wrangler d1 execute USERS_DB --file 001_accounts_table.down.sql --remote
+
+  migrate:credentials:
+    cmds:
+      - task: migrate:credentials:down
+      - task: migrate:credentials:up
+
+  migrate:credentials:up:
+    cmd: wrangler d1 execute USERS_DB --file 002_credentials_table.up.sql --remote
+
+  migrate:credentials:down:
+    cmd: wrangler d1 execute USERS_DB --file 002_credentials_table.down.sql --remote
+
+  migrate:profiles:
+    cmds:
+      - task: migrate:profiles:down
+      - task: migrate:profiles:up
+
+  migrate:profiles:up:
+    cmd: wrangler d1 execute USERS_DB --file 003_profiles_table.up.sql --remote
+
+  migrate:profiles:down:
+    cmd: wrangler d1 execute USERS_DB --file 003_profiles_table.down.sql --remote
+
+  migrate:vaults:
+    cmds:
+      - task: migrate:vaults:down
+      - task: migrate:vaults:up
+
+  migrate:vaults:down:
+    cmd: wrangler d1 execute USERS_DB --file 004_vaults_table.down.sql --remote
+
+  migrate:vaults:up:
+    cmd: wrangler d1 execute USERS_DB --file 004_vaults_table.up.sql --remote
+
+  migrate:assets:
+    cmds:
+      - task: migrate:assets:down
+      - task: migrate:assets:up
+
+  migrate:assets:up:
+    cmd: wrangler d1 execute NETWORK_DB --file 005_assets_table.up.sql --remote
+
+  migrate:assets:down:
+    cmd: wrangler d1 execute NETWORK_DB --file 005_assets_table.down.sql --remote
+
+  migrate:prices:
+    cmds:
+      - task: migrate:prices:down
+      - task: migrate:prices:up
+
+  migrate:prices:up:
+    cmd: wrangler d1 execute NETWORK_DB --file 006_prices_table.up.sql --remote
+
+  migrate:prices:down:
+    cmd: wrangler d1 execute NETWORK_DB --file 006_prices_table.down.sql --remote
+
+  migrate:price_conversions:
+    cmds:
+      - task: migrate:price_conversions:down
+      - task: migrate:price_conversions:up
+
+  migrate:price_conversions:up:
+    cmd: wrangler d1 execute NETWORK_DB --file 007_price_conversions_table.up.sql --remote
+
+  migrate:price_conversions:down:
+    cmd: wrangler d1 execute NETWORK_DB --file 007_price_conversions_table.down.sql --remote
+
+  migrate:blockchains:
+    cmds:
+      - task: migrate:blockchains:down
+      - task: migrate:blockchains:up
+
+  migrate:blockchains:up:
+    cmd: wrangler d1 execute NETWORK_DB --file 008_blockchains_table.up.sql --remote
+
+  migrate:blockchains:down:
+    cmd: wrangler d1 execute NETWORK_DB --file 008_blockchains_table.down.sql --remote
+
+  migrate:services:
+    cmds:
+      - task: migrate:services:down
+      - task: migrate:services:up
+
+  migrate:services:up:
+    cmd: wrangler d1 execute ACTIVITY_DB --file 009_services_table.up.sql --remote
+
+  migrate:services:down:
+    cmd: wrangler d1 execute ACTIVITY_DB --file 009_services_table.down.sql --remote
+
+  migrate:activities:
+    cmds:
+      - task: migrate:activities:down
+      - task: migrate:activities:up
+
+  migrate:activities:up:
+    cmd: wrangler d1 execute ACTIVITY_DB --file 010_activities_table.up.sql --remote
+
+  migrate:activities:down:
+    cmd: wrangler d1 execute ACTIVITY_DB --file 010_activities_table.down.sql --remote
+
+  migrate:health:
+    cmds:
+      - task: migrate:health:down
+      - task: migrate:health:up 
+
+  migrate:health:up:
+    cmd: wrangler d1 execute ACTIVITY_DB --file 011_health_table.up.sql --remote
+
+  migrate:health:down:
+    cmd: wrangler d1 execute ACTIVITY_DB --file 011_health_table.down.sql --remote
+
+  migrate:global_market:
+    cmds:
+      - task: global_market:down
+      - task: global_market:up
+
+  migrate:global_market:up:
+    cmd: wrangler d1 execute ACTIVITY_DB --file 012_global_market_table.up.sql --remote
+
+  migrate:global_market:down:
+    cmd: wrangler d1 execute ACTIVITY_DB --file 012_global_market_table.down.sql --remote
+
+  migrate:fear_greed_index:
+    cmds:
+      - task: migrate:fear_greed_index:down
+      - task: migrate:fear_greed_index:up
+
+  migrate:fear_greed_index:up:
+    cmd: wrangler d1 execute ACTIVITY_DB --file 013_fear_greed_index_table.up.sql --remote
+
+  migrate:fear_greed_index:down:
+    cmd: wrangler d1 execute ACTIVITY_DB --file 013_fear_greed_index_table.down.sql --remote
+
+  migrate:crypto_listings:
+    cmds:
+      - task: migrate:crypto_listings:down
+      - task: migrate:crypto_listings:up
+
+  migrate:crypto_listings:up:
+    cmd: wrangler d1 execute ACTIVITY_DB --file 014_crypto_listings_table.up.sql --remote
+
+  migrate:crypto_listings:down:
+    cmd: wrangler d1 execute ACTIVITY_DB --file 014_crypto_listings_table.down.sql --remote
+

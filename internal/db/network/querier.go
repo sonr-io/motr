@@ -22,14 +22,6 @@ type Querier interface {
 	GetBlockchainEndpoints(ctx context.Context, id string) (GetBlockchainEndpointsRow, error)
 	GetBlockchainExplorer(ctx context.Context, id string) (GetBlockchainExplorerRow, error)
 	GetBlockchainWithAssetInfo(ctx context.Context, id string) (GetBlockchainWithAssetInfoRow, error)
-	GetCryptoListingByApiID(ctx context.Context, apiID string) (CryptoListing, error)
-	GetCryptoListingByID(ctx context.Context, id string) (CryptoListing, error)
-	GetCryptoListingBySymbol(ctx context.Context, symbol string) (CryptoListing, error)
-	GetCryptoListingByWebsiteSlug(ctx context.Context, websiteSlug string) (CryptoListing, error)
-	GetFearGreedIndexByID(ctx context.Context, id string) (FearGreedIndex, error)
-	GetGlobalMarketByID(ctx context.Context, id string) (GlobalMarket, error)
-	GetLatestFearGreedIndex(ctx context.Context) (FearGreedIndex, error)
-	GetLatestGlobalMarket(ctx context.Context) (GlobalMarket, error)
 	GetPriceByAssetID(ctx context.Context, assetID string) (Price, error)
 	GetPriceByID(ctx context.Context, id string) (Price, error)
 	GetPriceConversionByCurrency(ctx context.Context, arg GetPriceConversionByCurrencyParams) (PriceConversion, error)
@@ -39,12 +31,6 @@ type Querier interface {
 	InsertAsset(ctx context.Context, arg InsertAssetParams) (Asset, error)
 	// BLOCKCHAIN QUERIES
 	InsertBlockchain(ctx context.Context, arg InsertBlockchainParams) (Blockchain, error)
-	// CRYPTO LISTINGS QUERIES (NEW)
-	InsertCryptoListing(ctx context.Context, arg InsertCryptoListingParams) (CryptoListing, error)
-	// FEAR AND GREED INDEX QUERIES (NEW)
-	InsertFearGreedIndex(ctx context.Context, arg InsertFearGreedIndexParams) (FearGreedIndex, error)
-	// GLOBAL MARKET QUERIES (NEW)
-	InsertGlobalMarket(ctx context.Context, arg InsertGlobalMarketParams) (GlobalMarket, error)
 	// PRICE QUERIES (UPDATED)
 	InsertPrice(ctx context.Context, arg InsertPriceParams) (Price, error)
 	// PRICE CONVERSION QUERIES (NEW)
@@ -58,16 +44,10 @@ type Querier interface {
 	ListBlockchainsWithExtensionSupport(ctx context.Context) ([]Blockchain, error)
 	ListBlockchainsWithMobileSupport(ctx context.Context) ([]Blockchain, error)
 	ListBlockchainsWithStaking(ctx context.Context) ([]Blockchain, error)
-	ListCryptoListings(ctx context.Context, arg ListCryptoListingsParams) ([]CryptoListing, error)
-	ListFearGreedIndexHistory(ctx context.Context, arg ListFearGreedIndexHistoryParams) ([]FearGreedIndex, error)
-	ListGlobalMarketHistory(ctx context.Context, arg ListGlobalMarketHistoryParams) ([]GlobalMarket, error)
 	ListPriceHistoryByAssetID(ctx context.Context, arg ListPriceHistoryByAssetIDParams) ([]Price, error)
 	SearchBlockchains(ctx context.Context, arg SearchBlockchainsParams) ([]Blockchain, error)
 	SoftDeleteAsset(ctx context.Context, id string) error
 	SoftDeleteBlockchain(ctx context.Context, id string) error
-	SoftDeleteCryptoListing(ctx context.Context, id string) error
-	SoftDeleteFearGreedIndex(ctx context.Context, id string) error
-	SoftDeleteGlobalMarket(ctx context.Context, id string) error
 	SoftDeletePriceConversion(ctx context.Context, id string) error
 	UpdateAsset(ctx context.Context, arg UpdateAssetParams) (Asset, error)
 	UpdateBlockchain(ctx context.Context, arg UpdateBlockchainParams) (Blockchain, error)
@@ -77,9 +57,6 @@ type Querier interface {
 	UpdateBlockchainFeeInfo(ctx context.Context, arg UpdateBlockchainFeeInfoParams) (Blockchain, error)
 	UpdateBlockchainImages(ctx context.Context, arg UpdateBlockchainImagesParams) (Blockchain, error)
 	UpdateBlockchainSocialLinks(ctx context.Context, arg UpdateBlockchainSocialLinksParams) (Blockchain, error)
-	UpdateCryptoListing(ctx context.Context, arg UpdateCryptoListingParams) (CryptoListing, error)
-	UpdateFearGreedIndex(ctx context.Context, arg UpdateFearGreedIndexParams) (FearGreedIndex, error)
-	UpdateGlobalMarket(ctx context.Context, arg UpdateGlobalMarketParams) (GlobalMarket, error)
 	UpdatePrice(ctx context.Context, arg UpdatePriceParams) (Price, error)
 	UpdatePriceConversion(ctx context.Context, arg UpdatePriceConversionParams) (PriceConversion, error)
 }

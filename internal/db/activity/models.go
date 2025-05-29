@@ -29,6 +29,42 @@ type Activity struct {
 	Error       sql.NullString `json:"error"`
 }
 
+type CryptoListing struct {
+	ID          string       `json:"id"`
+	CreatedAt   time.Time    `json:"created_at"`
+	UpdatedAt   time.Time    `json:"updated_at"`
+	DeletedAt   sql.NullTime `json:"deleted_at"`
+	ApiID       string       `json:"api_id"`
+	Name        string       `json:"name"`
+	Symbol      string       `json:"symbol"`
+	WebsiteSlug string       `json:"website_slug"`
+}
+
+type FearGreedIndex struct {
+	ID                  string         `json:"id"`
+	CreatedAt           time.Time      `json:"created_at"`
+	UpdatedAt           time.Time      `json:"updated_at"`
+	DeletedAt           sql.NullTime   `json:"deleted_at"`
+	Value               int64          `json:"value"`
+	ValueClassification string         `json:"value_classification"`
+	Timestamp           time.Time      `json:"timestamp"`
+	TimeUntilUpdate     sql.NullString `json:"time_until_update"`
+}
+
+type GlobalMarket struct {
+	ID                           string          `json:"id"`
+	CreatedAt                    time.Time       `json:"created_at"`
+	UpdatedAt                    time.Time       `json:"updated_at"`
+	DeletedAt                    sql.NullTime    `json:"deleted_at"`
+	TotalMarketCapUsd            sql.NullFloat64 `json:"total_market_cap_usd"`
+	Total24hVolumeUsd            sql.NullFloat64 `json:"total_24h_volume_usd"`
+	BitcoinPercentageOfMarketCap sql.NullFloat64 `json:"bitcoin_percentage_of_market_cap"`
+	ActiveCurrencies             sql.NullInt64   `json:"active_currencies"`
+	ActiveAssets                 sql.NullInt64   `json:"active_assets"`
+	ActiveMarkets                sql.NullInt64   `json:"active_markets"`
+	LastUpdated                  time.Time       `json:"last_updated"`
+}
+
 type Health struct {
 	ID             string         `json:"id"`
 	CreatedAt      time.Time      `json:"created_at"`

@@ -33,3 +33,6 @@ release:
 
 templ-watch:
 	@devbox run watch:templ
+
+migrate:
+	@devbox run db:migrate
