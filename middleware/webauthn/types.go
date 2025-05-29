@@ -1,4 +1,4 @@
-package webauth
+package webauthn
 
 import models "github.com/sonr-io/motr/internal/db/users"
 

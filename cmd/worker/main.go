@@ -11,6 +11,8 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/middleware/database"
 	"github.com/sonr-io/motr/middleware/session"
+	"github.com/sonr-io/motr/middleware/sonrapi"
+	"github.com/sonr-io/motr/middleware/webauthn"
 	"github.com/sonr-io/motr/routes"
 	"github.com/syumai/workers"
 	"github.com/syumai/workers/cloudflare/cron"
@@ -25,7 +27,7 @@ import (
 // Setup the HTTP handler
 func loadHandler() http.Handler {
 	e := echo.New()
-	e.Use(session.Middleware(), database.Middleware())
+	e.Use(session.Middleware(), database.Middleware(), sonrapi.Middleware(), webauthn.Middleware())
 	routes.SetupViews(e)
 	routes.SetupPartials(e)
 	return e
