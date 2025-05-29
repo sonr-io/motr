@@ -10,10 +10,7 @@
   ],
   "shell": {
     "init_hook": [
-      "source .github/setup_env.sh",
-      "go_tidy",
-      "npm_install $RADAR_ROOT",
-      "npm_install $WORKER_ROOT"
+      "source .github/setup_env.sh"
     ],
     "scripts": {
       "deploy": [

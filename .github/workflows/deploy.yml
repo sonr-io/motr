@@ -19,7 +19,10 @@ jobs:
           go-version: stable
 
       - name: Install devbox
-        uses: jetify-com/devbox-install-action@v0.14.0
+        uses: jetify-com/devbox-install-action@v0.13.0
+        with:
+          enable-cache: true
+          refresh-cli: true
 
       - name: Deploy to Cloudflare
         run: devbox run deploy
