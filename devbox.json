@@ -20,8 +20,8 @@
     ],
     "scripts": {
       "deploy": [
-        "wrangler_deploy $RADAR_ROOT",
-        "wrangler_deploy $WORKER_ROOT"
+        "cd $RADAR_ROOT && npx wrangler deploy",
+        "cd $WORKER_ROOT && npx wrangler deploy"
       ],
       "release": [
         "check_deps",
