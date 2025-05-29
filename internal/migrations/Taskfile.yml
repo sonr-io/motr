@@ -4,7 +4,8 @@ silent: true
 
 tasks:
   default:
-    cmd: task -l --json | jq -r '.tasks[].name' | fzf | xargs task
+    cmds:
+      - task: migrate
 
   initialize:
     cmds:
@@ -49,10 +50,10 @@ tasks:
       - task: migrate:accounts:up
 
   migrate:accounts:up:
-    cmd: wrangler d1 execute USERS_DB --file 001_accounts_table.up.sql --remote
+    cmd: wrangler d1 execute USERS_DB --file 001_accounts_table.up.sql --remote -y
 
   migrate:accounts:down:
-    cmd: wrangler d1 execute USERS_DB --file 001_accounts_table.down.sql --remote
+    cmd: wrangler d1 execute USERS_DB --file 001_accounts_table.down.sql --remote -y
 
   migrate:credentials:
     cmds:
@@ -60,10 +61,10 @@ tasks:
       - task: migrate:credentials:up
 
   migrate:credentials:up:
-    cmd: wrangler d1 execute USERS_DB --file 002_credentials_table.up.sql --remote
+    cmd: wrangler d1 execute USERS_DB --file 002_credentials_table.up.sql --remote -y
 
   migrate:credentials:down:
-    cmd: wrangler d1 execute USERS_DB --file 002_credentials_table.down.sql --remote
+    cmd: wrangler d1 execute USERS_DB --file 002_credentials_table.down.sql --remote -y
 
   migrate:profiles:
     cmds:
@@ -71,10 +72,10 @@ tasks:
       - task: migrate:profiles:up
 
   migrate:profiles:up:
-    cmd: wrangler d1 execute USERS_DB --file 003_profiles_table.up.sql --remote
+    cmd: wrangler d1 execute USERS_DB --file 003_profiles_table.up.sql --remote -y
 
   migrate:profiles:down:
-    cmd: wrangler d1 execute USERS_DB --file 003_profiles_table.down.sql --remote
+    cmd: wrangler d1 execute USERS_DB --file 003_profiles_table.down.sql --remote -y
 
   migrate:vaults:
     cmds:
@@ -82,10 +83,10 @@ tasks:
       - task: migrate:vaults:up
 
   migrate:vaults:down:
-    cmd: wrangler d1 execute USERS_DB --file 004_vaults_table.down.sql --remote
+    cmd: wrangler d1 execute USERS_DB --file 004_vaults_table.down.sql --remote -y
 
   migrate:vaults:up:
-    cmd: wrangler d1 execute USERS_DB --file 004_vaults_table.up.sql --remote
+    cmd: wrangler d1 execute USERS_DB --file 004_vaults_table.up.sql --remote -y
 
   migrate:assets:
     cmds:
@@ -93,10 +94,10 @@ tasks:
       - task: migrate:assets:up
 
   migrate:assets:up:
-    cmd: wrangler d1 execute NETWORK_DB --file 005_assets_table.up.sql --remote
+    cmd: wrangler d1 execute NETWORK_DB --file 005_assets_table.up.sql --remote -y
 
   migrate:assets:down:
-    cmd: wrangler d1 execute NETWORK_DB --file 005_assets_table.down.sql --remote
+    cmd: wrangler d1 execute NETWORK_DB --file 005_assets_table.down.sql --remote -y
 
   migrate:prices:
     cmds:
@@ -104,10 +105,10 @@ tasks:
       - task: migrate:prices:up
 
   migrate:prices:up:
-    cmd: wrangler d1 execute NETWORK_DB --file 006_prices_table.up.sql --remote
+    cmd: wrangler d1 execute NETWORK_DB --file 006_prices_table.up.sql --remote -y
 
   migrate:prices:down:
-    cmd: wrangler d1 execute NETWORK_DB --file 006_prices_table.down.sql --remote
+    cmd: wrangler d1 execute NETWORK_DB --file 006_prices_table.down.sql --remote -y
 
   migrate:price_conversions:
     cmds:
@@ -115,10 +116,10 @@ tasks:
       - task: migrate:price_conversions:up
 
   migrate:price_conversions:up:
-    cmd: wrangler d1 execute NETWORK_DB --file 007_price_conversions_table.up.sql --remote
+    cmd: wrangler d1 execute NETWORK_DB --file 007_price_conversions_table.up.sql --remote -y
 
   migrate:price_conversions:down:
-    cmd: wrangler d1 execute NETWORK_DB --file 007_price_conversions_table.down.sql --remote
+    cmd: wrangler d1 execute NETWORK_DB --file 007_price_conversions_table.down.sql --remote -y
 
   migrate:blockchains:
     cmds:
@@ -126,10 +127,10 @@ tasks:
       - task: migrate:blockchains:up
 
   migrate:blockchains:up:
-    cmd: wrangler d1 execute NETWORK_DB --file 008_blockchains_table.up.sql --remote
+    cmd: wrangler d1 execute NETWORK_DB --file 008_blockchains_table.up.sql --remote -y
 
   migrate:blockchains:down:
-    cmd: wrangler d1 execute NETWORK_DB --file 008_blockchains_table.down.sql --remote
+    cmd: wrangler d1 execute NETWORK_DB --file 008_blockchains_table.down.sql --remote -y
 
   migrate:services:
     cmds:
@@ -137,10 +138,10 @@ tasks:
       - task: migrate:services:up
 
   migrate:services:up:
-    cmd: wrangler d1 execute ACTIVITY_DB --file 009_services_table.up.sql --remote
+    cmd: wrangler d1 execute ACTIVITY_DB --file 009_services_table.up.sql --remote -y
 
   migrate:services:down:
-    cmd: wrangler d1 execute ACTIVITY_DB --file 009_services_table.down.sql --remote
+    cmd: wrangler d1 execute ACTIVITY_DB --file 009_services_table.down.sql --remote -y
 
   migrate:activities:
     cmds:
@@ -148,10 +149,10 @@ tasks:
       - task: migrate:activities:up
 
   migrate:activities:up:
-    cmd: wrangler d1 execute ACTIVITY_DB --file 010_activities_table.up.sql --remote
+    cmd: wrangler d1 execute ACTIVITY_DB --file 010_activities_table.up.sql --remote -y
 
   migrate:activities:down:
-    cmd: wrangler d1 execute ACTIVITY_DB --file 010_activities_table.down.sql --remote
+    cmd: wrangler d1 execute ACTIVITY_DB --file 010_activities_table.down.sql --remote -y
 
   migrate:health:
     cmds:
@@ -159,10 +160,10 @@ tasks:
       - task: migrate:health:up 
 
   migrate:health:up:
-    cmd: wrangler d1 execute ACTIVITY_DB --file 011_health_table.up.sql --remote
+    cmd: wrangler d1 execute ACTIVITY_DB --file 011_health_table.up.sql --remote -y
 
   migrate:health:down:
-    cmd: wrangler d1 execute ACTIVITY_DB --file 011_health_table.down.sql --remote
+    cmd: wrangler d1 execute ACTIVITY_DB --file 011_health_table.down.sql --remote -y
 
   migrate:global_market:
     cmds:
@@ -170,10 +171,10 @@ tasks:
       - task: global_market:up
 
   migrate:global_market:up:
-    cmd: wrangler d1 execute ACTIVITY_DB --file 012_global_market_table.up.sql --remote
+    cmd: wrangler d1 execute ACTIVITY_DB --file 012_global_market_table.up.sql --remote -y
 
   migrate:global_market:down:
-    cmd: wrangler d1 execute ACTIVITY_DB --file 012_global_market_table.down.sql --remote
+    cmd: wrangler d1 execute ACTIVITY_DB --file 012_global_market_table.down.sql --remote -y
 
   migrate:fear_greed_index:
     cmds:
@@ -181,10 +182,10 @@ tasks:
       - task: migrate:fear_greed_index:up
 
   migrate:fear_greed_index:up:
-    cmd: wrangler d1 execute ACTIVITY_DB --file 013_fear_greed_index_table.up.sql --remote
+    cmd: wrangler d1 execute ACTIVITY_DB --file 013_fear_greed_index_table.up.sql --remote -y
 
   migrate:fear_greed_index:down:
-    cmd: wrangler d1 execute ACTIVITY_DB --file 013_fear_greed_index_table.down.sql --remote
+    cmd: wrangler d1 execute ACTIVITY_DB --file 013_fear_greed_index_table.down.sql --remote -y
 
   migrate:crypto_listings:
     cmds:
@@ -192,8 +193,8 @@ tasks:
       - task: migrate:crypto_listings:up
 
   migrate:crypto_listings:up:
-    cmd: wrangler d1 execute ACTIVITY_DB --file 014_crypto_listings_table.up.sql --remote
+    cmd: wrangler d1 execute ACTIVITY_DB --file 014_crypto_listings_table.up.sql --remote -y
 
   migrate:crypto_listings:down:
-    cmd: wrangler d1 execute ACTIVITY_DB --file 014_crypto_listings_table.down.sql --remote
+    cmd: wrangler d1 execute ACTIVITY_DB --file 014_crypto_listings_table.down.sql --remote -y
 
