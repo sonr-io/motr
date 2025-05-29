@@ -2,6 +2,13 @@
 
 all: help 
 
+clean:
+	@rm -rf ./build
+	@rm -rf ./bin
+	@rm -rf ./dist
+	@rm -rf ./cmd/worker/node_modules
+	@rm -rf ./cmd/radar/node_modules
+
 help:
 	@echo "Usage: make <command>"
 	@echo ""
