@@ -1,7 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.14.1/.schema/devbox.schema.json",
   "packages": [
-    "go@latest",
     "templ@latest",
     "sqlc@latest",
     "nodejs@latest",
@@ -22,10 +21,6 @@
       "go install github.com/syumai/workers/cmd/workers-assets-gen@latest"
     ],
     "scripts": {
-      "deploy": [
-        "cd $RADAR_ROOT && npx wrangler deploy",
-        "cd $WORKER_ROOT && npx wrangler deploy"
-      ],
       "release": [
         "check_deps",
         "check_vars",
