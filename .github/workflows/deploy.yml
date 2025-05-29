@@ -18,13 +18,12 @@ jobs:
         with:
           go-version: stable
 
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: current
+      - name: Install devbox
+        uses: jetify-com/devbox-install-action@v0.12.0
 
-      - name: Deploy
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          workingDirectory: cmd
+      - name: Deploy to Cloudflare
+        run: devbox run deploy
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
