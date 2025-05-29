@@ -4,9 +4,9 @@
 package database
 
 import (
-	"github.com/sonr-io/motr/internal/sink/activity"
-	"github.com/sonr-io/motr/internal/sink/network"
-	"github.com/sonr-io/motr/internal/sink/users"
+	"github.com/sonr-io/motr/internal/db/activity"
+	"github.com/sonr-io/motr/internal/db/network"
+	"github.com/sonr-io/motr/internal/db/users"
 )
 
 // connection is a database context

@@ -6,9 +6,9 @@ package database
 import (
 	"database/sql"
 
-	"github.com/sonr-io/motr/internal/sink/activity"
-	"github.com/sonr-io/motr/internal/sink/network"
-	"github.com/sonr-io/motr/internal/sink/users"
+	"github.com/sonr-io/motr/internal/db/activity"
+	"github.com/sonr-io/motr/internal/db/network"
+	"github.com/sonr-io/motr/internal/db/users"
 
 	_ "github.com/syumai/workers/cloudflare/d1"
 )
