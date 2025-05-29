@@ -6,11 +6,6 @@ import (
 	"github.com/sonr-io/motr/middleware/render"
 )
 
-type RegisterOptions struct {
-	Address   string
-	Handle    string
-	Challenge string
-}
 
 func HandleRegisterInitial(c echo.Context) error {
 	return render.View(c, register.RegisterView())
