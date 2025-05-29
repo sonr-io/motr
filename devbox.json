@@ -9,9 +9,7 @@
     "doppler@latest"
   ],
   "shell": {
-    "init_hook": [
-      "source .github/setup_env.sh"
-    ],
+    "init_hook": [],
     "scripts": {
       "deploy": [
         "wrangler_deploy $RADAR_ROOT",
