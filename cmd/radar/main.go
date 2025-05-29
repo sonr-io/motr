@@ -10,6 +10,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/middleware/database"
+	"github.com/sonr-io/motr/middleware/kvstore"
 	"github.com/sonr-io/motr/middleware/marketapi"
 	"github.com/sonr-io/motr/middleware/session"
 	"github.com/sonr-io/motr/routes"
@@ -26,7 +27,7 @@ import (
 // Setup the HTTP handler
 func loadHandler() http.Handler {
 	e := echo.New()
-	e.Use(session.Middleware(), database.Middleware(), marketapi.Middleware())
+	e.Use(session.Middleware(), database.Middleware(), kvstore.Middleware(), marketapi.Middleware())
 	routes.SetupViews(e)
 	routes.SetupPartials(e)
 	return e

@@ -9,6 +9,7 @@ import (
 	"github.com/sonr-io/motr/internal/db/users"
 )
 
+
 // connection is a database context
 type Connection interface {
 	IsReady() bool
@@ -40,11 +41,14 @@ func (q *connection) Users() users.Querier {
 	return q.users
 }
 
-// Open creates a new database connection
-func Open() Connection {
+// open creates a new database connection
+func open() Connection {
 	conn := &connection{
 		ready: false,
 	}
 	conn.initialize()
+	activityDB = conn.Activity()
+	networkDB = conn.Network()
+	userDB = conn.Users()
 	return conn
 }

@@ -14,10 +14,20 @@ import (
 )
 
 var (
+	activityDB activity.Querier
+	networkDB  network.Querier
+	userDB     users.Querier
+)
+
+const (
 	kActivityBinding = "ACTIVITY_DB"
 	kNetworkBinding  = "NETWORK_DB"
 	kUsersBinding    = "USERS_DB"
 )
+
+func IsReady() bool {
+	return activityDB != nil && networkDB != nil && userDB != nil
+}
 
 func (c *connection) initialize() {
 	c.activity = activity.New(openD1(kActivityBinding))
@@ -32,4 +42,25 @@ func openD1(name string) *sql.DB {
 		panic(err)
 	}
 	return db
+}
+
+func Activity() activity.Querier {
+	if activityDB == nil {
+		panic("activityDB is not initialized")
+	}
+	return activityDB
+}
+
+func Network() network.Querier {
+	if networkDB == nil {
+		panic("networkDB is not initialized")
+	}
+	return networkDB
+}
+
+func Users() users.Querier {
+	if userDB == nil {
+		panic("userDB is not initialized")
+	}
+	return userDB
 }

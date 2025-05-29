@@ -1,7 +1,7 @@
 //go:build js && wasm
 // +build js,wasm
 
-package database
+package kvstore
 
 import (
 	"errors"
