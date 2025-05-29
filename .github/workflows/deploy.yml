@@ -19,7 +19,7 @@ jobs:
           go-version: stable
 
       - name: Install devbox
-        uses: jetify-com/devbox-install-action@v0.12.0
+        uses: jetify-com/devbox-install-action@v0.13.0
 
       - name: Deploy to Cloudflare
         run: devbox run deploy
