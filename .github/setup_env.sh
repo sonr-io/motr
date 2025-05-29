@@ -9,6 +9,8 @@ export PATH=$GOBIN:$PATH
 export ROOT_DIR=$(git rev-parse --show-toplevel)
 export RADAR_ROOT=$ROOT_DIR/cmd/radar
 export WORKER_ROOT=$ROOT_DIR/cmd/worker
+export SQLC_ROOT=$ROOT_DIR/internal/db
+export MIGRATIONS_ROOT=$ROOT_DIR/internal/migrations
 
 # Setup Build Outputs
 export RADAR_OUT=$RADAR_ROOT/build/app.wasm

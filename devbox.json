@@ -48,7 +48,7 @@
         "npm run start"
       ],
       "gen:sqlc": [
-        "cd ./internal/sink && sqlc generate"
+        "cd $SQLC_ROOT && sqlc generate"
       ],
       "gen:templ": [
         "templ generate"
