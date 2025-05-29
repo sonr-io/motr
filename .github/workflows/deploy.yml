@@ -5,7 +5,7 @@ on:
   workflow_call:
 
 jobs:
-  wrangler:
+  deploy-radar:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -24,10 +24,35 @@ jobs:
           enable-cache: true
           refresh-cli: true
 
-      - name: Deploy to Cloudflare
-        run: devbox run deploy
-        env:
-          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Deploy Radar to Cloudflare
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          workingDirectory: cmd/radar
 
+  deploy-worker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - name: Install devbox
+        uses: jetify-com/devbox-install-action@v0.13.0
+        with:
+          enable-cache: true
+          refresh-cli: true
+
+      - name: Deploy Worker to Cloudflare
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          workingDirectory: cmd/worker

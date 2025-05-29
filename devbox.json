@@ -17,6 +17,7 @@
       "export MIGRATE_ROOT=$ROOT_DIR/internal/migrations",
       "export RADAR_OUT=$RADAR_ROOT/build/app.wasm",
       "export WORKER_OUT=$WORKER_ROOT/build/app.wasm",
+      "go mod download",
       "go install github.com/syumai/workers/cmd/workers-assets-gen@latest"
     ],
     "scripts": {
