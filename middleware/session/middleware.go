@@ -19,9 +19,10 @@ type Context struct {
 func Middleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
+			id := DetermineID(c)
 			ctx := &Context{
 				Context: c,
-				ID:      DetermineID(c),
+				ID:      id,
 			}
 			return next(ctx)
 		}
