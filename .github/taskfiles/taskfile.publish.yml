@@ -1,0 +1,49 @@
+
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+silent: true
+vars:
+  GIT_ROOT:
+    sh: git rev-parse --show-toplevel
+
+tasks:
+  worker:
+    dir: "{{.GIT_ROOT}}/cmd/worker"
+    env:
+      GOOS: js
+      GOARCH: wasm
+    cmds:
+      - go build -ldflags="-s -w" -o ./build/app.wasm .
+
+  # ---------------
+  # Main Tasks
+  # ---------------
+
+  # ---------------
+  # Internal Helpers
+  # ---------------
+
+  logi-*:
+    internal: true
+    vars:
+      TEXT: "{{index .MATCH 0}}"
+    cmd: gum log -l info {{.TEXT}}
+
+  logw-*:
+    internal: true
+    vars:
+      TEXT: "{{index .MATCH 0}}"
+    cmd: gum log -l warn {{.TEXT}}
+
+  loge-*:
+    internal: true
+    vars:
+      TEXT: "{{index .MATCH 0}}"
+    cmd: gum log -l error {{.TEXT}}
+
+  logd-*:
+    internal: true
+    vars:
+      TEXT: "{{index .MATCH 0}}"
+    cmd: gum log -l debug {{.TEXT}}
+

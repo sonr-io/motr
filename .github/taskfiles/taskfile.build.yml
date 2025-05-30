@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+vars:
+  GIT_ROOT:
+    sh: git rev-parse --show-toplevel
+
+tasks:
+  worker:
+    dir: "{{.GIT_ROOT}}/cmd/worker"
+    cmd: make build
+
+  radar:
+    dir: "{{.GIT_ROOT}}/cmd/radar"
+    cmd: make build
+
+

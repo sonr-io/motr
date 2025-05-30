@@ -1,0 +1,230 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+silent: true
+
+vars:
+  GIT_ROOT:
+    sh: git rev-parse --show-toplevel
+
+
+tasks:
+  db-init:
+    cmds:
+      - task: accounts:up
+      - task: credentials:up
+      - task: profiles:up
+      - task: vaults:up
+      - task: assets:up
+      - task: prices:up
+      - task: price_conversions:up
+      - task: blockchains:up
+      - task: services:up
+      - task: activities:up
+      - task: health:up
+      - task: global_market:up
+      - task: fear_greed_index:up
+      - task: crypto_listings:up  
+
+  migrate:
+    cmds: 
+      - task: accounts
+      - task: credentials
+      - task: profiles
+      - task: vaults
+      - task: assets
+      - task: prices
+      - task: price_conversions
+      - task: blockchains
+      - task: services
+      - task: migrate:activities
+      - task: health
+      - task: global_market
+      - task: fear_greed_index
+      - task: crypto_listings
+
+  # ---------------
+  # Main Tasks
+  # ---------------
+  accounts:
+    cmds:
+      - task: accounts:down
+      - task: accounts:up
+
+  accounts:up:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute USERS_DB --file 001_accounts_table.up.sql --remote -y
+
+  accounts:down:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute USERS_DB --file 001_accounts_table.down.sql --remote -y
+
+  credentials:
+    cmds:
+      - task: credentials:down
+      - task: credentials:up
+
+  credentials:up:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute USERS_DB --file 002_credentials_table.up.sql --remote -y
+
+  credentials:down:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute USERS_DB --file 002_credentials_table.down.sql --remote -y
+
+  profiles:
+    cmds:
+      - task: profiles:down
+      - task: profiles:up
+
+  profiles:up:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute USERS_DB --file 003_profiles_table.up.sql --remote -y
+
+  profiles:down:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute USERS_DB --file 003_profiles_table.down.sql --remote -y
+
+  vaults:
+    cmds:
+      - task: vaults:down
+      - task: vaults:up
+
+  vaults:down:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute USERS_DB --file 004_vaults_table.down.sql --remote -y
+
+  vaults:up:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute USERS_DB --file 004_vaults_table.up.sql --remote -y
+
+  assets:
+    cmds:
+      - task: assets:down
+      - task: assets:up
+
+  assets:up:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute NETWORK_DB --file 005_assets_table.up.sql --remote -y
+
+  assets:down:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute NETWORK_DB --file 005_assets_table.down.sql --remote -y
+
+  prices:
+    cmds:
+      - task: prices:down
+      - task: prices:up
+
+  prices:up:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute NETWORK_DB --file 006_prices_table.up.sql --remote -y
+
+  prices:down:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute NETWORK_DB --file 006_prices_table.down.sql --remote -y
+
+  price_conversions:
+    cmds:
+      - task: price_conversions:down
+      - task: price_conversions:up
+
+  price_conversions:up:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute NETWORK_DB --file 007_price_conversions_table.up.sql --remote -y
+
+  price_conversions:down:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute NETWORK_DB --file 007_price_conversions_table.down.sql --remote -y
+
+  blockchains:
+    cmds:
+      - task: blockchains:down
+      - task: blockchains:up
+
+  blockchains:up:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute NETWORK_DB --file 008_blockchains_table.up.sql --remote -y
+
+  blockchains:down:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute NETWORK_DB --file 008_blockchains_table.down.sql --remote -y
+
+  services:
+    cmds:
+      - task: services:down
+      - task: services:up
+
+  services:up:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute ACTIVITY_DB --file 009_services_table.up.sql --remote -y
+
+  services:down:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute ACTIVITY_DB --file 009_services_table.down.sql --remote -y
+
+  activities:
+    cmds:
+      - task: activities:down
+      - task: activities:up
+
+  activities:up:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute ACTIVITY_DB --file 010_activities_table.up.sql --remote -y
+
+  activities:down:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute ACTIVITY_DB --file 010_activities_table.down.sql --remote -y
+
+  health:
+    cmds:
+      - task: health:down
+      - task: health:up 
+
+  health:up:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute ACTIVITY_DB --file 011_health_table.up.sql --remote -y
+
+  health:down:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute ACTIVITY_DB --file 011_health_table.down.sql --remote -y
+
+  global_market:
+    cmds:
+      - task: global_market:down
+      - task: global_market:up
+
+  global_market:up:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute ACTIVITY_DB --file 012_global_market_table.up.sql --remote -y
+
+  global_market:down:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute ACTIVITY_DB --file 012_global_market_table.down.sql --remote -y
+
+  fear_greed_index:
+    cmds:
+      - task: fear_greed_index:down
+      - task: fear_greed_index:up
+
+  fear_greed_index:up:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute ACTIVITY_DB --file 013_fear_greed_index_table.up.sql --remote -y
+
+  fear_greed_index:down:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute ACTIVITY_DB --file 013_fear_greed_index_table.down.sql --remote -y
+
+  crypto_listings:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmds:
+      - task: crypto_listings:down
+      - task: crypto_listings:up
+
+  crypto_listings:up:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute ACTIVITY_DB --file 014_crypto_listings_table.up.sql --remote -y
+
+  crypto_listings:down:
+    dir: "{{.GIT_ROOT}}/internal/migrations"
+    cmd: wrangler d1 execute ACTIVITY_DB --file 014_crypto_listings_table.down.sql --remote -y
+

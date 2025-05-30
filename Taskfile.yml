@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+includes:
+  build: ./.github/taskfiles/taskfile.build.yml
+  migrate: ./.github/taskfiles/taskfile.migrate.yml
+  publish: ./.github/taskfiles/taskfile.publish.yml
+
