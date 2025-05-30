@@ -21,6 +21,27 @@ const (
 	// SessionRole is the key for the session role cookie.
 	SessionRole CookieKey = "session.role"
 
+	// SessionTTL is the key for the session TTL cookie.
+	SessionTTL CookieKey = "session.ttl"
+
+	// SessionUser is the key for the session user cookie.
+	SessionUser CookieKey = "session.user"
+
+	// SessionUserHandle is the key for the session user handle cookie.
+	SessionUserHandle CookieKey = "session.user.handle"
+
+	// SessionVaultAddress is the key for the session vault address cookie.
+	SessionVaultAddress CookieKey = "session.vault.address"
+
+	// SessionVaultCID is the key for the session vault CID cookie.
+	SessionVaultCID CookieKey = "session.vault.cid"
+
+	// SessionVaultSchema is the key for the session vault schema cookie.
+	SessionVaultSchema CookieKey = "session.vault.schema"
+
+	// User is the key for the User cookie.
+	User CookieKey = "user"
+
 	// UserHandle is the key for the User Handle cookie.
 	UserHandle CookieKey = "user.handle"
 
