@@ -8,6 +8,11 @@
     "go-task@latest",
     "doppler@latest"
   ],
+  "env": {
+    "SONR_API_URL": "https://api.sonr.ws",
+    "SONR_RPC_URL": "https://rpc.sonr.ws",
+    "IPFS_GATEWAY": "https://cloudflare-ipfs.com/ipfs/"
+  },
   "shell": {
     "init_hook": [
       "export ROOT_DIR=$(git rev-parse --show-toplevel)",
@@ -17,8 +22,7 @@
       "export MIGRATE_ROOT=$ROOT_DIR/internal/migrations",
       "export RADAR_OUT=$RADAR_ROOT/build/app.wasm",
       "export WORKER_OUT=$WORKER_ROOT/build/app.wasm",
-      "go mod download",
-      "go install github.com/syumai/workers/cmd/workers-assets-gen@latest"
+      "go mod download"
     ],
     "scripts": {
       "release": [

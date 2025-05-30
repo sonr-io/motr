@@ -8,7 +8,7 @@ routes = [
 ]
 
 [build]
-command = "devbox run build:worker"
+command = "make build"
 
 [dev]
 port = 6969

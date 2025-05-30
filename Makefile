@@ -1,6 +1,16 @@
-.PHONY: tidy templ sqlc worker radar
+export ROOT_DIR := $(shell git rev-parse --show-toplevel)
+export RADAR_ROOT := $(ROOT_DIR)/cmd/radar
+export WORKER_ROOT := $(ROOT_DIR)/cmd/worker
+export SQLC_ROOT := $(ROOT_DIR)/internal/db
+export MIGRATE_ROOT := $(ROOT_DIR)/internal/migrations
+export RADAR_OUT := $(RADAR_ROOT)/build/app.wasm
+export WORKER_OUT := $(WORKER_ROOT)/build/app.wasm
 
-all: help 
+.PHONY: install clean help
+
+install:
+	@go mod download
+	@go install github.com/syumai/workers/cmd/workers-assets-gen@latest
 
 clean:
 	@rm -rf ./build
@@ -20,11 +30,16 @@ help:
 	@echo "  worker      Build and deploy worker"
 	@echo "  radar       Build and deploy radar"
 
+.PHONY: templ sqlc
+
 templ:
-	@devbox run gen:templ
+	@templ generate
 
 sqlc:
 	@devbox run gen:sqlc
+
+migrate:
+	@cd $(MIGRATE_ROOT) && task
 
 worker:
 	@devbox run serve:worker

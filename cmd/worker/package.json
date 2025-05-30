@@ -2,10 +2,6 @@
   "name": "@sonr-io/motr-worker",
   "version": "0.0.1",
   "private": true,
-  "scripts": {
-    "deploy": "wrangler deploy",
-    "start": "wrangler dev"
-  },
   "dependencies": {
     "@extism/extism": "^2.0.0-rc11",
     "@helia/dag-cbor": "^1.0.1",
