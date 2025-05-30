@@ -6,10 +6,6 @@ package config
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/sonr-io/motr/handlers"
-	"github.com/sonr-io/motr/internal/ui/home"
-	"github.com/sonr-io/motr/internal/ui/login"
-	"github.com/sonr-io/motr/internal/ui/register"
-	"github.com/sonr-io/motr/pkg/render"
 )
 
 // ╭────────────────────────────────────────────────╮
@@ -17,9 +13,9 @@ import (
 // ╰────────────────────────────────────────────────╯
 
 func RegisterViews(e *echo.Echo) {
-	e.GET("/", render.Page(home.HomeView()))
-	e.GET("/login", render.Page(login.LoginView()))
-	e.GET("/register", render.Page(register.RegisterView()))
+	e.GET("/", handlers.RenderHomePage)
+	e.GET("/login", handlers.RenderLoginPage)
+	e.GET("/register", handlers.RenderRegisterPage)
 }
 
 func RegisterPartials(e *echo.Echo) {
