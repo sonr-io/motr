@@ -1,0 +1,16 @@
+
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+silent: true
+vars:
+  GIT_ROOT:
+    sh: git rev-parse --show-toplevel
+
+tasks:
+  templ:
+    dir: "{{.GIT_ROOT}}"
+    sources:
+      - internal/ui/**/*.templ
+    watch: true
+    cmds:
+      - templ generate
