@@ -1,18 +1,67 @@
 //go:build js && wasm
 // +build js,wasm
 
-package marketapi
+package api
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
-
-	"github.com/syumai/workers/cloudflare/fetch"
 )
 
-type Response interface {
-	UnmarshalJSON(data []byte) error
+const (
+	kCryptoAPIURL      = "https://api.alternative.me"
+	kCryptoAPIListings = "/v2/listings"
+	kCryptoAPITickers  = "/v2/ticker"
+	kCryptoAPIGlobal   = "/v2/global"
+)
+
+type MarketAPI interface {
+	Listings(symbol string) (*ListingsResponse, error)
+	Ticker(symbol string) (*TickersResponse, error)
+	GlobalMarket() (*GlobalMarketResponse, error)
+}
+
+type marketAPI struct {
+	client *client
+	ctx    context.Context
+}
+
+func NewMarketAPI(c *client, ctx context.Context) *marketAPI {
+	return &marketAPI{
+		client: c,
+		ctx:    ctx,
+	}
+}
+
+func (m *marketAPI) Listings(symbol string) (*ListingsResponse, error) {
+	r := buildRequest(m.ctx, fmt.Sprintf("%s/%s", kCryptoAPIListings, symbol))
+	v := &ListingsResponse{}
+	err := doFetch(m.client.fc, r, v)
+	if err != nil {
+		return nil, err
+	}
+	return v, nil
+}
+
+func (m *marketAPI) Ticker(symbol string) (*TickersResponse, error) {
+	r := buildRequest(m.ctx, fmt.Sprintf("%s/%s", kCryptoAPITickers, symbol))
+	v := &TickersResponse{}
+	err := doFetch(m.client.fc, r, v)
+	if err != nil {
+		return nil, err
+	}
+	return v, nil
+}
+
+func (m *marketAPI) GlobalMarket() (*GlobalMarketResponse, error) {
+	r := buildRequest(m.ctx, kCryptoAPIGlobal)
+	v := &GlobalMarketResponse{}
+	err := doFetch(m.client.fc, r, v)
+	if err != nil {
+		return nil, err
+	}
+	return v, nil
 }
 
 type ListingsResponse struct {
@@ -65,34 +114,4 @@ type GlobalMarketResponse struct {
 
 func (r *GlobalMarketResponse) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, r)
-}
-
-func (c *Context) buildRequest(url string) *fetch.Request {
-	r, err := fetch.NewRequest(c.Request().Context(), http.MethodGet, url, nil)
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	r.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/111.0")
-	return r
-}
-
-func (c *Context) fetch(r *fetch.Request, v Response) error {
-	resp, err := c.client.Do(r, nil)
-	if err != nil {
-		return fmt.Errorf("request failed: %w", err)
-	}
-	defer resp.Body.Close() // Ensure body is always closed
-
-	// Check for non-200 status codes
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return fmt.Errorf("unexpected status code: %d", resp.StatusCode)
-	}
-
-	// Directly decode JSON into the response struct
-	if err := json.NewDecoder(resp.Body).Decode(v); err != nil {
-		return fmt.Errorf("failed to decode response: %w", err)
-	}
-
-	return nil
 }

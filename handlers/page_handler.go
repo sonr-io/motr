@@ -5,7 +5,7 @@ import (
 	"github.com/sonr-io/motr/internal/ui/home"
 	"github.com/sonr-io/motr/internal/ui/login"
 	"github.com/sonr-io/motr/internal/ui/register"
-	"github.com/sonr-io/motr/middleware/render"
+	"github.com/sonr-io/motr/pkg/render"
 )
 
 func RenderHomePage(c echo.Context) error {

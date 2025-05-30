@@ -6,11 +6,11 @@ package session
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/segmentio/ksuid"
-	"github.com/sonr-io/motr/middleware/cookies"
+	"github.com/sonr-io/motr/pkg/cookies"
 )
 
 // Context is a session context
-type SessionContext struct {
+type Context struct {
 	echo.Context
 	ID string `json:"id"`
 }
@@ -19,7 +19,7 @@ type SessionContext struct {
 func Middleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			ctx := &SessionContext{
+			ctx := &Context{
 				Context: c,
 				ID:      DetermineID(c),
 			}
@@ -29,8 +29,8 @@ func Middleware() echo.MiddlewareFunc {
 }
 
 // Unwrap unwraps the session context
-func Unwrap(c echo.Context) *SessionContext {
-	cc := c.(*SessionContext)
+func Unwrap(c echo.Context) *Context {
+	cc := c.(*Context)
 	if cc == nil {
 		panic("failed to unwrap session context")
 	}

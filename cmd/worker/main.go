@@ -9,10 +9,10 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/sonr-io/motr/config"
 	"github.com/sonr-io/motr/middleware/database"
 	"github.com/sonr-io/motr/middleware/kvstore"
 	"github.com/sonr-io/motr/middleware/session"
-	"github.com/sonr-io/motr/middleware/sonrapi"
 	"github.com/sonr-io/motr/middleware/webauthn"
 	"github.com/syumai/workers"
 	"github.com/syumai/workers/cloudflare/cron"
@@ -31,11 +31,10 @@ func loadHandler() http.Handler {
 		session.Middleware(),
 		database.Middleware(),
 		kvstore.Middleware(),
-		sonrapi.Middleware(),
 		webauthn.Middleware(),
 	)
-	setupViews(e)
-	setupPartials(e)
+	config.RegisterViews(e)
+	config.RegisterPartials(e)
 	return e
 }
 
