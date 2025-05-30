@@ -18,12 +18,6 @@ jobs:
         with:
           go-version: stable
 
-      - name: Install devbox
-        uses: jetify-com/devbox-install-action@v0.13.0
-        with:
-          enable-cache: true
-          refresh-cli: true
-
       - name: Deploy Radar to Cloudflare
         uses: cloudflare/wrangler-action@v3
         with:
@@ -43,13 +37,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: stable
-
-      - name: Install devbox
-        uses: jetify-com/devbox-install-action@v0.13.0
-        with:
-          enable-cache: true
-          refresh-cli: true
-
+           
       - name: Deploy Worker to Cloudflare
         uses: cloudflare/wrangler-action@v3
         with:
