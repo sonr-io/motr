@@ -122,9 +122,9 @@ export function useSignInWithSonr(
     error: null,
   });
 
-  // Refs for callbacks
-  const refreshTimeoutRef = useRef<NodeJS.Timeout>();
-  const isRefreshingRef = useRef(false);
+   // Refs for callbacks
+   const refreshTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
+   const isRefreshingRef = useRef(false);
 
   /**
    * Load stored token and user on mount

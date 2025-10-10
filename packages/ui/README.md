@@ -1,6 +1,6 @@
 # @sonr.io/ui
 
-Centralized UI component library for the Sonr ecosystem using shadcn/ui.
+Centralized UI component library for the Sonr ecosystem using shadcn/ui and Vite.
 
 ## 🎨 Overview
 
@@ -61,7 +61,20 @@ The primary brand color is `#17c2ff` (cyan). All theme variables are defined in 
 
 ## 💻 Usage in Applications
 
-### 1. Import Global Styles
+### 1. Vite Configuration
+
+Add the Sonr UI plugin to your `vite.config.ts`:
+
+```typescript
+import { defineConfig } from 'vite';
+import { sonrUI } from '@sonr.io/ui/vite-plugin';
+
+export default defineConfig({
+  plugins: [sonrUI()],
+});
+```
+
+### 2. Import Global Styles
 
 In your app's `globals.css`:
 
@@ -122,6 +135,9 @@ pnpm exec tsc --noEmit
 
 # Add new shadcn component
 npx shadcn@latest add [component-name]
+
+# Build the package
+pnpm run build
 ```
 
 ## 📋 Centralized Workflow

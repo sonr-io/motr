@@ -30,11 +30,12 @@
     "allowUnusedLabels": true,
     "noUncheckedIndexedAccess": false,
 
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true
+     "declaration": true,
+     "declarationMap": true,
+     "sourceMap": true,
+     "composite": true
   },
-  "include": ["src"],
+   "include": ["src"],
   "exclude": ["dist", "node_modules", "**/*.test.ts", "**/__tests__/**"],
   "tsc-alias": {
     // Add file extensions to imports/exports for ESM compatibility.

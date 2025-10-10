@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import viteReact from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
+import esPlugin from '@sonr.io/es'
 import { resolve } from 'node:path'
 
 // https://vitejs.dev/config/
@@ -10,11 +11,8 @@ export default defineConfig({
     TanStackRouterVite({ autoCodeSplitting: true }),
     viteReact(),
     tailwindcss(),
+    esPlugin({ configureWasm: false }), // Handles WASM, workers, and optimizeDeps configuration
   ],
-  test: {
-    globals: true,
-    environment: 'jsdom',
-  },
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
@@ -22,13 +20,7 @@ export default defineConfig({
     dedupe: ['react', 'react-dom'],
   },
   optimizeDeps: {
-    // Exclude @sonr.io/es from optimization to avoid protobuf import issues
-    exclude: ['@sonr.io/es'],
+    // esPlugin already excludes @sonr.io/es
     include: ['@sonr.io/ui'],
-  },
-  build: {
-    commonjsOptions: {
-      include: [/node_modules/, /packages/],
-    },
   },
 })

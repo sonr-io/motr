@@ -42,17 +42,12 @@
     "outDir": "dist",
     "rootDir": "."
   },
-  "references": [
-    { "path": "./cli/install" },
-    { "path": "./cli/join-testnet" },
-    { "path": "./packages/es" },
-    { "path": "./packages/sdk" },
-    { "path": "./packages/ui" },
-    { "path": "./web/api" },
-    { "path": "./web/auth" },
-    { "path": "./web/dash" },
-    { "path": "./web/frontend" }
-  ],
+   "references": [
+     { "path": "./apps/frontend" },
+     { "path": "./cmd/enclave" },
+     { "path": "./packages/es" },
+     { "path": "./packages/ui" }
+   ],
   "exclude": [
     "node_modules",
     "**/node_modules",

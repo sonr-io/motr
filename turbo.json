@@ -23,18 +23,22 @@
         "!out/**"
       ]
     },
-    "@sonr.io/ui#build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", "*.tsbuildinfo"],
-      "inputs": [
-        "src/**",
-        "tailwind.config.js",
-        "components.json",
-        "tsconfig.json",
-        "package.json"
-      ],
-      "cache": true
-    },
+     "@sonr.io/ui#build": {
+       "dependsOn": [],
+       "outputs": ["dist/**", "*.tsbuildinfo"],
+       "inputs": ["src/**", "tsconfig.json", "package.json"],
+       "cache": true
+     },
+     "@sonr.io/ui#test": {
+       "dependsOn": [],
+       "outputs": [],
+       "cache": false
+     },
+     "@sonr.io/ui#lint": {
+       "dependsOn": [],
+       "outputs": [],
+       "cache": false
+     },
      "@sonr.io/es#build": {
        "dependsOn": ["@sonr.io/enclave#build"],
        "outputs": ["dist/**", "*.tsbuildinfo"],

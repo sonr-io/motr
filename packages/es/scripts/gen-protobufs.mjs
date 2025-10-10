@@ -66,13 +66,83 @@ const TMP_DIR = join(PROTOBUFS_DIR, '.tmp');
 const id = (/** @type {string} */ repo) => repo.replace(/[#/]/g, '-');
 
 /**
- * Clones a repository using git clone
- * @param {string} repo - Repository string (format: owner/repo#ref)
- * @param {string} dest - Destination directory
- * @returns {boolean} - Success status
+ * Check if ghq is available
+ * @returns {boolean}
  */
-function cloneRepo(repo, dest) {
+function isGhqAvailable() {
+  const result = spawnSync('ghq', ['--version'], { stdio: 'pipe', encoding: 'utf8' });
+  return result.status === 0;
+}
+
+/**
+ * Get ghq root directory
+ * @returns {string | null}
+ */
+function getGhqRoot() {
+  const result = spawnSync('ghq', ['root'], { stdio: 'pipe', encoding: 'utf8' });
+  if (result.status === 0) {
+    return result.stdout.trim();
+  }
+  return null;
+}
+
+/**
+ * Gets repository using ghq or falls back to git clone
+ * @param {string} repo - Repository string (format: owner/repo#ref)
+ * @param {string} dest - Destination directory (used only for git clone fallback)
+ * @param {boolean} useGhq - Whether to use ghq
+ * @param {string | null} ghqRoot - ghq root directory
+ * @returns {{ success: boolean, path: string | null }} - Result with path
+ */
+function getRepo(repo, dest, useGhq, ghqRoot) {
   const [repoPath, ref] = repo.split('#');
+
+  if (useGhq && ghqRoot) {
+    // Use ghq to get the repo
+    const args = ['get', '-u', '--shallow'];
+
+    if (ref && ref !== 'master' && ref !== 'main') {
+      args.push('--branch', ref);
+    }
+
+    args.push(`github.com/${repoPath}`);
+
+    console.log(`  Getting ${repo} via ghq...`);
+    const result = spawnSync('ghq', args, {
+      stdio: 'pipe',
+      encoding: 'utf8',
+      env: {
+        ...process.env,
+        GIT_LFS_SKIP_SMUDGE: '1',
+      },
+    });
+
+    if (result.status !== 0) {
+      console.error(`  ✗ Failed to get ${repo} via ghq:`, result.stderr);
+      return { success: false, path: null };
+    }
+
+    // Build the path to the repo in ghq
+    const repoPathInGhq = join(ghqRoot, 'github.com', repoPath);
+
+    // Checkout the specific ref if needed
+    if (ref && ref !== 'master' && ref !== 'main') {
+      const checkoutResult = spawnSync('git', ['checkout', ref], {
+        cwd: repoPathInGhq,
+        stdio: 'pipe',
+        encoding: 'utf8',
+      });
+
+      if (checkoutResult.status !== 0) {
+        console.warn(`  ⚠ Could not checkout ${ref}, using default branch`);
+      }
+    }
+
+    console.log(`  ✓ ${repo} (ghq cache)`);
+    return { success: true, path: repoPathInGhq };
+  }
+
+  // Fallback to git clone
   const gitUrl = `https://github.com/${repoPath}.git`;
   const args = [
     'clone',
@@ -96,23 +166,30 @@ function cloneRepo(repo, dest) {
     encoding: 'utf8',
     env: {
       ...process.env,
-      GIT_LFS_SKIP_SMUDGE: '1', // Additional safeguard
+      GIT_LFS_SKIP_SMUDGE: '1',
     },
   });
 
   if (result.status !== 0) {
     console.error(`  ✗ Failed to clone ${repo}:`, result.stderr);
-    return false;
+    return { success: false, path: null };
   }
 
   console.log(`  ✓ ${repo}`);
-  return true;
+  return { success: true, path: dest };
 }
+
+// Check if ghq is available
+const useGhq = isGhqAvailable();
+const ghqRoot = useGhq ? getGhqRoot() : null;
 
 console.log('🔧 Initialising directories...');
 {
-  rmSync(TMP_DIR, { recursive: true, force: true });
-  mkdirSync(TMP_DIR, { recursive: true });
+  // Only need TMP_DIR if not using ghq
+  if (!useGhq) {
+    rmSync(TMP_DIR, { recursive: true, force: true });
+    mkdirSync(TMP_DIR, { recursive: true });
+  }
   mkdirSync(PROTOBUFS_DIR, { recursive: true });
 
   // Clean directories for regenerated repos
@@ -132,24 +209,33 @@ console.log('🔧 Initialising directories...');
   }
 }
 
-console.log('📥 Cloning required repos...');
+if (useGhq && ghqRoot) {
+  console.log(`📦 Using ghq for repo management (root: ${ghqRoot})`);
+} else {
+  console.log('📥 Using git clone for repo management');
+}
+
+console.log('📥 Getting required repos...');
+/** @type {Map<string, string>} */
+const repoPaths = new Map();
 {
   let successCount = 0;
   let failCount = 0;
 
   for (const { repo } of REPOS) {
-    const success = cloneRepo(repo, join(TMP_DIR, id(repo)));
-    if (success) {
+    const result = getRepo(repo, join(TMP_DIR, id(repo)), useGhq, ghqRoot);
+    if (result.success && result.path) {
+      repoPaths.set(repo, result.path);
       successCount++;
     } else {
       failCount++;
     }
   }
 
-  console.log(`\n📊 Clone summary: ${successCount} succeeded, ${failCount} failed\n`);
+  console.log(`\n📊 Repo summary: ${successCount} succeeded, ${failCount} failed\n`);
 
   if (successCount === 0) {
-    console.error('❌ All repository clones failed. Cannot continue.');
+    console.error('❌ All repository operations failed. Cannot continue.');
     process.exit(1);
   }
 }
@@ -157,11 +243,11 @@ console.log('📥 Cloning required repos...');
 console.log('⚙️  Generating TS files from proto files...');
 {
   for (const { repo, paths } of REPOS) {
-    const repoDir = join(TMP_DIR, id(repo));
+    const repoDir = repoPaths.get(repo);
 
-    // Skip if repo didn't clone successfully
-    if (!existsSync(repoDir)) {
-      console.log(`⚠️  Skipping ${repo} (not cloned)`);
+    // Skip if repo wasn't retrieved successfully
+    if (!repoDir || !existsSync(repoDir)) {
+      console.log(`⚠️  Skipping ${repo} (not available)`);
       continue;
     }
 
@@ -265,7 +351,10 @@ console.log('📝 Generating src/protobufs/index.ts file...');
 
 console.log('🧹 Cleaning up...');
 {
-  rmSync(TMP_DIR, { recursive: true, force: true });
+  // Only clean TMP_DIR if we used git clone (not ghq)
+  if (!useGhq) {
+    rmSync(TMP_DIR, { recursive: true, force: true });
+  }
 }
 
 console.log('✅ Proto generation completed successfully!');

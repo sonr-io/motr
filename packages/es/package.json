@@ -33,6 +33,10 @@
        "types": "./dist/wallet/index.d.ts",
        "import": "./dist/wallet/index.js"
      },
+     "./vite": {
+       "types": "./dist/vite/index.d.ts",
+       "import": "./dist/vite/index.js"
+     },
      "./vite-plugin": {
        "types": "./dist/plugin/vite-plugin.d.ts",
        "import": "./dist/plugin/vite-plugin.js"
@@ -40,7 +44,7 @@
    },
   "scripts": {
     "dev": "tsc --watch",
-    "build": "pnpm clean && tsc && tsc-alias",
+    "build": "pnpm run gen && tsc && tsc-alias",
     "clean": "rimraf dist",
     "gen": "node scripts/gen-protobufs.mjs && node scripts/gen-registry.mjs",
     "test": "vitest run",
