@@ -30,24 +30,24 @@ const DEFAULT_TIMEOUT = 30000; // 30 seconds
 export async function loadVaultWASM(options: WASMLoadOptions = {}): Promise<ArrayBuffer> {
   const { url, useCDN = false, version = 'latest', timeout = DEFAULT_TIMEOUT } = options;
 
-  let wasmUrl: string;
+  let wasmUrlToUse: string;
 
   if (url) {
     // Use provided URL
-    wasmUrl = url;
+    wasmUrlToUse = url;
   } else if (useCDN) {
     // Use jsDelivr CDN
-    wasmUrl = `${CDN_BASE}@${version}/dist/plugins/vault/plugin.wasm`;
+    wasmUrlToUse = `${CDN_BASE}@${version}/dist/plugins/vault/plugin.wasm`;
   } else {
-    // Use local path
-    wasmUrl = '/plugin.wasm';
+    // Use the bundled WASM from @sonr.io/enclave via virtual module
+    wasmUrlToUse = new URL('virtual:enclave-wasm', import.meta.url).href;
   }
 
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
-    const response = await fetch(wasmUrl, {
+    const response = await fetch(wasmUrlToUse, {
       signal: controller.signal,
       headers: {
         Accept: 'application/wasm',
@@ -69,13 +69,13 @@ export async function loadVaultWASM(options: WASMLoadOptions = {}): Promise<Arra
   } catch (error: any) {
     if (error.name === 'AbortError') {
       throw new VaultError(VaultErrorCode.TIMEOUT, `WASM loading timed out after ${timeout}ms`, {
-        url: wasmUrl,
+        url: wasmUrlToUse,
       });
     }
 
     throw new VaultError(
       VaultErrorCode.WASM_NOT_LOADED,
-      `Failed to load WASM from ${wasmUrl}: ${error.message}`,
+      `Failed to load WASM from ${wasmUrlToUse}: ${error.message}`,
       error
     );
   }

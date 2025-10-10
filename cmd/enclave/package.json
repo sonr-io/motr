@@ -1,0 +1,43 @@
+{
+  "name": "@sonr.io/enclave",
+  "version": "0.1.0",
+  "description": "WebAssembly-based vault plugin for Sonr blockchain with Extism and Vite integration",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./dist/enclave.wasm": "./dist/enclave.wasm",
+    "./loader": "./dist/loader.js",
+    "./vite-plugin": "./dist/vite-plugin-enclave.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "devbox run build && tsc --declaration --emitDeclarationOnly",
+    "build:wasm": "devbox run build",
+    "watch": "devbox run watch",
+    "test": "devbox run test",
+    "lint": "devbox run lint",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "wasm",
+    "extism",
+    "vite",
+    "sonr",
+    "blockchain",
+    "vault"
+  ],
+  "author": "Sonr Labs",
+  "license": "MIT",
+  "private": true
+}

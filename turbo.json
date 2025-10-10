@@ -35,18 +35,34 @@
       ],
       "cache": true
     },
-    "@sonr.io/es#build": {
-      "dependsOn": [],
-      "outputs": ["dist/**", "*.tsbuildinfo"],
-      "inputs": ["src/**", "tsconfig.json", "package.json"],
-      "cache": true
-    },
-    "@sonr.io/do#build": {
-      "dependsOn": [],
-      "outputs": ["dist/**", "*.tsbuildinfo"],
-      "inputs": ["src/**", "tsconfig.json", "package.json"],
-      "cache": true
-    },
+     "@sonr.io/es#build": {
+       "dependsOn": ["@sonr.io/enclave#build"],
+       "outputs": ["dist/**", "*.tsbuildinfo"],
+       "inputs": ["src/**", "tsconfig.json", "package.json"],
+       "cache": true
+     },
+     "@sonr.io/do#build": {
+       "dependsOn": [],
+       "outputs": ["dist/**", "*.tsbuildinfo"],
+       "inputs": ["src/**", "tsconfig.json", "package.json"],
+       "cache": true
+     },
+     "@sonr.io/enclave#build": {
+       "dependsOn": [],
+       "outputs": ["dist/**"],
+       "inputs": ["main.go", "**/*.go", "go.mod", "go.sum", "package.json", "devbox.json"],
+       "cache": true
+     },
+     "@sonr.io/enclave#test": {
+       "dependsOn": ["@sonr.io/enclave#build"],
+       "outputs": [],
+       "cache": false
+     },
+     "@sonr.io/enclave#lint": {
+       "dependsOn": [],
+       "outputs": [],
+       "cache": false
+     },
     "frontend#build": {
       "dependsOn": ["@sonr.io/es#build", "@sonr.io/ui#build"],
       "outputs": ["dist/**"],

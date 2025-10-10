@@ -3,10 +3,11 @@
     "lib": ["ES2022", "DOM"],
     "target": "ES2022",
     "module": "ES2022",
-    "baseUrl": ".",
-    "paths": {
-      "@sonr.io/es/*": ["./src/*"]
-    },
+     "baseUrl": ".",
+     "paths": {
+       "@/*": ["./src/*"],
+       "@sonr.io/es/*": ["./src/*"]
+     },
     "outDir": "./dist",
     "rootDir": "./src",
     // `node16` is too strict and causes type errors for imported pkgs.

@@ -251,7 +251,7 @@ console.log('📝 Generating src/protobufs/index.ts file...');
         contents += `  ${exportedName} as ${prefixName + exportedName},\n`;
       }
       const exportedFile = file.replace(PROTOBUFS_DIR + '/', '').replace('.ts', '.js');
-      contents += `} from "./${exportedFile}";\n`;
+      contents += `} from "@/protobufs/${exportedFile}";\n`;
     }
 
     for (const file of files) {

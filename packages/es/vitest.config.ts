@@ -1,7 +1,9 @@
 import { defineConfig } from 'vitest/config';
 import path from 'path';
+import { esPlugin } from './src/plugin/vite-plugin.js';
 
 export default defineConfig({
+  plugins: [esPlugin()],
   test: {
     globals: true,
     environment: 'jsdom',

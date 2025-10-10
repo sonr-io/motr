@@ -1,0 +1,20 @@
+{
+  "packages": [
+    "go@1.22",
+    "wasmtime",
+    "golangci-lint"
+  ],
+  "shell": {
+    "init_hook": [
+      "export GOOS=wasip1",
+      "export GOARCH=wasm"
+    ],
+    "scripts": {
+      "build": "go build -o dist/enclave.wasm ./main.go",
+      "watch": "go build -o dist/enclave.wasm ./main.go && echo 'Watching for changes...'",
+      "test": "go test ./...",
+      "lint": "golangci-lint run ./...",
+      "fmt": "gofmt -w $(find . -name '*.go' -not -path './dist/*')"
+    }
+  }
+}

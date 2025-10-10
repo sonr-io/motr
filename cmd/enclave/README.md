@@ -423,17 +423,45 @@ const importResult = call_wasm_function("import", importReq);
 ### Prerequisites
 
 - Go 1.24.4+
+- Devbox (for development environment)
+- Node.js 18+ (for TypeScript compilation)
 - Extism runtime
 - IPFS node (for import/export functionality)
+
+### Vite Plugin Integration
+
+This package includes a Vite plugin to automatically load the enclave WASM module:
+
+```typescript
+// vite.config.ts
+import { defineConfig } from 'vite';
+import { enclavePlugin } from '@sonr.io/enclave/vite-plugin';
+
+export default defineConfig({
+  plugins: [enclavePlugin()],
+});
+```
+
+The plugin emits the WASM file as an asset and provides a virtual module for easy importing:
+
+```typescript
+// In your application code
+import wasmUrl from 'virtual:enclave-wasm';
+// or use the loader
+import { createEnclaveRuntime } from '@sonr.io/enclave/loader';
+```
 
 ### Build Commands
 
 ```bash
 # Build WebAssembly module
-GOOS=js GOARCH=wasm go build -o motr.wasm main.go
+GOOS=wasip1 GOARCH=wasm go build -o dist/enclave.wasm main.go
 
-# Build via Makefile
-make motr
+# Build via devbox
+devbox run build
+
+# Build the full package (WASM + TypeScript)
+pnpm run build
 ```
 
 ### Integration

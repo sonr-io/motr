@@ -1,5 +1,6 @@
 import { createPlugin, Plugin } from '@extism/extism';
 import { VaultError, VaultErrorCode } from './types';
+import { loadVaultWASM } from './loader';
 import type {
   VaultConfig,
   VaultPlugin,
@@ -39,46 +40,38 @@ export class VaultClient implements VaultPlugin {
   }
 
   /**
-   * Initialize the vault with WASM module
-   */
-  async initialize(wasmPath?: string, accountAddress?: string): Promise<void> {
-    // Initialize storage first if account address is provided and persistence is enabled
-    // This ensures storage works even if WASM loading fails
-    if (accountAddress && this.config.enablePersistence && this.storageManager) {
-      this.accountAddress = accountAddress;
-      this.database = await this.storageManager.getDatabase(accountAddress);
-      await this.loadPersistedState();
-    }
+    * Initialize the vault with WASM module
+    */
+   async initialize(wasmPath?: string, accountAddress?: string): Promise<void> {
+     // Initialize storage first if account address is provided and persistence is enabled
+     // This ensures storage works even if WASM loading fails
+     if (accountAddress && this.config.enablePersistence && this.storageManager) {
+       this.accountAddress = accountAddress;
+       this.database = await this.storageManager.getDatabase(accountAddress);
+       await this.loadPersistedState();
+     }
 
-    try {
-      // Load WASM module
-      if (wasmPath) {
-        // Load from provided path
-        const response = await fetch(wasmPath);
-        this.wasmModule = await response.arrayBuffer();
-      } else {
-        // Load from default location
-        const response = await fetch('/plugin.wasm');
-        this.wasmModule = await response.arrayBuffer();
-      }
+     try {
+       // Load WASM module using the new loader
+       this.wasmModule = await loadVaultWASM({ url: wasmPath });
 
-      // Create Extism plugin with configuration
-      const pluginConfig = {
-        wasm: [{ data: new Uint8Array(this.wasmModule) }],
-        config: this.prepareConfig(),
-      };
+       // Create Extism plugin with configuration
+       const pluginConfig = {
+         wasm: [{ data: new Uint8Array(this.wasmModule) }],
+         config: this.prepareConfig(),
+       };
 
-      this.plugin = await createPlugin(pluginConfig, {
-        useWasi: true,
-      });
-    } catch (error) {
-      throw new VaultError(
-        VaultErrorCode.WASM_NOT_LOADED,
-        `Failed to initialize vault: ${error}`,
-        error
-      );
-    }
-  }
+       this.plugin = await createPlugin(pluginConfig, {
+         useWasi: true,
+       });
+     } catch (error) {
+       throw new VaultError(
+         VaultErrorCode.WASM_NOT_LOADED,
+         `Failed to initialize vault: ${error}`,
+         error
+       );
+     }
+   }
 
   /**
    * Prepare configuration for the plugin
