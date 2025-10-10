@@ -1,0 +1,237 @@
+# Motor (motr) Monorepo - Git Ignore Rules
+# ============================================
+
+# ============================================
+# Dependencies & Package Managers
+# ============================================
+node_modules/
+.pnp
+.pnp.js
+.yarn/
+.yarnrc.yml
+.npmrc
+.pnpm-debug.log*
+bower_components/
+
+# ============================================
+# Build Artifacts - Go/WASM
+# ============================================
+# WASM builds
+*.wasm
+!packages/es/src/worker/app.wasm
+!packages/es/src/plugin/plugin.wasm
+wasm_exec.js
+
+# Go build artifacts
+/build/
+/dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go coverage
+*.coverage
+*.coverprofile
+coverage.out
+coverage.txt
+coverage.html
+
+# Go module cache
+go.sum
+
+# ============================================
+# Build Artifacts - TypeScript/JavaScript
+# ============================================
+dist/
+dist-ssr/
+build/
+out/
+.next/
+.nuxt/
+.cache/
+.output/
+.vinxi/
+.nitro/
+
+# TypeScript incremental compilation
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# ============================================
+# Generated Files
+# ============================================
+# Protobuf generated files
+**/protobufs/**/*_pb.ts
+**/protobufs/**/*_pb.js
+**/protobufs/**/*_cosmes.ts
+**/protobufs/**/*_cosmes.js
+**/protobufs/index.ts
+**/protobufs/index.js
+**/protobufs/.tmp/
+
+# TanStack generated files
+**/routeTree.gen.ts
+.tanstack/
+
+# ============================================
+# Testing & Coverage
+# ============================================
+coverage/
+*.lcov
+.nyc_output/
+junit.xml
+test-results/
+playwright-report/
+playwright/.cache/
+
+# ============================================
+# Environment & Secrets
+# ============================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+*.pem
+*.key
+secrets.yml
+secrets.yaml
+
+# ============================================
+# Logs & Temporary Files
+# ============================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.pid
+*.seed
+*.pid.lock
+
+# Temporary directories
+.tmp/
+tmp/
+temp/
+*.tmp
+
+# ============================================
+# IDEs & Editors
+# ============================================
+# VSCode
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Vim
+*.swp
+*.swo
+*~
+.netrwhist
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ============================================
+# OS-specific Files
+# ============================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+.directory
+.Trash-*
+.nfs*
+
+# ============================================
+# Cloud & Deployment
+# ============================================
+.vercel/
+.netlify/
+.cloudflare/
+.wrangler/
+
+# ============================================
+# Build Tools & Caching
+# ============================================
+# Turbo
+.turbo/
+
+# Devbox
+.devbox/
+!.devbox/gen/
+
+# GoReleaser
+dist/
+*.snap
+
+# Misc caches
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+
+# ============================================
+# Development & Debug
+# ============================================
+# AI assistants
+.aider*
+.cursor/
+.claude/
+count.txt
+todos.json
+
+# Profiling
+*.prof
+*.pprof
+
+# Debug
+debug/
+*.dSYM/
+
+# ============================================
+# Package-specific ignores
+# ============================================
+# Keep package-specific .gitignore files active

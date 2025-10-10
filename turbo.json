@@ -1,0 +1,98 @@
+{
+  "$schema": "https://turborepo.com/schema.v2.json",
+  "globalDependencies": ["**/.env.*local", "tsconfig.json"],
+  "globalEnv": ["NODE_ENV", "VERCEL_ENV", "VERCEL_URL", "NEXT_PUBLIC_*"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "out/**", "build/**", "lib/**"],
+      "env": ["NODE_ENV", "NEXT_PUBLIC_*"],
+      "inputs": [
+        "src/**",
+        "app/**",
+        "pages/**",
+        "components/**",
+        "lib/**",
+        "utils/**",
+        "styles/**",
+        "*.config.{js,ts,mjs,cjs}",
+        "*.json",
+        "!node_modules/**",
+        "!dist/**",
+        "!.next/**",
+        "!out/**"
+      ]
+    },
+    "@sonr.io/ui#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "*.tsbuildinfo"],
+      "inputs": [
+        "src/**",
+        "tailwind.config.js",
+        "components.json",
+        "tsconfig.json",
+        "package.json"
+      ],
+      "cache": true
+    },
+    "@sonr.io/es#build": {
+      "dependsOn": [],
+      "outputs": ["dist/**", "*.tsbuildinfo"],
+      "inputs": ["src/**", "tsconfig.json", "package.json"],
+      "cache": true
+    },
+    "@sonr.io/do#build": {
+      "dependsOn": [],
+      "outputs": ["dist/**", "*.tsbuildinfo"],
+      "inputs": ["src/**", "tsconfig.json", "package.json"],
+      "cache": true
+    },
+    "front#build": {
+      "dependsOn": ["@sonr.io/es#build"],
+      "outputs": ["dist/**"],
+      "env": ["NODE_ENV", "VITE_*"],
+      "inputs": [
+        "src/**",
+        "index.html",
+        "vite.config.ts",
+        "tailwind.config.ts",
+        "tsconfig.json",
+        "package.json"
+      ]
+    },
+    "front#dev": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": []
+    },
+    "test": {
+      "dependsOn": ["build"],
+      "outputs": ["coverage/**"],
+      "cache": false,
+      "env": ["NODE_ENV", "CI"]
+    },
+    "lint": {
+      "outputs": [],
+      "cache": false,
+      "inputs": ["src/**", "app/**", "*.config.{js,ts,mjs,cjs}", "*.json"]
+    },
+    "format": {
+      "outputs": [],
+      "cache": false,
+      "inputs": ["src/**", "app/**", "*.config.{js,ts,mjs,cjs}", "*.json"]
+    },
+    "check": {
+      "outputs": [],
+      "cache": false
+    },
+    "typecheck": {
+      "dependsOn": ["^build"],
+      "outputs": ["*.tsbuildinfo"],
+      "cache": true,
+      "inputs": ["src/**", "app/**", "*.ts", "*.tsx", "tsconfig.json"]
+    },
+    "clean": {
+      "cache": false
+    }
+  }
+}

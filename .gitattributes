@@ -1,0 +1,154 @@
+# Motor (motr) Monorepo - Git Attributes
+# ========================================
+# Line ending configuration and file type handling
+
+# ========================================
+# Auto-detect text files and normalize line endings to LF
+# ========================================
+* text=auto eol=lf
+
+# ========================================
+# Source Code Files
+# ========================================
+# Go
+*.go text diff=golang
+*.mod text
+*.sum text
+go.mod text
+go.sum text
+
+# JavaScript/TypeScript
+*.js text
+*.jsx text
+*.ts text
+*.tsx text
+*.mjs text
+*.cjs text
+*.json text
+
+# Web
+*.html text diff=html
+*.css text
+*.scss text
+*.sass text
+*.less text
+
+# Markdown
+*.md text diff=markdown
+*.mdx text
+
+# YAML/TOML/INI
+*.yml text
+*.yaml text
+*.toml text
+*.ini text
+
+# Shell scripts
+*.sh text eol=lf
+*.bash text eol=lf
+*.zsh text eol=lf
+
+# Makefiles must use tabs
+Makefile text eol=lf
+*.mk text eol=lf
+
+# ========================================
+# Binary Files
+# ========================================
+# WebAssembly
+*.wasm binary
+
+# Images
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg text
+*.webp binary
+*.avif binary
+
+# Fonts
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.eot binary
+
+# Archives
+*.zip binary
+*.tar binary
+*.gz binary
+*.tgz binary
+*.bz2 binary
+*.7z binary
+
+# Executables
+*.exe binary
+*.dll binary
+*.so binary
+*.dylib binary
+
+# Documents
+*.pdf binary
+*.doc binary
+*.docx binary
+*.xls binary
+*.xlsx binary
+
+# ========================================
+# Generated Files (mark as generated for GitHub)
+# ========================================
+*_pb.ts linguist-generated=true
+*_pb.js linguist-generated=true
+*_cosmes.ts linguist-generated=true
+*_cosmes.js linguist-generated=true
+routeTree.gen.ts linguist-generated=true
+pnpm-lock.yaml linguist-generated=true -diff
+
+# ========================================
+# Language Statistics (GitHub Linguist)
+# ========================================
+# Exclude from language statistics
+*.md linguist-documentation
+*.mdx linguist-documentation
+LICENSE linguist-documentation
+docs/* linguist-documentation
+**/.tmp/* linguist-vendored
+**/node_modules/* linguist-vendored
+**/dist/* linguist-generated
+**/build/* linguist-generated
+
+# Explicitly include/exclude specific paths
+packages/es/src/protobufs/** linguist-generated
+cmd/worker/*.wasm linguist-generated
+cmd/vault/*.wasm linguist-generated
+
+# ========================================
+# Diff Settings
+# ========================================
+# Better diffs for package-lock files
+pnpm-lock.yaml diff=json
+package-lock.json diff=json
+yarn.lock merge=binary
+
+# Binary files that shouldn't be diffed
+*.wasm -diff
+
+# ========================================
+# Merge Strategies
+# ========================================
+# Always take ours for generated lock files in merge conflicts
+pnpm-lock.yaml merge=ours
+*.snap merge=ours
+
+# ========================================
+# Export-ignore (files not included in archives)
+# ========================================
+.gitignore export-ignore
+.gitattributes export-ignore
+.github export-ignore
+.vscode export-ignore
+.devbox export-ignore
+*.md export-ignore
+docs export-ignore

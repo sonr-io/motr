@@ -1,0 +1,169 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema-pro.json
+---
+version: 2
+project_name: motr
+
+before:
+  hooks:
+    # Download dependencies for all modules
+    - sh -c "cd cmd/worker && go mod download"
+    - sh -c "cd cmd/vault && go mod download"
+    # Ensure output directories exist
+    - mkdir -p dist/worker dist/vault packages/es/src/worker packages/es/src/plugin
+
+builds:
+  # Worker WASM build using TinyGo
+  - id: worker
+    main: ./cmd/worker
+    binary: worker
+    dir: .
+    skip: true
+    hooks:
+      pre:
+        # Build with TinyGo
+        - sh -c "cd cmd/worker && tinygo build -opt=2 -scheduler=none -no-debug -target=wasi -o ../../dist/worker/worker.wasm ."
+      post:
+        # Optimize if wasm-opt is available
+        - sh -c "command -v wasm-opt && wasm-opt -O3 -o dist/worker/worker.optimized.wasm dist/worker/worker.wasm || cp dist/worker/worker.wasm dist/worker/worker.optimized.wasm"
+        # Copy to package directory
+        - cp dist/worker/worker.optimized.wasm packages/es/src/worker/app.wasm
+
+  # Vault WASM build using TinyGo (Extism plugin)
+  - id: vault
+    main: ./cmd/vault
+    binary: vault
+    dir: .
+    skip: true
+    hooks:
+      pre:
+        # Build with TinyGo
+        - sh -c "cd cmd/vault && tinygo build -opt=2 -scheduler=none -no-debug -target=wasi -o ../../dist/vault/vault.wasm ."
+      post:
+        # Optimize if wasm-opt is available
+        - sh -c "command -v wasm-opt && wasm-opt -O3 -o dist/vault/vault.optimized.wasm dist/vault/vault.wasm || cp dist/vault/vault.wasm dist/vault/vault.optimized.wasm"
+        # Compile with Extism if available
+        - sh -c "command -v extism && extism compile dist/vault/vault.optimized.wasm -o dist/vault/vault.plugin.wasm || cp dist/vault/vault.optimized.wasm dist/vault/vault.plugin.wasm"
+        # Copy to package directory
+        - cp dist/vault/vault.plugin.wasm packages/es/src/plugin/plugin.wasm
+archives:
+  - id: worker-archive
+    builds:
+      - worker
+    name_template: "motr_worker_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format: tar.gz
+    files:
+      - dist/worker/worker.optimized.wasm
+      - LICENSE*
+      - README*
+      - CHANGELOG*
+
+  - id: vault-archive
+    builds:
+      - vault
+    name_template: "motr_vault_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format: tar.gz
+    files:
+      - dist/vault/vault.plugin.wasm
+      - dist/vault/vault.optimized.wasm
+      - LICENSE*
+      - README*
+      - CHANGELOG*
+
+  - id: combined-archive
+    builds:
+      - worker
+      - vault
+    name_template: "motr_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format: tar.gz
+    files:
+      - dist/worker/worker.optimized.wasm
+      - dist/vault/vault.plugin.wasm
+      - LICENSE*
+      - README*
+      - CHANGELOG*
+      - MIGRATION.md
+
+blobs:
+  - provider: s3
+    endpoint: https://eb37925850388bca807b7fab964c12bb.r2.cloudflarestorage.com
+    bucket: releases
+    region: auto
+    directory: "motr/{{ .Tag }}"
+    extra_files:
+      - glob: ./dist/worker/*.wasm
+      - glob: ./dist/vault/*.wasm
+
+release:
+  disable: false
+  github:
+    owner: sonr-io
+    name: motr
+  name_template: "{{ .Tag }}"
+  draft: false
+  prerelease: auto
+  make_latest: true
+  header: |
+    ## Motor (motr) {{ .Tag }}
+
+    Multi-purpose WebAssembly service for secure cryptographic operations and payment processing.
+
+    ### Components
+    - **Worker**: WASM-based cryptographic vault operations
+    - **Vault**: Extism plugin for secure key management
+
+  footer: |
+    ---
+
+    **Full Changelog**: https://github.com/sonr-io/motr/compare/{{ .PreviousTag }}...{{ .Tag }}
+
+    ### Installation
+
+    Download the appropriate archive for your platform and extract the WASM modules.
+
+    ### Documentation
+
+    See [MIGRATION.md](https://github.com/sonr-io/motr/blob/{{ .Tag }}/MIGRATION.md) for architecture details.
+
+checksum:
+  name_template: "motr_checksums.txt"
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-dev"
+
+# Changelog configuration
+changelog:
+  use: github
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+      - "^ci:"
+      - "^style:"
+      - "^refactor:"
+  groups:
+    - title: "🚀 Features"
+      regexp: "^feat[(\\w)]*:"
+      order: 0
+    - title: "🐛 Bug Fixes"
+      regexp: "^fix[(\\w)]*:"
+      order: 1
+    - title: "⚡ Performance"
+      regexp: "^perf[(\\w)]*:"
+      order: 2
+    - title: "🔒 Security"
+      regexp: "^sec[(\\w)]*:"
+      order: 3
+    - title: "📦 Dependencies"
+      regexp: "^deps[(\\w)]*:"
+      order: 4
+    - title: "🏗️ Build & CI"
+      regexp: "^build[(\\w)]*:"
+      order: 5
+    - title: "📝 Other Changes"
+      order: 999
+
+# Metadata
+metadata:
+  mod_timestamp: "{{ .CommitTimestamp }}"
