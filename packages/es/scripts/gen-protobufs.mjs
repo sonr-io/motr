@@ -37,6 +37,10 @@ const REPOS = [
     paths: ['proto'],
   },
   {
+    repo: 'confio/ics23#master',
+    paths: ['proto'],
+  },
+  {
     repo: 'sonr-io/sonr#master',
     paths: ['proto'],
   },
@@ -70,7 +74,15 @@ const id = (/** @type {string} */ repo) => repo.replace(/[#/]/g, '-');
 function cloneRepo(repo, dest) {
   const [repoPath, ref] = repo.split('#');
   const gitUrl = `https://github.com/${repoPath}.git`;
-  const args = ['clone', '--depth', '1', '--single-branch'];
+  const args = [
+    'clone',
+    '--depth', '1',
+    '--single-branch',
+    // Disable LFS filter to avoid git-lfs dependency - use cat as no-op
+    '-c', 'filter.lfs.smudge=cat',
+    '-c', 'filter.lfs.process=',
+    '-c', 'filter.lfs.required=false',
+  ];
 
   if (ref) {
     args.push('--branch', ref);
@@ -82,6 +94,10 @@ function cloneRepo(repo, dest) {
   const result = spawnSync('git', args, {
     stdio: 'pipe',
     encoding: 'utf8',
+    env: {
+      ...process.env,
+      GIT_LFS_SKIP_SMUDGE: '1', // Additional safeguard
+    },
   });
 
   if (result.status !== 0) {
@@ -157,13 +173,9 @@ console.log('⚙️  Generating TS files from proto files...');
         continue;
       }
 
-      // Determine output subdirectory based on repo
+      // Don't use subdirectories - all protobufs go to same level
+      // This ensures relative imports work correctly
       let outputSubdir = '';
-      if (repo.startsWith('dymensionxyz')) {
-        outputSubdir = 'dymension';
-      } else if (repo.startsWith('sonr-io/sonr')) {
-        outputSubdir = 'sonr';
-      }
 
       const result = spawnSync(
         'pnpm',

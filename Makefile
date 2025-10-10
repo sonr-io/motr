@@ -35,9 +35,9 @@ help: ## Show available commands
 	@echo ""
 
 # Development
-dev: ## Start frontend dev server on :3000
-	@echo "$(BLUE)Starting dev server on http://localhost:3000$(NC)"
-	@cd apps/frontend && pnpm dev
+dev: ## Start frontend dev server on :3000 (builds dependencies first)
+	@echo "$(BLUE)Building dependencies and starting dev server...$(NC)"
+	@pnpm turbo dev --filter=frontend
 
 preview: ## Preview production build
 	@echo "$(BLUE)Starting preview server...$(NC)"
@@ -50,8 +50,8 @@ deploy: ## Deploy to Cloudflare Workers
 
 # Build
 build: wasm ## Build everything (WASM + frontend)
-	@echo "$(BLUE)Building frontend...$(NC)"
-	@cd apps/frontend && pnpm build
+	@echo "$(BLUE)Building all packages and frontend...$(NC)"
+	@pnpm turbo build --filter=frontend
 	@echo "$(GREEN)✓ Build complete$(NC)"
 
 wasm: ## Build WASM modules (worker + vault)

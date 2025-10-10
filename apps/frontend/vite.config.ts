@@ -19,6 +19,7 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, './src'),
     },
+    dedupe: ['react', 'react-dom'],
   },
   optimizeDeps: {
     // Exclude @sonr.io/es from optimization to avoid protobuf import issues

@@ -47,8 +47,8 @@
       "inputs": ["src/**", "tsconfig.json", "package.json"],
       "cache": true
     },
-    "front#build": {
-      "dependsOn": ["@sonr.io/es#build"],
+    "frontend#build": {
+      "dependsOn": ["@sonr.io/es#build", "@sonr.io/ui#build"],
       "outputs": ["dist/**"],
       "env": ["NODE_ENV", "VITE_*"],
       "inputs": [
@@ -60,10 +60,10 @@
         "package.json"
       ]
     },
-    "front#dev": {
+    "frontend#dev": {
       "cache": false,
       "persistent": true,
-      "dependsOn": []
+      "dependsOn": ["@sonr.io/es#build"]
     },
     "test": {
       "dependsOn": ["build"],
