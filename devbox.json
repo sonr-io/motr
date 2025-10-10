@@ -42,28 +42,26 @@
       "alias pr-description='./scripts/github-env.sh pr-description'",
       "alias validate-default-branch='./scripts/github-env.sh validate-default-branch'",
       "alias commit-summary='./scripts/github-env.sh commit-summary'",
-      "sh ./scripts/devbox-env.sh install"
+      "pnpm install"
     ],
     "scripts": {
-      "build": "pnpm build && make build-worker && make build-vault",
-      "test": "pnpm test && make test",
-      "build:es": "pnpm --filter '@sonr.io/es' build",
-      "build:ui": "pnpm --filter '@sonr.io/ui' build",
-      "build:do": "pnpm --filter '@sonr.io/do' build",
-      "build:frontend": "pnpm --filter 'front' build",
-      "build:worker": "make build-worker",
-      "build:vault": "make build-vault",
-      "test:es": "pnpm --filter '@sonr.io/es' test",
-      "test:ui": "pnpm --filter '@sonr.io/ui' test",
-      "test:do": "pnpm --filter '@sonr.io/do' test",
-      "test:frontend": "pnpm --filter 'front' test",
-      "test:worker": "make test-worker",
-      "test:vault": "make test-vault",
-      "test:crypto": "make test-crypto",
-      "dev:frontend": "pnpm --filter 'front' dev",
-      "release:es": "pnpm --filter '@sonr.io/es' release",
-      "release:ui": "pnpm --filter '@sonr.io/ui' release",
-      "release:do": "pnpm --filter '@sonr.io/do' release"
+      "build": "pnpm build",
+      "build:all": "pnpm build:all",
+      "test": "pnpm test",
+      "build:enclave": "pnpm build:enclave",
+      "build:es": "pnpm build:es",
+      "build:ui": "pnpm build:ui",
+      "build:do": "pnpm build:do",
+      "build:frontend": "pnpm build:frontend",
+      "test:enclave": "pnpm test:enclave",
+      "test:es": "pnpm test:es",
+      "test:ui": "pnpm test:ui",
+      "dev": "pnpm dev",
+      "dev:frontend": "pnpm dev:frontend",
+      "format": "pnpm format:all",
+      "lint": "pnpm lint && pnpm lint:go",
+      "clean": "pnpm clean",
+      "gen:protobufs": "pnpm gen:protobufs"
     }
   }
 }

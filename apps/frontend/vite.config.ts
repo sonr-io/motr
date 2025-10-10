@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import viteReact from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
-import esPlugin from '@sonr.io/es'
+import { esPlugin } from '@sonr.io/es/vite'
 import { resolve } from 'node:path'
 
 // https://vitejs.dev/config/

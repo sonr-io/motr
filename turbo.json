@@ -53,12 +53,18 @@
      },
      "@sonr.io/enclave#build": {
        "dependsOn": [],
-       "outputs": ["dist/**"],
-       "inputs": ["main.go", "**/*.go", "go.mod", "go.sum", "package.json", "devbox.json"],
+       "outputs": ["dist/**", "*.tsbuildinfo"],
+       "inputs": ["src/**/*.ts", "main.go", "**/*.go", "go.mod", "go.sum", "tsconfig.json", "package.json"],
+       "cache": true
+     },
+     "@sonr.io/enclave#build:wasm": {
+       "dependsOn": [],
+       "outputs": ["dist/enclave.wasm"],
+       "inputs": ["main.go", "**/*.go", "go.mod", "go.sum"],
        "cache": true
      },
      "@sonr.io/enclave#test": {
-       "dependsOn": ["@sonr.io/enclave#build"],
+       "dependsOn": [],
        "outputs": [],
        "cache": false
      },
