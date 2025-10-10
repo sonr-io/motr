@@ -31,17 +31,17 @@ export interface Asset {
    * [OPTIONAL] The potential options for type of asset. By default, assumes sdk.coin
    */
   type_asset:
-    | 'sdk.coin'
-    | 'cw20'
-    | 'erc20'
-    | 'ics20'
-    | 'snip20'
-    | 'snip25'
-    | 'bitcoin-like'
-    | 'evm-base'
-    | 'svm-base'
-    | 'substrate'
-    | 'unknown';
+    | "sdk.coin"
+    | "cw20"
+    | "erc20"
+    | "ics20"
+    | "snip20"
+    | "snip25"
+    | "bitcoin-like"
+    | "evm-base"
+    | "svm-base"
+    | "substrate"
+    | "unknown";
   /**
    * [OPTIONAL] The address of the asset. Only required for type_asset : cw20, snip20
    */
@@ -101,7 +101,7 @@ export interface Asset {
         dark_mode?: boolean;
         monochrome?: boolean;
       };
-    }[],
+    }[]
   ];
   /**
    * [OPTIONAL] The coingecko id to fetch asset data from coingecko v3 api. See https://api.coingecko.com/api/v3/coins/list
@@ -124,7 +124,7 @@ export interface DenomUnit {
   aliases?: string[];
 }
 export interface IbcTransition {
-  type: 'ibc';
+  type: "ibc";
   counterparty: {
     /**
      * The name of the counterparty chain. (must match exactly the chain name used in the Chain Registry)
@@ -151,7 +151,7 @@ export interface IbcTransition {
   };
 }
 export interface IbcCw20Transition {
-  type: 'ibc-cw20';
+  type: "ibc-cw20";
   counterparty: {
     /**
      * The name of the counterparty chain. (must match exactly the chain name used in the Chain Registry)
@@ -186,7 +186,7 @@ export interface IbcCw20Transition {
   };
 }
 export interface IbcBridgeTransition {
-  type: 'ibc-bridge';
+  type: "ibc-bridge";
   counterparty: {
     /**
      * The name of the counterparty chain. (must match exactly the chain name used in the Chain Registry)
@@ -225,14 +225,7 @@ export interface IbcBridgeTransition {
   provider: string;
 }
 export interface NonIbcTransition {
-  type:
-    | 'bridge'
-    | 'liquid-stake'
-    | 'synthetic'
-    | 'wrapped'
-    | 'additional-mintage'
-    | 'test-mintage'
-    | 'legacy-mintage';
+  type: "bridge" | "liquid-stake" | "synthetic" | "wrapped" | "additional-mintage" | "test-mintage" | "legacy-mintage";
   counterparty: {
     /**
      * The chain or platform from which the asset originates. E.g., 'cosmoshub', 'ethereum', 'forex', or 'nasdaq'

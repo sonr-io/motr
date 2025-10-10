@@ -7,6 +7,8 @@ packages:
   - "templates/*"
   # Web applications
   - "web/*"
+  # Applications
+  - "apps/*"
   # Example applications
   - "examples/*"
   # Documentation (if needed in future)

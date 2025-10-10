@@ -7,8 +7,7 @@
  */
 
 import { spawnSync } from 'child_process';
-import degit from 'degit';
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
 import { globSync } from 'glob';
 import { capitalize } from 'lodash-es';
 import { dirname, join } from 'path';
@@ -17,19 +16,24 @@ import { fileURLToPath } from 'url';
 /**
  * @typedef Repo
  * @type {object}
- * @property {string} repo - Git repo and branch to clone
+ * @property {string} repo - Git repo and branch to clone (format: owner/repo#ref)
  * @property {string[]} paths - Paths to proto files relative to the repo root
  */
 
 /**
- * TODO: Add more repos here when necessary.
  * @type {Repo[]}
  */
 const REPOS = [
-  // NOTE: cosmos-sdk is excluded because we use pre-generated cosmos proto files
-  // to avoid issues with degit and version mismatches
   {
-    repo: 'cosmos/ibc-go#main',
+    repo: 'cosmos/cosmos-sdk#v0.50.10',
+    paths: ['proto'],
+  },
+  {
+    repo: 'cometbft/cometbft#v0.38.12',
+    paths: ['proto'],
+  },
+  {
+    repo: 'cosmos/ibc-go#v8.5.1',
     paths: ['proto'],
   },
   {
@@ -37,69 +41,122 @@ const REPOS = [
     paths: ['proto'],
   },
   {
-    repo: 'CosmWasm/wasmd#main',
+    repo: 'CosmWasm/wasmd#v0.53.0',
     paths: ['proto'],
   },
   {
-    repo: 'osmosis-labs/osmosis#main',
+    repo: 'osmosis-labs/osmosis#v27.0.0',
     paths: ['proto'],
   },
   {
-    repo: 'evmos/ethermint#main',
+    repo: 'evmos/ethermint#v0.22.0',
     paths: ['proto'],
   },
-  // Commented out babylon as it requires cosmos/staking which we don't generate
-  // {
-  //   repo: "nomic-io/nomic#develop",
-  //   paths: ["src/babylon/proto"],
-  // },
 ];
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROTOBUFS_DIR = join(__dirname, '..', 'src', 'protobufs');
 const TMP_DIR = join(PROTOBUFS_DIR, '.tmp');
+
 /** Generates a unique dirname from `repo` to use in `TMP_DIR`. */
 const id = (/** @type {string} */ repo) => repo.replace(/[#/]/g, '-');
 
-console.log('Initialising directories...');
-{
-  // Don't delete the entire protobufs directory to preserve cosmos files
-  // Only delete directories that will be regenerated
-  rmSync(TMP_DIR, { recursive: true, force: true });
-  mkdirSync(TMP_DIR);
+/**
+ * Clones a repository using git clone
+ * @param {string} repo - Repository string (format: owner/repo#ref)
+ * @param {string} dest - Destination directory
+ * @returns {boolean} - Success status
+ */
+function cloneRepo(repo, dest) {
+  const [repoPath, ref] = repo.split('#');
+  const gitUrl = `https://github.com/${repoPath}.git`;
+  const args = ['clone', '--depth', '1', '--single-branch'];
 
-  // Ensure protobufs directory exists
+  if (ref) {
+    args.push('--branch', ref);
+  }
+
+  args.push(gitUrl, dest);
+
+  console.log(`  Cloning ${repo}...`);
+  const result = spawnSync('git', args, {
+    stdio: 'pipe',
+    encoding: 'utf8',
+  });
+
+  if (result.status !== 0) {
+    console.error(`  ✗ Failed to clone ${repo}:`, result.stderr);
+    return false;
+  }
+
+  console.log(`  ✓ ${repo}`);
+  return true;
+}
+
+console.log('🔧 Initialising directories...');
+{
+  rmSync(TMP_DIR, { recursive: true, force: true });
+  mkdirSync(TMP_DIR, { recursive: true });
   mkdirSync(PROTOBUFS_DIR, { recursive: true });
 
-  // Only clean up directories for repos we're regenerating
+  // Clean directories for regenerated repos
   const dirsToClean = [
+    'cosmos',
+    'tendermint',
     'ibc',
     'cosmwasm',
     'osmosis',
     'ethermint',
-    'babylon',
-    'sonr', // Contains all sonr modules: dex, did, dwn, svc
-    // Also clean old individual directories if they exist
-    'dex',
-    'did',
-    'dwn',
-    'svc',
+    'sonr',
   ];
+
   for (const dir of dirsToClean) {
     const dirPath = join(PROTOBUFS_DIR, dir);
     rmSync(dirPath, { recursive: true, force: true });
   }
 }
 
-console.log('Cloning required repos...');
+console.log('📥 Cloning required repos...');
 {
-  await Promise.all(REPOS.map(({ repo }) => degit(repo).clone(join(TMP_DIR, id(repo)))));
+  let successCount = 0;
+  let failCount = 0;
+
+  for (const { repo } of REPOS) {
+    const success = cloneRepo(repo, join(TMP_DIR, id(repo)));
+    if (success) {
+      successCount++;
+    } else {
+      failCount++;
+    }
+  }
+
+  console.log(`\n📊 Clone summary: ${successCount} succeeded, ${failCount} failed\n`);
+
+  if (successCount === 0) {
+    console.error('❌ All repository clones failed. Cannot continue.');
+    process.exit(1);
+  }
 }
 
-console.log('Generating TS files from proto files...');
+console.log('⚙️  Generating TS files from proto files...');
 {
   for (const { repo, paths } of REPOS) {
+    const repoDir = join(TMP_DIR, id(repo));
+
+    // Skip if repo didn't clone successfully
+    if (!existsSync(repoDir)) {
+      console.log(`⚠️  Skipping ${repo} (not cloned)`);
+      continue;
+    }
+
     for (const path of paths) {
+      const protoPath = join(repoDir, path);
+
+      if (!existsSync(protoPath)) {
+        console.log(`⚠️  Proto path ${protoPath} not found, skipping`);
+        continue;
+      }
+
       // Determine output subdirectory based on repo
       let outputSubdir = '';
       if (repo.startsWith('dymensionxyz')) {
@@ -108,32 +165,38 @@ console.log('Generating TS files from proto files...');
         outputSubdir = 'sonr';
       }
 
-      spawnSync(
+      const result = spawnSync(
         'pnpm',
         [
           'buf',
           'generate',
-          join(TMP_DIR, id(repo), path),
+          protoPath,
           '--output',
           join(PROTOBUFS_DIR, outputSubdir),
         ],
         {
-          cwd: process.cwd(),
           stdio: 'inherit',
+          encoding: 'utf8',
         }
       );
+
+      if (result.status !== 0) {
+        console.error(`⚠️  buf generate failed for ${repo}`);
+        continue;
+      }
     }
-    console.log(`✔️ [${repo}]`);
+    console.log(`✔️  [${repo}]`);
   }
 }
 
-console.log('Generating src/index.ts file and renaming exports...');
+console.log('📝 Generating src/protobufs/index.ts file...');
 {
   const LAST_SEGMENT_REGEX = /[^/]+$/;
   const EXPORTED_NAME_REGEX = /^export \w+ (\w+) /gm;
   let contents = '/** This file is generated by gen-protobufs.mjs. Do not edit. */\n\n';
+
   /**
-   * Builds the `src/proto/index.ts` file to re-export generated code.
+   * Builds the `src/protobufs/index.ts` file to re-export generated code.
    * A prefix is added to the exported names to avoid name collisions.
    * The prefix is the names of the directories in `proto` leading up
    * to the directory of the exported code, concatenated in PascalCase.
@@ -146,6 +209,7 @@ console.log('Generating src/index.ts file and renaming exports...');
     if (files.length === 0) {
       return;
     }
+
     const prefixName = dir
       .replace(PROTOBUFS_DIR + '/', '')
       .split('/')
@@ -157,6 +221,7 @@ console.log('Generating src/index.ts file and renaming exports...');
           .join('')
       )
       .join('');
+
     for (const file of files) {
       const fileName = file.match(LAST_SEGMENT_REGEX)?.[0];
       if (!fileName) {
@@ -166,6 +231,7 @@ console.log('Generating src/index.ts file and renaming exports...');
       if (!fileName.endsWith('.ts')) {
         continue;
       }
+
       const code = readFileSync(file, 'utf8');
       contents += `export {\n`;
       for (const match of code.matchAll(EXPORTED_NAME_REGEX)) {
@@ -175,17 +241,19 @@ console.log('Generating src/index.ts file and renaming exports...');
       const exportedFile = file.replace(PROTOBUFS_DIR + '/', '').replace('.ts', '.js');
       contents += `} from "./${exportedFile}";\n`;
     }
+
     for (const file of files) {
       generateIndexExports(file);
     }
   }
+
   generateIndexExports(PROTOBUFS_DIR);
   writeFileSync(join(PROTOBUFS_DIR, 'index.ts'), contents);
 }
 
-console.log('Cleaning up...');
+console.log('🧹 Cleaning up...');
 {
   rmSync(TMP_DIR, { recursive: true, force: true });
 }
 
-console.log('Proto generation completed successfully!');
+console.log('✅ Proto generation completed successfully!');

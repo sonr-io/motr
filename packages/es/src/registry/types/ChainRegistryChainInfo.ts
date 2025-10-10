@@ -13,7 +13,7 @@ export type ChainRegistryChainInfo1 = {
   [k: string]: unknown | undefined;
 };
 /**
- * Detailed version identifier (e.g., 'v1.0.0-a1s2f43g').
+ * Git Upgrade Tag
  */
 export type Tag = string;
 /**
@@ -32,32 +32,32 @@ export interface ChainRegistryChainInfo2 {
    * The 'type' of chain as the corresponding CAIP-2 Namespace value. E.G., 'cosmos' or 'eip155'. Namespaces cna be found here: https://github.com/ChainAgnostic/namespaces/tree/main.
    */
   chain_type:
-    | 'cosmos'
-    | 'eip155'
-    | 'bip122'
-    | 'polkadot'
-    | 'solana'
-    | 'algorand'
-    | 'arweave'
-    | 'ergo'
-    | 'fil'
-    | 'hedera'
-    | 'monero'
-    | 'reef'
-    | 'stacks'
-    | 'starknet'
-    | 'stellar'
-    | 'tezos'
-    | 'vechain'
-    | 'waves'
-    | 'xrpl'
-    | 'unknown';
+    | "cosmos"
+    | "eip155"
+    | "bip122"
+    | "polkadot"
+    | "solana"
+    | "algorand"
+    | "arweave"
+    | "ergo"
+    | "fil"
+    | "hedera"
+    | "monero"
+    | "reef"
+    | "stacks"
+    | "starknet"
+    | "stellar"
+    | "tezos"
+    | "vechain"
+    | "waves"
+    | "xrpl"
+    | "unknown";
   chain_id?: string;
   pre_fork_chain_name?: string;
   pretty_name?: string;
   website?: string;
-  status?: 'live' | 'upcoming' | 'killed';
-  network_type?: 'mainnet' | 'testnet' | 'devnet';
+  status?: "live" | "upcoming" | "killed";
+  network_type?: "mainnet" | "testnet" | "devnet";
   /**
    * The default prefix for the human-readable part of addresses that identifies the coin type. Must be registered with SLIP-0173. E.g., 'cosmos'
    */
@@ -93,7 +93,7 @@ export interface ChainRegistryChainInfo2 {
   };
   daemon_name?: string;
   node_home?: string;
-  key_algos?: ('secp256k1' | 'ethsecp256k1' | 'ed25519' | 'sr25519' | 'bn254')[];
+  key_algos?: ("secp256k1" | "ethsecp256k1" | "ed25519" | "sr25519" | "bn254")[];
   slip44?: number;
   alternative_slip44s?: number[];
   fees?: {
@@ -151,12 +151,12 @@ export interface ChainRegistryChainInfo2 {
     rest?: Endpoint[];
     grpc?: Endpoint[];
     wss?: Endpoint[];
-    'grpc-web'?: Endpoint[];
-    'evm-http-jsonrpc'?: Endpoint[];
+    "grpc-web"?: Endpoint[];
+    "evm-http-jsonrpc"?: Endpoint[];
   };
   explorers?: Explorer[];
   keywords?: string[];
-  extra_codecs?: ('ethermint' | 'injective')[];
+  extra_codecs?: ("ethermint" | "injective")[];
 }
 export interface FeeToken {
   denom: string;
@@ -173,27 +173,27 @@ export interface StakingToken {
   denom: string;
 }
 export interface Language {
-  type: 'go' | 'rust' | 'solidity' | 'other';
+  type: "go" | "rust" | "solidity" | "other";
   version?: Version;
   repo?: Repo;
   tag?: Tag;
 }
 export interface Binaries {
-  'linux/amd64'?: string;
-  'linux/arm64'?: string;
-  'darwin/amd64'?: string;
-  'darwin/arm64'?: string;
-  'windows/amd64'?: string;
-  'windows/arm64'?: string;
+  "linux/amd64"?: string;
+  "linux/arm64"?: string;
+  "darwin/amd64"?: string;
+  "darwin/arm64"?: string;
+  "windows/amd64"?: string;
+  "windows/arm64"?: string;
 }
 export interface Sdk {
-  type: 'cosmos' | 'penumbra' | 'other';
+  type: "cosmos" | "penumbra" | "other";
   version?: Version;
   repo?: Repo;
   tag?: Tag;
 }
 export interface Consensus {
-  type: 'tendermint' | 'cometbft' | 'sei-tendermint';
+  type: "tendermint" | "cometbft" | "sei-tendermint" | "cometbls";
   version?: Version;
   repo?: Repo;
   tag?: Tag;
@@ -209,14 +209,14 @@ export interface Cosmwasm {
   path?: string;
 }
 export interface Ibc {
-  type: 'go' | 'rust' | 'other';
+  type: "go" | "rust" | "other";
   version?: Version;
   repo?: Repo;
   tag?: Tag;
   /**
    * List of IBC apps (usually corresponding to a ICS standard) which have been enabled on the network.
    */
-  ics_enabled?: ('ics20-1' | 'ics27-1' | 'mauth')[];
+  ics_enabled?: ("ics20-1" | "ics27-1" | "mauth")[];
 }
 export interface Peer {
   id: string;
