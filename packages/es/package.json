@@ -45,7 +45,7 @@
   "scripts": {
     "dev": "tsc --watch",
     "build": "pnpm run gen && tsc && tsc-alias",
-    "clean": "rimraf dist",
+    "clean": "rimraf dist *.tsbuildinfo",
     "gen": "node scripts/gen-protobufs.mjs && node scripts/gen-registry.mjs",
     "test": "vitest run",
     "lint": "biome lint .",

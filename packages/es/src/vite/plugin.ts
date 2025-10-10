@@ -30,16 +30,18 @@ export interface ESPluginOptions extends EnclavePluginOptions {
 /**
  * Vite plugin for @sonr.io/es that configures WASM loading, workers, and optimization
  *
+ * Returns an array of plugins for proper Vite integration.
+ *
  * @example
  * ```ts
- * import { esPlugin } from '@sonr.io/es/vite-plugin';
+ * import { esPlugin } from '@sonr.io/es/vite';
  *
  * export default defineConfig({
- *   plugins: [esPlugin()],
+ *   plugins: [...esPlugin()],
  * });
  * ```
  */
-export function esPlugin(options: ESPluginOptions = {}): Plugin {
+export function esPlugin(options: ESPluginOptions = {}): Plugin[] {
   const {
     enableEnclave = true,
     excludeFromOptimize = true,
@@ -48,12 +50,16 @@ export function esPlugin(options: ESPluginOptions = {}): Plugin {
     ...enclaveOptions
   } = options;
 
-  return {
+  const plugins: Plugin[] = [];
+
+  // Add enclave plugin first if enabled
+  if (enableEnclave) {
+    plugins.push(enclavePlugin(enclaveOptions));
+  }
+
+  // Add ES-specific configuration plugin
+  plugins.push({
     name: 'vite-plugin-sonr-es',
-
-    // Apply enclave plugin if enabled
-    ...(enableEnclave && enclavePlugin(enclaveOptions)),
-
     config(): UserConfig {
       return {
         // Configure optimization to avoid protobuf bundling issues
@@ -83,7 +89,9 @@ export function esPlugin(options: ESPluginOptions = {}): Plugin {
         }),
       };
     },
-  };
+  });
+
+  return plugins;
 }
 
 // Default export for convenience

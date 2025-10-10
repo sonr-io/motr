@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
-import { RpcClient, getNativeBalances } from '@sonr.io/es/client'
+import { getNativeBalances } from '@sonr.io/es/client'
+import { rpcEndpoint } from '../lib/client'
 
 export interface UseBalanceQueryOptions {
   address: string
-  rpcClient: RpcClient
+  endpoint?: string
   enabled?: boolean
 }
 
@@ -13,14 +14,13 @@ export interface UseBalanceQueryOptions {
  * ```tsx
  * const { data, isLoading, error } = useBalanceQuery({
  *   address: 'sonr1...',
- *   rpcClient,
  * })
  * ```
  */
-export function useBalanceQuery({ address, rpcClient, enabled = true }: UseBalanceQueryOptions) {
+export function useBalanceQuery({ address, endpoint = rpcEndpoint, enabled = true }: UseBalanceQueryOptions) {
   return useQuery({
     queryKey: ['balances', address],
-    queryFn: () => getNativeBalances(rpcClient, { address }),
+    queryFn: () => getNativeBalances(endpoint, { address }),
     enabled: enabled && !!address,
     staleTime: 15000, // 15 seconds
     refetchInterval: 30000, // Auto-refetch every 30 seconds

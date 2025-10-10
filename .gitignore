@@ -235,3 +235,4 @@ debug/
 # Package-specific ignores
 # ============================================
 # Keep package-specific .gitignore files active
+CLAUDE.md

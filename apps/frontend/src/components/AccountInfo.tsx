@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, Button, Input, Label } from '@sonr.io/ui'
 import { useAccountQuery } from '../queries'
-import { rpcClient } from '../lib/client'
 
 /**
  * Component to demonstrate querying account information
@@ -12,7 +11,6 @@ export function AccountInfo() {
 
   const { data, isLoading, error } = useAccountQuery({
     address: submittedAddress,
-    rpcClient,
     enabled: !!submittedAddress,
   })
 
@@ -55,7 +53,7 @@ export function AccountInfo() {
           </div>
         )}
 
-        {data && (
+        {data != null && (
           <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
             <p className="text-sm font-medium text-green-900 dark:text-green-100 mb-2">
               Account Found

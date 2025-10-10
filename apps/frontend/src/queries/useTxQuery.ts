@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
-import { RpcClient, getTx } from '@sonr.io/es/client'
+import { getTx } from '@sonr.io/es/client'
+import { rpcEndpoint } from '../lib/client'
 
 export interface UseTxQueryOptions {
   hash: string
-  rpcClient: RpcClient
+  endpoint?: string
   enabled?: boolean
 }
 
@@ -13,14 +14,13 @@ export interface UseTxQueryOptions {
  * ```tsx
  * const { data, isLoading, error } = useTxQuery({
  *   hash: 'ABC123...',
- *   rpcClient,
  * })
  * ```
  */
-export function useTxQuery({ hash, rpcClient, enabled = true }: UseTxQueryOptions) {
+export function useTxQuery({ hash, endpoint = rpcEndpoint, enabled = true }: UseTxQueryOptions) {
   return useQuery({
     queryKey: ['tx', hash],
-    queryFn: () => getTx(rpcClient, { hash }),
+    queryFn: () => getTx(endpoint, { hash }),
     enabled: enabled && !!hash,
     staleTime: Number.POSITIVE_INFINITY, // Transactions are immutable
     retry: 3,

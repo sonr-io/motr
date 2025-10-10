@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, Button, Input, Label } from '@sonr.io/ui'
 import { useBalanceQuery } from '../queries'
-import { rpcClient } from '../lib/client'
 
 /**
  * Component to demonstrate querying balance information with auto-refresh
@@ -12,7 +11,6 @@ export function BalanceInfo() {
 
   const { data, isLoading, error, refetch } = useBalanceQuery({
     address: submittedAddress,
-    rpcClient,
     enabled: !!submittedAddress,
   })
 
@@ -62,7 +60,7 @@ export function BalanceInfo() {
           </div>
         )}
 
-        {data && (
+        {data != null && (
           <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
             <p className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">
               Balances

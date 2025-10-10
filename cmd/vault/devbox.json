@@ -4,12 +4,12 @@
   ],
   "shell": {
     "init_hook": [
-      "export GOOS=wasip1",
+      "export GOOS=js",
       "export GOARCH=wasm",
       "go mod download"
     ],
     "scripts": {
-      "build": "go build -o dist/enclave.wasm ./main.go",
+      "build": "go build -o dist/vault.wasm ./main.go",
       "test": "go test ./...",
       "lint": "golangci-lint run ./...",
       "fmt": "gofmt -w $(find . -name '*.go' -not -path './dist/*')"
