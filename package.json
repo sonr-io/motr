@@ -17,6 +17,11 @@
     "node": ">=20.0.0",
     "pnpm": ">=10.0.0"
   },
+  "workspaces": [
+    "apps/*",
+    "libs/*",
+    "pkgs/*"
+  ],
   "packageManager": "pnpm@10.18.2",
   "scripts": {
     "build": "turbo run build",
@@ -28,9 +33,10 @@
     "build:frontend": "pnpm --filter 'frontend' build",
     "test": "turbo run test",
     "test:all": "pnpm test",
-    "test:enclave": "pnpm --filter '@sonr.io/enclave' test",
-    "test:es": "pnpm --filter '@sonr.io/es' test",
-    "test:ui": "pnpm --filter '@sonr.io/ui' test",
+     "test:enclave": "pnpm --filter '@sonr.io/enclave' test",
+     "test:es": "pnpm --filter '@sonr.io/es' test",
+     "test:ui": "pnpm --filter '@sonr.io/ui' test",
+     "test:vault": "pnpm --filter '@sonr.io/vault' test",
     "dev": "turbo run dev --filter=frontend",
     "dev:frontend": "pnpm --filter 'frontend' dev",
     "lint": "biome check .",

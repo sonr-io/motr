@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, Button, Input, Label } from '@sonr.io/ui'
-import { useBalanceQuery } from '../queries'
+import { useBalanceQuery } from '@/queries'
 
 /**
  * Component to demonstrate querying balance information with auto-refresh

@@ -1,8 +1,7 @@
  packages:
    # CLI tools
    # Core packages
-   - "packages/*"
+   - "pkgs/*"
+   - "libs/*"
    # Applications
    - "apps/*"
-   # Command packages (e.g., enclave)
-   - "cmd/*"

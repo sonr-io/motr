@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, Button, Input, Label } from '@sonr.io/ui'
-import { useAccountQuery } from '../queries'
+import { useAccountQuery } from '@/queries'
 
 /**
  * Component to demonstrate querying account information

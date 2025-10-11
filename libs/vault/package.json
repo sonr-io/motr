@@ -1,0 +1,48 @@
+{
+  "name": "@sonr.io/vault",
+  "version": "0.1.0",
+  "description": "WebAssembly-based HTTP server for Motor Payment Gateway and OIDC services",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "packageManager": "pnpm@10.18.2",
+  "exports": {
+    ".": "./dist/index.js",
+    "./dist/vault.wasm": "./dist/vault.wasm",
+    "./loader": "./dist/loader.js",
+    "./vite-plugin": "./dist/vite-plugin-vault.js"
+  },
+  "files": [
+    "dist"
+  ],
+    "scripts": {
+      "build": "devbox run build && tsc",
+      "build:wasm": "devbox run build",
+      "watch": "tsc --watch",
+      "test": "pnpm run test:go && vitest run",
+      "test:watch": "vitest",
+      "test:go": "devbox run test",
+      "clean": "rm -rf dist *.tsbuildinfo"
+    },
+   "devDependencies": {
+     "typescript": "^5.9.3",
+     "vite": "^5.4.20",
+     "vitest": "^2.0.0",
+     "@vitest/coverage-v8": "^2.0.0"
+   },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "wasm",
+    "http-server",
+    "service-worker",
+    "payment-gateway",
+    "oidc",
+    "sonr",
+    "motor"
+  ],
+  "author": "Sonr Labs",
+  "license": "MIT",
+  "private": true
+}

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { getAccount } from '@sonr.io/es/client'
-import { rpcEndpoint } from '../lib/client'
+import { rpcEndpoint } from '@/lib/client'
 
 export interface UseAccountQueryOptions {
   address: string
