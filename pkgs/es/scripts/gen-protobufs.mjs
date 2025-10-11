@@ -118,6 +118,27 @@ function getCurrentCommitHash(repoPath) {
 }
 
 /**
+ * Check if a repository has uncommitted changes
+ * @param {string} repoPath
+ * @returns {boolean}
+ */
+function isRepoDirty(repoPath) {
+  try {
+    const result = spawnSync('git', ['status', '--porcelain'], {
+      cwd: repoPath,
+      stdio: 'pipe',
+      encoding: 'utf8',
+    });
+    if (result.status === 0) {
+      return result.stdout.trim().length > 0;
+    }
+  } catch (error) {
+    // Ignore errors for repositories without git
+  }
+  return false;
+}
+
+/**
  * Check if ghq is available
  * @returns {boolean}
  */
@@ -235,6 +256,9 @@ function getRepo(repo, dest, useGhq, ghqRoot) {
 const useGhq = isGhqAvailable();
 const ghqRoot = useGhq ? getGhqRoot() : null;
 
+// Load manifest early to check for changes before any cleanup
+const manifest = loadManifest();
+
 console.log('🔧 Initialising...');
 {
   // Only need TMP_DIR if not using ghq
@@ -243,22 +267,6 @@ console.log('🔧 Initialising...');
     mkdirSync(TMP_DIR, { recursive: true });
   }
   mkdirSync(PROTOBUFS_DIR, { recursive: true });
-
-  // Clean directories for regenerated repos
-  const dirsToClean = [
-    'cosmos',
-    'tendermint',
-    'ibc',
-    'cosmwasm',
-    'osmosis',
-    'ethermint',
-    'sonr',
-  ];
-
-  for (const dir of dirsToClean) {
-    const dirPath = join(PROTOBUFS_DIR, dir);
-    rmSync(dirPath, { recursive: true, force: true });
-  }
 }
 
 console.log(useGhq && ghqRoot ? `📦 Using ghq (${ghqRoot})` : '📥 Using git clone');
@@ -268,16 +276,24 @@ console.log('📥 Fetching repos...');
 const repoPaths = new Map();
 /** @type {Set<string>} */
 const skippedRepos = new Set();
-const manifest = loadManifest();
 {
   let successCount = 0;
   let failCount = 0;
   let skippedCount = 0;
+  let dirtyCount = 0;
 
   for (const { repo } of REPOS) {
     const repoId = id(repo);
     const result = getRepo(repo, join(TMP_DIR, repoId), useGhq, ghqRoot);
     if (result.success && result.path) {
+      // Check if repo has uncommitted changes
+      if (isRepoDirty(result.path)) {
+        console.log(`  ⚠️ ${repo} (dirty)`);
+        skippedRepos.add(repo);
+        dirtyCount++;
+        continue;
+      }
+
       const currentCommit = getCurrentCommitHash(result.path);
       const lastCommit = manifest[repoId];
 
@@ -294,7 +310,7 @@ const manifest = loadManifest();
     }
   }
 
-  console.log(`\n📊 Repo summary: ${successCount} to process, ${skippedCount} skipped, ${failCount} failed\n`);
+  console.log(`\n📊 Repo summary: ${successCount} to process, ${skippedCount} skipped, ${dirtyCount} dirty, ${failCount} failed\n`);
 
   if (successCount === 0 && failCount > 0) {
     console.error('❌ All repos failed');
@@ -302,138 +318,175 @@ const manifest = loadManifest();
   }
 }
 
-console.log('⚙️ Generating types...');
-{
-  let processedCount = 0;
+// Only clean if ALL repos need processing (fresh build)
+// Otherwise, buf will overwrite only the changed files
+if (repoPaths.size === REPOS.length) {
+  console.log('🧹 Cleaning directories...');
+  {
+    // Clean directories for regenerated repos
+    const dirsToClean = [
+      'cosmos',
+      'tendermint',
+      'ibc',
+      'cosmwasm',
+      'osmosis',
+      'ethermint',
+      'sonr',
+    ];
 
-  for (const { repo, paths } of REPOS) {
-    const repoDir = repoPaths.get(repo);
-
-    // Skip if repo wasn't retrieved successfully
-    if (!repoDir || !existsSync(repoDir)) {
-      if (skippedRepos.has(repo)) {
-        console.log(`  ⏭️ ${repo} (unchanged)`);
-      } else {
-        console.log(`⚠️ ${repo} (failed)`);
-      }
-      continue;
+    for (const dir of dirsToClean) {
+      const dirPath = join(PROTOBUFS_DIR, dir);
+      rmSync(dirPath, { recursive: true, force: true });
     }
+  }
+} else if (repoPaths.size > 0) {
+  console.log('ℹ️ Incremental update, keeping existing files');
+} else {
+  console.log('ℹ️ No repos need processing');
+}
 
-    const repoId = id(repo);
-    const currentCommit = getCurrentCommitHash(repoDir);
+// Only generate types if there are repos that need processing
+if (repoPaths.size > 0) {
+  console.log('⚙️ Generating types...');
+  {
+    let processedCount = 0;
 
-    for (const path of paths) {
-      const protoPath = join(repoDir, path);
+    for (const { repo, paths } of REPOS) {
+      const repoDir = repoPaths.get(repo);
 
-      if (!existsSync(protoPath)) {
-        console.log(`⚠️ ${repo} proto not found`);
-        continue;
-      }
-
-      // Don't use subdirectories - all protobufs go to same level
-      // This ensures relative imports work correctly
-      let outputSubdir = '';
-
-      const result = spawnSync(
-        'pnpm',
-        [
-          'buf',
-          'generate',
-          protoPath,
-          '--output',
-          join(PROTOBUFS_DIR, outputSubdir),
-        ],
-        {
-          stdio: 'inherit',
-          encoding: 'utf8',
+      // Skip if repo wasn't retrieved successfully
+      if (!repoDir || !existsSync(repoDir)) {
+        if (skippedRepos.has(repo)) {
+          console.log(`  ⏭️ ${repo} (unchanged)`);
+        } else {
+          console.log(`⚠️ ${repo} (failed)`);
         }
-      );
-
-      if (result.status !== 0) {
-        console.error(`⚠️ ${repo} generation failed`);
         continue;
       }
+
+      const repoId = id(repo);
+      const currentCommit = getCurrentCommitHash(repoDir);
+
+      for (const path of paths) {
+        const protoPath = join(repoDir, path);
+
+        if (!existsSync(protoPath)) {
+          console.log(`⚠️ ${repo} proto not found`);
+          continue;
+        }
+
+        // Don't use subdirectories - all protobufs go to same level
+        // This ensures relative imports work correctly
+        let outputSubdir = '';
+
+        const result = spawnSync(
+          'pnpm',
+          [
+            'buf',
+            'generate',
+            protoPath,
+            '--output',
+            join(PROTOBUFS_DIR, outputSubdir),
+          ],
+          {
+            stdio: 'inherit',
+            encoding: 'utf8',
+          }
+        );
+
+        if (result.status !== 0) {
+          console.error(`⚠️ ${repo} generation failed`);
+          continue;
+        }
+      }
+
+      // Update manifest with current commit hash after successful generation
+      if (currentCommit) {
+        manifest[repoId] = currentCommit;
+      }
+
+      console.log(`  ✓ ${repo}`);
+      processedCount++;
     }
 
-    // Update manifest with current commit hash after successful generation
-    if (currentCommit) {
-      manifest[repoId] = currentCommit;
+    if (processedCount === 0) {
+      console.log('ℹ️ No repos processed');
     }
-
-    console.log(`  ✓ ${repo}`);
-    processedCount++;
   }
-
-  if (processedCount === 0) {
-    console.log('ℹ️ No changes');
-  }
+} else {
+  console.log('ℹ️ No repos need processing, skipping generation');
 }
 
-console.log('📝 Generating index...');
-{
-  const LAST_SEGMENT_REGEX = /[^/]+$/;
-  const EXPORTED_NAME_REGEX = /^export \w+ (\w+) /gm;
-  let contents = '/** This file is generated by gen-protobufs.mjs. Do not edit. */\n\n';
+// Only generate index and save manifest if there were changes
+if (repoPaths.size > 0) {
+  console.log('📝 Generating index...');
+  {
+    const LAST_SEGMENT_REGEX = /[^/]+$/;
+    const EXPORTED_NAME_REGEX = /^export \w+ (\w+) /gm;
+    let contents = '/** This file is generated by gen-protobufs.mjs. Do not edit. */\n\n';
 
-  /**
-   * Builds the `src/protobufs/index.ts` file to re-export generated code.
-   * A prefix is added to the exported names to avoid name collisions.
-   * The prefix is the names of the directories in `proto` leading up
-   * to the directory of the exported code, concatenated in PascalCase.
-   * For example, if the exported code is in `proto/foo/bar/goo.ts`, the
-   * prefix will be `FooBar`.
-   * @param {string} dir
-   */
-  function generateIndexExports(dir) {
-    const files = globSync(join(dir, '*'));
-    if (files.length === 0) {
-      return;
-    }
-
-    const prefixName = dir
-      .replace(PROTOBUFS_DIR + '/', '')
-      .split('/')
-      .map((name) =>
-        // convert all names to PascalCase
-        name
-          .split(/[-_]/)
-          .map(capitalize)
-          .join('')
-      )
-      .join('');
-
-    for (const file of files) {
-      const fileName = file.match(LAST_SEGMENT_REGEX)?.[0];
-      if (!fileName) {
-        console.error('Could not find name for', file);
-        continue;
-      }
-      if (!fileName.endsWith('.ts')) {
-        continue;
+    /**
+     * Builds the `src/protobufs/index.ts` file to re-export generated code.
+     * A prefix is added to the exported names to avoid name collisions.
+     * The prefix is the names of the directories in `proto` leading up
+     * to the directory of the exported code, concatenated in PascalCase.
+     * For example, if the exported code is in `proto/foo/bar/goo.ts`, the
+     * prefix will be `FooBar`.
+     * @param {string} dir
+     */
+    function generateIndexExports(dir) {
+      const files = globSync(join(dir, '*'));
+      if (files.length === 0) {
+        return;
       }
 
-      const code = readFileSync(file, 'utf8');
-      contents += `export {\n`;
-      for (const match of code.matchAll(EXPORTED_NAME_REGEX)) {
-        const exportedName = match[1];
-        contents += `  ${exportedName} as ${prefixName + exportedName},\n`;
+      const prefixName = dir
+        .replace(PROTOBUFS_DIR + '/', '')
+        .split('/')
+        .map((name) =>
+          // convert all names to PascalCase
+          name
+            .split(/[-_]/)
+            .map(capitalize)
+            .join('')
+        )
+        .join('');
+
+      for (const file of files) {
+        const fileName = file.match(LAST_SEGMENT_REGEX)?.[0];
+        if (!fileName) {
+          console.error('Could not find name for', file);
+          continue;
+        }
+        if (!fileName.endsWith('.ts')) {
+          continue;
+        }
+
+        const code = readFileSync(file, 'utf8');
+        contents += `export {\n`;
+        for (const match of code.matchAll(EXPORTED_NAME_REGEX)) {
+          const exportedName = match[1];
+          contents += `  ${exportedName} as ${prefixName + exportedName},\n`;
+        }
+        const exportedFile = file.replace(PROTOBUFS_DIR + '/', '').replace('.ts', '.js');
+        contents += `} from "@/protobufs/${exportedFile}";\n`;
       }
-      const exportedFile = file.replace(PROTOBUFS_DIR + '/', '').replace('.ts', '.js');
-      contents += `} from "@/protobufs/${exportedFile}";\n`;
+
+      for (const file of files) {
+        generateIndexExports(file);
+      }
     }
 
-    for (const file of files) {
-      generateIndexExports(file);
-    }
+    generateIndexExports(PROTOBUFS_DIR);
+    writeFileSync(join(PROTOBUFS_DIR, 'index.ts'), contents);
   }
 
-  generateIndexExports(PROTOBUFS_DIR);
-  writeFileSync(join(PROTOBUFS_DIR, 'index.ts'), contents);
-}
-
-console.log('💾 Saving manifest...');
-{
-  saveManifest(manifest);
+  console.log('💾 Saving manifest...');
+  {
+    saveManifest(manifest);
+  }
+} else {
+  console.log('ℹ️ No changes, skipping index and manifest update');
 }
 
 console.log('🧹 Cleanup...');

@@ -19,7 +19,14 @@
       "dev": "bun run dev",
       "format": "bun run format:all",
       "lint": "bun run lint && bun run lint:go",
-      "clean": "bun run clean"
+      "clean": "bun run clean",
+      "build-wasm:enclave": [
+        "cd ./libs/enclave",
+        "gum format '# Build' '' '' ''"
+      ],
+      "build-wasm:vault": [
+
+      ]
     }
   }
 }
