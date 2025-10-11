@@ -7,6 +7,9 @@ import (
 	"log"
 	"net/http"
 
+	"motr/handlers"
+	"motr/middleware"
+
 	wasmhttp "github.com/nlepage/go-wasm-http-server/v2"
 )
 
@@ -27,24 +30,24 @@ func main() {
 // setupRoutes configures all HTTP routes with security middleware
 func setupRoutes() {
 	// Health and status endpoints (no rate limiting)
-	http.HandleFunc("/health", handleHealth)
-	http.HandleFunc("/status", handleStatus)
+	http.HandleFunc("/health", handlers.HandleHealth)
+	http.HandleFunc("/status", handlers.HandleStatus)
 
 	// W3C Payment Handler API endpoints with security
-	http.HandleFunc("/payment/instruments", SecurityMiddleware(handlePaymentInstruments))
-	http.HandleFunc("/payment/canmakepayment", SecurityMiddleware(handleCanMakePayment))
-	http.HandleFunc("/payment/paymentrequest", SecurityMiddleware(handlePaymentRequest))
+	http.HandleFunc("/payment/instruments", middleware.SecurityMiddleware(handlers.HandlePaymentInstruments))
+	http.HandleFunc("/payment/canmakepayment", middleware.SecurityMiddleware(handlers.HandleCanMakePayment))
+	http.HandleFunc("/payment/paymentrequest", middleware.SecurityMiddleware(handlers.HandlePaymentRequest))
 
 	// Payment Gateway endpoints with security
-	http.HandleFunc("/api/payment/process", SecurityMiddleware(handlePaymentProcess))
-	http.HandleFunc("/api/payment/validate", SecurityMiddleware(handlePaymentValidate))
-	http.HandleFunc("/api/payment/status/", SecurityMiddleware(handlePaymentStatus))
-	http.HandleFunc("/api/payment/refund", SecurityMiddleware(handlePaymentRefund))
+	http.HandleFunc("/api/payment/process", middleware.SecurityMiddleware(handlers.HandlePaymentProcess))
+	http.HandleFunc("/api/payment/validate", middleware.SecurityMiddleware(handlers.HandlePaymentValidate))
+	http.HandleFunc("/api/payment/status/", middleware.SecurityMiddleware(handlers.HandlePaymentStatus))
+	http.HandleFunc("/api/payment/refund", middleware.SecurityMiddleware(handlers.HandlePaymentRefund))
 
 	// OIDC endpoints with security
-	http.HandleFunc("/.well-known/openid-configuration", handleOIDCDiscovery) // No rate limit for discovery
-	http.HandleFunc("/.well-known/jwks.json", handleJWKS)                     // No rate limit for JWKS
-	http.HandleFunc("/authorize", SecurityMiddleware(handleAuthorize))
-	http.HandleFunc("/token", SecurityMiddleware(handleToken))
-	http.HandleFunc("/userinfo", SecurityMiddleware(handleUserInfo))
+	http.HandleFunc("/.well-known/openid-configuration", handlers.HandleOIDCDiscovery) // No rate limit for discovery
+	http.HandleFunc("/.well-known/jwks.json", handlers.HandleJWKS)                     // No rate limit for JWKS
+	http.HandleFunc("/authorize", middleware.SecurityMiddleware(handlers.HandleAuthorize))
+	http.HandleFunc("/token", middleware.SecurityMiddleware(handlers.HandleToken))
+	http.HandleFunc("/userinfo", middleware.SecurityMiddleware(handlers.HandleUserInfo))
 }

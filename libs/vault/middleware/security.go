@@ -1,9 +1,10 @@
 //go:build js && wasm
 // +build js,wasm
 
-package main
+package middleware
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -239,4 +240,17 @@ func ValidateOrigin(origin string) bool {
 	}
 
 	return false
+}
+
+// writeJSON writes JSON response
+func writeJSON(w http.ResponseWriter, status int, data interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.WriteHeader(status)
+	json.NewEncoder(w).Encode(data)
+}
+
+// writeError writes error response
+func writeError(w http.ResponseWriter, status int, message string) {
+	writeJSON(w, status, map[string]string{"error": message})
 }

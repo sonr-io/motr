@@ -1,19 +1,21 @@
 //go:build js && wasm
 // +build js,wasm
 
-package main
+package handlers
 
 import (
 	"encoding/json"
 	"net/http"
 	"strings"
 	"time"
+
+	"motr/middleware"
 )
 
 // Health & Status Handlers
 
 // handleHealth returns service health status
-func handleHealth(w http.ResponseWriter, r *http.Request) {
+func HandleHealth(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "OPTIONS" {
 		handleCORS(w)
 		return
@@ -27,7 +29,7 @@ func handleHealth(w http.ResponseWriter, r *http.Request) {
 }
 
 // handleStatus returns detailed service status
-func handleStatus(w http.ResponseWriter, r *http.Request) {
+func HandleStatus(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "OPTIONS" {
 		handleCORS(w)
 		return
@@ -47,7 +49,7 @@ func handleStatus(w http.ResponseWriter, r *http.Request) {
 // W3C Payment Handler API Handlers
 
 // handlePaymentInstruments returns available payment instruments
-func handlePaymentInstruments(w http.ResponseWriter, r *http.Request) {
+func HandlePaymentInstruments(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "OPTIONS" {
 		handleCORS(w)
 		return
@@ -58,14 +60,14 @@ func handlePaymentInstruments(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	instruments := paymentHandler.GetInstruments()
+	instruments := middleware.GetPaymentHandler().GetInstruments()
 	writeJSON(w, http.StatusOK, map[string]interface{}{
 		"instruments": instruments,
 	})
 }
 
 // handleCanMakePayment checks if payment can be made
-func handleCanMakePayment(w http.ResponseWriter, r *http.Request) {
+func HandleCanMakePayment(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "OPTIONS" {
 		handleCORS(w)
 		return
@@ -77,7 +79,7 @@ func handleCanMakePayment(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req struct {
-		MethodData []PaymentMethod `json:"methodData"`
+		MethodData []middleware.PaymentMethod `json:"methodData"`
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -85,14 +87,14 @@ func handleCanMakePayment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	canMakePayment := paymentHandler.CanMakePayment(req.MethodData)
+	canMakePayment := middleware.GetPaymentHandler().CanMakePayment(req.MethodData)
 	writeJSON(w, http.StatusOK, map[string]interface{}{
 		"canMakePayment": canMakePayment,
 	})
 }
 
 // handlePaymentRequest handles W3C PaymentRequestEvent
-func handlePaymentRequest(w http.ResponseWriter, r *http.Request) {
+func HandlePaymentRequest(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "OPTIONS" {
 		handleCORS(w)
 		return
@@ -110,14 +112,14 @@ func handlePaymentRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	paymentReq, err := SerializePaymentRequest(reqData)
+	paymentReq, err := middleware.SerializePaymentRequest(reqData)
 	if err != nil {
 		writeError(w, http.StatusBadRequest, "Invalid payment request")
 		return
 	}
 
 	// Process payment request
-	tx, err := paymentHandler.ProcessPayment(paymentReq)
+	tx, err := middleware.GetPaymentHandler().ProcessPayment(paymentReq)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "Payment processing failed")
 		return
@@ -137,7 +139,7 @@ func handlePaymentRequest(w http.ResponseWriter, r *http.Request) {
 // Payment Gateway Handlers
 
 // handlePaymentProcess processes a payment transaction using W3C Payment Handler API
-func handlePaymentProcess(w http.ResponseWriter, r *http.Request) {
+func HandlePaymentProcess(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "OPTIONS" {
 		handleCORS(w)
 		return
@@ -155,14 +157,14 @@ func handlePaymentProcess(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	paymentReq, err := SerializePaymentRequest(reqData)
+	paymentReq, err := middleware.SerializePaymentRequest(reqData)
 	if err != nil {
 		writeError(w, http.StatusBadRequest, "Invalid payment request")
 		return
 	}
 
 	// Process payment
-	tx, err := paymentHandler.ProcessPayment(paymentReq)
+	tx, err := middleware.GetPaymentHandler().ProcessPayment(paymentReq)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "Payment processing failed")
 		return
@@ -172,7 +174,7 @@ func handlePaymentProcess(w http.ResponseWriter, r *http.Request) {
 }
 
 // handlePaymentValidate validates a payment method
-func handlePaymentValidate(w http.ResponseWriter, r *http.Request) {
+func HandlePaymentValidate(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "OPTIONS" {
 		handleCORS(w)
 		return
@@ -195,7 +197,7 @@ func handlePaymentValidate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Validate payment method
-	valid, err := paymentHandler.ValidatePaymentMethod(req.Method, req.Data)
+	valid, err := middleware.GetPaymentHandler().ValidatePaymentMethod(req.Method, req.Data)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "Validation failed")
 		return
@@ -209,7 +211,7 @@ func handlePaymentValidate(w http.ResponseWriter, r *http.Request) {
 }
 
 // handlePaymentStatus returns payment transaction status
-func handlePaymentStatus(w http.ResponseWriter, r *http.Request) {
+func HandlePaymentStatus(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "OPTIONS" {
 		handleCORS(w)
 		return
@@ -228,7 +230,7 @@ func handlePaymentStatus(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get transaction from handler
-	tx, exists := paymentHandler.GetTransaction(txID)
+	tx, exists := middleware.GetPaymentHandler().GetTransaction(txID)
 	if !exists {
 		writeError(w, http.StatusNotFound, "Transaction not found")
 		return
@@ -238,7 +240,7 @@ func handlePaymentStatus(w http.ResponseWriter, r *http.Request) {
 }
 
 // handlePaymentRefund processes a refund
-func handlePaymentRefund(w http.ResponseWriter, r *http.Request) {
+func HandlePaymentRefund(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "OPTIONS" {
 		handleCORS(w)
 		return
@@ -260,31 +262,31 @@ func handlePaymentRefund(w http.ResponseWriter, r *http.Request) {
 // OIDC Handlers
 
 // handleOIDCDiscovery returns OIDC discovery document
-func handleOIDCDiscovery(w http.ResponseWriter, r *http.Request) {
+func HandleOIDCDiscovery(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "OPTIONS" {
 		handleCORS(w)
 		return
 	}
 
-	discovery := oidcProvider.GetDiscovery()
+	discovery := middleware.GetOIDCProvider().GetDiscovery()
 	writeJSON(w, http.StatusOK, discovery)
 }
 
 // handleJWKS returns JSON Web Key Set
-func handleJWKS(w http.ResponseWriter, r *http.Request) {
+func HandleJWKS(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "OPTIONS" {
 		handleCORS(w)
 		return
 	}
 
-	jwk := jwtManager.GetPublicKeyJWK()
+	jwk := middleware.GetJWTManager().GetPublicKeyJWK()
 	writeJSON(w, http.StatusOK, map[string]interface{}{
 		"keys": []map[string]interface{}{jwk},
 	})
 }
 
 // handleAuthorize handles authorization requests
-func handleAuthorize(w http.ResponseWriter, r *http.Request) {
+func HandleAuthorize(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "OPTIONS" {
 		handleCORS(w)
 		return
@@ -315,7 +317,7 @@ func handleAuthorize(w http.ResponseWriter, r *http.Request) {
 	userID := "test-user"
 
 	// Generate authorization code
-	authCode, err := oidcProvider.GenerateAuthorizationCode(
+	authCode, err := middleware.GetOIDCProvider().GenerateAuthorizationCode(
 		clientID, redirectURI, scope, state, nonce, userID,
 		codeChallenge, codeChallengeMethod,
 	)
@@ -333,7 +335,7 @@ func handleAuthorize(w http.ResponseWriter, r *http.Request) {
 }
 
 // handleToken handles token requests
-func handleToken(w http.ResponseWriter, r *http.Request) {
+func HandleToken(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "OPTIONS" {
 		handleCORS(w)
 		return
@@ -345,7 +347,7 @@ func handleToken(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse token request
-	var req TokenRequest
+	var req middleware.TokenRequest
 	req.GrantType = r.FormValue("grant_type")
 	req.Code = r.FormValue("code")
 	req.RedirectURI = r.FormValue("redirect_uri")
@@ -356,12 +358,12 @@ func handleToken(w http.ResponseWriter, r *http.Request) {
 	req.CodeVerifier = r.FormValue("code_verifier")
 
 	// Handle based on grant type
-	var resp *TokenResponse
+	var resp *middleware.TokenResponse
 	var err error
 
 	switch req.GrantType {
 	case "authorization_code":
-		resp, err = oidcProvider.ExchangeCode(&req)
+		resp, err = middleware.GetOIDCProvider().ExchangeCode(&req)
 	case "refresh_token":
 		// TODO: Implement refresh token flow
 		writeError(w, http.StatusNotImplemented, "Refresh token not yet implemented")
@@ -380,7 +382,7 @@ func handleToken(w http.ResponseWriter, r *http.Request) {
 }
 
 // handleUserInfo returns user information
-func handleUserInfo(w http.ResponseWriter, r *http.Request) {
+func HandleUserInfo(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "OPTIONS" {
 		handleCORS(w)
 		return
@@ -408,39 +410,11 @@ func handleUserInfo(w http.ResponseWriter, r *http.Request) {
 	accessToken := parts[1]
 
 	// Get user info
-	userInfo, err := oidcProvider.GetUserInfo(accessToken)
+	userInfo, err := middleware.GetOIDCProvider().GetUserInfo(accessToken)
 	if err != nil {
 		writeError(w, http.StatusUnauthorized, err.Error())
 		return
 	}
 
 	writeJSON(w, http.StatusOK, userInfo)
-}
-
-// Helper Functions
-
-// handleCORS handles CORS preflight requests
-func handleCORS(w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-	w.WriteHeader(http.StatusOK)
-}
-
-// writeJSON writes JSON response
-func writeJSON(w http.ResponseWriter, status int, data interface{}) {
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(data)
-}
-
-// writeError writes error response
-func writeError(w http.ResponseWriter, status int, message string) {
-	writeJSON(w, status, map[string]string{"error": message})
-}
-
-// generateID generates a simple ID
-func generateID() string {
-	return time.Now().Format("20060102150405")
 }

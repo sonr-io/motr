@@ -1,7 +1,8 @@
 //go:build js && wasm
 // +build js,wasm
 
-package main
+// Package middleware provides middleware for the Sonr blockchain with Extism and Vite integration
+package middleware
 
 import (
 	"crypto"
@@ -270,4 +271,8 @@ func (m *JWTManager) GenerateRefreshToken(subject string) (string, error) {
 		},
 	}
 	return m.GenerateToken(claims)
+}
+
+func GetJWTManager() *JWTManager {
+	return jwtManager
 }

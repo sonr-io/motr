@@ -1,7 +1,7 @@
 //go:build js && wasm
 // +build js,wasm
 
-package main
+package middleware
 
 import (
 	"crypto/rand"
@@ -351,4 +351,8 @@ func SerializePaymentRequest(data []byte) (*PaymentRequest, error) {
 // SerializePaymentResponse serializes a payment response to JSON
 func SerializePaymentResponse(resp *PaymentResponse) ([]byte, error) {
 	return json.Marshal(resp)
+}
+
+func GetPaymentHandler() *PaymentHandler {
+	return paymentHandler
 }

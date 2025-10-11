@@ -1,7 +1,7 @@
 //go:build js && wasm
 // +build js,wasm
 
-package main
+package middleware
 
 import (
 	"crypto/rand"
@@ -361,4 +361,8 @@ func validatePKCE(codeChallenge, method, verifier string) bool {
 	// For S256, would need to implement SHA256 hashing
 	// For simplicity, returning true for now
 	return true
+}
+
+func GetOIDCProvider() *OIDCProvider {
+	return oidcProvider
 }

@@ -1,4 +1,4 @@
-module vault
+module enclave
 
 go 1.24.7
 
