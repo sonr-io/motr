@@ -49,7 +49,9 @@
     "clean": "turbo run clean && rm -rf node_modules bun.lock",
     "clean:dist": "rm -rf dist build pkgs/*/dist libs/*/dist apps/*/dist",
     "gen:protobufs": "bun --filter '@sonr.io/es' run gen",
-    "docs": "cd docs && bunx mint dev"
+    "docs": "cd docs && bunx mint dev",
+    "deploy": "turbo run deploy",
+    "deploy:frontend": "bun --filter 'frontend' run deploy"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.5",

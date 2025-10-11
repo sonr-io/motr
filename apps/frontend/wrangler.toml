@@ -1,0 +1,48 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "sonr-id"
+main = "src/worker.ts"
+compatibility_date = "2025-01-11"
+compatibility_flags = ["nodejs_compat"]
+
+# Assets configuration for serving static files
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+html_handling = "auto-trailing-slash"
+not_found_handling = "single-page-application"
+
+# Production environment
+[env.production]
+name = "sonr-id"
+workers_dev = false
+routes = [
+  { pattern = "sonr.id/*", custom_domain = true },
+  { pattern = "*.sonr.id/*", custom_domain = true },
+]
+
+[env.production.vars]
+ENVIRONMENT = "production"
+
+# Staging environment
+[env.staging]
+name = "sonr-id-staging"
+workers_dev = true
+
+[env.staging.vars]
+ENVIRONMENT = "staging"
+
+# Development configuration
+[dev]
+port = 3000
+local_protocol = "http"
+ip = "0.0.0.0"
+
+# Build configuration
+[build]
+command = "bunx --bun vite build && tsc"
+cwd = "."
+
+# Observability
+[observability]
+enabled = true
+head_sampling_rate = 1.0

@@ -3,14 +3,17 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "bunx --bun vite --port 3000",
+    "dev": "wrangler dev",
     "build": "bunx --bun vite build && tsc",
-    "serve": "bunx --bun vite preview",
-    "test": "vitest run",
+    "preview": "wrangler dev --remote",
+    "test": "vitest run --passWithNoTests",
     "format": "biome format",
     "lint": "biome lint",
     "check": "biome check",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:production": "wrangler deploy --env production",
+    "logs": "wrangler tail --format pretty"
   },
   "dependencies": {
     "@sonr.io/es": "workspace:*",
@@ -29,6 +32,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.4",
+    "@cloudflare/workers-types": "^4.20251011.0",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",

@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["src/worker.ts"],
+  "exclude": [],
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022"],
+    "types": ["@cloudflare/workers-types"],
+    "jsx": "preserve",
+    "noEmit": false,
+    "outDir": ".wrangler/types"
+  }
+}
