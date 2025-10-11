@@ -16,12 +16,12 @@
     "dist"
   ],
   "scripts": {
-    "build": "devbox run build && tsc --declaration --emitDeclarationOnly",
-    "build:wasm": "devbox run build",
-    "watch": "devbox run watch",
-    "test": "devbox run test",
-    "lint": "devbox run lint",
-    "clean": "rm -rf dist"
+    "build": "bun run build:wasm && tsc --declaration --emitDeclarationOnly",
+    "build:wasm": "mkdir -p dist && GOOS=wasip1 GOARCH=wasm go build -o dist/enclave.wasm ./main.go",
+    "watch": "tsc --watch",
+    "test": "go test ./...",
+    "lint": "go fmt ./...",
+    "clean": "rm -rf dist *.tsbuildinfo"
   },
   "devDependencies": {
     "typescript": "^5.9.3",

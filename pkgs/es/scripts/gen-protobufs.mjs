@@ -12,6 +12,7 @@ import { globSync } from 'glob';
 import { capitalize } from 'lodash-es';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import { createHash } from 'crypto';
 
 /**
  * @typedef Repo
@@ -61,9 +62,60 @@ const REPOS = [
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROTOBUFS_DIR = join(__dirname, '..', 'src', 'protobufs');
 const TMP_DIR = join(PROTOBUFS_DIR, '.tmp');
+const MANIFEST_FILE = join(PROTOBUFS_DIR, '.manifest.json');
 
 /** Generates a unique dirname from `repo` to use in `TMP_DIR`. */
 const id = (/** @type {string} */ repo) => repo.replace(/[#/]/g, '-');
+
+/**
+ * Load the manifest file that tracks repository commit hashes
+ * @returns {Record<string, string>} Map of repo ID to commit hash
+ */
+function loadManifest() {
+  if (!existsSync(MANIFEST_FILE)) {
+    return {};
+  }
+  try {
+    const content = readFileSync(MANIFEST_FILE, 'utf8');
+    return JSON.parse(content);
+  } catch (error) {
+    console.warn('⚠️ Manifest load failed, starting fresh');
+    return {};
+  }
+}
+
+/**
+ * Save the manifest file with updated repository commit hashes
+ * @param {Record<string, string>} manifest
+ */
+function saveManifest(manifest) {
+  try {
+    writeFileSync(MANIFEST_FILE, JSON.stringify(manifest, null, 2));
+  } catch (error) {
+    console.warn('⚠️ Manifest save failed');
+  }
+}
+
+/**
+ * Get the current commit hash for a repository
+ * @param {string} repoPath
+ * @returns {string | null}
+ */
+function getCurrentCommitHash(repoPath) {
+  try {
+    const result = spawnSync('git', ['rev-parse', 'HEAD'], {
+      cwd: repoPath,
+      stdio: 'pipe',
+      encoding: 'utf8',
+    });
+    if (result.status === 0) {
+      return result.stdout.trim();
+    }
+  } catch (error) {
+    // Ignore errors for repositories without git
+  }
+  return null;
+}
 
 /**
  * Check if ghq is available
@@ -107,7 +159,7 @@ function getRepo(repo, dest, useGhq, ghqRoot) {
 
     args.push(`github.com/${repoPath}`);
 
-    console.log(`  Getting ${repo} via ghq...`);
+    console.log(`  📦 ${repo}...`);
     const result = spawnSync('ghq', args, {
       stdio: 'pipe',
       encoding: 'utf8',
@@ -118,7 +170,7 @@ function getRepo(repo, dest, useGhq, ghqRoot) {
     });
 
     if (result.status !== 0) {
-      console.error(`  ✗ Failed to get ${repo} via ghq:`, result.stderr);
+      console.error(`  ✗ Failed to get ${repo}: ${result.stderr.trim()}`);
       return { success: false, path: null };
     }
 
@@ -138,7 +190,7 @@ function getRepo(repo, dest, useGhq, ghqRoot) {
       }
     }
 
-    console.log(`  ✓ ${repo} (ghq cache)`);
+    console.log(`  ✓ ${repo}`);
     return { success: true, path: repoPathInGhq };
   }
 
@@ -160,30 +212,30 @@ function getRepo(repo, dest, useGhq, ghqRoot) {
 
   args.push(gitUrl, dest);
 
-  console.log(`  Cloning ${repo}...`);
-  const result = spawnSync('git', args, {
-    stdio: 'pipe',
-    encoding: 'utf8',
-    env: {
-      ...process.env,
-      GIT_LFS_SKIP_SMUDGE: '1',
-    },
-  });
+   console.log(`  📥 ${repo}...`);
+   const result = spawnSync('git', args, {
+     stdio: 'pipe',
+     encoding: 'utf8',
+     env: {
+       ...process.env,
+       GIT_LFS_SKIP_SMUDGE: '1',
+     },
+   });
 
-  if (result.status !== 0) {
-    console.error(`  ✗ Failed to clone ${repo}:`, result.stderr);
-    return { success: false, path: null };
-  }
+   if (result.status !== 0) {
+     console.error(`  ✗ Failed to clone ${repo}: ${result.stderr.trim()}`);
+     return { success: false, path: null };
+   }
 
-  console.log(`  ✓ ${repo}`);
-  return { success: true, path: dest };
+   console.log(`  ✓ ${repo}`);
+   return { success: true, path: dest };
 }
 
 // Check if ghq is available
 const useGhq = isGhqAvailable();
 const ghqRoot = useGhq ? getGhqRoot() : null;
 
-console.log('🔧 Initialising directories...');
+console.log('🔧 Initialising...');
 {
   // Only need TMP_DIR if not using ghq
   if (!useGhq) {
@@ -209,53 +261,72 @@ console.log('🔧 Initialising directories...');
   }
 }
 
-if (useGhq && ghqRoot) {
-  console.log(`📦 Using ghq for repo management (root: ${ghqRoot})`);
-} else {
-  console.log('📥 Using git clone for repo management');
-}
+console.log(useGhq && ghqRoot ? `📦 Using ghq (${ghqRoot})` : '📥 Using git clone');
 
-console.log('📥 Getting required repos...');
+console.log('📥 Fetching repos...');
 /** @type {Map<string, string>} */
 const repoPaths = new Map();
+/** @type {Set<string>} */
+const skippedRepos = new Set();
+const manifest = loadManifest();
 {
   let successCount = 0;
   let failCount = 0;
+  let skippedCount = 0;
 
   for (const { repo } of REPOS) {
-    const result = getRepo(repo, join(TMP_DIR, id(repo)), useGhq, ghqRoot);
+    const repoId = id(repo);
+    const result = getRepo(repo, join(TMP_DIR, repoId), useGhq, ghqRoot);
     if (result.success && result.path) {
-      repoPaths.set(repo, result.path);
-      successCount++;
+      const currentCommit = getCurrentCommitHash(result.path);
+      const lastCommit = manifest[repoId];
+
+      if (currentCommit && lastCommit === currentCommit) {
+        console.log(`  ⏭️  ${repo} (no changes)`);
+        skippedRepos.add(repo);
+        skippedCount++;
+      } else {
+        repoPaths.set(repo, result.path);
+        successCount++;
+      }
     } else {
       failCount++;
     }
   }
 
-  console.log(`\n📊 Repo summary: ${successCount} succeeded, ${failCount} failed\n`);
+  console.log(`\n📊 Repo summary: ${successCount} to process, ${skippedCount} skipped, ${failCount} failed\n`);
 
-  if (successCount === 0) {
-    console.error('❌ All repository operations failed. Cannot continue.');
+  if (successCount === 0 && failCount > 0) {
+    console.error('❌ All repos failed');
     process.exit(1);
   }
 }
 
-console.log('⚙️  Generating TS files from proto files...');
+console.log('⚙️ Generating types...');
 {
+  let processedCount = 0;
+
   for (const { repo, paths } of REPOS) {
     const repoDir = repoPaths.get(repo);
 
     // Skip if repo wasn't retrieved successfully
     if (!repoDir || !existsSync(repoDir)) {
-      console.log(`⚠️  Skipping ${repo} (not available)`);
+      if (skippedRepos.has(repo)) {
+        console.log(`  ⏭️ ${repo} (unchanged)`);
+      } else {
+        console.log(`⚠️ ${repo} (failed)`);
+      }
       continue;
     }
+
+    const repoId = id(repo);
+    const currentCommit = getCurrentCommitHash(repoDir);
 
     for (const path of paths) {
       const protoPath = join(repoDir, path);
 
       if (!existsSync(protoPath)) {
-        console.log(`⚠️  Proto path ${protoPath} not found, skipping`);
+        console.log(`⚠️ ${repo} proto not found`);
         continue;
       }
 
@@ -279,15 +350,26 @@ console.log('⚙️  Generating TS files from proto files...');
       );
 
       if (result.status !== 0) {
-        console.error(`⚠️  buf generate failed for ${repo}`);
+        console.error(`⚠️ ${repo} generation failed`);
         continue;
       }
     }
-    console.log(`✔️  [${repo}]`);
+
+    // Update manifest with current commit hash after successful generation
+    if (currentCommit) {
+      manifest[repoId] = currentCommit;
+    }
+
+    console.log(`  ✓ ${repo}`);
+    processedCount++;
+  }
+
+  if (processedCount === 0) {
+    console.log('ℹ️ No changes');
   }
 }
 
-console.log('📝 Generating src/protobufs/index.ts file...');
+console.log('📝 Generating index...');
 {
   const LAST_SEGMENT_REGEX = /[^/]+$/;
   const EXPORTED_NAME_REGEX = /^export \w+ (\w+) /gm;
@@ -349,7 +431,12 @@ console.log('📝 Generating src/protobufs/index.ts file...');
   writeFileSync(join(PROTOBUFS_DIR, 'index.ts'), contents);
 }
 
-console.log('🧹 Cleaning up...');
+console.log('💾 Saving manifest...');
+{
+  saveManifest(manifest);
+}
+
+console.log('🧹 Cleanup...');
 {
   // Only clean TMP_DIR if we used git clone (not ghq)
   if (!useGhq) {
@@ -357,4 +444,4 @@ console.log('🧹 Cleaning up...');
   }
 }
 
-console.log('✅ Proto generation completed successfully!');
+console.log('✅ Done!');
