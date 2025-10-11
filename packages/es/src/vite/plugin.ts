@@ -1,4 +1,5 @@
 import { type EnclavePluginOptions, enclavePlugin } from '@sonr.io/enclave';
+import { type VaultPluginOptions, vaultPlugin } from '@sonr.io/vault/vite-plugin';
 import type { Plugin, UserConfig } from 'vite';
 
 /**
@@ -9,6 +10,14 @@ export interface ESPluginOptions extends EnclavePluginOptions {
    * Whether to enable the enclave plugin (default: true)
    */
   enableEnclave?: boolean;
+  /**
+   * Whether to enable the vault plugin (default: true)
+   */
+  enableVault?: boolean;
+  /**
+   * Vault plugin options
+   */
+  vaultOptions?: VaultPluginOptions;
   /**
    * Whether to exclude @sonr.io/es from Vite optimization (recommended)
    * This prevents bundling issues with protobuf imports
@@ -44,6 +53,8 @@ export interface ESPluginOptions extends EnclavePluginOptions {
 export function esPlugin(options: ESPluginOptions = {}): Plugin[] {
   const {
     enableEnclave = true,
+    enableVault = true,
+    vaultOptions = {},
     excludeFromOptimize = true,
     configureWorkers = true,
     configureWasm = true,
@@ -55,6 +66,11 @@ export function esPlugin(options: ESPluginOptions = {}): Plugin[] {
   // Add enclave plugin first if enabled
   if (enableEnclave) {
     plugins.push(enclavePlugin(enclaveOptions));
+  }
+
+  // Add vault plugin if enabled
+  if (enableVault) {
+    plugins.push(vaultPlugin(vaultOptions));
   }
 
   // Add ES-specific configuration plugin

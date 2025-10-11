@@ -65,6 +65,7 @@
      "@extism/extism": "2.0.0-rc13",
      "@simplewebauthn/browser": "^9.0.1",
      "@sonr.io/enclave": "workspace:*",
+     "@sonr.io/vault": "workspace:*",
      "@tanstack/query-core": "^5.0.0",
      "dexie": "^4.0.1"
    },

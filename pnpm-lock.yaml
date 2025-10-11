@@ -145,6 +145,9 @@ importers:
       '@sonr.io/enclave':
         specifier: workspace:*
         version: link:../../cmd/enclave
+      '@sonr.io/vault':
+        specifier: workspace:*
+        version: link:../../cmd/vault
       '@tanstack/query-core':
         specifier: ^5.0.0
         version: 5.86.0

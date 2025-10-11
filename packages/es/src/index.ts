@@ -2,44 +2,9 @@
  * @sonr.io/es - Sonr ES Module
  * Main entry point for browser/CDN usage
  */
-// Motor Plugin - Service worker and WebAssembly runtime
-// Re-export main interfaces and classes for convenience
-export {
-  MotorPluginImpl,
-  createMotorPlugin,
-  createMotorPluginForNode,
-  createMotorPluginForBrowser,
-} from './worker';
 
+// Vault Plugin - MPC-based cryptographic vault
 export { VaultClient, createVaultClient, getDefaultVaultClient } from './plugin';
-
-// Re-export Motor types
-export type {
-  MotorPlugin,
-  MotorPluginConfig,
-  MotorServiceWorkerConfig,
-  // Payment types
-  PaymentInstrument,
-  PaymentMethod,
-  PaymentDetails,
-  ProcessPaymentRequest,
-  ProcessPaymentResponse,
-  PaymentStatus,
-  // OIDC types
-  OIDCConfiguration,
-  OIDCTokenRequest,
-  OIDCTokenResponse,
-  OIDCUserInfo,
-} from './worker';
-
-// Re-export Service worker types
-export type {
-  ServiceWorkerStatus,
-  EnvironmentInfo,
-  HealthCheckResponse,
-  ServiceInfoResponse,
-  ErrorResponse,
-} from './worker';
 
 // Re-export Vault types
 export type {
@@ -89,6 +54,8 @@ export * as ipfs from './client/services';
 
 // Vault Plugin - MPC-based cryptographic vault
 export * as vault from './plugin';
+
+// Motor Vault - Service worker integration (re-exports from @sonr.io/vault)
 export * as motor from './worker';
 
 // Vite plugin for build tooling (also available via '@sonr.io/es/vite-plugin')
