@@ -2,14 +2,14 @@
   "packages": [
     "go@1.24",
     "nodejs@20",
-    "pnpm@10"
+    "bun@1"
   ],
   "shell": {
     "init_hook": [
       "export GOOS=js",
       "export GOARCH=wasm",
       "go mod download",
-      "pnpm install"
+      "bun install"
     ],
     "scripts": {
       "build": "mkdir -p dist && GOOS=js GOARCH=wasm go build -ldflags='-s -w' -trimpath -o dist/vault.wasm . && rm -f dist/wasm_exec.js && cp wasm_exec.js dist/ && chmod 644 dist/wasm_exec.js",

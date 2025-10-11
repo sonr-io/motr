@@ -2,55 +2,21 @@
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/main/.schema/devbox.schema.json",
   "packages": [
     "gum@latest",
-    "nodejs@latest",
-    "pnpm@10.14.0"
+    "bun@latest"
   ],
   "env": {},
   "shell": {
     "init_hook": [
-      "alias git-context='./scripts/github-env.sh git-context'",
-      "alias affected-scopes='./scripts/github-env.sh affected-scopes'",
-      "alias changed-scopes='./scripts/github-env.sh changed-scopes'",
-      "alias changed-scopes-diff='./scripts/github-env.sh changed-scopes-diff'",
-      "alias changed-files='./scripts/github-env.sh changed-files'",
-      "alias current-pr='./scripts/github-env.sh current-pr'",
-      "alias current-branch='./scripts/github-env.sh current-branch'",
-      "alias current-issue='./scripts/github-env.sh current-issue'",
-      "alias current-milestone='./scripts/github-env.sh current-milestone'",
-      "alias final-issue='./scripts/github-env.sh final-issue'",
-      "alias build-scopes='./scripts/github-env.sh build-scopes'",
-      "alias release-scopes='./scripts/github-env.sh release-scopes'",
-      "alias snapshot-scopes='./scripts/github-env.sh snapshot-scopes'",
-      "alias bump-scopes='./scripts/github-env.sh bump-scopes'",
-      "alias publish-scopes='./scripts/github-env.sh publish-scopes'",
-      "alias test-scopes='./scripts/github-env.sh test-scopes'",
-      "alias ai-commit='./scripts/github-env.sh ai-commit'",
-      "alias smart-commit='./scripts/github-env.sh smart-commit'",
-      "alias generate-commit='./scripts/github-env.sh generate-commit'",
-      "alias analyze-type='./scripts/github-env.sh analyze-type'",
-      "alias pr-description='./scripts/github-env.sh pr-description'",
-      "alias validate-default-branch='./scripts/github-env.sh validate-default-branch'",
-      "alias commit-summary='./scripts/github-env.sh commit-summary'",
-      "pnpm install"
+      "curl -fsSL https://bun.sh/install | bash",
+      "bun install"
     ],
     "scripts": {
-      "build": "pnpm build",
-      "build:all": "pnpm build:all",
-      "test": "pnpm test",
-      "build:enclave": "pnpm build:enclave",
-      "build:es": "pnpm build:es",
-      "build:ui": "pnpm build:ui",
-      "build:do": "pnpm build:do",
-      "build:frontend": "pnpm build:frontend",
-      "test:enclave": "pnpm test:enclave",
-      "test:es": "pnpm test:es",
-      "test:ui": "pnpm test:ui",
+      "build": "bun run build",
+      "test": "bun run test",
       "dev": "pnpm dev",
-      "dev:frontend": "pnpm dev:frontend",
       "format": "pnpm format:all",
-      "lint": "pnpm lint && pnpm lint:go",
-      "clean": "pnpm clean",
-      "gen:protobufs": "pnpm gen:protobufs"
+      "lint": "bun run lint && bun run lint:go",
+      "clean": "bun run clean"
     }
   }
 }

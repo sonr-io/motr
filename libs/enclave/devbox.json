@@ -1,12 +1,15 @@
 {
   "packages": [
-    "go@1.24"
+    "go@1.24",
+    "nodejs@20",
+    "bun@1"
   ],
   "shell": {
     "init_hook": [
       "export GOOS=wasip1",
       "export GOARCH=wasm",
-      "go mod download"
+      "go mod download",
+      "bun install"
     ],
     "scripts": {
       "build": "go build -o dist/enclave.wasm ./main.go",

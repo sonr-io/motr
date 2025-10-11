@@ -1,7 +1,0 @@
- packages:
-   # CLI tools
-   # Core packages
-   - "pkgs/*"
-   - "libs/*"
-   # Applications
-   - "apps/*"

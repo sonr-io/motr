@@ -5,7 +5,7 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "packageManager": "pnpm@10.18.2",
+  "packageManager": "bun@1.3.0",
   "exports": {
     ".": "./dist/index.js",
     "./dist/vault.wasm": "./dist/vault.wasm",
@@ -19,7 +19,7 @@
       "build": "devbox run build && tsc",
       "build:wasm": "devbox run build",
       "watch": "tsc --watch",
-      "test": "pnpm run test:go && vitest run",
+      "test": "bun run test:go && vitest run",
       "test:watch": "vitest",
       "test:go": "devbox run test",
       "clean": "rm -rf dist *.tsbuildinfo"

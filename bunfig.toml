@@ -1,0 +1,66 @@
+# Bun configuration for Motor monorepo
+# https://bun.sh/docs/runtime/bunfig
+
+# Runtime configuration
+[run]
+# Use Bun's shell instead of system shell for better cross-platform compatibility
+shell = "bun"
+# Auto-alias node to bun for better compatibility
+bun = true
+# Don't show command being run (cleaner output)
+silent = false
+
+# Package manager configuration
+[install]
+# Install optional dependencies
+optional = true
+# Install dev dependencies
+dev = true
+# Install peer dependencies
+peer = true
+# Production mode (disable devDependencies)
+production = false
+# Use exact versions instead of caret ranges
+exact = false
+# Generate text lockfile (bun.lock) instead of binary
+saveTextLockfile = true
+# Auto-install behavior ("auto" | "force" | "disable" | "fallback")
+auto = "auto"
+# Frozen lockfile mode for CI
+frozenLockfile = false
+# Link workspace packages to their node_modules
+linkWorkspacePackages = true
+
+# Cache configuration
+[install.cache]
+# Cache directory
+dir = "~/.bun/install/cache"
+# Don't disable cache
+disable = false
+# Always resolve latest versions
+disableManifest = false
+
+# Lockfile configuration
+[install.lockfile]
+# Generate lockfile
+save = true
+
+# Test runner configuration
+[test]
+# Root directory for tests
+root = "."
+# Enable coverage by default
+coverage = false
+# Coverage threshold (70% minimum)
+coverageThreshold = 0.7
+# Skip test files in coverage
+coverageSkipTestFiles = true
+# Coverage reporters
+coverageReporter = ["text"]
+# Coverage output directory
+coverageDir = "coverage"
+
+# Console configuration for better debugging
+[console]
+# Default depth for object inspection
+depth = 3
