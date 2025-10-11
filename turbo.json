@@ -40,7 +40,7 @@
        "cache": false
      },
      "@sonr.io/es#build": {
-       "dependsOn": ["@sonr.io/enclave#build"],
+       "dependsOn": ["@sonr.io/enclave#build", "@sonr.io/vault#build"],
        "outputs": ["dist/**", "*.tsbuildinfo"],
        "inputs": ["src/**", "tsconfig.json", "package.json"],
        "cache": true
@@ -69,6 +69,28 @@
        "cache": false
      },
      "@sonr.io/enclave#lint": {
+       "dependsOn": [],
+       "outputs": [],
+       "cache": false
+     },
+     "@sonr.io/vault#build": {
+       "dependsOn": [],
+       "outputs": ["dist/**", "*.tsbuildinfo"],
+       "inputs": ["src/**/*.ts", "main.go", "**/*.go", "go.mod", "go.sum", "tsconfig.json", "package.json", "wasm_exec.js"],
+       "cache": true
+     },
+     "@sonr.io/vault#build:wasm": {
+       "dependsOn": [],
+       "outputs": ["dist/vault.wasm", "dist/wasm_exec.js"],
+       "inputs": ["main.go", "**/*.go", "go.mod", "go.sum", "wasm_exec.js"],
+       "cache": true
+     },
+     "@sonr.io/vault#test": {
+       "dependsOn": [],
+       "outputs": [],
+       "cache": false
+     },
+     "@sonr.io/vault#lint": {
        "dependsOn": [],
        "outputs": [],
        "cache": false
