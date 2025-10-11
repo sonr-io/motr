@@ -3,18 +3,7 @@
   "packages": [
     "gum@latest",
     "nodejs@latest",
-    "docker@latest",
-    "pnpm@10.14.0",
-    "go@1.24.4",
-    "gcc@latest",
-    "tinygo@latest",
-    "templ@latest",
-    "trunk@latest",
-    "wrkflw@latest",
-    "uv@latest",
-    "commitizen@latest",
-    "mods@latest",
-    "yq@latest"
+    "pnpm@10.14.0"
   ],
   "env": {},
   "shell": {

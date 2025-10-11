@@ -1,18 +1,25 @@
 {
   "packages": [
-    "go@1.24"
+    "go@1.24",
+    "nodejs@20",
+    "pnpm@10"
   ],
   "shell": {
     "init_hook": [
       "export GOOS=js",
       "export GOARCH=wasm",
-      "go mod download"
+      "go mod download",
+      "pnpm install"
     ],
     "scripts": {
-      "build": "go build -o dist/vault.wasm ./main.go",
-      "test": "go test ./...",
-      "lint": "golangci-lint run ./...",
-      "fmt": "gofmt -w $(find . -name '*.go' -not -path './dist/*')"
+      "build": "pnpm run build",
+      "build:wasm": "pnpm run build:wasm",
+      "build:ts": "pnpm run build:ts",
+      "watch": "pnpm run watch",
+      "test": "pnpm run test",
+      "lint": "pnpm run lint",
+      "fmt": "go fmt ./...",
+      "clean": "pnpm run clean"
     }
   }
 }
