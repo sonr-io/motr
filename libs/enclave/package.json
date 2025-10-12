@@ -1,6 +1,6 @@
 {
   "name": "@sonr.io/enclave",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "WebAssembly-based vault plugin for Sonr blockchain with Extism and Vite integration",
   "type": "module",
   "main": "./dist/index.js",

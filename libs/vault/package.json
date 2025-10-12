@@ -1,6 +1,6 @@
 {
   "name": "@sonr.io/vault",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "WebAssembly-based HTTP server for Motor Payment Gateway and OIDC services",
   "type": "module",
   "main": "./dist/index.js",

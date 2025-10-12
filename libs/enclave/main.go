@@ -68,6 +68,11 @@ func main() {
 		return
 	}
 	pdk.Log(pdk.LogInfo, "Motor plugin initialized as MPC-based UCAN source")
+	newAttenuatedToken()
+	newOriginToken()
+	signData()
+	verifyData()
+	getIssuerDID()
 }
 
 //go:wasmexport new_origin_token
