@@ -16,8 +16,7 @@
     "dist"
   ],
     "scripts": {
-      "build": "bun run build:wasm && tsc",
-      "build:wasm": "mkdir -p dist && GOOS=js GOARCH=wasm go build -ldflags='-s -w' -trimpath -o dist/vault.wasm . && rm -f dist/wasm_exec.js && cp wasm_exec.js dist/ && chmod 644 dist/wasm_exec.js",
+      "build": "devbox run build && tsc",
       "watch": "tsc --watch",
       "test": "bun run test:go && vitest run",
       "test:watch": "vitest",
@@ -43,7 +42,7 @@
     "sonr",
     "motor"
   ],
-  "author": "Sonr Labs",
+  "author": "diDAO",
   "license": "MIT",
   "private": true
 }

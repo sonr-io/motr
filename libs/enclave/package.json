@@ -16,8 +16,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "bun run build:wasm && tsc --declaration --emitDeclarationOnly",
-    "build:wasm": "mkdir -p dist && GOOS=wasip1 GOARCH=wasm go build -o dist/enclave.wasm .",
+    "build": "devbox run build && tsc --declaration --emitDeclarationOnly",
     "watch": "tsc --watch",
     "test": "go test ./... || echo 'No Go tests found in enclave'",
     "lint": "go fmt ./...",

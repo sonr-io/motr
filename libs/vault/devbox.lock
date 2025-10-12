@@ -1,0 +1,57 @@
+{
+  "lockfile_version": "1",
+  "packages": {
+    "github:NixOS/nixpkgs/nixpkgs-unstable": {
+      "last_modified": "2025-10-09T02:37:25Z",
+      "resolved": "github:NixOS/nixpkgs/2dad7af78a183b6c486702c18af8a9544f298377?lastModified=1759977445&narHash=sha256-LYr4IDfuihCkFAkSYz5%2F%2FgT2r1ewcWBYgd5AxPzPLIo%3D"
+    },
+    "go@1.24": {
+      "last_modified": "2025-09-18T16:33:27Z",
+      "resolved": "github:NixOS/nixpkgs/f4b140d5b253f5e2a1ff4e5506edbf8267724bde#go_1_24",
+      "source": "devbox-search",
+      "version": "1.24.7",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/wi6x7anr21niz0zaf4077pf7a6qj56xd-go-1.24.7",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/wi6x7anr21niz0zaf4077pf7a6qj56xd-go-1.24.7"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/l7xjyd3vdrlzjq7apswz394rmxsf94w8-go-1.24.7",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/l7xjyd3vdrlzjq7apswz394rmxsf94w8-go-1.24.7"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/g1dszpz67zfx7j7lqd1s3gz3pgygxzw7-go-1.24.7",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/g1dszpz67zfx7j7lqd1s3gz3pgygxzw7-go-1.24.7"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/0a9wg4llssiax3c6a3d5lxw9brj4mpyn-go-1.24.7",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/0a9wg4llssiax3c6a3d5lxw9brj4mpyn-go-1.24.7"
+        }
+      }
+    }
+  }
+}

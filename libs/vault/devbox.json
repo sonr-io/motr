@@ -1,0 +1,26 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/main/.schema/devbox.schema.json",
+  "packages": [
+    "go@1.24"
+  ],
+  "env": {
+    "GOOS": "js",
+    "GOARCH": "wasm"
+  },
+  "shell": {
+    "init_hook": [
+      "go mod download"
+    ],
+    "scripts": {
+      "build": [
+        "mkdir -p dist", 
+        "go build -ldflags='-s -w' -trimpath -o dist/vault.wasm .",
+        "rm -f dist/wasm_exec.js",
+        "cp wasm_exec.js dist/",
+        "chmod 644 dist/wasm_exec.js"
+      ],
+      "test": "go test ./... || echo 'No Go tests found in vault'",
+      "format": "go fmt ./..."
+    }
+  }
+}

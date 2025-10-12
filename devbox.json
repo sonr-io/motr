@@ -14,14 +14,6 @@
       "bun install"
     ],
     "scripts": {
-      "build": "bun run build",
-      "test": "bun run test",
-      "dev": "bun run dev",
-      "format": "bun run format:all",
-      "lint": "bun run lint && bun run lint:go",
-      "clean": "bun run clean",
-      "build:wasm:enclave": "bash ./scripts/build-wasm.sh enclave",
-      "build:wasm:vault": "bash ./scripts/build-wasm.sh vault",
       "deploy": "bun run deploy"
     }
   }
