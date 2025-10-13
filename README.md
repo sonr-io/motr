@@ -35,7 +35,7 @@ sonr-io/motr/
 │   └── zkp/              # Zero-knowledge proofs
 │
 ├── packages/             # TypeScript packages
-│   ├── es/              # @sonr.io/es - Core SDK
+│   ├── es/              # @sonr.io/sdk - Core SDK
 │   ├── ui/              # @sonr.io/ui - UI components
 │   └── do/              # @sonr.io/do - Durable Objects
 │
@@ -163,15 +163,15 @@ Browser and Node.js integration:
 
 ```bash
 # Install
-pnpm add @sonr.io/es
+pnpm add @sonr.io/sdk
 
 # Build SDK
-pnpm --filter '@sonr.io/es' build
+pnpm --filter '@sonr.io/sdk' build
 ```
 
 **Usage**:
 ```typescript
-import { createVaultClient } from '@sonr.io/es';
+import { createVaultClient } from '@sonr.io/sdk';
 
 // Initialize vault client
 const client = await createVaultClient({
@@ -267,7 +267,7 @@ make bench
 pnpm test
 
 # Specific package
-pnpm --filter '@sonr.io/es' test
+pnpm --filter '@sonr.io/sdk' test
 
 # With UI
 pnpm test --ui

@@ -16,7 +16,7 @@
     "logs": "wrangler tail --format pretty"
   },
   "dependencies": {
-    "@sonr.io/es": "workspace:*",
+    "@sonr.io/sdk": "workspace:*",
     "@sonr.io/ui": "workspace:*",
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/react-query": "^5.66.5",

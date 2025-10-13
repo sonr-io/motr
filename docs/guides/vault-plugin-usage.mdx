@@ -26,15 +26,15 @@ Install the Sonr Vault Plugin in your project:
 
 <CodeGroup>
 ```bash npm
-npm install @sonr.io/es
+npm install @sonr.io/sdk
 ```
 
 ```bash yarn
-yarn add @sonr.io/es
+yarn add @sonr.io/sdk
 ```
 
 ```bash pnpm
-pnpm add @sonr.io/es
+pnpm add @sonr.io/sdk
 ```
 </CodeGroup>
 
@@ -45,7 +45,7 @@ pnpm add @sonr.io/es
 The vault plugin is designed to be backward compatible. By default, it operates without persistent storage:
 
 ```typescript
-import { createVaultClient } from '@sonr.io/es/plugins/vault';
+import { createVaultClient } from '@sonr.io/sdk/plugins/vault';
 
 // Create a vault client without persistence
 const vault = createVaultClient();
@@ -64,7 +64,7 @@ const token = await vault.newOriginToken({
 Enable persistent storage with a simple configuration:
 
 ```typescript
-import { createVaultClient } from '@sonr.io/es/plugins/vault';
+import { createVaultClient } from '@sonr.io/sdk/plugins/vault';
 
 // Create a vault client with persistence
 const vault = createVaultClient({
@@ -139,7 +139,7 @@ await vault.clearPersistedState();
 Use the `VaultStorageManager` for advanced storage operations:
 
 ```typescript
-import { VaultStorageManager } from '@sonr.io/es/plugins/vault';
+import { VaultStorageManager } from '@sonr.io/sdk/plugins/vault';
 
 const storageManager = new VaultStorageManager({
   enablePersistence: true,

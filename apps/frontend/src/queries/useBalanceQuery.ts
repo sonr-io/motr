@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { getNativeBalances } from '@sonr.io/es/client'
+import { getNativeBalances } from '@sonr.io/sdk/client'
 import { rpcEndpoint } from '@/lib/client'
 
 export interface UseBalanceQueryOptions {

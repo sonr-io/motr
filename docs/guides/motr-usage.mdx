@@ -37,15 +37,15 @@ Motor is a WebAssembly-powered service worker that enables:
 
 <CodeGroup>
 ```bash npm
-npm install @sonr.io/es
+npm install @sonr.io/sdk
 ```
 
 ```bash pnpm
-pnpm add @sonr.io/es
+pnpm add @sonr.io/sdk
 ```
 
 ```bash yarn
-yarn add @sonr.io/es
+yarn add @sonr.io/sdk
 ```
 </CodeGroup>
 
@@ -56,7 +56,7 @@ yarn add @sonr.io/es
 <Tabs>
   <Tab title="Browser Auto-Detection">
     ```typescript
-    import { createMotorPlugin } from '@sonr.io/es/client/motor';
+    import { createMotorPlugin } from '@sonr.io/sdk/client/motor';
 
     // Automatically detects browser vs Node.js environment
     const plugin = await createMotorPlugin();
@@ -69,7 +69,7 @@ yarn add @sonr.io/es
 
   <Tab title="Browser Service Worker">
     ```typescript
-    import { createMotorPluginForBrowser } from '@sonr.io/es/client/motor';
+    import { createMotorPluginForBrowser } from '@sonr.io/sdk/client/motor';
 
     const plugin = await createMotorPluginForBrowser('/motor-worker', {
       auto_register_worker: true,
@@ -87,7 +87,7 @@ yarn add @sonr.io/es
 
   <Tab title="Node.js">
     ```typescript
-    import { createMotorPluginForNode } from '@sonr.io/es/client/motor';
+    import { createMotorPluginForNode } from '@sonr.io/sdk/client/motor';
 
     const plugin = await createMotorPluginForNode('http://localhost:8080', {
       max_retries: 3,

@@ -1,0 +1,10 @@
+{
+  "cosmos-cosmos-sdk-v0.50.10": "6dc6e8b2a882cd6e2c0e7440c816f2390ee87ee3",
+  "cometbft-cometbft-v0.38.12": "9722b6dfa1d0da3c3d4f73c1c779479971959d94",
+  "cosmos-ibc-go-v8.5.1": "6b2554360c0e3f0bbaa59da5b16b29fc05675c57",
+  "confio-ics23-master": "7f2c2d0965fdcf33658cce3198ddae078a449fc2",
+  "sonr-io-sonr-master": "6b4b1c42ed09d5214f025e934e85da07001d6379",
+  "CosmWasm-wasmd-v0.53.0": "de7db0dc672e7beb201e06e7eb12b2de356ac7c9",
+  "osmosis-labs-osmosis-v27.0.0": "b209c0018e243ef1e415745f51bc97a00ad56112",
+  "evmos-ethermint-v0.22.0": "c239fb335cf9647aafd0a43f6fd7e241328c55a6"
+}

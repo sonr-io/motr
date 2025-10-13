@@ -1,10 +1,10 @@
 # Sonr Frontend
 
-A minimal vanilla TanStack Query application demonstrating integration with `@sonr.io/es` and `@sonr.io/ui` packages.
+A minimal vanilla TanStack Query application demonstrating integration with `@sonr.io/sdk` and `@sonr.io/ui` packages.
 
 ## Features
 
-- **@sonr.io/es** - Blockchain client with RPC APIs, wallet support, and passkey authentication
+- **@sonr.io/sdk** - Blockchain client with RPC APIs, wallet support, and passkey authentication
 - **@sonr.io/ui** - Comprehensive UI component library built on Radix UI and Tailwind CSS
 - **TanStack Query** - Powerful data fetching with caching, background updates, and devtools
 - **TanStack Router** - Type-safe routing with automatic code splitting

@@ -17,7 +17,7 @@ function App() {
             Sonr Frontend
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300">
-            Minimal vanilla TanStack Query app with @sonr.io/es and @sonr.io/ui
+            Minimal vanilla TanStack Query app with @sonr.io/sdk and @sonr.io/ui
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             RPC Endpoint: <code className="font-mono bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded">{getRpcUrl()}</code>
@@ -40,7 +40,7 @@ function App() {
             <div>
               <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Features</h3>
               <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
-                <li>• <strong>@sonr.io/es</strong> - Blockchain client with RPC APIs, wallet support, and passkey authentication</li>
+                <li>• <strong>@sonr.io/sdk</strong> - Blockchain client with RPC APIs, wallet support, and passkey authentication</li>
                 <li>• <strong>@sonr.io/ui</strong> - Comprehensive UI component library built on Radix UI and Tailwind CSS</li>
                 <li>• <strong>TanStack Query</strong> - Powerful data fetching with caching, background updates, and devtools</li>
                 <li>• <strong>TanStack Router</strong> - Type-safe routing with automatic code splitting</li>

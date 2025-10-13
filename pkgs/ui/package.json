@@ -24,7 +24,7 @@
     "build": "tsc --noEmit",
     "build:ui": "tsc --noEmit",
     "dev": "tsc --noEmit --watch",
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist .tsbuildinfo",
     "test": "echo 'No tests defined for @sonr.io/ui'",
     "lint": "biome lint .",
     "format": "biome format . --write",

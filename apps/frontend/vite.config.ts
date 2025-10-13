@@ -17,6 +17,6 @@ export default defineConfig({
     dedupe: ['react', 'react-dom'],
   },
   optimizeDeps: {
-    include: ['@sonr.io/ui', '@sonr-io/es', '@sonr-io/enclave'],
+    include: ['@sonr.io/ui', '@sonr.io/sdk', '@sonr-io/enclave'],
   },
 })

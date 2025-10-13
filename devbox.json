@@ -18,7 +18,7 @@
       "export TAG_FRONTEND=@sonr.io/frontend@$VERSION_FRONTEND",
       "export TAG_ENCLAVE=@sonr.io/enclave@$VERSION_ENCLAVE",
       "export TAG_VAULT=@sonr.io/vault@$VERSION_VAULT",
-      "export TAG_ES=@sonr.io/es@$VERSION_ES",
+      "export TAG_ES=@sonr.io/sdk@$VERSION_ES",
       "export TAG_UI=@sonr.io/ui@$VERSION_UI",
       "export BUMP_FRONTEND=$(git diff --quiet $TAG_FRONTEND -- apps/frontend/ && echo false || echo true)",
       "export BUMP_ENCLAVE=$(git diff --quiet $TAG_ENCLAVE -- libs/enclave/ && echo false || echo true)",

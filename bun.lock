@@ -23,7 +23,7 @@
       "name": "@sonr.io/frontend",
       "version": "0.0.1",
       "dependencies": {
-        "@sonr.io/es": "workspace:*",
+        "@sonr.io/sdk": "workspace:*",
         "@sonr.io/ui": "workspace:*",
         "@tailwindcss/vite": "^4.0.6",
         "@tanstack/react-query": "^5.66.5",
@@ -68,8 +68,8 @@
         "vitest": "^2.0.0",
       },
     },
-    "pkgs/es": {
-      "name": "@sonr.io/es",
+    "pkgs/sdk": {
+      "name": "@sonr.io/sdk",
       "version": "0.0.12",
       "dependencies": {
         "@extism/extism": "2.0.0-rc13",
@@ -837,9 +837,9 @@
 
     "@sonr.io/enclave": ["@sonr.io/enclave@workspace:libs/enclave"],
 
-    "@sonr.io/es": ["@sonr.io/es@workspace:pkgs/es"],
-
     "@sonr.io/frontend": ["@sonr.io/frontend@workspace:apps/frontend"],
+
+    "@sonr.io/sdk": ["@sonr.io/sdk@workspace:pkgs/sdk"],
 
     "@sonr.io/ui": ["@sonr.io/ui@workspace:pkgs/ui"],
 
