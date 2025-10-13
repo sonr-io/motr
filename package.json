@@ -27,7 +27,7 @@
     "build": "turbo run build",
     "build:all": "bun run build",
     "build:enclave": "bun --filter '@sonr.io/enclave' run build",
-    "build:es": "bun --filter '@sonr.io/sdk' run build",
+    "build:sdk": "bun --filter '@sonr.io/sdk' run build",
     "build:ui": "bun --filter '@sonr.io/ui' run build",
     "build:do": "bun --filter '@sonr.io/do' run build",
     "build:vault": "bun --filter '@sonr.io/vault' run build",
@@ -35,7 +35,7 @@
     "test": "turbo run test",
     "test:all": "bun test",
     "test:enclave": "bun --filter '@sonr.io/enclave' test",
-    "test:es": "bun --filter '@sonr.io/sdk' test",
+    "test:sdk": "bun --filter '@sonr.io/sdk' test",
     "test:ui": "bun --filter '@sonr.io/ui' test",
     "test:vault": "bun --filter '@sonr.io/vault' test",
     "dev": "turbo run dev --filter=frontend",
@@ -54,8 +54,8 @@
     "deploy:frontend": "bun --filter 'frontend' run deploy"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.2.5",
-    "@types/node": "^24.7.1",
+    "@biomejs/biome": "^2.2.6",
+    "@types/node": "^24.7.2",
     "@vitest/ui": "^3.2.4",
     "happy-dom": "^20.0.0",
     "turbo": "^2.5.8",
