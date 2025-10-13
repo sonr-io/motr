@@ -6,7 +6,7 @@ version_scheme = "semver"
 version_provider = "npm"
 update_changelog_on_bump = true
 major_version_zero = true
-pre_bump_hooks = ["bash ../../scripts/hook-bump-pre.sh"]
+pre_bump_hooks = [""]
 post_bump_hooks = ["pnpm --filter '@sonr.io/ui' publish --no-git-checks"]
 
 [tool.commitizen.customize]
