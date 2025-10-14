@@ -236,4 +236,7 @@ debug/
 # ============================================
 # Keep package-specific .gitignore files active
 CLAUDE.md
-Taskfile.yml
+Taskfile*
+mprocs*
+.claude*
+.opencode
