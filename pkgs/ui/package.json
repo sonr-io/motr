@@ -8,6 +8,7 @@
     ".": "./src/components/index.ts",
     "./components": "./src/components/index.ts",
     "./components/*": "./src/components/*.tsx",
+    "./components/auth": "./src/components/auth/*.tsx",
     "./components/ui/*": "./src/components/ui/*.tsx",
     "./lib/utils": "./src/lib/utils.ts",
     "./lib/*": "./src/lib/*.ts",
@@ -20,7 +21,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc --noEmit",
+    "build": "tsc",
     "build:ui": "tsc --noEmit",
     "dev": "tsc --noEmit --watch",
     "clean": "rm -rf dist .tsbuildinfo",
