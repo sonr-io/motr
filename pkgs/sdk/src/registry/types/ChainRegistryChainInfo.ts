@@ -8,24 +8,9 @@
 /**
  * Chain.json is a metadata file that contains information about a blockchain.
  */
-export type ChainRegistryChainInfo = ChainRegistryChainInfo1 & ChainRegistryChainInfo2;
-export type ChainRegistryChainInfo1 = {
+export type ChainRegistryChainInfo = {
   [k: string]: unknown | undefined;
-};
-/**
- * Git Upgrade Tag
- */
-export type Tag = string;
-/**
- * Simple version string (e.g., 'v1.0.0').
- */
-export type Version = string;
-/**
- * URL of the code repository.
- */
-export type Repo = string;
-
-export interface ChainRegistryChainInfo2 {
+} & {
   $schema?: string;
   chain_name: string;
   /**
@@ -129,14 +114,9 @@ export interface ChainRegistryChainInfo2 {
       ics_ccv_url?: string;
     };
   };
-  images?: (
-    | {
-        [k: string]: unknown | undefined;
-      }
-    | {
-        [k: string]: unknown | undefined;
-      }
-  )[];
+  images?: {
+    [k: string]: unknown | undefined;
+  }[];
   logo_URIs?: {
     png?: string;
     svg?: string;
@@ -157,7 +137,20 @@ export interface ChainRegistryChainInfo2 {
   explorers?: Explorer[];
   keywords?: string[];
   extra_codecs?: ("ethermint" | "injective")[];
-}
+};
+/**
+ * Git Upgrade Tag
+ */
+export type Tag = string;
+/**
+ * Simple version string (e.g., 'v1.0.0').
+ */
+export type Version = string;
+/**
+ * URL of the code repository.
+ */
+export type Repo = string;
+
 export interface FeeToken {
   denom: string;
   fixed_min_gas_price?: number;
