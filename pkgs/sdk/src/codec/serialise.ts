@@ -22,7 +22,7 @@ export function sortObjectByKey<T>(obj: T): T {
 	if (Array.isArray(obj)) {
 		return obj.map(sortObjectByKey) as T;
 	}
-	const sortedKeys = Object.keys(obj).sort();
+	const sortedKeys = Object.keys(obj).toSorted();
 	const result: Record<string, unknown> = {};
 	for (const key of sortedKeys) {
 		result[key] = sortObjectByKey((obj as Record<string, unknown>)[key]);
