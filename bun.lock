@@ -5,9 +5,10 @@
       "name": "@sonr.io/motr",
       "dependencies": {
         "@bufbuild/protobuf": "1.10.0",
-        "@noble/hashes": "1.5.0",
-        "@noble/secp256k1": "1.5.0",
+        "@noble/hashes": "2.0.0",
+        "@noble/secp256k1": "2.1.0",
         "glob": "^11.0.3",
+        "motion": "^12.23.24",
         "swagger2openapi": "^7.0.8",
         "yaml": "^2.8.1",
       },
@@ -207,7 +208,7 @@
   "overrides": {
     "@bufbuild/protobuf": "1.10.0",
     "@bufbuild/protoc-gen-es": "1.10.0",
-    "@noble/hashes": "1.5.0",
+    "@noble/hashes": "2.0.0",
     "@noble/secp256k1": "2.1.0",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
@@ -665,7 +666,7 @@
 
     "@noble/curves": ["@noble/curves@1.9.7", "", { "dependencies": { "@noble/hashes": "1.8.0" } }, "sha512-gbKGcRUYIjA3/zCCNaWDciTMFI0dCkvou3TL8Zmy5Nc7sJ47a0jtOeZoTaMxkuqRo9cRhjOdZJXegxYE5FN/xw=="],
 
-    "@noble/hashes": ["@noble/hashes@1.5.0", "", {}, "sha512-1j6kQFb7QRru7eKN3ZDvRcP13rugwdxZqCjbiAVZfIJwgj2A65UmT4TgARXGlXgnRkORLTDTrO19ZErt7+QXgA=="],
+    "@noble/hashes": ["@noble/hashes@2.0.0", "", {}, "sha512-h8VUBlE8R42+XIDO229cgisD287im3kdY6nbNZJFjc6ZvKIXPYXe6Vc/t+kyjFdMFyt5JpapzTsEg8n63w5/lw=="],
 
     "@noble/secp256k1": ["@noble/secp256k1@2.1.0", "", {}, "sha512-XLEQQNdablO0XZOIniFQimiXsZDNwaYgL96dZwC54Q30imSbAOFf3NKtepc+cXyuZf5Q1HCgbqgZ2UFFuHVcEw=="],
 
@@ -1059,7 +1060,7 @@
 
     "@types/react-dom": ["@types/react-dom@19.2.2", "", { "peerDependencies": { "@types/react": "^19.2.0" } }, "sha512-9KQPoO6mZCi7jcIStSnlOWn2nEF3mNmyr3rIAsGnAbQKYbRLyqmeSc39EVgtxXVia+LMT8j3knZLAZAh+xLmrw=="],
 
-    "@types/react-reconciler": ["@types/react-reconciler@0.32.1", "", { "peerDependencies": { "@types/react": "*" } }, "sha512-RsqPttsBQ+6af0nATFXJJpemYQH7kL9+xLNm1z+0MjQFDKBZDM2R6SBrjdvRmHu9i9fM6povACj57Ft+pKRNOA=="],
+    "@types/react-reconciler": ["@types/react-reconciler@0.32.2", "", { "peerDependencies": { "@types/react": "*" } }, "sha512-gjcm6O0aUknhYaogEl8t5pecPfiOTD8VQkbjOhgbZas/E6qGY+veW9iuJU/7p4Y1E0EuQ0mArga7VEOUWSlVRA=="],
 
     "@types/retry": ["@types/retry@0.12.2", "", {}, "sha512-XISRgDJ2Tc5q4TRqvgJtzsRkFYNJzZrhTdtMoGVBttwzzQJkPnS3WWTFc7kuDRoPtPakl+T+OfdEUjYJj7Jbow=="],
 
@@ -1950,6 +1951,8 @@
     "mkdirp-classic": ["mkdirp-classic@0.5.3", "", {}, "sha512-gKLcREMhtuZRwRAfqP3RFW+TK4JqApVBtOIftVgjuABpAtpxhPGaDcfvbhNvD0B8iD1oUr/txX35NjcaY6Ns/A=="],
 
     "mortice": ["mortice@3.3.1", "", { "dependencies": { "abort-error": "^1.0.0", "it-queue": "^1.1.0", "main-event": "^1.0.0" } }, "sha512-t3oESfijIPGsmsdLEKjF+grHfrbnKSXflJtgb1wY14cjxZpS6GnhHRXTxxzCAoCCnq1YYfpEPwY3gjiCPhOufQ=="],
+
+    "motion": ["motion@12.23.24", "", { "dependencies": { "framer-motion": "^12.23.24", "tslib": "^2.4.0" }, "peerDependencies": { "@emotion/is-prop-valid": "*", "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" }, "optionalPeers": ["@emotion/is-prop-valid", "react", "react-dom"] }, "sha512-Rc5E7oe2YZ72N//S3QXGzbnXgqNrTESv8KKxABR20q2FLch9gHLo0JLyYo2hZ238bZ9Gx6cWhj9VO0IgwbMjCw=="],
 
     "motion-dom": ["motion-dom@12.23.23", "", { "dependencies": { "motion-utils": "^12.23.6" } }, "sha512-n5yolOs0TQQBRUFImrRfs/+6X4p3Q4n1dUEqt/H58Vx7OW6RF+foWEgmTVDhIWJIMXOuNNL0apKH2S16en9eiA=="],
 
