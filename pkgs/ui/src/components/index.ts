@@ -208,4 +208,15 @@ export {
 } from './ui/tooltip';
 
 // Export utility functions
-export { cn } from '../lib/utils';
+export { cn } from "../lib/utils";
+
+// Export Glass Card components
+export {
+  GlassCard,
+  GlassCardHeader,
+  GlassCardTitle,
+  GlassCardDescription,
+  GlassCardAction,
+  GlassCardContent,
+  GlassCardFooter,
+} from "./ui/glass-card";
