@@ -53,7 +53,7 @@ export class VaultClientWithIPFS extends VaultClient {
       });
     } catch (error) {
       console.error('Failed to initialize IPFS:', error);
-      throw new Error(`IPFS initialization failed: ${error}`);
+      throw new Error(`IPFS initialization failed: ${error}`, { cause: error });
     }
   }
 

@@ -72,7 +72,7 @@ async function registerServiceWorker(serviceWorkerPath: string, debug: boolean):
      }
    } catch (error) {
      console.error('[Vault] Failed to register ServiceWorker:', error)
-     throw new Error('Failed to register ServiceWorker')
+     throw new Error('Failed to register ServiceWorker', { cause: error })
    }
 }
 

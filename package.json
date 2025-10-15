@@ -27,24 +27,23 @@
     "build": "turbo run build",
     "test": "turbo run test",
     "dev": "cd apps/frontend && bun run dev",
-    "lint": "biome check .",
-    "format": "biome format --write .",
-    "check": "biome check --write .",
+     "lint": "oxlint",
+     "format": "oxlint --fix",
+     "check": "oxlint",
     "typecheck": "turbo run typecheck",
     "clean": "turbo run clean && rm -rf node_modules bun.lock",
     "generate": "bun --filter '@sonr.io/sdk' run gen",
     "deploy": "turbo run deploy"
   },
-  "devDependencies": {
-    "@biomejs/biome": "^2.2.6",
-    "@types/node": "^24.7.2",
-    "@vitest/ui": "^3.2.4",
-    "happy-dom": "^20.0.0",
-    "turbo": "^2.5.8",
-    "typescript": "^5.9.3",
-    "vitest": "^3.2.4",
-    "wrangler": "^4.42.2"
-  },
+   "devDependencies": {
+     "@types/node": "^24.7.2",
+     "@vitest/ui": "^3.2.4",
+     "happy-dom": "^20.0.0",
+     "turbo": "^2.5.8",
+     "typescript": "^5.9.3",
+     "vitest": "^3.2.4",
+     "wrangler": "^4.42.2"
+   },
   "overrides": {
     "esbuild": "0.20.0",
     "vite": "5.4.20",

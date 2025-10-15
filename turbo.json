@@ -119,11 +119,11 @@
       "cache": false,
       "env": ["NODE_ENV", "CI"]
     },
-    "lint": {
-      "outputs": [],
-      "cache": false,
-      "inputs": ["src/**", "app/**", "*.config.{js,ts,mjs,cjs}", "*.json"]
-    },
+     "lint": {
+       "outputs": [],
+       "cache": false,
+       "inputs": ["src/**", "app/**", "*.config.{js,ts,mjs,cjs}", "*.json", ".oxlintrc.json"]
+     },
     "format": {
       "outputs": [],
       "cache": false,

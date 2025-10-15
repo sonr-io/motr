@@ -29,7 +29,8 @@
       "echo $BUMP_ENCLAVE",
       "echo $BUMP_VAULT",
       "echo $BUMP_ES",
-      "echo $BUMP_UI"
+      "echo $BUMP_UI",
+      "bun install"
     ],
     "scripts": {
       "build": "bun run build",

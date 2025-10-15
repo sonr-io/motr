@@ -61,7 +61,7 @@ export function parseToken(token: string): UCANToken {
     header = base64urlDecodeJSON(headerEncoded);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to decode JWT header: ${message}`);
+    throw new Error(`Failed to decode JWT header: ${message}`, { cause: error });
   }
 
   // Validate header structure using type guard
@@ -77,7 +77,7 @@ export function parseToken(token: string): UCANToken {
     payload = base64urlDecodeJSON(payloadEncoded);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to decode JWT payload: ${message}`);
+    throw new Error(`Failed to decode JWT payload: ${message}`, { cause: error });
   }
 
   // Validate payload structure using type guard
@@ -105,7 +105,7 @@ export function parseToken(token: string): UCANToken {
     signature = base64urlDecode(signatureEncoded);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to decode JWT signature: ${message}`);
+    throw new Error(`Failed to decode JWT signature: ${message}`, { cause: error });
   }
 
   // Validate signature is not empty
@@ -209,7 +209,7 @@ export function extractPayload(token: string): unknown {
     return base64urlDecodeJSON(parts[1]);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to decode payload: ${message}`);
+    throw new Error(`Failed to decode payload: ${message}`, { cause: error });
   }
 }
 
@@ -240,6 +240,6 @@ export function extractHeader(token: string): unknown {
     return base64urlDecodeJSON(parts[0]);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to decode header: ${message}`);
+    throw new Error(`Failed to decode header: ${message}`, { cause: error });
   }
 }

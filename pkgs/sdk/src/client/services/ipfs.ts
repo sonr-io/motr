@@ -139,7 +139,7 @@ export class BrowserIPFSClient implements IPFSClient {
 
       this.initialized = true;
     } catch (error) {
-      throw new Error(`Failed to initialize Helia: ${error}`);
+      throw new Error(`Failed to initialize Helia: ${error}`, { cause: error });
     }
   }
 
@@ -158,7 +158,7 @@ export class BrowserIPFSClient implements IPFSClient {
         timestamp: Date.now(),
       };
     } catch (error) {
-      throw new Error(`Failed to add enclave data: ${error}`);
+      throw new Error(`Failed to add enclave data: ${error}`, { cause: error });
     }
   }
 
@@ -187,7 +187,7 @@ export class BrowserIPFSClient implements IPFSClient {
 
       return result;
     } catch (error) {
-      throw new Error(`Failed to get enclave data: ${error}`);
+      throw new Error(`Failed to get enclave data: ${error}`, { cause: error });
     }
   }
 
@@ -200,7 +200,7 @@ export class BrowserIPFSClient implements IPFSClient {
       // Use Helia's verified fetch
       return await heliaVerifiedFetch(`ipfs://${cid}`);
     } catch (error) {
-      throw new Error(`Failed to fetch CID ${cid}: ${error}`);
+      throw new Error(`Failed to fetch CID ${cid}: ${error}`, { cause: error });
     }
   }
 
@@ -214,7 +214,7 @@ export class BrowserIPFSClient implements IPFSClient {
       await this.helia.pins.add(cid as any);
       this.pinnedCIDs.add(cid);
     } catch (error) {
-      throw new Error(`Failed to pin CID ${cid}: ${error}`);
+      throw new Error(`Failed to pin CID ${cid}: ${error}`, { cause: error });
     }
   }
 
@@ -228,7 +228,7 @@ export class BrowserIPFSClient implements IPFSClient {
       await this.helia.pins.rm(cid as any);
       this.pinnedCIDs.delete(cid);
     } catch (error) {
-      throw new Error(`Failed to unpin CID ${cid}: ${error}`);
+      throw new Error(`Failed to unpin CID ${cid}: ${error}`, { cause: error });
     }
   }
 
@@ -319,7 +319,7 @@ export class BrowserIPFSClient implements IPFSClient {
       const cid = await this.strings.add(data);
       return cid.toString();
     } catch (error) {
-      throw new Error(`Failed to add string: ${error}`);
+      throw new Error(`Failed to add string: ${error}`, { cause: error });
     }
   }
 
@@ -331,7 +331,7 @@ export class BrowserIPFSClient implements IPFSClient {
     try {
       return await this.strings.get(cid as any);
     } catch (error) {
-      throw new Error(`Failed to get string: ${error}`);
+      throw new Error(`Failed to get string: ${error}`, { cause: error });
     }
   }
 }

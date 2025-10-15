@@ -1,0 +1,40 @@
+{
+	"$schema": "https://oxc-project.github.io/schemas/oxlintrc.json",
+	"categories": {
+		"correctness": "error",
+		"suspicious": "warn",
+		"pedantic": "off",
+		"style": "off",
+		"nursery": "off",
+		"restriction": "off"
+	},
+	"overrides": [
+		{
+			"files": [
+				"**/protobufs/**",
+				"**/routeTree.gen.ts",
+				"**/*.wasm",
+				"**/wasm_exec.js"
+			],
+			"categories": {
+				"correctness": "off",
+				"suspicious": "off"
+			}
+		},
+		{
+			"files": ["packages/**/*.ts", "packages/**/*.tsx"],
+			"rules": {
+				"typescript/no-explicit-any": "off",
+				"no-unused-vars": "warn",
+				"no-static-only-class": "off"
+			}
+		},
+		{
+			"files": ["apps/**/*.ts", "apps/**/*.tsx"],
+			"rules": {
+				"prefer-template": "warn",
+				"no-template-curly-in-string": "warn"
+			}
+		}
+	]
+}
