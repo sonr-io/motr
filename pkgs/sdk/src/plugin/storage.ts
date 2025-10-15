@@ -1,5 +1,5 @@
 import Dexie, { type Table } from 'dexie';
-import type { StoredVaultState, StoredUCANToken, VaultStorageConfig } from './types';
+import type { StoredVaultState, StoredUCANToken, VaultStorageConfig } from '@sonr.io/enclave';
 
 /**
  * Session data stored in IndexedDB

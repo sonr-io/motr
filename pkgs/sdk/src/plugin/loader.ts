@@ -2,7 +2,7 @@
  * WASM loader utilities for the vault module
  */
 
-import { VaultError, VaultErrorCode } from './types';
+import { VaultError, VaultErrorCode } from '@sonr.io/enclave';
 
 /**
  * Options for loading WASM module

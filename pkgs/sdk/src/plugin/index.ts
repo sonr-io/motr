@@ -8,7 +8,10 @@
  * Now includes IPFS integration for distributed enclave data storage.
  */
 
-export * from './types';
+// Re-export types from @sonr.io/enclave for backward compatibility
+export * from '@sonr.io/enclave';
+
+// SDK-specific exports
 export * from './client';
 export * from './loader';
 export * from './storage';

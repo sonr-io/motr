@@ -17,7 +17,7 @@ globalThis.IDBKeyRange = FDBKeyRange;
 import Dexie from 'dexie';
 import { VaultStorageManager, AccountVaultDatabase } from './storage';
 import { VaultClient, createVaultClient } from './client';
-import type { StoredVaultState, StoredUCANToken, VaultStorageConfig } from './types';
+import type { StoredVaultState, StoredUCANToken, VaultStorageConfig } from '@sonr.io/enclave';
 
 describe('VaultClient with Dexie.js Storage - End to End', () => {
   let storageManager: VaultStorageManager;

@@ -22,6 +22,22 @@
     "lint": "go fmt ./...",
     "clean": "rm -rf dist *.tsbuildinfo"
   },
+  "dependencies": {
+    "@extism/extism": "2.0.0-rc13",
+    "dexie": "^4.2.1"
+  },
+  "optionalDependencies": {
+    "helia": "^6.0.1",
+    "@helia/strings": "^5.0.1",
+    "@helia/unixfs": "^6.0.1",
+    "@helia/verified-fetch": "^3.2.3",
+    "@chainsafe/libp2p-noise": "^17.0.0",
+    "@chainsafe/libp2p-yamux": "^8.0.0",
+    "@libp2p/webrtc": "^6.0.6",
+    "@libp2p/websockets": "^10.0.6",
+    "multiformats": "^13.4.1",
+    "uint8arrays": "^5.1.0"
+  },
   "devDependencies": {
     "tsc-alias": "^1.8.16",
     "typescript": "^5.9.3",

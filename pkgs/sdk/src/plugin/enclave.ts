@@ -3,7 +3,7 @@
  */
 
 import type { IPFSClient } from '../client/services/ipfs';
-import { EnclaveData } from './types';
+import { EnclaveData } from '@sonr.io/enclave';
 
 /**
  * Extended enclave data with CID reference
