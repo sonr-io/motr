@@ -33,7 +33,7 @@ ENVIRONMENT = "staging"
 
 # Development configuration
 [dev]
-port = 3000
+port = 6165
 local_protocol = "http"
 ip = "0.0.0.0"
 
