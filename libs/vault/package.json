@@ -15,21 +15,22 @@
   "files": [
     "dist"
   ],
-    "scripts": {
-      "build": "devbox run build && tsc",
-      "watch": "tsc --watch",
-      "test": "bun run test:go && vitest run",
-      "test:watch": "vitest",
-      "test:go": "go test -v ./... || echo 'No Go tests found in vault'",
-      "lint": "go fmt ./...",
-      "clean": "rm -rf dist *.tsbuildinfo"
-    },
-   "devDependencies": {
-     "typescript": "^5.9.3",
-     "vite": "^7.1.9",
-     "vitest": "^3.2.4",
-     "@vitest/coverage-v8": "^3.2.4"
-   },
+  "scripts": {
+    "build": "devbox run build && tsc && tsc-alias",
+    "watch": "tsc --watch",
+    "test": "bun run test:go && vitest run",
+    "test:watch": "vitest",
+    "test:go": "go test -v ./... || echo 'No Go tests found in vault'",
+    "lint": "go fmt ./...",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^3.2.4",
+    "tsc-alias": "^1.8.16",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.9",
+    "vitest": "^3.2.4"
+  },
   "engines": {
     "node": ">=20"
   },
