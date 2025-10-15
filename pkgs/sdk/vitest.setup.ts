@@ -1,7 +1,6 @@
 // Setup file for Vitest with jsdom environment
 // Provides browser-like APIs including navigator
 
-import 'fake-indexeddb/auto';
 import { vi } from 'vitest';
 
 // Ensure navigator is available (jsdom provides this)

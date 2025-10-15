@@ -1,34 +1,12 @@
 import { defineConfig } from 'vitest/config';
-import path from 'path';
 
 export default defineConfig({
   test: {
-    globals: true,
+    // Use jsdom for browser-like environment with navigator API
     environment: 'jsdom',
-    setupFiles: ['./test/setup.ts'],
-    exclude: [
-      '**/node_modules/**',
-      '**/dist/**',
-      '**/test/plugins.test.ts',
-      '**/src/client/services/__tests__/ipfs.test.ts',
-      '**/tests/integration/ipfs-integration.test.ts',
-    ],
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-      exclude: [
-        'node_modules/',
-        'test/',
-        '*.config.ts',
-        '**/*.d.ts',
-        '**/*.test.ts',
-        '**/index.ts',
-      ],
-    },
-  },
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
+    globals: true,
+    include: ['src/**/*.test.ts', 'src/**/*.spec.ts'],
+    exclude: ['node_modules', 'dist', '**/*.e2e.test.ts'],
+    setupFiles: ['./vitest.setup.ts'],
   },
 });
