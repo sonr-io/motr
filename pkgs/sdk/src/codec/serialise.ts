@@ -1,5 +1,5 @@
-import { utf8 } from '@scure/base';
-import type { StdSignDoc } from '@sonr.io/sdk/registry';
+import { utf8 } from "@scure/base";
+import type { StdSignDoc } from "@sonr.io/sdk/registry";
 
 /**
  * Escapes <,>,& in string.
@@ -9,27 +9,30 @@ import type { StdSignDoc } from '@sonr.io/sdk/registry';
  * @param str
  */
 function escapeHtml(str: string): string {
-  return str.replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026');
+	return str
+		.replace(/</g, "\\u003c")
+		.replace(/>/g, "\\u003e")
+		.replace(/&/g, "\\u0026");
 }
 
 export function sortObjectByKey<T>(obj: T): T {
-  if (typeof obj !== 'object' || obj == null) {
-    return obj;
-  }
-  if (Array.isArray(obj)) {
-    return obj.map(sortObjectByKey) as T;
-  }
-  const sortedKeys = Object.keys(obj).toSorted();
-  const result: Record<string, unknown> = {};
-  for (const key of sortedKeys) {
-    result[key] = sortObjectByKey((obj as Record<string, unknown>)[key]);
-  }
-  return result as T;
+	if (typeof obj !== "object" || obj == null) {
+		return obj;
+	}
+	if (Array.isArray(obj)) {
+		return obj.map(sortObjectByKey) as T;
+	}
+	const sortedKeys = Object.keys(obj).sort();
+	const result: Record<string, unknown> = {};
+	for (const key of sortedKeys) {
+		result[key] = sortObjectByKey((obj as Record<string, unknown>)[key]);
+	}
+	return result as T;
 }
 
 /**
  * Serialises the given sign doc to a `Uint8Array` in a deterministic manner.
  */
 export function serialiseSignDoc(doc: StdSignDoc): Uint8Array {
-  return utf8.decode(escapeHtml(JSON.stringify(sortObjectByKey(doc))));
+	return utf8.decode(escapeHtml(JSON.stringify(sortObjectByKey(doc))));
 }

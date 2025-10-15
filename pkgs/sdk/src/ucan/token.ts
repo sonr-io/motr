@@ -9,8 +9,8 @@
  * @see https://github.com/ucan-wg/spec - UCAN specification
  */
 
-import { base64urlEncode, base64urlEncodeJSON } from './encoding.js';
-import type { UCANHeader, UCANPayload, UCANToken } from './types.js';
+import { base64urlEncode, base64urlEncodeJSON } from "./encoding.js";
+import type { UCANHeader, UCANPayload, UCANToken } from "./types.js";
 
 /**
  * Sorts an object's keys alphabetically for deterministic serialization.
@@ -22,18 +22,18 @@ import type { UCANHeader, UCANPayload, UCANToken } from './types.js';
  * @returns New object with alphabetically sorted keys
  */
 function sortObjectByKey<T>(obj: T): T {
-  if (typeof obj !== 'object' || obj == null) {
-    return obj;
-  }
-  if (Array.isArray(obj)) {
-    return obj.map(sortObjectByKey) as T;
-  }
-  const sortedKeys = Object.keys(obj).toSorted();
-  const result: Record<string, unknown> = {};
-  for (const key of sortedKeys) {
-    result[key] = sortObjectByKey((obj as Record<string, unknown>)[key]);
-  }
-  return result as T;
+	if (typeof obj !== "object" || obj == null) {
+		return obj;
+	}
+	if (Array.isArray(obj)) {
+		return obj.map(sortObjectByKey) as T;
+	}
+	const sortedKeys = Object.keys(obj).sort();
+	const result: Record<string, unknown> = {};
+	for (const key of sortedKeys) {
+		result[key] = sortObjectByKey((obj as Record<string, unknown>)[key]);
+	}
+	return result as T;
 }
 
 /**
@@ -46,14 +46,16 @@ function sortObjectByKey<T>(obj: T): T {
  * @param obj - Object to clean
  * @returns New object without undefined properties
  */
-function removeUndefined<T extends Record<string, unknown>>(obj: T): Partial<T> {
-  const result: Partial<T> = {};
-  for (const key in obj) {
-    if (obj[key] !== undefined) {
-      result[key] = obj[key];
-    }
-  }
-  return result;
+function removeUndefined<T extends Record<string, unknown>>(
+	obj: T,
+): Partial<T> {
+	const result: Partial<T> = {};
+	for (const key in obj) {
+		if (obj[key] !== undefined) {
+			result[key] = obj[key];
+		}
+	}
+	return result;
 }
 
 /**
@@ -73,8 +75,8 @@ function removeUndefined<T extends Record<string, unknown>>(obj: T): Partial<T> 
  * ```
  */
 export function formatHeader(header: UCANHeader): string {
-  const sorted = sortObjectByKey(header);
-  return base64urlEncodeJSON(sorted);
+	const sorted = sortObjectByKey(header);
+	return base64urlEncodeJSON(sorted);
 }
 
 /**
@@ -98,10 +100,12 @@ export function formatHeader(header: UCANHeader): string {
  * ```
  */
 export function formatPayload(payload: UCANPayload): string {
-  // Remove undefined optional fields before encoding
-  const cleaned = removeUndefined(payload as unknown as Record<string, unknown>);
-  const sorted = sortObjectByKey(cleaned);
-  return base64urlEncodeJSON(sorted);
+	// Remove undefined optional fields before encoding
+	const cleaned = removeUndefined(
+		payload as unknown as Record<string, unknown>,
+	);
+	const sorted = sortObjectByKey(cleaned);
+	return base64urlEncodeJSON(sorted);
 }
 
 /**
@@ -124,10 +128,13 @@ export function formatPayload(payload: UCANPayload): string {
  * const signature = await sign(message, privateKey);
  * ```
  */
-export function createSigningMessage(header: UCANHeader, payload: UCANPayload): string {
-  const headerEncoded = formatHeader(header);
-  const payloadEncoded = formatPayload(payload);
-  return `${headerEncoded}.${payloadEncoded}`;
+export function createSigningMessage(
+	header: UCANHeader,
+	payload: UCANPayload,
+): string {
+	const headerEncoded = formatHeader(header);
+	const payloadEncoded = formatPayload(payload);
+	return `${headerEncoded}.${payloadEncoded}`;
 }
 
 /**
@@ -164,9 +171,9 @@ export function createSigningMessage(header: UCANHeader, payload: UCANPayload): 
  * ```
  */
 export function formatToken(ucan: UCANToken): string {
-  const headerEncoded = formatHeader(ucan.header);
-  const payloadEncoded = formatPayload(ucan.payload);
-  const signatureEncoded = base64urlEncode(ucan.signature);
+	const headerEncoded = formatHeader(ucan.header);
+	const payloadEncoded = formatPayload(ucan.payload);
+	const signatureEncoded = base64urlEncode(ucan.signature);
 
-  return `${headerEncoded}.${payloadEncoded}.${signatureEncoded}`;
+	return `${headerEncoded}.${payloadEncoded}.${signatureEncoded}`;
 }
