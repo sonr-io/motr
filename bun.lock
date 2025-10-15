@@ -4,8 +4,9 @@
     "": {
       "name": "@sonr.io/motr",
       "dependencies": {
+        "@bufbuild/protobuf": "1.10.0",
         "@noble/hashes": "1.5.0",
-        "@noble/secp256k1": "2.1.0",
+        "@noble/secp256k1": "1.5.0",
         "glob": "^11.0.3",
         "swagger2openapi": "^7.0.8",
         "yaml": "^2.8.1",
