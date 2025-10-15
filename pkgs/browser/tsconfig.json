@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM", "DOM.Iterable", "WebWorker"],
+    "target": "ES2020",
+    "module": "ESNext",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@sonr.io/browser/*": ["./src/*"]
+    },
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "moduleResolution": "bundler",
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "composite": true
+  },
+  "include": ["src"],
+  "exclude": ["dist", "node_modules", "**/*.test.ts", "**/__tests__/**"],
+  "tsc-alias": {
+    "resolveFullPaths": true,
+    "replacers": {
+      "base-url": {
+        "enabled": false
+      }
+    }
+  }
+}

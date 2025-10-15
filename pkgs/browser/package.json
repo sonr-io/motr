@@ -1,0 +1,67 @@
+{
+  "name": "@sonr.io/browser",
+  "version": "0.0.1",
+  "description": "Browser-optimized utilities for WebAuthn, storage, and crypto operations",
+  "private": false,
+  "sideEffects": false,
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./webauthn": {
+      "types": "./dist/webauthn/index.d.ts",
+      "import": "./dist/webauthn/index.js"
+    },
+    "./storage": {
+      "types": "./dist/storage/index.d.ts",
+      "import": "./dist/storage/index.js"
+    },
+    "./crypto": {
+      "types": "./dist/crypto/index.d.ts",
+      "import": "./dist/crypto/index.js"
+    },
+    "./worker": {
+      "types": "./dist/worker/index.d.ts",
+      "import": "./dist/worker/index.js"
+    }
+  },
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc && tsc-alias",
+    "clean": "rimraf dist *.tsbuildinfo",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "oxlint",
+    "format": "oxlint --fix",
+    "check": "oxlint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@simplewebauthn/browser": "^13.2.2",
+    "dexie": "^4.2.1"
+  },
+  "devDependencies": {
+    "@simplewebauthn/types": "^12.0.0",
+    "@types/node": "^24.7.2",
+    "@vitest/ui": "^3.2.4",
+    "fake-indexeddb": "^6.2.3",
+    "happy-dom": "^20.0.0",
+    "rimraf": "^6.0.1",
+    "tsc-alias": "^1.8.16",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}
