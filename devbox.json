@@ -13,7 +13,6 @@
       "export VERSION_FRONTEND=$(cd apps/frontend; cz version -p)",
       "export VERSION_ENCLAVE=$(cd libs/enclave; cz version -p)",
       "export VERSION_VAULT=$(cd libs/vault; cz version -p)",
-      "export VERSION_ES=$(cd pkgs/es; cz version -p)",
       "export VERSION_UI=$(cd pkgs/ui; cz version -p)",
       "export TAG_FRONTEND=@sonr.io/frontend@$VERSION_FRONTEND",
       "export TAG_ENCLAVE=@sonr.io/enclave@$VERSION_ENCLAVE",
@@ -23,17 +22,12 @@
       "export BUMP_FRONTEND=$(git diff --quiet $TAG_FRONTEND -- apps/frontend/ && echo false || echo true)",
       "export BUMP_ENCLAVE=$(git diff --quiet $TAG_ENCLAVE -- libs/enclave/ && echo false || echo true)",
       "export BUMP_VAULT=$(git diff --quiet $TAG_VAULT -- libs/vault/ && echo false || echo true)",
-      "export BUMP_ES=$(git diff --quiet $TAG_ES -- pkgs/es/ && echo false || echo true)",
       "export BUMP_UI=$(git diff --quiet $TAG_UI -- pkgs/ui/ && echo false || echo true)",
-      "echo $BUMP_FRONTEND",
-      "echo $BUMP_ENCLAVE",
-      "echo $BUMP_VAULT",
-      "echo $BUMP_ES",
-      "echo $BUMP_UI",
       "bun install"
     ],
     "scripts": {
       "build": "bun run build",
+      "dev": "bun run dev",
       "test": "bun run test",
       "deploy": "bun run deploy"
     }
