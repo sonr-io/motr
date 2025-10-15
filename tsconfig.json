@@ -1,63 +1,63 @@
 {
-  "compilerOptions": {
-    /* Language and Environment */
-    "target": "ES2022",
-    "lib": ["ES2022"],
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+	"compilerOptions": {
+		/* Language and Environment */
+		"target": "ESNext",
+		"lib": ["ESNext"],
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
 
-    /* Type Checking */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
-    "allowUnusedLabels": false,
-    "allowUnreachableCode": false,
+		/* Type Checking */
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUncheckedIndexedAccess": true,
+		"noImplicitOverride": true,
+		"allowUnusedLabels": false,
+		"allowUnreachableCode": false,
 
-    /* Modules */
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
+		/* Modules */
+		"resolveJsonModule": true,
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
 
-    /* Emit */
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "removeComments": true,
-    "newLine": "lf",
+		/* Emit */
+		"declaration": true,
+		"declarationMap": true,
+		"sourceMap": true,
+		"removeComments": true,
+		"newLine": "lf",
 
-    /* Projects */
-    "composite": true,
-    "incremental": true,
-    "tsBuildInfoFile": ".tsbuildinfo",
+		/* Projects */
+		"composite": true,
+		"incremental": true,
+		"tsBuildInfoFile": ".tsbuildinfo",
 
-    /* Completeness */
-    "skipLibCheck": true,
+		/* Completeness */
+		"skipLibCheck": true,
 
-    /* Output */
-    "outDir": "dist",
-    "rootDir": "."
-  },
-   "references": [
-     { "path": "./apps/frontend" },
-     { "path": "./cmd/enclave" },
-     { "path": "./packages/es" },
-     { "path": "./packages/ui" }
-   ],
-  "exclude": [
-    "node_modules",
-    "**/node_modules",
-    "dist",
-    "**/dist",
-    "build",
-    "**/build",
-    "coverage",
-    "**/coverage",
-    ".turbo",
-    "**/.turbo"
-  ]
+		/* Output */
+		"outDir": "dist",
+		"rootDir": "."
+	},
+	"references": [
+		{ "path": "./apps/frontend" },
+		{ "path": "./cmd/enclave" },
+		{ "path": "./packages/es" },
+		{ "path": "./packages/ui" }
+	],
+	"exclude": [
+		"node_modules",
+		"**/node_modules",
+		"dist",
+		"**/dist",
+		"build",
+		"**/build",
+		"coverage",
+		"**/coverage",
+		".turbo",
+		"**/.turbo"
+	]
 }

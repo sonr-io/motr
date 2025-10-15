@@ -91,7 +91,7 @@ pnpm test       # TypeScript tests
 
 # Format and lint
 make fmt         # Format Go code
-pnpm format     # Format TypeScript
+pnpm format     # Format and lint TypeScript with oxlint
 ```
 
 ## Components
@@ -234,8 +234,8 @@ make version           # Display version info
 ```bash
 pnpm build             # Build all TypeScript packages
 pnpm test              # Run all tests
-pnpm lint              # Lint with Biome
-pnpm format            # Format with Biome
+pnpm lint              # Lint with oxlint
+pnpm format            # Format and lint with oxlint
 pnpm typecheck         # Type check all packages
 pnpm gen:protobufs     # Generate protobuf types
 ```

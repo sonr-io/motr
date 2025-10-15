@@ -1,158 +1,192 @@
 {
-  "$schema": "https://turborepo.com/schema.v2.json",
-  "globalDependencies": ["**/.env.*local", "tsconfig.json"],
-  "globalEnv": ["NODE_ENV", "VERCEL_ENV", "VERCEL_URL", "NEXT_PUBLIC_*"],
-  "tasks": {
-    "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "out/**", "build/**", "lib/**"],
-      "env": ["NODE_ENV", "NEXT_PUBLIC_*"],
-      "inputs": [
-        "src/**",
-        "app/**",
-        "pages/**",
-        "components/**",
-        "lib/**",
-        "utils/**",
-        "styles/**",
-        "*.config.{js,ts,mjs,cjs}",
-        "*.json",
-        "!node_modules/**",
-        "!dist/**",
-        "!.next/**",
-        "!out/**"
-      ]
-    },
-     "@sonr.io/ui#build": {
-       "dependsOn": [],
-       "outputs": ["dist/**", "*.tsbuildinfo"],
-       "inputs": ["src/**", "tsconfig.json", "package.json"],
-       "cache": true
-     },
-     "@sonr.io/ui#test": {
-       "dependsOn": [],
-       "outputs": [],
-       "cache": false
-     },
-     "@sonr.io/ui#lint": {
-       "dependsOn": [],
-       "outputs": [],
-       "cache": false
-     },
-     "@sonr.io/sdk#build": {
-       "dependsOn": ["@sonr.io/enclave#build", "@sonr.io/vault#build"],
-       "outputs": ["dist/**", "*.tsbuildinfo"],
-       "inputs": ["src/**", "tsconfig.json", "package.json"],
-       "cache": true
-     },
-     "@sonr.io/do#build": {
-       "dependsOn": [],
-       "outputs": ["dist/**", "*.tsbuildinfo"],
-       "inputs": ["src/**", "tsconfig.json", "package.json"],
-       "cache": true
-     },
-     "@sonr.io/enclave#build": {
-       "dependsOn": [],
-       "outputs": ["dist/**", "*.tsbuildinfo"],
-       "inputs": ["src/**/*.ts", "main.go", "**/*.go", "go.mod", "go.sum", "tsconfig.json", "package.json"],
-       "cache": true
-     },
-     "@sonr.io/enclave#build:wasm": {
-       "dependsOn": [],
-       "outputs": ["dist/enclave.wasm"],
-       "inputs": ["main.go", "**/*.go", "go.mod", "go.sum"],
-       "cache": true
-     },
-     "@sonr.io/enclave#test": {
-       "dependsOn": [],
-       "outputs": [],
-       "cache": false
-     },
-     "@sonr.io/enclave#lint": {
-       "dependsOn": [],
-       "outputs": [],
-       "cache": false
-     },
-     "@sonr.io/vault#build": {
-       "dependsOn": [],
-       "outputs": ["dist/**", "*.tsbuildinfo"],
-       "inputs": ["src/**/*.ts", "main.go", "**/*.go", "go.mod", "go.sum", "tsconfig.json", "package.json", "wasm_exec.js"],
-       "cache": true
-     },
-     "@sonr.io/vault#build:wasm": {
-       "dependsOn": [],
-       "outputs": ["dist/vault.wasm", "dist/wasm_exec.js"],
-       "inputs": ["main.go", "**/*.go", "go.mod", "go.sum", "wasm_exec.js"],
-       "cache": true
-     },
-     "@sonr.io/vault#test": {
-       "dependsOn": [],
-       "outputs": [],
-       "cache": false
-     },
-     "@sonr.io/vault#lint": {
-       "dependsOn": [],
-       "outputs": [],
-       "cache": false
-     },
-    "frontend#build": {
-      "dependsOn": ["@sonr.io/sdk#build", "@sonr.io/ui#build"],
-      "outputs": ["dist/**"],
-      "env": ["NODE_ENV", "VITE_*"],
-      "inputs": [
-        "src/**",
-        "index.html",
-        "vite.config.ts",
-        "tailwind.config.ts",
-        "tsconfig.json",
-        "package.json"
-      ]
-    },
-    "frontend#dev": {
-      "cache": false,
-      "persistent": true,
-      "dependsOn": ["@sonr.io/sdk#build"]
-    },
-    "test": {
-      "dependsOn": ["build"],
-      "outputs": ["coverage/**"],
-      "cache": false,
-      "env": ["NODE_ENV", "CI"]
-    },
-    "lint": {
-      "outputs": [],
-      "cache": false,
-      "inputs": ["src/**", "app/**", "*.config.{js,ts,mjs,cjs}", "*.json"]
-    },
-    "format": {
-      "outputs": [],
-      "cache": false,
-      "inputs": ["src/**", "app/**", "*.config.{js,ts,mjs,cjs}", "*.json"]
-    },
-    "check": {
-      "outputs": [],
-      "cache": false
-    },
-    "typecheck": {
-      "dependsOn": ["^build"],
-      "outputs": ["*.tsbuildinfo"],
-      "cache": true,
-      "inputs": ["src/**", "app/**", "*.ts", "*.tsx", "tsconfig.json"]
-    },
-    "clean": {
-      "cache": false
-    },
-    "deploy": {
-      "dependsOn": ["build", "test"],
-      "outputs": [],
-      "cache": false,
-      "env": ["NODE_ENV", "CLOUDFLARE_*", "WRANGLER_*"]
-    },
-    "frontend#deploy": {
-      "dependsOn": ["frontend#build", "frontend#test"],
-      "outputs": [],
-      "cache": false,
-      "env": ["NODE_ENV", "CLOUDFLARE_*", "WRANGLER_*", "VITE_*"]
-    }
-  }
+	"$schema": "https://turborepo.com/schema.v2.json",
+	"globalDependencies": ["**/.env.*local", "tsconfig.json"],
+	"globalEnv": ["NODE_ENV", "VERCEL_ENV", "VERCEL_URL", "NEXT_PUBLIC_*"],
+	"tasks": {
+		"build": {
+			"dependsOn": ["^build"],
+			"outputs": ["dist/**", ".next/**", "out/**", "build/**", "lib/**"],
+			"env": ["NODE_ENV", "NEXT_PUBLIC_*"],
+			"inputs": [
+				"src/**",
+				"app/**",
+				"pages/**",
+				"components/**",
+				"lib/**",
+				"utils/**",
+				"styles/**",
+				"*.config.{js,ts,mjs,cjs}",
+				"*.json",
+				"!node_modules/**",
+				"!dist/**",
+				"!.next/**",
+				"!out/**"
+			]
+		},
+		"@sonr.io/ui#build": {
+			"dependsOn": [],
+			"outputs": ["dist/**", "*.tsbuildinfo"],
+			"inputs": ["src/**", "tsconfig.json", "package.json"],
+			"cache": true
+		},
+		"@sonr.io/ui#test": {
+			"dependsOn": [],
+			"outputs": [],
+			"cache": false
+		},
+		"@sonr.io/ui#lint": {
+			"dependsOn": [],
+			"outputs": [],
+			"cache": false
+		},
+		"@sonr.io/sdk#build": {
+			"dependsOn": ["@sonr.io/enclave#build", "@sonr.io/vault#build"],
+			"outputs": ["dist/**", "*.tsbuildinfo"],
+			"inputs": ["src/**", "tsconfig.json", "package.json"],
+			"cache": true
+		},
+		"@sonr.io/do#build": {
+			"dependsOn": [],
+			"outputs": ["dist/**", "*.tsbuildinfo"],
+			"inputs": ["src/**", "tsconfig.json", "package.json"],
+			"cache": true
+		},
+		"@sonr.io/enclave#build": {
+			"dependsOn": [],
+			"outputs": ["dist/**", "*.tsbuildinfo"],
+			"inputs": [
+				"src/**/*.ts",
+				"main.go",
+				"**/*.go",
+				"go.mod",
+				"go.sum",
+				"tsconfig.json",
+				"package.json"
+			],
+			"cache": true
+		},
+		"@sonr.io/enclave#build:wasm": {
+			"dependsOn": [],
+			"outputs": ["dist/enclave.wasm"],
+			"inputs": ["main.go", "**/*.go", "go.mod", "go.sum"],
+			"cache": true
+		},
+		"@sonr.io/enclave#test": {
+			"dependsOn": [],
+			"outputs": [],
+			"cache": false
+		},
+		"@sonr.io/enclave#lint": {
+			"dependsOn": [],
+			"outputs": [],
+			"cache": false
+		},
+		"@sonr.io/vault#build": {
+			"dependsOn": [],
+			"outputs": ["dist/**", "*.tsbuildinfo"],
+			"inputs": [
+				"src/**/*.ts",
+				"main.go",
+				"**/*.go",
+				"go.mod",
+				"go.sum",
+				"tsconfig.json",
+				"package.json",
+				"wasm_exec.js"
+			],
+			"cache": true
+		},
+		"@sonr.io/vault#build:wasm": {
+			"dependsOn": [],
+			"outputs": ["dist/vault.wasm", "dist/wasm_exec.js"],
+			"inputs": ["main.go", "**/*.go", "go.mod", "go.sum", "wasm_exec.js"],
+			"cache": true
+		},
+		"@sonr.io/vault#test": {
+			"dependsOn": [],
+			"outputs": [],
+			"cache": false
+		},
+		"@sonr.io/vault#lint": {
+			"dependsOn": [],
+			"outputs": [],
+			"cache": false
+		},
+		"@sonr.io/frontend#build": {
+			"dependsOn": ["@sonr.io/sdk#build", "@sonr.io/ui#build"],
+			"outputs": ["dist/**"],
+			"env": ["NODE_ENV", "VITE_*"],
+			"inputs": [
+				"src/**",
+				"index.html",
+				"vite.config.ts",
+				"tailwind.config.ts",
+				"tsconfig.json",
+				"package.json"
+			]
+		},
+		"@sonr.io/frontend#dev": {
+			"cache": false,
+			"persistent": true,
+			"dependsOn": [
+				"@sonr.io/ui#build",
+				"@sonr.io/sdk#build",
+				"@sonr.io/enclave#build",
+				"@sonr.io/vault#build"
+			]
+		},
+		"@sonr.io/frontend#test": {
+			"dependsOn": [],
+			"outputs": [],
+			"cache": false
+		},
+		"test": {
+			"dependsOn": ["build"],
+			"outputs": ["coverage/**"],
+			"cache": false,
+			"env": ["NODE_ENV", "CI"]
+		},
+		"lint": {
+			"outputs": [],
+			"cache": false,
+			"inputs": [
+				"src/**",
+				"app/**",
+				"*.config.{js,ts,mjs,cjs}",
+				"*.json",
+				".oxlintrc.json"
+			]
+		},
+		"format": {
+			"outputs": [],
+			"cache": false,
+			"inputs": ["src/**", "app/**", "*.config.{js,ts,mjs,cjs}", "*.json"]
+		},
+		"check": {
+			"outputs": [],
+			"cache": false
+		},
+		"typecheck": {
+			"dependsOn": ["^build"],
+			"outputs": ["*.tsbuildinfo"],
+			"cache": true,
+			"inputs": ["src/**", "app/**", "*.ts", "*.tsx", "tsconfig.json"]
+		},
+		"clean": {
+			"cache": false
+		},
+		"deploy": {
+			"dependsOn": ["@sonr.io/frontend#build", "@sonr.io/frontend#test"],
+			"outputs": [],
+			"cache": false,
+			"env": ["NODE_ENV", "CLOUDFLARE_*", "WRANGLER_*"]
+		},
+		"@sonr.io/frontend#deploy": {
+			"dependsOn": ["@sonr.io/frontend#build", "@sonr.io/frontend#test"],
+			"outputs": [],
+			"cache": false,
+			"env": ["NODE_ENV", "CLOUDFLARE_*", "WRANGLER_*", "VITE_*"],
+			"inputs": ["src/**", "dist/**", "wrangler.toml"]
+		}
+	}
 }
