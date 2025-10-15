@@ -1,23 +1,24 @@
 import { createPlugin, Plugin } from '@extism/extism';
-import { VaultError, VaultErrorCode } from './types';
-import { loadVaultWASM } from './loader';
-import type {
-  VaultConfig,
-  VaultPlugin,
-  NewOriginTokenRequest,
-  NewAttenuatedTokenRequest,
-  SignDataRequest,
-  VerifyDataRequest,
-  UCANTokenResponse,
-  SignDataResponse,
-  VerifyDataResponse,
-  GetIssuerDIDResponse,
-  VaultConfigWithStorage,
-  StoredVaultState,
-  StoredUCANToken,
-} from './types';
-import { VaultStorageManager } from './storage';
-import type { AccountVaultDatabase } from './storage';
+import {
+  VaultError,
+  VaultErrorCode,
+  type VaultConfig,
+  type VaultPlugin,
+  type NewOriginTokenRequest,
+  type NewAttenuatedTokenRequest,
+  type SignDataRequest,
+  type VerifyDataRequest,
+  type UCANTokenResponse,
+  type SignDataResponse,
+  type VerifyDataResponse,
+  type GetIssuerDIDResponse,
+  type VaultConfigWithStorage,
+  type StoredVaultState,
+  type StoredUCANToken,
+} from './types.js';
+import { loadVaultWASM } from './loader.js';
+import { VaultStorageManager } from './storage.js';
+import type { AccountVaultDatabase } from './storage.js';
 
 /**
  * Vault client for interacting with the WASM vault module
@@ -473,4 +474,4 @@ export async function getDefaultVaultClient(config?: VaultConfigWithStorage): Pr
 /**
  * Export error class for convenience
  */
-export { VaultError, VaultErrorCode } from './types';
+export { VaultError, VaultErrorCode } from './types.js';
