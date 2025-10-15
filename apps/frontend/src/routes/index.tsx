@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { RegisterForm } from "@sonr.io/ui/components/auth/register-form";
 import { HoleBackground } from "@sonr.io/ui/components/backgrounds/hole";
+import { SonrLogo } from "@sonr.io/ui/components/logos/sonr";
 
 export const Route = createFileRoute("/")({
   component: App,
@@ -12,7 +13,9 @@ function App() {
       <HoleBackground className="absolute inset-0 flex items-center justify-center rounded-xl" />
       <div className="flex w-full max-w-sm flex-col gap-6 z-10">
         <a href="#" className="flex items-center gap-2 self-center font-medium">
-          <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md"></div>
+          <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
+            <SonrLogo className="text-foreground" size={24} />
+          </div>
           Sonr.ID
         </a>
         <RegisterForm />

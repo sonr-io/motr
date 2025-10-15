@@ -10,6 +10,7 @@
     "./components/*": "./src/components/*.tsx",
     "./components/auth": "./src/components/auth/*.tsx",
     "./components/backgrounds": "./src/components/backgrounds/*.tsx",
+    "./components/logos/*": "./src/components/logos/*.tsx",
     "./components/ui/*": "./src/components/ui/*.tsx",
     "./lib/utils": "./src/lib/utils.ts",
     "./lib/*": "./src/lib/*.ts",
