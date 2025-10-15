@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { VaultStorageManager, AccountVaultDatabase } from './storage';
-import type { StoredVaultState, StoredUCANToken, VaultStorageConfig } from '@sonr.io/enclave';
-import Dexie from 'dexie';
+import { VaultStorageManager, AccountVaultDatabase } from './storage.js';
+import type { StoredVaultState, StoredUCANToken, VaultStorageConfig } from './types.js';
 
 describe('VaultStorageManager', () => {
   let storageManager: VaultStorageManager;

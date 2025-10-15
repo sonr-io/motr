@@ -15,10 +15,10 @@ import {
   type VaultConfigWithStorage,
   type StoredVaultState,
   type StoredUCANToken,
-} from '@sonr.io/enclave';
-import { loadVaultWASM } from './loader';
-import { VaultStorageManager } from './storage';
-import type { AccountVaultDatabase } from './storage';
+} from './types.js';
+import { loadVaultWASM } from './loader.js';
+import { VaultStorageManager } from './storage.js';
+import type { AccountVaultDatabase } from './storage.js';
 
 /**
  * Vault client for interacting with the WASM vault module
@@ -474,4 +474,4 @@ export async function getDefaultVaultClient(config?: VaultConfigWithStorage): Pr
 /**
  * Export error class for convenience
  */
-export { VaultError, VaultErrorCode } from '@sonr.io/enclave';
+export { VaultError, VaultErrorCode } from './types.js';
