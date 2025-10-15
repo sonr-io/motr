@@ -50,10 +50,18 @@
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
 		"@types/react": "^19.0.8",
-		"@types/react-dom": "^19.0.3"
+		"@types/react-dom": "^19.0.3",
+		"@noble/hashes": "2.0.0",
+		"@noble/secp256k1": "2.1.0",
+		"@bufbuild/protobuf": "1.10.0",
+		"@bufbuild/protoc-gen-es": "1.10.0"
 	},
 	"dependencies": {
+		"@bufbuild/protobuf": "1.10.0",
+		"@noble/hashes": "2.0.0",
+		"@noble/secp256k1": "2.1.0",
 		"glob": "^11.0.3",
+		"motion": "^12.23.24",
 		"swagger2openapi": "^7.0.8",
 		"yaml": "^2.8.1"
 	}

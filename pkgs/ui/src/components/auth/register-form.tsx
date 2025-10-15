@@ -1,19 +1,14 @@
-import { cn } from "../../lib/utils"
-import { Button } from "../ui/button"
+import { cn } from "../../lib/utils";
+import { Button } from "../ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card"
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "../ui/field"
-import { Input } from "../ui/input"
+  GlassCard,
+  GlassCardContent,
+  GlassCardDescription,
+  GlassCardHeader,
+  GlassCardTitle,
+} from "../ui/glass-card";
+import { Field, FieldDescription, FieldGroup, FieldLabel } from "../ui/field";
+import { Input } from "../ui/input";
 
 export function RegisterForm({
   className,
@@ -21,14 +16,16 @@ export function RegisterForm({
 }: React.ComponentProps<"div">) {
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle className="text-xl">Create your account</CardTitle>
-          <CardDescription>
+      <GlassCard>
+        <GlassCardHeader className="text-center">
+          <GlassCardTitle className="text-xl">
+            Create your account
+          </GlassCardTitle>
+          <GlassCardDescription>
             Enter your email below to create your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+          </GlassCardDescription>
+        </GlassCardHeader>
+        <GlassCardContent>
           <form>
             <FieldGroup>
               <Field>
@@ -69,12 +66,12 @@ export function RegisterForm({
               </Field>
             </FieldGroup>
           </form>
-        </CardContent>
-      </Card>
+        </GlassCardContent>
+      </GlassCard>
       <FieldDescription className="px-6 text-center">
         By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
         and <a href="#">Privacy Policy</a>.
       </FieldDescription>
     </div>
-  )
+  );
 }

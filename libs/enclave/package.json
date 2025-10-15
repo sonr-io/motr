@@ -16,13 +16,14 @@
     "dist"
   ],
   "scripts": {
-    "build": "devbox run build && tsc --declaration --emitDeclarationOnly",
+    "build": "devbox run build && tsc --declaration --emitDeclarationOnly && tsc-alias",
     "watch": "tsc --watch",
     "test": "go test ./... || echo 'No Go tests found in enclave'",
     "lint": "go fmt ./...",
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "devDependencies": {
+    "tsc-alias": "^1.8.16",
     "typescript": "^5.9.3",
     "vite": "^7.1.9"
   },
