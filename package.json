@@ -26,14 +26,14 @@
 	"scripts": {
 		"build": "turbo run build",
 		"test": "turbo run test",
-		"dev": "cd apps/frontend && bun run dev",
+		"dev": "turbo run @sonr.io/frontend#dev",
 		"lint": "oxlint",
 		"format": "oxlint --fix",
 		"check": "oxlint",
 		"typecheck": "turbo run typecheck",
 		"clean": "turbo run clean && rm -rf node_modules bun.lock",
 		"generate": "bun --filter '@sonr.io/sdk' run gen",
-		"deploy": "turbo run deploy"
+		"deploy": "turbo run @sonr.io/frontend#deploy"
 	},
 	"devDependencies": {
 		"@types/node": "^24.7.2",
