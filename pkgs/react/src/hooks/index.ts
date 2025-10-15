@@ -3,8 +3,9 @@
  * @module hooks
  */
 
-export { useAccount, accountKeys, type UseAccountOptions, type Account } from './useAccount.js';
-export { useBalance, balanceKeys, type UseBalanceOptions, type Balance, type Coin } from './useBalance.js';
-export { useTx, type UseTxOptions, type TxOptions, type TxMessage, type TxResult } from './useTx.js';
-export { useWallet, type UseWalletResult, type WalletState, type ConnectWalletOptions } from './useWallet.js';
-export { useWebAuthn, type UseWebAuthnResult, type WebAuthnCredential, type RegisterOptions, type LoginOptions } from './useWebAuthn.js';
+// Placeholder exports - will be implemented in Phase 2
+// export { useAccount } from './useAccount.js';
+// export { useBalance } from './useBalance.js';
+// export { useTx } from './useTx.js';
+// export { useWallet } from './useWallet.js';
+// export { useWebAuthn } from './useWebAuthn.js';

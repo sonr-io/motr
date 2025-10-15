@@ -3,17 +3,6 @@
  * @module context
  */
 
-export {
-  SonrProvider,
-  NETWORKS,
-  type SonrProviderProps,
-  type SonrNetworkConfig,
-} from './SonrProvider.js';
-
-export {
-  WalletProvider,
-  useWalletContext,
-  type WalletProviderProps,
-  type WalletContextState,
-  type WalletContextValue,
-} from './WalletContext.js';
+// Placeholder exports - will be implemented in Phase 2
+// export { SonrProvider } from './SonrProvider.js';
+// export { WalletContext, useWalletContext } from './WalletContext.js';
