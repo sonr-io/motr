@@ -44,7 +44,7 @@ const HoverButton = React.forwardRef<
     <Comp
       ref={ref as any}
       className={cn(
-        "group relative min-w-fit w-64 cursor-pointer overflow-hidden rounded-full border bg-background p-2 text-center font-semibold",
+        "group relative min-w-fit w-64 cursor-pointer overflow-hidden rounded-full border bg-background/90 p-2 text-center font-medium",
         className,
       )}
       {...(props as any)}

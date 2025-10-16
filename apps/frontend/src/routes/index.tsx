@@ -17,13 +17,13 @@ function App() {
         <FloatingHeader />
       </div>
 
-      <div className="relative z-10 flex h-full w-full flex-col items-center justify-center px-6 md:px-10 mb-10">
-        <div className="flex w-full max-w-lg flex-col items-center gap-4 lg:max-w-xl">
-          <h1 className="text-center font-serif backdrop-blur-xs text-4xl font-stretch-semi-condensed text-foreground/85 drop-shadow-md md:text-5xl lg:text-7xl">
+      <div className="relative z-10 flex h-full w-full flex-col items-center justify-center">
+        <div className="flex w-full max-w-xl flex-col items-center gap-8 p-6 lg:max-w-2xl rounded-full mb-12">
+          <h1 className="text-center font-serif text-4xl font-stretch-semi-condensed text-foreground/85 drop-shadow-lg md:text-5xl lg:text-7xl">
             Your <span className="italic tracking-tight">Personal</span>{" "}
             <span className="whitespace-nowrap">Identity Gateway</span>
           </h1>
-          <p className="text-center drop-shadow-xs backdrop-blur-md text-base text-foreground/70 md:text-lg lg:text-xl max-w-xl">
+          <p className="text-center backdrop-blur-xs text-base drop-shadow-md text-foreground/70 md:text-lg lg:text-xl max-w-xl">
             Protect your digital footprint with Sonr - the Next-Generation
             Blockchain Secured Wallet Identity System.
           </p>
