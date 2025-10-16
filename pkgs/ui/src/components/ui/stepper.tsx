@@ -508,7 +508,7 @@ function StepperList(props: StepperListProps) {
   const getItems = React.useCallback(() => {
     return Array.from(itemsRef.current.values())
       .filter((item) => item.ref.current)
-      .sort((a, b) => {
+      .toSorted((a, b) => {
         const elementA = a.ref.current;
         const elementB = b.ref.current;
         if (!elementA || !elementB) return 0;

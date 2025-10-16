@@ -1,6 +1,6 @@
 import React from "react";
 import { MenuIcon } from "lucide-react";
-import { Sheet, SheetContent, SheetFooter } from "./sheet";
+import { Sheet, SheetContent } from "./sheet";
 import { Button, buttonVariants } from "./button";
 import { SonrIcon } from "./sonr-icon";
 import { cn } from "../../lib/utils";

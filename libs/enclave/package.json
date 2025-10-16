@@ -20,7 +20,10 @@
     "watch": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "go fmt ./...",
+    "lint": "oxlint && go fmt ./...",
+    "format": "(oxlint --fix || true) && go fmt ./...",
+    "check": "oxlint",
+    "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {

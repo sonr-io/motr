@@ -21,7 +21,10 @@
     "test": "bun run test:go && vitest run",
     "test:watch": "vitest",
     "test:go": "go test -v ./... || echo 'No Go tests found in vault'",
-    "lint": "go fmt ./...",
+    "lint": "oxlint && go fmt ./...",
+    "format": "(oxlint --fix || true) && go fmt ./...",
+    "check": "oxlint",
+    "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "devDependencies": {
