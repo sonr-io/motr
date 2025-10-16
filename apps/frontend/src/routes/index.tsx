@@ -25,7 +25,7 @@ function App() {
 
           </p>
           <div className="mt-2 flex flex-col items-center justify-center gap-4 md:flex-row md:gap-6">
-            <HoverButton text="Get Started" to="/register" />
+            <HoverButton text="Start your Journey" to="/register" />
           </div>
         </div>
       </div>
