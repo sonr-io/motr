@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { RegisterForm } from "@sonr.io/ui/components/auth/register-form";
+import { RegisterFlow } from "@/components/RegisterFlow";
 
 export const Route = createFileRoute("/register")({
   component: App,
@@ -24,7 +24,7 @@ function App() {
           </div>
           Sonr.ID
         </a>
-        <RegisterForm />
+        <RegisterFlow />
       </div>
     </div>
   );
