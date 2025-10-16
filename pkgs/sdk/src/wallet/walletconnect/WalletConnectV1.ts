@@ -62,7 +62,11 @@ export class WalletConnectV1 {
     return new Promise((resolve, reject) => {
       wc.on('connect', (error, _payload) => {
         // Do NOT cache the session here as the user may not have approved the connection
-        error ? reject(error) : resolve(wc);
+        if (error) {
+          reject(error);
+        } else {
+          resolve(wc);
+        }
       });
     });
   }

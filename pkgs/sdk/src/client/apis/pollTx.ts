@@ -20,7 +20,7 @@ export async function pollTx(
   for (let i = 0; i < maxAttempts; i++) {
     try {
       return await getTx(endpoint, getTxParams);
-    } catch (_err) {
+    } catch {
       await wait(intervalMillis);
     }
   }

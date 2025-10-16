@@ -52,7 +52,7 @@ export function verifyArbitrary({
         // We can remove `verifyECDSA` once Station mobile uses `verifyECDSA`.
         return verifyADR36(params) || verifyECDSA(params);
     }
-  } catch (_err) {
+  } catch {
     return false;
   }
 }

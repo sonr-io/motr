@@ -8,9 +8,8 @@
  */
 
 import { sha256 } from '@noble/hashes/sha256';
-import * as secp256k1 from '@noble/secp256k1';
 
-import { base64urlEncode, base64urlEncodeJSON } from './encoding';
+import { base64urlEncodeJSON } from './encoding';
 import type {
   Capability,
   UCANPayload,
@@ -378,10 +377,10 @@ export async function validateSignature(token: UCANToken): Promise<ValidationRes
     switch (token.header.alg) {
       case 'ES256': {
         // ES256: ECDSA with P-256 curve and SHA-256
-        // Hash the message
-        const messageHash = sha256(messageBytes);
+        // Hash the message for signature verification
+        sha256(messageBytes);
 
-        // Note: secp256k1.verify expects a public key
+        // Note: Full signature verification requires DID resolution
         // For now, we return a placeholder indicating signature verification is not fully implemented
         // In production, you would:
         // 1. Resolve the issuer DID to get the public key

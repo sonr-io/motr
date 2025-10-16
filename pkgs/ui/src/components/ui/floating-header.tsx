@@ -11,15 +11,15 @@ export function FloatingHeader() {
   const links = [
     {
       label: "Docs",
-      href: "#",
-    },
-    {
-      label: "Changelog",
-      href: "#",
+      href: "https://sonr.dev",
     },
     {
       label: "About",
-      href: "#",
+      href: "https://sonr.io",
+    },
+    {
+      label: "Changelog",
+      href: "https://x.com/sonr_io",
     },
   ];
 

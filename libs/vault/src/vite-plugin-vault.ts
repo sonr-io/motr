@@ -141,7 +141,7 @@ export function vaultPlugin(options: VaultPluginOptions = {}): Plugin {
        }
      },
 
-     generateBundle(options, bundle) {
+     generateBundle(_options, _bundle) {
        if (!copyToPublic) return
 
        if (debug) {

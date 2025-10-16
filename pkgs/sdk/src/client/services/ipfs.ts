@@ -6,7 +6,6 @@ import { createHelia, type Helia } from "helia";
 import { unixfs, type UnixFS } from "@helia/unixfs";
 import { strings, type Strings } from "@helia/strings";
 import { verifiedFetch as heliaVerifiedFetch } from "@helia/verified-fetch";
-import type { CID } from "multiformats/cid";
 
 /**
  * IPFS client configuration
@@ -257,7 +256,7 @@ export class BrowserIPFSClient implements IPFSClient {
 				}
 			}
 			return false;
-		} catch (error) {
+		} catch {
 			// If there's an error, fall back to local tracking
 			return this.pinnedCIDs.has(cid);
 		}
@@ -276,7 +275,7 @@ export class BrowserIPFSClient implements IPFSClient {
 			}
 
 			return pins;
-		} catch (error) {
+		} catch {
 			// If there's an error, fall back to local tracking
 			return Array.from(this.pinnedCIDs);
 		}
@@ -297,7 +296,7 @@ export class BrowserIPFSClient implements IPFSClient {
 				peerCount: peers.length,
 				version: "4.0.0", // Helia version
 			};
-		} catch (error) {
+		} catch {
 			return {
 				online: this.initialized,
 				peerCount: 0,

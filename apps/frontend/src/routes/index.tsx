@@ -10,21 +10,25 @@ export const Route = createFileRoute("/")({
 
 function App() {
   return (
-    <div className="bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
-      <div className="absolute top-5 left-0 right-0 z-50 px-4">
+    <div className="relative h-svh w-full overflow-hidden bg-background">
+      <HoleBackground className="absolute inset-0 flex items-center justify-center" />
+
+      <div className="absolute top-4 left-0 right-0 z-50 px-4 md:px-6">
         <FloatingHeader />
       </div>
 
-      <HoleBackground className="absolute inset-0 flex items-center justify-center" />
-
-      <div className="relative z-10 flex h-full w-full flex-col items-center justify-center px-6 md:px-10">
-        <div className="flex w-full max-w-md flex-col items-center gap-8 lg:max-w-lg">
-          <h1 className="text-center font-serif text-5xl font-stretch-semi-condensed text-foreground/75 drop-shadow-sm md:text-5xl lg:text-7xl">
+      <div className="relative z-10 flex h-full w-full flex-col items-center justify-center px-6 md:px-10 mb-10">
+        <div className="flex w-full max-w-lg flex-col items-center gap-4 lg:max-w-xl">
+          <h1 className="text-center font-serif backdrop-blur-xs text-4xl font-stretch-semi-condensed text-foreground/85 drop-shadow-md md:text-5xl lg:text-7xl">
             Your <span className="italic tracking-tight">Personal</span>{" "}
             <span className="whitespace-nowrap">Identity Gateway</span>
           </h1>
-          <div className="flex flex-col items-center justify-center gap-4 md:flex-row md:gap-6">
-            <HoverButton to="/register" text="Get Started" />
+          <p className="text-center drop-shadow-xs backdrop-blur-md text-base text-foreground/70 md:text-lg lg:text-xl max-w-xl">
+            Protect your digital footprint with Sonr - the Next-Generation
+            Blockchain Secured Wallet Identity System.
+          </p>
+          <div className="mt-2 flex flex-col items-center justify-center gap-4 md:flex-row md:gap-6">
+            <HoverButton text="Get Started" to="/register" />
           </div>
         </div>
       </div>

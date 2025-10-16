@@ -2,7 +2,6 @@ import { createPlugin, Plugin } from '@extism/extism';
 import {
   VaultError,
   VaultErrorCode,
-  type VaultConfig,
   type VaultPlugin,
   type NewOriginTokenRequest,
   type NewAttenuatedTokenRequest,
@@ -18,7 +17,6 @@ import {
 } from './types.js';
 import { loadVaultWASM } from './loader.js';
 import { VaultStorageManager } from './storage.js';
-import type { AccountVaultDatabase } from './storage.js';
 
 /**
  * Vault client for interacting with the WASM vault module

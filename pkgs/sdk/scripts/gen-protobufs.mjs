@@ -12,7 +12,6 @@ import { globSync } from 'glob';
 import { capitalize } from 'lodash-es';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { createHash } from 'crypto';
 
 /**
  * @typedef Repo
@@ -78,7 +77,7 @@ function loadManifest() {
   try {
     const content = readFileSync(MANIFEST_FILE, 'utf8');
     return JSON.parse(content);
-  } catch (error) {
+  } catch {
     console.warn('⚠️ Manifest load failed, starting fresh');
     return {};
   }
@@ -91,7 +90,7 @@ function loadManifest() {
 function saveManifest(manifest) {
   try {
     writeFileSync(MANIFEST_FILE, JSON.stringify(manifest, null, 2));
-  } catch (error) {
+  } catch {
     console.warn('⚠️ Manifest save failed');
   }
 }
@@ -111,7 +110,7 @@ function getCurrentCommitHash(repoPath) {
     if (result.status === 0) {
       return result.stdout.trim();
     }
-  } catch (error) {
+  } catch {
     // Ignore errors for repositories without git
   }
   return null;
@@ -132,7 +131,7 @@ function isRepoDirty(repoPath) {
     if (result.status === 0) {
       return result.stdout.trim().length > 0;
     }
-  } catch (error) {
+  } catch {
     // Ignore errors for repositories without git
   }
   return false;

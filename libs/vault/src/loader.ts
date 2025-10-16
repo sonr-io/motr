@@ -33,7 +33,7 @@ export interface VaultConfig {
 export async function loadVault(config: VaultConfig = {}): Promise<void> {
 	const {
 		serviceWorkerPath = "/vault/sw.js",
-		env = {},
+		env: _env = {},
 		debug = false,
 	} = config;
 
@@ -69,7 +69,7 @@ async function registerServiceWorker(
 	}
 
 	try {
-		const registration =
+		const _registration =
 			await navigator.serviceWorker.register(serviceWorkerPath);
 		if (debug) {
 			console.log("[Vault] ServiceWorker registered successfully");
