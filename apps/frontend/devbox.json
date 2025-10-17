@@ -13,7 +13,7 @@
     "scripts": {
       "bump": ["cz --no-raise 6,21 bump --yes --increment PATCH"],
       "publish": [""],
-      "release": [""]
+      "release": ["bun run deploy"]
     }
   }
 }

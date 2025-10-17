@@ -12,13 +12,19 @@
     "GUM_SPIN_SPINNER": "pulse"
   },
   "shell": {
-    "init_hook": [      
-      "go mod download"
+    "init_hook": [
+      "go mod download",
+      "bun install"
     ],
     "scripts": {
-      "bump": ["cz --no-raise 6,21 bump --yes --increment PATCH"],
-      "publish": [""],
-      "release": [""],
+      "bump": [
+        "cz --no-raise 6,21 bump --yes --increment PATCH"
+      ],
+      "release": [
+        "devbox run wasm",
+        "wrangler r2 object put cdn/enclave.wasm -f dist/enclave.wasm --remote"
+      ],
+      "publish": "echo 'Skipping publish - unimplemented'",
       "wasm": "mkdir -p dist && go build -ldflags='-s -w' -o dist/enclave.wasm .",
       "test": "go test ./... || echo 'No Go tests found in enclave'",
       "format": "go fmt ./..."

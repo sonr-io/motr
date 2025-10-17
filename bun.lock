@@ -67,6 +67,7 @@
         "typescript": "^5.9.3",
         "vite": "^7.1.9",
         "vitest": "^2.1.8",
+        "wrangler": "^4.9.0",
       },
       "optionalDependencies": {
         "@chainsafe/libp2p-noise": "^17.0.0",
@@ -90,6 +91,7 @@
         "typescript": "^5.9.3",
         "vite": "^7.1.9",
         "vitest": "^3.2.4",
+        "wrangler": "^4.9.0",
       },
     },
     "pkgs/sdk": {

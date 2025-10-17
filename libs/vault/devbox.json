@@ -9,12 +9,16 @@
   },
   "shell": {
     "init_hook": [
-      "go mod download"
+      "go mod download",
+      "bun install"
     ],
     "scripts": {
       "bump": ["cz --no-raise 6,21 bump --yes --increment PATCH"],
-      "publish": [""],
-      "release": [""],
+      "release": [
+        "devbox run wasm",
+        "wrangler r2 object put cdn/vault.wasm -f dist/vault.wasm --remote"
+      ],
+      "publish": "echo 'Skipping publish - unimplemented'",
       "wasm": [
         "mkdir -p dist", 
         "go build -ldflags='-s -w' -trimpath -o dist/vault.wasm .",
