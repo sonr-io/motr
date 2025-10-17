@@ -1,31 +1,75 @@
 {
   "name": "@sonr.io/vault",
   "version": "0.0.1",
-  "description": "WebAssembly-based HTTP server for Motor Payment Gateway and OIDC services",
+  "description": "Modern WebAssembly-based vault with Service Worker integration for Motor ecosystem",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "packageManager": "bun@1.3.0",
+  "sideEffects": false,
   "exports": {
-    ".": "./dist/index.js",
-    "./dist/vault.wasm": "./dist/vault.wasm",
-    "./loader": "./dist/loader.js",
-    "./vite-plugin": "./dist/vite-plugin-vault.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./loader": {
+      "types": "./dist/loader.d.ts",
+      "import": "./dist/loader.js"
+    },
+    "./vite-plugin": {
+      "types": "./dist/vite-plugin-vault.d.ts",
+      "import": "./dist/vite-plugin-vault.js"
+    },
+    "./register-sw": {
+      "types": "./dist/register-sw.d.ts",
+      "import": "./dist/register-sw.js"
+    },
+    "./sw": {
+      "types": "./dist/sw.d.ts",
+      "import": "./dist/sw.js"
+    },
+    "./types": {
+      "types": "./dist/types/service-worker.d.ts"
+    },
+    "./vault.wasm": "./dist/vault.wasm",
+    "./wasm_exec.js": "./dist/wasm_exec.js",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "*": ["./dist/index.d.ts"],
+      "loader": ["./dist/loader.d.ts"],
+      "vite-plugin": ["./dist/vite-plugin-vault.d.ts"],
+      "register-sw": ["./dist/register-sw.d.ts"],
+      "sw": ["./dist/sw.d.ts"],
+      "types": ["./dist/types/service-worker.d.ts"]
+    }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
-    "build": "devbox run wasm && tsc && tsc-alias",
+    "build": "devbox run wasm && vite build && bunx tsc && tsc-alias",
+    "build:watch": "vite build --watch",
+    "build:wasm": "devbox run wasm",
+    "dev": "vite",
+    "preview": "vite preview",
     "watch": "tsc --watch",
     "test": "bun run test:go && vitest run",
     "test:watch": "vitest",
     "test:go": "go test -v ./... || echo 'No Go tests found in vault'",
+    "test:coverage": "vitest run --coverage",
     "lint": "oxlint && go fmt ./...",
+    "lint:fix": "oxlint --fix && go fmt ./...",
     "format": "(oxlint --fix || true) && go fmt ./...",
-    "check": "oxlint",
+    "check": "oxlint && tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist *.tsbuildinfo",
+    "clean:all": "rm -rf dist node_modules *.tsbuildinfo",
+    "prepublishOnly": "bun run clean && bun run build && bun run test",
     "bump": "devbox run bump",
     "release": "devbox run release",
     "publish": "devbox run publish"
@@ -43,12 +87,25 @@
   },
   "keywords": [
     "wasm",
-    "http-server",
+    "webassembly",
     "service-worker",
+    "vite-plugin",
+    "http-server",
+    "pwa",
+    "progressive-web-app",
+    "offline-first",
+    "cache-strategy",
     "payment-gateway",
     "oidc",
+    "vault",
+    "cryptography",
+    "web-standards",
+    "modern-web",
     "sonr",
-    "motor"
+    "motor",
+    "typescript",
+    "background-sync",
+    "push-notifications"
   ],
   "author": "diDAO",
   "license": "MIT",
