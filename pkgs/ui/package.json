@@ -31,7 +31,9 @@
     "format": "oxlint --fix",
     "check": "oxlint",
     "typecheck": "tsc --noEmit",
-    "release": "cz --no-raise 6,21 bump --yes --increment PATCH"
+    "bump": "devbox run bump",
+    "release": "devbox run release",
+    "publish": "devbox run publish"
   },
   "peerDependencies": {
     "react": "^18.2.0",

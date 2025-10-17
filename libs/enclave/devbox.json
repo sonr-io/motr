@@ -16,7 +16,10 @@
       "go mod download"
     ],
     "scripts": {
-      "build": "mkdir -p dist && go build -ldflags='-s -w' -o dist/enclave.wasm .",
+      "bump": ["cz --no-raise 6,21 bump --yes --increment PATCH"],
+      "publish": [""],
+      "release": [""],
+      "wasm": "mkdir -p dist && go build -ldflags='-s -w' -o dist/enclave.wasm .",
       "test": "go test ./... || echo 'No Go tests found in enclave'",
       "format": "go fmt ./..."
     }

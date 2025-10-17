@@ -16,7 +16,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "devbox run build && tsc && tsc-alias",
+    "build": "devbox run wasm && tsc && tsc-alias",
     "watch": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -24,7 +24,10 @@
     "format": "(oxlint --fix || true) && go fmt ./...",
     "check": "oxlint",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist *.tsbuildinfo"
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "bump": "devbox run bump",
+    "release": "devbox run release",
+    "publish": "devbox run publish"
   },
   "dependencies": {
     "@extism/extism": "2.0.0-rc13",

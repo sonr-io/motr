@@ -51,7 +51,10 @@
     "lint": "oxlint",
     "format": "oxlint --fix",
     "check": "oxlint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "bump": "devbox run bump",
+    "release": "devbox run release",
+    "publish": "devbox run publish"
   },
   "peerDependencies": {
     "@bufbuild/protobuf": "^1.2.0",

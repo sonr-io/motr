@@ -12,7 +12,10 @@
       "go mod download"
     ],
     "scripts": {
-      "build": [
+      "bump": ["cz --no-raise 6,21 bump --yes --increment PATCH"],
+      "publish": [""],
+      "release": [""],
+      "wasm": [
         "mkdir -p dist", 
         "go build -ldflags='-s -w' -trimpath -o dist/vault.wasm .",
         "rm -f dist/wasm_exec.js",
