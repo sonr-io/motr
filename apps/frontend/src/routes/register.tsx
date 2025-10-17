@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { RegisterFlow } from "@/components/RegisterFlow";
+import { SonrIcon } from "@sonr.io/ui/components/ui/sonr-icon";
 
 export const Route = createFileRoute("/register")({
   component: App,
@@ -15,15 +16,22 @@ function App() {
       />
 
       <div
-        className="flex w-full max-w-sm flex-col gap-6 z-10"
+        className="flex w-full max-w-xl flex-col gap-6 z-10"
         style={{ viewTransitionName: "register-page" }}
       >
-        <a href="#" className="flex items-center gap-2 self-center font-medium">
-          <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
-            {/* <SonrLogo className="text-foreground" size={24} /> */}
+        {/* Header Section */}
+        <div className="mb-2 text-center w-full">
+          <div className="flex items-center justify-center mb-4">
+            <SonrIcon size={48} className="text-primary drop-shadow-lg" />
           </div>
-          Sonr.ID
-        </a>
+          <h1 className="font-serif text-3xl font-stretch-semi-condensed text-foreground drop-shadow-lg md:text-4xl lg:text-5xl mb-3">
+            Create Your <span className="italic tracking-tight">Sonr</span> Identity
+          </h1>
+          <p className="text-sm drop-shadow-md text-muted-foreground md:text-base lg:text-lg max-w-2xl mx-auto">
+            Join the next generation of blockchain-secured digital identity
+          </p>
+        </div>
+
         <RegisterFlow />
       </div>
     </div>

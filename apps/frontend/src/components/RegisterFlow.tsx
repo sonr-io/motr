@@ -1,4 +1,3 @@
- 
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as React from "react";
 import { useForm } from "react-hook-form";
@@ -14,6 +13,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@sonr.io/ui/components/ui/form";
+import { GlassCard, GlassCardHeader, GlassCardContent } from "@sonr.io/ui/components/ui/glass-card";
 import { Input } from "@sonr.io/ui/components/ui/input";
 import { Textarea } from "@sonr.io/ui/components/ui/textarea";
 import {
@@ -110,39 +110,53 @@ export function RegisterFlow() {
  
   return (
     <Form {...form}>
-      <form className="w-full" onSubmit={form.handleSubmit(onSubmit)}>
-        <Stepper
-          value={currentStep}
-          onValueChange={onValueChange}
-          onValidate={onValidate}
-        >
-          <StepperList>
-            {steps.map((step) => (
-              <StepperItem key={step.value} value={step.value}>
-                <StepperTrigger>
-                  <StepperIndicator />
-                  <div className="flex flex-col gap-px">
-                    <StepperTitle>{step.title}</StepperTitle>
-                    <StepperDescription>{step.description}</StepperDescription>
-                  </div>
-                </StepperTrigger>
-                <StepperSeparator className="mx-4" />
-              </StepperItem>
-            ))}
-          </StepperList>
+      <GlassCard className="w-full">
+            <form className="w-full" onSubmit={form.handleSubmit(onSubmit)}>
+              <Stepper
+                value={currentStep}
+                onValueChange={onValueChange}
+                onValidate={onValidate}
+              >
+                <GlassCardHeader className="pb-6">
+                  <StepperList className="gap-2">
+                    {steps.map((step) => (
+                      <StepperItem key={step.value} value={step.value}>
+                        <StepperTrigger className="group hover:bg-accent/50 transition-all rounded-lg p-3">
+                          <StepperIndicator className="transition-all" />
+                          <div className="flex flex-col gap-1 text-left">
+                            <StepperTitle className="text-foreground/85 drop-shadow-sm group-hover:text-foreground transition-all">
+                              {step.title}
+                            </StepperTitle>
+                            <StepperDescription className="text-muted-foreground text-xs">
+                              {step.description}
+                            </StepperDescription>
+                          </div>
+                        </StepperTrigger>
+                        <StepperSeparator className="mx-2 bg-border/50" />
+                      </StepperItem>
+                    ))}
+                  </StepperList>
+                </GlassCardHeader>
+                <GlassCardContent className="pt-6">
           <StepperContent value="personal">
-            <div className="flex flex-col gap-4">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="firstName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>First Name</FormLabel>
+                      <FormLabel className="font-medium">
+                        First Name
+                      </FormLabel>
                       <FormControl>
-                        <Input placeholder="John" {...field} />
+                        <Input
+                          placeholder="John"
+                          {...field}
+                          className="transition-all"
+                        />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-xs" />
                     </FormItem>
                   )}
                 />
@@ -151,11 +165,17 @@ export function RegisterFlow() {
                   name="lastName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Last Name</FormLabel>
+                      <FormLabel className="font-medium">
+                        Last Name
+                      </FormLabel>
                       <FormControl>
-                        <Input placeholder="Doe" {...field} />
+                        <Input
+                          placeholder="Doe"
+                          {...field}
+                          className="transition-all"
+                        />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-xs" />
                     </FormItem>
                   )}
                 />
@@ -165,50 +185,67 @@ export function RegisterFlow() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel className="font-medium">
+                      Email Address
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="john.doe@example.com" {...field} />
+                      <Input
+                        placeholder="john.doe@example.com"
+                        type="email"
+                        {...field}
+                        className="transition-all"
+                      />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-xs" />
                   </FormItem>
                 )}
               />
             </div>
           </StepperContent>
           <StepperContent value="about">
-            <FormField
-              control={form.control}
-              name="bio"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Bio</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Tell us about yourself..."
-                      className="min-h-[120px]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Write a brief description about yourself.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div>
+              <FormField
+                control={form.control}
+                name="bio"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium">
+                      Biography
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Tell us about yourself..."
+                        className="min-h-[160px] resize-none transition-all"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription className="text-muted-foreground text-xs mt-2">
+                      Write a brief description about yourself (minimum 10 characters)
+                    </FormDescription>
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
+              />
+            </div>
           </StepperContent>
           <StepperContent value="professional">
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-6">
               <FormField
                 control={form.control}
                 name="company"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Company</FormLabel>
+                    <FormLabel className="font-medium">
+                      Company Name
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="Acme Inc." {...field} />
+                      <Input
+                        placeholder="Acme Inc."
+                        {...field}
+                        className="transition-all"
+                      />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-xs" />
                   </FormItem>
                 )}
               />
@@ -217,36 +254,53 @@ export function RegisterFlow() {
                 name="website"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Website</FormLabel>
+                    <FormLabel className="font-medium">
+                      Website
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="https://example.com" {...field} />
+                      <Input
+                        placeholder="https://example.com"
+                        type="url"
+                        {...field}
+                        className="transition-all"
+                      />
                     </FormControl>
-                    <FormDescription>
-                      Optional: Your personal or company website.
+                    <FormDescription className="text-muted-foreground text-xs mt-2">
+                      Optional: Your personal or company website
                     </FormDescription>
-                    <FormMessage />
+                    <FormMessage className="text-xs" />
                   </FormItem>
                 )}
               />
             </div>
           </StepperContent>
-          <div className="mt-4 flex justify-between">
-            <StepperPrevTrigger asChild>
-              <Button variant="outline">Previous</Button>
-            </StepperPrevTrigger>
-            <div className="text-muted-foreground text-sm">
-              Step {currentIndex + 1} of {steps.length}
-            </div>
-            {currentIndex === steps.length - 1 ? (
-              <Button type="submit">Complete</Button>
-            ) : (
-              <StepperNextTrigger asChild>
-                <Button>Next</Button>
-              </StepperNextTrigger>
-            )}
-          </div>
-        </Stepper>
-      </form>
-    </Form>
+                </GlassCardContent>
+
+                {/* Footer Navigation */}
+                <div className="mt-8 mb-6 flex items-center justify-between px-6">
+                  <StepperPrevTrigger asChild>
+                    <Button variant="glass" size="default">
+                      Previous
+                    </Button>
+                  </StepperPrevTrigger>
+
+                  <div className="text-muted-foreground text-sm font-medium">
+                    Step {currentIndex + 1} of {steps.length}
+                  </div>
+
+                  {currentIndex === steps.length - 1 ? (
+                    <Button type="submit" variant="glass" size="default">
+                      Complete Registration
+                    </Button>
+                  ) : (
+                    <StepperNextTrigger asChild>
+                      <Button variant="glass" size="default">Next Step</Button>
+                    </StepperNextTrigger>
+                  )}
+                </div>
+              </Stepper>
+            </form>
+        </GlassCard>
+      </Form>
   );
 }

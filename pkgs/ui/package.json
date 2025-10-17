@@ -8,7 +8,6 @@
     ".": "./src/components/index.ts",
     "./components": "./src/components/index.ts",
     "./components/*": "./src/components/*.tsx",
-    "./components/auth": "./src/components/auth/*.tsx",
     "./components/backgrounds": "./src/components/backgrounds/*.tsx",
     "./components/ui/*": "./src/components/ui/*.tsx",
     "./lib/utils": "./src/lib/utils.ts",

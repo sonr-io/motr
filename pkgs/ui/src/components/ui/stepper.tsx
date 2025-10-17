@@ -622,7 +622,7 @@ function StepperList(props: StepperListProps) {
         className={cn(
           "flex outline-none",
           orientation === "horizontal"
-            ? "flex-row items-center"
+            ? "flex-row items-center justify-between w-full"
             : "flex-col items-start",
           className,
         )}
@@ -1002,6 +1002,7 @@ function StepperTrigger(props: ButtonProps) {
       className={cn(
         "inline-flex items-center justify-center gap-3 rounded-md text-left outline-none transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
         "not-has-[[data-slot=description]]:rounded-full not-has-[[data-slot=title]]:rounded-full",
+        "hover:bg-accent/50 dark:hover:bg-accent/30 data-[state=active]:bg-accent/30 dark:data-[state=active]:bg-accent/20",
         className,
       )}
       onClick={onClick}
@@ -1039,7 +1040,7 @@ function StepperIndicator(props: StepperIndicatorProps) {
       {...indicatorProps}
       ref={ref}
       className={cn(
-        "flex size-7 shrink-0 items-center justify-center rounded-full border-2 border-muted bg-background font-medium text-muted-foreground text-sm transition-colors data-[state=active]:border-primary data-[state=completed]:border-primary data-[state=active]:bg-primary data-[state=completed]:bg-primary data-[state=active]:text-primary-foreground data-[state=completed]:text-primary-foreground",
+        "flex size-7 shrink-0 items-center justify-center rounded-full border-2 border-border/50 bg-white/20 dark:bg-black/40 backdrop-blur-sm font-medium text-muted-foreground text-sm transition-all data-[state=active]:border-primary data-[state=completed]:border-primary data-[state=active]:bg-primary data-[state=completed]:bg-primary data-[state=active]:text-primary-foreground data-[state=completed]:text-primary-foreground data-[state=active]:backdrop-blur-xl data-[state=completed]:backdrop-blur-xl",
         className,
       )}
     >
@@ -1105,7 +1106,7 @@ function StepperSeparator(props: StepperSeparatorProps) {
       {...separatorProps}
       ref={ref}
       className={cn(
-        "bg-border transition-colors data-[state=active]:bg-primary data-[state=completed]:bg-primary",
+        "bg-border/50 transition-all data-[state=active]:bg-primary data-[state=completed]:bg-primary data-[state=active]:bg-opacity-70 data-[state=completed]:bg-opacity-70",
         orientation === "horizontal" ? "h-px flex-1" : "h-10 w-px",
         className,
       )}

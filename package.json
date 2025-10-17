@@ -39,6 +39,7 @@
 		"@types/node": "^24.7.2",
 		"@vitest/ui": "^3.2.4",
 		"happy-dom": "^20.0.0",
+		"oxlint": "^1.23.0",
 		"turbo": "^2.5.8",
 		"typescript": "^5.9.3",
 		"vitest": "^3.2.4",

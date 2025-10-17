@@ -5,7 +5,7 @@ function GlassCard({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="glass-card"
       className={cn(
-        "bg-primary-foreground/30 border-primary-foreground/30 flex flex-col gap-6 rounded-2xl border py-6 backdrop-blur-xl",
+        "bg-white/30 dark:bg-black/60 border border-border/50 flex flex-col gap-6 rounded-2xl py-6 backdrop-blur-xl",
         className,
       )}
       {...props}
