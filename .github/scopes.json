@@ -1,0 +1,47 @@
+[
+  {
+    "scope": "deps",
+    "path": "bun.lock"
+  },
+  {
+    "scope": "workspace",
+    "path": "turbo.json"
+  },
+  {
+    "scope": "ci",
+    "path": ".github"
+  },
+  {
+    "scope": "ui",
+    "package": "@sonr.io/ui",
+    "path": "pkgs/ui"
+  },
+  {
+    "scope": "enclave",
+    "package": "@sonr.io/enclave",
+    "path": "libs/enclave"
+  },
+  {
+    "scope": "sdk",
+    "package": "@sonr.io/sdk",
+    "path": "pkgs/sdk"
+  },
+  {
+    "scope": "vault",
+    "package": "@sonr.io/vault",
+    "path": "libs/vault",
+    "uses": ["sdk"]
+  },
+  {
+    "scope": "react",
+    "package": "@sonr.io/react",
+    "path": "pkgs/react",
+    "uses": ["enclave", "sdk"]
+  },
+  {
+    "scope": "frontend",
+    "package": "@sonr.io/frontend",
+    "path": "apps/frontend",
+    "uses": ["react", "ui", "vault"]
+  }
+]
