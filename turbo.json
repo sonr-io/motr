@@ -106,8 +106,24 @@
 			"outputs": [],
 			"cache": false
 		},
+		"@sonr.io/react#build": {
+			"dependsOn": ["@sonr.io/react#format", "@sonr.io/sdk#build", "@sonr.io/enclave#build"],
+			"outputs": ["dist/**", "*.tsbuildinfo"],
+			"inputs": ["src/**", "tsconfig.json", "package.json"],
+			"cache": true
+		},
+		"@sonr.io/react#test": {
+			"dependsOn": [],
+			"outputs": [],
+			"cache": false
+		},
+		"@sonr.io/react#lint": {
+			"dependsOn": [],
+			"outputs": [],
+			"cache": false
+		},
 		"@sonr.io/frontend#build": {
-			"dependsOn": ["@sonr.io/frontend#format", "@sonr.io/sdk#build", "@sonr.io/ui#build"],
+			"dependsOn": ["@sonr.io/frontend#format", "@sonr.io/sdk#build", "@sonr.io/ui#build", "@sonr.io/react#build"],
 			"outputs": ["dist/**"],
 			"env": ["NODE_ENV", "VITE_*"],
 			"inputs": [
@@ -126,6 +142,7 @@
 				"@sonr.io/frontend#format",
 				"@sonr.io/ui#build",
 				"@sonr.io/sdk#build",
+				"@sonr.io/react#build",
 				"@sonr.io/enclave#build",
 				"@sonr.io/vault#build"
 			]
