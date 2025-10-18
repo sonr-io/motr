@@ -50,8 +50,10 @@ export {
   type InitMessagePayload,
 } from './worker.js';
 
-// Vite plugin and loader
-export { enclavePlugin, type EnclavePluginOptions } from './vite-plugin-enclave.js';
+// Vite plugin is available via '@sonr.io/enclave/vite-plugin' import
+// DO NOT export it from main entry point to avoid bundling Node.js dependencies
+
+// WASM loader utilities
 export {
   loadVaultWASM,
   loadVaultWASMCached,
