@@ -3,6 +3,7 @@ import viteReact from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import { resolve } from 'node:path'
+import { enclavePlugin } from '@sonr.io/enclave/vite-plugin'
 
 // Plugin to handle .js extension imports for @noble packages
 function nobleHashesPlugin(): Plugin {
@@ -23,6 +24,9 @@ function nobleHashesPlugin(): Plugin {
 export default defineConfig({
   plugins: [
     nobleHashesPlugin() as any,
+    enclavePlugin({
+      wasmPath: resolve(__dirname, '../../libs/enclave/dist/enclave.wasm'),
+    }),
     tanstackRouter({ autoCodeSplitting: true }),
     viteReact(),
     tailwindcss(),

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { HoverButton } from "@sonr.io/ui/components/ui/hover-button";
 import { FloatingHeader } from "@sonr.io/ui/components/ui/floating-header";
+import { EnclaveStatusCheck } from "@/components/EnclaveStatusCheck";
 
 export const Route = createFileRoute("/")({
   component: App,
@@ -8,12 +9,12 @@ export const Route = createFileRoute("/")({
 
 function App() {
   return (
-    <div className="relative h-svh w-full overflow-hidden">
+    <div className="relative min-h-svh w-full overflow-hidden">
       <div className="absolute top-4 left-0 right-0 z-50 px-4 md:px-6">
         <FloatingHeader />
       </div>
 
-      <div className="relative z-10 flex h-full w-full flex-col items-center justify-center">
+      <div className="relative z-10 flex h-full w-full flex-col items-center justify-center pt-24 pb-12">
         <div className="flex w-full max-w-xl flex-col items-center gap-8 p-6 lg:max-w-2xl rounded-full mb-12">
           <h1 className="text-center font-serif text-4xl font-stretch-semi-condensed text-foreground/85 drop-shadow-lg md:text-5xl lg:text-7xl">
             Your <span className="italic tracking-tight">Personal</span>{" "}
@@ -27,6 +28,11 @@ function App() {
           <div className="mt-2 flex flex-col items-center justify-center gap-4 md:flex-row md:gap-6">
             <HoverButton text="Start your Journey" to="/register" />
           </div>
+        </div>
+
+        {/* Enclave Status Check Component */}
+        <div className="w-full max-w-2xl px-6 mt-8">
+          <EnclaveStatusCheck />
         </div>
       </div>
     </div>
