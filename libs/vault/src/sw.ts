@@ -18,6 +18,83 @@ interface SyncEvent extends ExtendableEvent {
   readonly tag: string;
 }
 
+// Define PaymentRequestEvent interface for Payment Handler API
+interface PaymentRequestEvent extends ExtendableEvent {
+  readonly topOrigin: string;
+  readonly paymentRequestOrigin: string;
+  readonly paymentRequestId: string;
+  readonly methodData: PaymentMethodData[];
+  readonly total: PaymentCurrencyAmount;
+  readonly modifiers?: PaymentDetailsModifier[];
+  readonly instrumentKey: string;
+  openWindow(url: string): Promise<WindowClient | null>;
+  respondWith(response: Promise<PaymentHandlerResponse>): void;
+  changePaymentMethod(
+    methodName: string,
+    methodDetails?: any
+  ): Promise<PaymentRequestDetailsUpdate | null>;
+  changeShippingAddress(
+    shippingAddress: PaymentAddress
+  ): Promise<PaymentRequestDetailsUpdate | null>;
+  changeShippingOption(
+    shippingOption: string
+  ): Promise<PaymentRequestDetailsUpdate | null>;
+}
+
+interface PaymentMethodData {
+  supportedMethods: string;
+  data?: any;
+}
+
+interface PaymentCurrencyAmount {
+  currency: string;
+  value: string;
+}
+
+interface PaymentDetailsModifier {
+  supportedMethods: string;
+  total?: PaymentItem;
+  additionalDisplayItems?: PaymentItem[];
+  data?: any;
+}
+
+interface PaymentItem {
+  label: string;
+  amount: PaymentCurrencyAmount;
+}
+
+interface PaymentAddress {
+  country?: string;
+  addressLine?: string[];
+  region?: string;
+  city?: string;
+  dependentLocality?: string;
+  postalCode?: string;
+  sortingCode?: string;
+  organization?: string;
+  recipient?: string;
+  phone?: string;
+}
+
+interface PaymentRequestDetailsUpdate {
+  total?: PaymentItem;
+  modifiers?: PaymentDetailsModifier[];
+  shippingOptions?: PaymentShippingOption[];
+  error?: string;
+}
+
+interface PaymentShippingOption {
+  id: string;
+  label: string;
+  amount: PaymentCurrencyAmount;
+  selected?: boolean;
+}
+
+interface PaymentHandlerResponse {
+  methodName: string;
+  details: any;
+}
+
 // Configuration
 const SW_VERSION = '1.0.0';
 const CACHE_VERSION = `motor-vault-v${SW_VERSION}`;
@@ -26,6 +103,10 @@ const PRECACHE_ASSETS = [
   '/vault.wasm',
   '/wasm_exec.js',
 ];
+
+// Vault WASM state
+let vaultInitialized = false;
+let vaultReady = false;
 
 // Cache strategies
 const CACHE_STRATEGIES = {
@@ -66,6 +147,9 @@ self.addEventListener('install', (event: ExtendableEvent) => {
         await cache.addAll(PRECACHE_ASSETS);
 
         console.log('[Motor Vault SW] Pre-cached critical assets');
+
+        // Initialize vault WASM
+        await initializeVault();
 
         // Skip waiting to activate immediately
         await self.skipWaiting();
@@ -122,13 +206,21 @@ self.addEventListener('fetch', (event: FetchEvent) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Skip non-GET requests
-  if (request.method !== 'GET') {
+  // Skip chrome-extension and other non-http(s) protocols
+  if (!url.protocol.startsWith('http')) {
     return;
   }
 
-  // Skip chrome-extension and other non-http(s) protocols
-  if (!url.protocol.startsWith('http')) {
+  // Route payment API requests to vault WASM HTTP server
+  if (url.pathname.startsWith('/api/payment/') ||
+      url.pathname.startsWith('/payment/') ||
+      url.pathname.startsWith('/.well-known/')) {
+    event.respondWith(handleVaultRequest(request));
+    return;
+  }
+
+  // Skip non-GET requests for other paths
+  if (request.method !== 'GET') {
     return;
   }
 
@@ -393,6 +485,195 @@ async function syncVaultData(): Promise<void> {
   } catch (error) {
     console.error('[Motor Vault SW] Vault data sync failed:', error);
     throw error;
+  }
+}
+
+/**
+ * Payment Request Event Handler (Payment Handler API)
+ * Handles payment requests from merchants
+ */
+self.addEventListener('paymentrequest', (event: Event) => {
+  const paymentEvent = event as unknown as PaymentRequestEvent;
+
+  console.log('[Motor Vault SW] Payment request received:', {
+    topOrigin: paymentEvent.topOrigin,
+    paymentRequestOrigin: paymentEvent.paymentRequestOrigin,
+    paymentRequestId: paymentEvent.paymentRequestId,
+    total: paymentEvent.total,
+    methodData: paymentEvent.methodData,
+  });
+
+  paymentEvent.respondWith(handlePaymentRequest(paymentEvent));
+});
+
+/**
+ * Handles the payment request by opening a payment window
+ * and coordinating with the vault for transaction signing
+ */
+async function handlePaymentRequest(
+  event: PaymentRequestEvent
+): Promise<PaymentHandlerResponse> {
+  try {
+    // Open payment UI window for user confirmation
+    const paymentUrl = new URL('/payment', self.location.origin);
+    paymentUrl.searchParams.set('paymentRequestId', event.paymentRequestId);
+    paymentUrl.searchParams.set('total', event.total.value);
+    paymentUrl.searchParams.set('currency', event.total.currency);
+    paymentUrl.searchParams.set('merchantOrigin', event.topOrigin);
+
+    console.log('[Motor Vault SW] Opening payment window:', paymentUrl.toString());
+
+    const paymentWindow = await event.openWindow(paymentUrl.toString());
+
+    if (!paymentWindow) {
+      throw new Error('Failed to open payment window');
+    }
+
+    // Wait for payment confirmation from the payment window
+    const paymentResult = await waitForPaymentConfirmation(event.paymentRequestId);
+
+    console.log('[Motor Vault SW] Payment result:', paymentResult);
+
+    // Return payment response
+    return {
+      methodName: event.methodData[0].supportedMethods,
+      details: paymentResult,
+    };
+  } catch (error) {
+    console.error('[Motor Vault SW] Payment request failed:', error);
+    throw error;
+  }
+}
+
+/**
+ * Waits for payment confirmation from the payment UI window
+ * Uses message passing between service worker and client
+ */
+function waitForPaymentConfirmation(paymentRequestId: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      reject(new Error('Payment confirmation timeout'));
+    }, 300000); // 5 minute timeout
+
+    // Listen for payment confirmation message
+    const messageHandler = (event: ExtendableMessageEvent) => {
+      if (event.data.type === 'PAYMENT_CONFIRMED' &&
+          event.data.paymentRequestId === paymentRequestId) {
+        clearTimeout(timeout);
+        self.removeEventListener('message', messageHandler as any);
+        resolve(event.data.paymentDetails);
+      } else if (event.data.type === 'PAYMENT_CANCELLED' &&
+                 event.data.paymentRequestId === paymentRequestId) {
+        clearTimeout(timeout);
+        self.removeEventListener('message', messageHandler as any);
+        reject(new Error('Payment cancelled by user'));
+      }
+    };
+
+    self.addEventListener('message', messageHandler as any);
+  });
+}
+
+/**
+ * Initialize the vault WASM HTTP server
+ */
+async function initializeVault(): Promise<void> {
+  if (vaultInitialized) {
+    console.log('[Motor Vault SW] Vault already initialized');
+    return;
+  }
+
+  console.log('[Motor Vault SW] Initializing vault WASM HTTP server...');
+
+  try {
+    // Import wasm_exec.js (Go's JS/WASM bridge)
+    // Note: This should be loaded from cache
+    const wasmExecResponse = await caches.match('/wasm_exec.js');
+    if (wasmExecResponse) {
+      const wasmExecCode = await wasmExecResponse.text();
+      // Execute in global scope
+      (0, eval)(wasmExecCode);
+    } else {
+      throw new Error('wasm_exec.js not found in cache');
+    }
+
+    // Load vault.wasm from cache
+    const wasmResponse = await caches.match('/vault.wasm');
+    if (!wasmResponse) {
+      throw new Error('vault.wasm not found in cache');
+    }
+
+    const wasmBytes = await wasmResponse.arrayBuffer();
+
+    // Initialize Go runtime
+    const go = new (self as any).Go();
+
+    // Instantiate WASM module
+    const result = await WebAssembly.instantiate(wasmBytes, go.importObject);
+
+    // Run the Go program (this starts the HTTP server)
+    go.run(result.instance);
+
+    vaultInitialized = true;
+    vaultReady = true;
+
+    console.log('[Motor Vault SW] Vault WASM HTTP server initialized successfully');
+  } catch (error) {
+    console.error('[Motor Vault SW] Failed to initialize vault:', error);
+    vaultInitialized = false;
+    vaultReady = false;
+    throw error;
+  }
+}
+
+/**
+ * Handle requests to the vault WASM HTTP server
+ */
+async function handleVaultRequest(request: Request): Promise<Response> {
+  // Ensure vault is initialized
+  if (!vaultReady) {
+    console.warn('[Motor Vault SW] Vault not ready, initializing...');
+    try {
+      await initializeVault();
+    } catch (error) {
+      console.error('[Motor Vault SW] Vault initialization failed:', error);
+      return new Response(
+        JSON.stringify({
+          error: 'Vault not available',
+          message: 'Payment service is currently unavailable',
+        }),
+        {
+          status: 503,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+  }
+
+  try {
+    // The Go WASM HTTP server intercepts fetch requests via the go-wasm-http-server library
+    // We just need to make a fetch request and it will be handled by the Go server
+    console.log('[Motor Vault SW] Routing request to vault:', request.url);
+
+    // Forward the request to the WASM server
+    // The go-wasm-http-server library patches the global fetch to intercept requests
+    const response = await fetch(request);
+
+    console.log('[Motor Vault SW] Vault response:', response.status);
+
+    return response;
+  } catch (error) {
+    console.error('[Motor Vault SW] Vault request failed:', error);
+    return new Response(
+      JSON.stringify({
+        error: 'Request failed',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   }
 }
 
