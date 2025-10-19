@@ -28,9 +28,40 @@ export default {
 	async fetch(request: Request, env: Env, _ctx: ExecutionContext): Promise<Response> {
 		const url = new URL(request.url);
 
+		// Payment method manifest endpoint
+		if (url.pathname === '/pay' || url.pathname === '/pay/') {
+			// Serve the payment manifest JSON directly with Link header
+			const manifestUrl = `${url.origin}/pay/payment-manifest.json`;
+
+			// Build supported origins list (no wildcards allowed by Payment Handler API)
+			// Each entry must be a complete origin starting with https:// or http:// (localhost only)
+			const supportedOrigins = [url.origin];
+
+			// Add production domains if not localhost
+			if (!url.hostname.includes('localhost') && !url.hostname.includes('127.0.0.1')) {
+				supportedOrigins.push('https://sonr.id');
+				// Add specific subdomains if needed (no wildcard patterns allowed)
+				// supportedOrigins.push('https://www.sonr.id', 'https://app.sonr.id');
+			}
+
+			const manifest = {
+				default_applications: [`${url.origin}/site.webmanifest`],
+				supported_origins: supportedOrigins
+			};
+
+			return new Response(JSON.stringify(manifest), {
+				status: 200,
+				headers: {
+					'Content-Type': 'application/json',
+					'Link': `<${manifestUrl}>; rel="payment-method-manifest"`,
+					'Access-Control-Allow-Origin': '*',
+				}
+			});
+		}
+
 		// API routes - add your custom API handlers here
 		if (url.pathname.startsWith('/api/')) {
-			return handleApiRequest(request, env, ctx);
+			return handleApiRequest(request, env, _ctx);
 		}
 
 		// Health check endpoint

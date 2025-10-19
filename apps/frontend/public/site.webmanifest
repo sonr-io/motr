@@ -1,7 +1,15 @@
 {
-  "name": "Sonr",
-  "short_name": "Sonr",
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "name": "Sonr Wallet",
+  "short_name": "Sonr.ID",
+  "description": "Secure cryptographic vault and payment handler for the Sonr ecosystem",
   "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
     {
       "src": "/web-app-manifest-192x192.png",
       "sizes": "192x192",
@@ -12,10 +20,26 @@
       "src": "/web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/maskable_icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "maskable"
     }
   ],
   "theme_color": "#17c2ff",
   "background_color": "#051522",
-  "display": "standalone"
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/",
+  "categories": ["finance", "cryptocurrency", "payments"],
+  "serviceworker": {
+    "src": "/sw.js",
+    "scope": "/",
+    "use_cache": false
+  },
+  "related_applications": [],
+  "prefer_related_applications": false
 }

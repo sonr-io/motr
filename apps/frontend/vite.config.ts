@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import { resolve } from 'node:path'
 import { enclavePlugin } from '@sonr.io/enclave/vite-plugin'
+import { vaultPlugin } from '@sonr.io/vault/vite-plugin'
 
 // Plugin to handle .js extension imports for @noble packages
 function nobleHashesPlugin(): Plugin {
@@ -21,11 +22,49 @@ function nobleHashesPlugin(): Plugin {
   };
 }
 
+// Plugin to handle payment method manifest endpoint
+function paymentMethodPlugin(): Plugin {
+  return {
+    name: 'payment-method-handler',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        // Handle /pay and /pay/ requests - serve payment manifest
+        if (req.url === '/pay' || req.url === '/pay/') {
+          const protocol = req.headers['x-forwarded-proto'] || 'http';
+          const host = req.headers.host || 'localhost:6165';
+          const origin = `${protocol}://${host}`;
+
+          const manifest = {
+            default_applications: [`${origin}/site.webmanifest`],
+            supported_origins: [origin]
+          };
+
+          res.setHeader('Content-Type', 'application/json');
+          res.setHeader('Access-Control-Allow-Origin', '*');
+          res.setHeader('Link', `<${origin}/pay/payment-manifest.json>; rel="payment-method-manifest"`);
+          res.statusCode = 200;
+          res.end(JSON.stringify(manifest, null, 2));
+          return;
+        }
+        next();
+      });
+    },
+  };
+}
+
 export default defineConfig({
   plugins: [
     nobleHashesPlugin() as any,
+    paymentMethodPlugin() as any,
     enclavePlugin({
       wasmPath: resolve(__dirname, '../../libs/enclave/dist/enclave.wasm'),
+    }),
+    vaultPlugin({
+      copyToPublic: true,
+      registerServiceWorker: false, // Disable auto-registration, we'll do it manually
+      scope: '/',
+      updateCheckInterval: 3600000,
+      debug: true,
     }),
     tanstackRouter({ autoCodeSplitting: true }),
     viteReact(),

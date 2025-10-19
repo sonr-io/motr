@@ -1,10 +1,10 @@
 import { useEnclave, useEnclaveClient } from '@sonr.io/react';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+  GlassCard,
+  GlassCardContent,
+  GlassCardDescription,
+  GlassCardHeader,
+  GlassCardTitle,
   Badge,
   Alert,
   AlertDescription,
@@ -48,14 +48,14 @@ export function EnclaveStatusCheck() {
     useEnclaveClient();
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Enclave Status</CardTitle>
-        <CardDescription>
+    <GlassCard>
+      <GlassCardHeader>
+        <GlassCardTitle>Enclave Status</GlassCardTitle>
+        <GlassCardDescription>
           Monitor your cryptographic enclave and vault operations
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+        </GlassCardDescription>
+      </GlassCardHeader>
+      <GlassCardContent className="space-y-4">
         {/* Error Display */}
         {error && (
           <Alert variant="destructive">
@@ -139,8 +139,8 @@ export function EnclaveStatusCheck() {
             Powered by @sonr.io/react v0.0.1
           </p>
         </div>
-      </CardContent>
-    </Card>
+      </GlassCardContent>
+    </GlassCard>
   );
 }
 

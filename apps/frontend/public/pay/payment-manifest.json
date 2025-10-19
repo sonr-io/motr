@@ -1,0 +1,10 @@
+{
+  "default_applications": [
+    "/site.webmanifest"
+  ],
+  "supported_origins": [
+    "https://sonr.id",
+    "http://localhost:6165",
+    "http://127.0.0.1:6165"
+  ]
+}

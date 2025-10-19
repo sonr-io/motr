@@ -10,6 +10,39 @@ import { routeTree } from './routeTree.gen'
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 
+// Register Service Worker for Payment Handler API and Vault
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      const registration = await navigator.serviceWorker.register('/sw.js', {
+        scope: '/',
+        updateViaCache: 'none'
+      });
+      console.log('[Motor Vault] ServiceWorker registered:', registration.scope);
+
+      // Check for updates periodically
+      setInterval(() => {
+        registration.update();
+      }, 3600000); // 1 hour
+
+      // Handle updates
+      registration.addEventListener('updatefound', () => {
+        const newWorker = registration.installing;
+        if (!newWorker) return;
+
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            console.log('[Motor Vault] New ServiceWorker available');
+          }
+        });
+      });
+
+    } catch (error) {
+      console.error('[Motor Vault] ServiceWorker registration failed:', error);
+    }
+  });
+}
+
 // Create a new router instance
 
 const providersContext = getProvidersContext()

@@ -3,8 +3,11 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
+		"predev": "bun run copy:vault",
 		"dev": "wrangler dev",
+		"prebuild": "bun run copy:vault",
 		"build": "bunx --bun vite build && tsc",
+		"copy:vault": "cp ../../libs/vault/dist/sw.js public/sw.js && cp ../../libs/vault/dist/vault.wasm public/vault.wasm && cp ../../libs/vault/dist/wasm_exec.js public/wasm_exec.js",
 		"preview": "wrangler dev --remote",
 		"test": "vitest run --passWithNoTests",
 		"format": "oxlint --fix",

@@ -30,6 +30,7 @@ import {
   StepperTitle,
   StepperTrigger,
 } from "@sonr.io/ui/components/ui/stepper";
+import { Separator } from "@sonr.io/ui/components";
  
 const formSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -45,20 +46,20 @@ type FormSchema = z.infer<typeof formSchema>;
 const steps = [
   {
     value: "personal",
-    title: "Personal Details",
-    description: "Enter your basic information",
-    fields: ["firstName", "lastName", "email"] as const,
+    title: "Details",
+    description: "Basic information",
+    fields: [ "email"] as const,
   },
   {
     value: "about",
-    title: "About You",
-    description: "Tell us more about yourself",
+    title: "Recovery",
+    description: "Validate OTP",
     fields: ["bio"] as const,
   },
   {
     value: "professional",
-    title: "Professional Info",
-    description: "Add your professional details",
+    title: "Authentication",
+    description: "Create Passkey",
     fields: ["company", "website"] as const,
   },
 ];
@@ -69,8 +70,6 @@ export function RegisterFlow() {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
       email: "",
       bio: "",
       company: "",
@@ -117,7 +116,7 @@ export function RegisterFlow() {
                 onValueChange={onValueChange}
                 onValidate={onValidate}
               >
-                <GlassCardHeader className="pb-6">
+                <GlassCardHeader>
                   <StepperList className="gap-2">
                     {steps.map((step) => (
                       <StepperItem key={step.value} value={step.value}>
@@ -137,49 +136,8 @@ export function RegisterFlow() {
                     ))}
                   </StepperList>
                 </GlassCardHeader>
-                <GlassCardContent className="pt-6">
+                <GlassCardContent>
           <StepperContent value="personal">
-            <div className="flex flex-col gap-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="firstName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-medium">
-                        First Name
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="John"
-                          {...field}
-                          className="transition-all"
-                        />
-                      </FormControl>
-                      <FormMessage className="text-xs" />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="lastName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-medium">
-                        Last Name
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Doe"
-                          {...field}
-                          className="transition-all"
-                        />
-                      </FormControl>
-                      <FormMessage className="text-xs" />
-                    </FormItem>
-                  )}
-                />
-              </div>
               <FormField
                 control={form.control}
                 name="email"
@@ -200,7 +158,6 @@ export function RegisterFlow() {
                   </FormItem>
                 )}
               />
-            </div>
           </StepperContent>
           <StepperContent value="about">
             <div>
@@ -276,8 +233,9 @@ export function RegisterFlow() {
           </StepperContent>
                 </GlassCardContent>
 
+                  <Separator />
                 {/* Footer Navigation */}
-                <div className="mt-8 mb-6 flex items-center justify-between px-6">
+                <div className="mt-4mb-6 flex items-center justify-between px-6">
                   <StepperPrevTrigger asChild>
                     <Button variant="glass" size="default">
                       Previous
