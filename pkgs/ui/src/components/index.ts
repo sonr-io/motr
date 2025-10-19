@@ -8,6 +8,16 @@ export {
 } from "./ui/card";
 
 export {
+  GlassCard,
+  GlassCardHeader,
+  GlassCardTitle,
+  GlassCardDescription,
+  GlassCardAction,
+  GlassCardContent,
+  GlassCardFooter,
+} from "./ui/glass-card";
+
+export {
   Table,
   TableHeader,
   TableBody,
