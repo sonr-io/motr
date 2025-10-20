@@ -25,11 +25,15 @@ export interface Env {
 }
 
 export default {
-  async fetch(request: Request, env: Env, _ctx: ExecutionContext): Promise<Response> {
+  async fetch(
+    request: Request,
+    env: Env,
+    _ctx: ExecutionContext,
+  ): Promise<Response> {
     const url = new URL(request.url);
 
     // Payment method manifest endpoint
-    if (url.pathname === '/pay' || url.pathname === '/pay/') {
+    if (url.pathname === "/pay" || url.pathname === "/pay/") {
       // Serve the payment manifest JSON directly with Link header
       const manifestUrl = `${url.origin}/pay/payment-manifest.json`;
 
@@ -38,8 +42,11 @@ export default {
       const supportedOrigins = [url.origin];
 
       // Add production domains if not localhost
-      if (!url.hostname.includes('localhost') && !url.hostname.includes('127.0.0.1')) {
-        supportedOrigins.push('https://sonr.id');
+      if (
+        !url.hostname.includes("localhost") &&
+        !url.hostname.includes("127.0.0.1")
+      ) {
+        supportedOrigins.push("https://sonr.id");
         // Add specific subdomains if needed (no wildcard patterns allowed)
         // supportedOrigins.push('https://www.sonr.id', 'https://app.sonr.id');
       }
@@ -52,29 +59,29 @@ export default {
       return new Response(JSON.stringify(manifest), {
         status: 200,
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Link: `<${manifestUrl}>; rel="payment-method-manifest"`,
-          'Access-Control-Allow-Origin': '*',
+          "Access-Control-Allow-Origin": "*",
         },
       });
     }
 
     // API routes - add your custom API handlers here
-    if (url.pathname.startsWith('/api/')) {
+    if (url.pathname.startsWith("/api/")) {
       return handleApiRequest(request, env, _ctx);
     }
 
     // Health check endpoint
-    if (url.pathname === '/health') {
+    if (url.pathname === "/health") {
       return new Response(
         JSON.stringify({
-          status: 'ok',
+          status: "ok",
           environment: env.ENVIRONMENT,
           timestamp: new Date().toISOString(),
         }),
         {
-          headers: { 'Content-Type': 'application/json' },
-        }
+          headers: { "Content-Type": "application/json" },
+        },
       );
     }
 
@@ -83,8 +90,8 @@ export default {
     try {
       return await env.ASSETS.fetch(request);
     } catch (error) {
-      console.error('Error serving asset:', error);
-      return new Response('Internal Server Error', { status: 500 });
+      console.error("Error serving asset:", error);
+      return new Response("Internal Server Error", { status: 500 });
     }
   },
 } satisfies ExportedHandler<Env>;
@@ -96,14 +103,14 @@ export default {
 async function handleApiRequest(
   request: Request,
   env: Env,
-  _ctx: ExecutionContext
+  _ctx: ExecutionContext,
 ): Promise<Response> {
   const url = new URL(request.url);
 
   // Example API endpoint
-  if (url.pathname === '/api/version') {
+  if (url.pathname === "/api/version") {
     return Response.json({
-      version: '1.0.0',
+      version: "1.0.0",
       environment: env.ENVIRONMENT,
     });
   }
@@ -114,5 +121,5 @@ async function handleApiRequest(
   //   return Response.json({ value });
   // }
 
-  return new Response('Not Found', { status: 404 });
+  return new Response("Not Found", { status: 404 });
 }

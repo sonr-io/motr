@@ -1,10 +1,16 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sonr.io/ui';
-import { createFileRoute } from '@tanstack/react-router';
-import { AccountInfo } from '../components/AccountInfo';
-import { BalanceInfo } from '../components/BalanceInfo';
-import { getRpcUrl } from '../lib/client';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@sonr.io/ui";
+import { createFileRoute } from "@tanstack/react-router";
+import { AccountInfo } from "../components/AccountInfo";
+import { BalanceInfo } from "../components/BalanceInfo";
+import { getRpcUrl } from "../lib/client";
 
-export const Route = createFileRoute('/search')({
+export const Route = createFileRoute("/search")({
   component: App,
 });
 
@@ -13,12 +19,14 @@ function App() {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-8">
       <div className="max-w-6xl mx-auto space-y-8">
         <header className="text-center space-y-4">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Sonr Frontend</h1>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+            Sonr Frontend
+          </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300">
             Minimal vanilla TanStack Query app with @sonr.io/sdk and @sonr.io/ui
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            RPC Endpoint:{' '}
+            RPC Endpoint:{" "}
             <code className="font-mono bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded">
               {getRpcUrl()}
             </code>
@@ -34,28 +42,31 @@ function App() {
           <CardHeader>
             <CardTitle>About This App</CardTitle>
             <CardDescription>
-              A minimal example demonstrating TanStack Query with Sonr blockchain
+              A minimal example demonstrating TanStack Query with Sonr
+              blockchain
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Features</h3>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+                Features
+              </h3>
               <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
                 <li>
-                  • <strong>@sonr.io/sdk</strong> - Blockchain client with RPC APIs, wallet support,
-                  and passkey authentication
+                  • <strong>@sonr.io/sdk</strong> - Blockchain client with RPC
+                  APIs, wallet support, and passkey authentication
                 </li>
                 <li>
-                  • <strong>@sonr.io/ui</strong> - Comprehensive UI component library built on Radix
-                  UI and Tailwind CSS
+                  • <strong>@sonr.io/ui</strong> - Comprehensive UI component
+                  library built on Radix UI and Tailwind CSS
                 </li>
                 <li>
-                  • <strong>TanStack Query</strong> - Powerful data fetching with caching,
-                  background updates, and devtools
+                  • <strong>TanStack Query</strong> - Powerful data fetching
+                  with caching, background updates, and devtools
                 </li>
                 <li>
-                  • <strong>TanStack Router</strong> - Type-safe routing with automatic code
-                  splitting
+                  • <strong>TanStack Router</strong> - Type-safe routing with
+                  automatic code splitting
                 </li>
               </ul>
             </div>

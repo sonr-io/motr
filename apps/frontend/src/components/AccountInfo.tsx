@@ -7,16 +7,16 @@ import {
   CardTitle,
   Input,
   Label,
-} from '@sonr.io/ui';
-import { useState } from 'react';
-import { useAccountQuery } from '@/queries';
+} from "@sonr.io/ui";
+import { useState } from "react";
+import { useAccountQuery } from "@/queries";
 
 /**
  * Component to demonstrate querying account information
  */
 export function AccountInfo() {
-  const [address, setAddress] = useState('');
-  const [submittedAddress, setSubmittedAddress] = useState('');
+  const [address, setAddress] = useState("");
+  const [submittedAddress, setSubmittedAddress] = useState("");
 
   const { data, isLoading, error } = useAccountQuery({
     address: submittedAddress,
@@ -32,7 +32,9 @@ export function AccountInfo() {
     <Card>
       <CardHeader>
         <CardTitle>Account Query</CardTitle>
-        <CardDescription>Query account information from the Sonr blockchain</CardDescription>
+        <CardDescription>
+          Query account information from the Sonr blockchain
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -48,14 +50,15 @@ export function AccountInfo() {
             />
           </div>
           <Button type="submit" disabled={!address || isLoading}>
-            {isLoading ? 'Loading...' : 'Query Account'}
+            {isLoading ? "Loading..." : "Query Account"}
           </Button>
         </form>
 
         {error && (
           <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
             <p className="text-sm text-red-800 dark:text-red-200">
-              <strong>Error:</strong> {error instanceof Error ? error.message : 'Unknown error'}
+              <strong>Error:</strong>{" "}
+              {error instanceof Error ? error.message : "Unknown error"}
             </p>
           </div>
         )}

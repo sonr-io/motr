@@ -1,6 +1,6 @@
-import { EnclaveProvider } from '@sonr.io/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import type { ReactNode } from 'react';
+import { EnclaveProvider } from "@sonr.io/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import type { ReactNode } from "react";
 
 /**
  * Combined providers for the application
@@ -20,7 +20,7 @@ export function AppProviders({
     <QueryClientProvider client={queryClient}>
       <EnclaveProvider
         config={{
-          wasmPath: '/enclave.wasm',
+          wasmPath: "/enclave.wasm",
         }}
       >
         {children}

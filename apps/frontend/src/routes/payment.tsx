@@ -1,4 +1,4 @@
-import { useEnclave } from '@sonr.io/react';
+import { useEnclave } from "@sonr.io/react";
 import {
   Badge,
   Button,
@@ -9,11 +9,11 @@ import {
   CardHeader,
   CardTitle,
   Separator,
-} from '@sonr.io/ui';
-import { createFileRoute } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+} from "@sonr.io/ui";
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 
-export const Route = createFileRoute('/payment')({
+export const Route = createFileRoute("/payment")({
   component: PaymentComponent,
 });
 
@@ -25,10 +25,12 @@ interface PaymentDetails {
 }
 
 function PaymentComponent() {
-  const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(null);
-  const [status, setStatus] = useState<'pending' | 'processing' | 'success' | 'cancelled'>(
-    'pending'
+  const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(
+    null,
   );
+  const [status, setStatus] = useState<
+    "pending" | "processing" | "success" | "cancelled"
+  >("pending");
   const [error, setError] = useState<string | null>(null);
   const { isReady, accountAddress } = useEnclave();
 
@@ -36,10 +38,10 @@ function PaymentComponent() {
     // Extract payment details from URL parameters
     const params = new URLSearchParams(window.location.search);
     const details: PaymentDetails = {
-      paymentRequestId: params.get('paymentRequestId') || '',
-      total: params.get('total') || '0',
-      currency: params.get('currency') || 'USD',
-      merchantOrigin: params.get('merchantOrigin') || '',
+      paymentRequestId: params.get("paymentRequestId") || "",
+      total: params.get("total") || "0",
+      currency: params.get("currency") || "USD",
+      merchantOrigin: params.get("merchantOrigin") || "",
     };
 
     setPaymentDetails(details);
@@ -48,7 +50,7 @@ function PaymentComponent() {
   const handleConfirmPayment = async () => {
     if (!paymentDetails) return;
 
-    setStatus('processing');
+    setStatus("processing");
     setError(null);
 
     try {
@@ -66,7 +68,7 @@ function PaymentComponent() {
           },
         ],
         total: {
-          label: 'Total',
+          label: "Total",
           amount: {
             currency: paymentDetails.currency,
             value: paymentDetails.total,
@@ -75,13 +77,15 @@ function PaymentComponent() {
         timestamp: Date.now(),
       };
 
-      console.log('[Payment UI] Processing payment via vault WASM HTTP server...');
+      console.log(
+        "[Payment UI] Processing payment via vault WASM HTTP server...",
+      );
 
       // Process payment via vault's WASM HTTP server
-      const response = await fetch('/api/payment/process', {
-        method: 'POST',
+      const response = await fetch("/api/payment/process", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(paymentRequestData),
       });
@@ -92,7 +96,7 @@ function PaymentComponent() {
 
       const transaction = await response.json();
 
-      console.log('[Payment UI] Payment transaction:', transaction);
+      console.log("[Payment UI] Payment transaction:", transaction);
 
       // Prepare payment response with transaction details
       const paymentResponse = {
@@ -105,44 +109,44 @@ function PaymentComponent() {
         },
       };
 
-      console.log('[Payment UI] Payment confirmed:', paymentResponse);
+      console.log("[Payment UI] Payment confirmed:", paymentResponse);
 
       // Send confirmation to service worker
       if (navigator.serviceWorker.controller) {
         navigator.serviceWorker.controller.postMessage({
-          type: 'PAYMENT_CONFIRMED',
+          type: "PAYMENT_CONFIRMED",
           paymentRequestId: paymentDetails.paymentRequestId,
           paymentDetails: paymentResponse.details,
         });
       }
 
-      setStatus('success');
+      setStatus("success");
 
       // Close window after short delay
       setTimeout(() => {
         window.close();
       }, 2000);
     } catch (err) {
-      console.error('[Payment UI] Payment failed:', err);
-      setError(err instanceof Error ? err.message : 'Payment failed');
-      setStatus('pending');
+      console.error("[Payment UI] Payment failed:", err);
+      setError(err instanceof Error ? err.message : "Payment failed");
+      setStatus("pending");
     }
   };
 
   const handleCancelPayment = () => {
     if (!paymentDetails) return;
 
-    console.log('[Payment UI] Payment cancelled');
+    console.log("[Payment UI] Payment cancelled");
 
     // Send cancellation to service worker
     if (navigator.serviceWorker.controller) {
       navigator.serviceWorker.controller.postMessage({
-        type: 'PAYMENT_CANCELLED',
+        type: "PAYMENT_CANCELLED",
         paymentRequestId: paymentDetails.paymentRequestId,
       });
     }
 
-    setStatus('cancelled');
+    setStatus("cancelled");
 
     // Close window after short delay
     setTimeout(() => {
@@ -155,7 +159,9 @@ function PaymentComponent() {
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background to-muted p-4">
         <Card className="w-full max-w-md">
           <CardContent className="pt-6">
-            <div className="text-center text-muted-foreground">Loading payment details...</div>
+            <div className="text-center text-muted-foreground">
+              Loading payment details...
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -170,11 +176,11 @@ function PaymentComponent() {
             <CardTitle>Payment Request</CardTitle>
             <Badge
               variant={
-                status === 'success'
-                  ? 'default'
-                  : status === 'cancelled'
-                    ? 'destructive'
-                    : 'secondary'
+                status === "success"
+                  ? "default"
+                  : status === "cancelled"
+                    ? "destructive"
+                    : "secondary"
               }
             >
               {status}
@@ -214,13 +220,15 @@ function PaymentComponent() {
                 <span className="font-mono text-xs">
                   {accountAddress
                     ? `${accountAddress.slice(0, 10)}...${accountAddress.slice(-8)}`
-                    : 'Not connected'}
+                    : "Not connected"}
                 </span>
               </div>
 
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Status</span>
-                <Badge variant="outline">{isReady ? 'Ready' : 'Not Ready'}</Badge>
+                <Badge variant="outline">
+                  {isReady ? "Ready" : "Not Ready"}
+                </Badge>
               </div>
             </div>
           </div>
@@ -231,7 +239,7 @@ function PaymentComponent() {
             </div>
           )}
 
-          {status === 'success' && (
+          {status === "success" && (
             <div className="rounded-lg border border-green-500/50 bg-green-500/10 p-3">
               <p className="text-sm text-green-600 dark:text-green-400">
                 Payment confirmed! This window will close automatically.
@@ -239,7 +247,7 @@ function PaymentComponent() {
             </div>
           )}
 
-          {status === 'cancelled' && (
+          {status === "cancelled" && (
             <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-3">
               <p className="text-sm text-destructive">
                 Payment cancelled. This window will close automatically.
@@ -253,7 +261,11 @@ function PaymentComponent() {
             variant="outline"
             className="flex-1"
             onClick={handleCancelPayment}
-            disabled={status === 'processing' || status === 'success' || status === 'cancelled'}
+            disabled={
+              status === "processing" ||
+              status === "success" ||
+              status === "cancelled"
+            }
           >
             Cancel
           </Button>
@@ -261,10 +273,13 @@ function PaymentComponent() {
             className="flex-1"
             onClick={handleConfirmPayment}
             disabled={
-              !isReady || status === 'processing' || status === 'success' || status === 'cancelled'
+              !isReady ||
+              status === "processing" ||
+              status === "success" ||
+              status === "cancelled"
             }
           >
-            {status === 'processing' ? 'Processing...' : 'Confirm Payment'}
+            {status === "processing" ? "Processing..." : "Confirm Payment"}
           </Button>
         </CardFooter>
       </Card>

@@ -1,6 +1,6 @@
-import { getAccount } from '@sonr.io/sdk/client';
-import { useQuery } from '@tanstack/react-query';
-import { rpcEndpoint } from '@/lib/client';
+import { getAccount } from "@sonr.io/sdk/client";
+import { useQuery } from "@tanstack/react-query";
+import { rpcEndpoint } from "@/lib/client";
 
 export interface UseAccountQueryOptions {
   address: string;
@@ -23,7 +23,7 @@ export function useAccountQuery({
   enabled = true,
 }: UseAccountQueryOptions) {
   return useQuery({
-    queryKey: ['account', address],
+    queryKey: ["account", address],
     queryFn: () => getAccount(endpoint, { address }),
     enabled: enabled && !!address,
     staleTime: 30000, // 30 seconds

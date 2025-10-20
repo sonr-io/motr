@@ -3,7 +3,7 @@
  * Configure with testnet or mainnet RPC endpoint
  */
 export function getRpcUrl(): string {
-  return import.meta.env.VITE_RPC_URL || 'https://rpc.testnet.sonr.io';
+  return import.meta.env.VITE_RPC_URL || "https://rpc.testnet.sonr.io";
 }
 
 /**

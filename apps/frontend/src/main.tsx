@@ -1,24 +1,27 @@
-import { createRouter, RouterProvider } from '@tanstack/react-router';
-import { StrictMode } from 'react';
-import ReactDOM from 'react-dom/client';
+import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { StrictMode } from "react";
+import ReactDOM from "react-dom/client";
 
-import { AppProviders, getProvidersContext } from './lib/providers.tsx';
+import { AppProviders, getProvidersContext } from "./lib/providers.tsx";
 
 // Import the generated route tree
-import { routeTree } from './routeTree.gen';
+import { routeTree } from "./routeTree.gen";
 
-import './styles.css';
-import reportWebVitals from './reportWebVitals.ts';
+import "./styles.css";
+import reportWebVitals from "./reportWebVitals.ts";
 
 // Register Service Worker for Payment Handler API and Vault
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', async () => {
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", async () => {
     try {
-      const registration = await navigator.serviceWorker.register('/sw.js', {
-        scope: '/',
-        updateViaCache: 'none',
+      const registration = await navigator.serviceWorker.register("/sw.js", {
+        scope: "/",
+        updateViaCache: "none",
       });
-      console.log('[Motor Vault] ServiceWorker registered:', registration.scope);
+      console.log(
+        "[Motor Vault] ServiceWorker registered:",
+        registration.scope,
+      );
 
       // Check for updates periodically
       setInterval(() => {
@@ -26,18 +29,21 @@ if ('serviceWorker' in navigator) {
       }, 3600000); // 1 hour
 
       // Handle updates
-      registration.addEventListener('updatefound', () => {
+      registration.addEventListener("updatefound", () => {
         const newWorker = registration.installing;
         if (!newWorker) return;
 
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            console.log('[Motor Vault] New ServiceWorker available');
+        newWorker.addEventListener("statechange", () => {
+          if (
+            newWorker.state === "installed" &&
+            navigator.serviceWorker.controller
+          ) {
+            console.log("[Motor Vault] New ServiceWorker available");
           }
         });
       });
     } catch (error) {
-      console.error('[Motor Vault] ServiceWorker registration failed:', error);
+      console.error("[Motor Vault] ServiceWorker registration failed:", error);
     }
   });
 }
@@ -50,7 +56,7 @@ const router = createRouter({
   context: {
     ...providersContext,
   },
-  defaultPreload: 'intent',
+  defaultPreload: "intent",
   scrollRestoration: true,
   defaultStructuralSharing: true,
   defaultPreloadStaleTime: 0,
@@ -58,14 +64,14 @@ const router = createRouter({
 });
 
 // Register the router instance for type safety
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface Register {
     router: typeof router;
   }
 }
 
 // Render the app
-const rootElement = document.getElementById('app');
+const rootElement = document.getElementById("app");
 if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
@@ -73,7 +79,7 @@ if (rootElement && !rootElement.innerHTML) {
       <AppProviders {...providersContext}>
         <RouterProvider router={router} />
       </AppProviders>
-    </StrictMode>
+    </StrictMode>,
   );
 }
 

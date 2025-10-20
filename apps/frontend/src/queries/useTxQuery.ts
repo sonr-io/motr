@@ -1,6 +1,6 @@
-import { getTx } from '@sonr.io/sdk/client';
-import { useQuery } from '@tanstack/react-query';
-import { rpcEndpoint } from '../lib/client';
+import { getTx } from "@sonr.io/sdk/client";
+import { useQuery } from "@tanstack/react-query";
+import { rpcEndpoint } from "../lib/client";
 
 export interface UseTxQueryOptions {
   hash: string;
@@ -17,9 +17,13 @@ export interface UseTxQueryOptions {
  * })
  * ```
  */
-export function useTxQuery({ hash, endpoint = rpcEndpoint, enabled = true }: UseTxQueryOptions) {
+export function useTxQuery({
+  hash,
+  endpoint = rpcEndpoint,
+  enabled = true,
+}: UseTxQueryOptions) {
   return useQuery({
-    queryKey: ['tx', hash],
+    queryKey: ["tx", hash],
     queryFn: () => getTx(endpoint, { hash }),
     enabled: enabled && !!hash,
     staleTime: Number.POSITIVE_INFINITY, // Transactions are immutable

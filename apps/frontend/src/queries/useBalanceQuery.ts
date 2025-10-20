@@ -1,6 +1,6 @@
-import { getNativeBalances } from '@sonr.io/sdk/client';
-import { useQuery } from '@tanstack/react-query';
-import { rpcEndpoint } from '@/lib/client';
+import { getNativeBalances } from "@sonr.io/sdk/client";
+import { useQuery } from "@tanstack/react-query";
+import { rpcEndpoint } from "@/lib/client";
 
 export interface UseBalanceQueryOptions {
   address: string;
@@ -23,7 +23,7 @@ export function useBalanceQuery({
   enabled = true,
 }: UseBalanceQueryOptions) {
   return useQuery({
-    queryKey: ['balances', address],
+    queryKey: ["balances", address],
     queryFn: () => getNativeBalances(endpoint, { address }),
     enabled: enabled && !!address,
     staleTime: 15000, // 15 seconds
