@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { VaultStorageManager, AccountVaultDatabase } from './storage.js';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { AccountVaultDatabase, VaultStorageManager } from './storage.js';
 
 describe('VaultStorageManager', () => {
   let storageManager: VaultStorageManager;

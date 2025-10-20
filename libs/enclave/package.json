@@ -46,14 +46,30 @@
   },
   "typesVersions": {
     "*": {
-      "*": ["./dist/index.d.ts"],
-      "client": ["./dist/client.d.ts"],
-      "worker-client": ["./dist/worker-client.d.ts"],
-      "worker": ["./dist/worker.d.ts"],
-      "loader": ["./dist/loader.d.ts"],
-      "storage": ["./dist/storage.d.ts"],
-      "types": ["./dist/types.d.ts"],
-      "vite-plugin": ["./dist/vite-plugin-enclave.d.ts"]
+      "*": [
+        "./dist/index.d.ts"
+      ],
+      "client": [
+        "./dist/client.d.ts"
+      ],
+      "worker-client": [
+        "./dist/worker-client.d.ts"
+      ],
+      "worker": [
+        "./dist/worker.d.ts"
+      ],
+      "loader": [
+        "./dist/loader.d.ts"
+      ],
+      "storage": [
+        "./dist/storage.d.ts"
+      ],
+      "types": [
+        "./dist/types.d.ts"
+      ],
+      "vite-plugin": [
+        "./dist/vite-plugin-enclave.d.ts"
+      ]
     }
   },
   "files": [
@@ -71,10 +87,10 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "lint": "oxlint && go fmt ./...",
-    "lint:fix": "oxlint --fix && go fmt ./...",
-    "format": "(oxlint --fix || true) && go fmt ./...",
-    "check": "oxlint && tsc --noEmit",
+    "lint": "biome lint . && go fmt ./...",
+    "lint:fix": "biome check --write . && go fmt ./...",
+    "format": "biome format --write . && go fmt ./...",
+    "check": "biome check --write . && tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist *.tsbuildinfo",
     "clean:all": "rm -rf dist node_modules *.tsbuildinfo",

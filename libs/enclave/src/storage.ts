@@ -1,5 +1,5 @@
 import Dexie, { type Table } from 'dexie';
-import type { StoredVaultState, StoredUCANToken, VaultStorageConfig } from './types.js';
+import type { StoredUCANToken, StoredVaultState, VaultStorageConfig } from './types.js';
 
 /**
  * Session data stored in IndexedDB

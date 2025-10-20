@@ -18,15 +18,11 @@
 
 import { VaultClient } from './client.js';
 import type {
-  VaultConfigWithStorage,
-  NewOriginTokenRequest,
   NewAttenuatedTokenRequest,
+  NewOriginTokenRequest,
   SignDataRequest,
+  VaultConfigWithStorage,
   VerifyDataRequest,
-  UCANTokenResponse,
-  SignDataResponse,
-  VerifyDataResponse,
-  GetIssuerDIDResponse,
 } from './types.js';
 
 declare const self: DedicatedWorkerGlobalScope;
@@ -255,7 +251,9 @@ class EnclaveWorker {
 
     try {
       await this.initPromise;
-      this.sendResponse(id, WorkerMessageType.INIT_SUCCESS, { message: 'Initialization successful' });
+      this.sendResponse(id, WorkerMessageType.INIT_SUCCESS, {
+        message: 'Initialization successful',
+      });
     } catch (error) {
       this.initPromise = null;
       throw error;
@@ -274,7 +272,10 @@ class EnclaveWorker {
   /**
    * Handle new attenuated token creation
    */
-  private async handleNewAttenuatedToken(id: string, request: NewAttenuatedTokenRequest): Promise<void> {
+  private async handleNewAttenuatedToken(
+    id: string,
+    request: NewAttenuatedTokenRequest
+  ): Promise<void> {
     this.ensureInitialized();
     const response = await this.vaultClient!.newAttenuatedToken(request);
     this.sendResponse(id, WorkerMessageType.SUCCESS, response);
@@ -287,9 +288,10 @@ class EnclaveWorker {
     this.ensureInitialized();
 
     // Convert array back to Uint8Array if needed
-    const data = request.data instanceof Uint8Array
-      ? request.data
-      : new Uint8Array(request.data as unknown as number[]);
+    const data =
+      request.data instanceof Uint8Array
+        ? request.data
+        : new Uint8Array(request.data as unknown as number[]);
 
     const response = await this.vaultClient!.signData({ data });
 
@@ -307,13 +309,15 @@ class EnclaveWorker {
     this.ensureInitialized();
 
     // Convert arrays back to Uint8Array if needed
-    const data = request.data instanceof Uint8Array
-      ? request.data
-      : new Uint8Array(request.data as unknown as number[]);
+    const data =
+      request.data instanceof Uint8Array
+        ? request.data
+        : new Uint8Array(request.data as unknown as number[]);
 
-    const signature = request.signature instanceof Uint8Array
-      ? request.signature
-      : new Uint8Array(request.signature as unknown as number[]);
+    const signature =
+      request.signature instanceof Uint8Array
+        ? request.signature
+        : new Uint8Array(request.signature as unknown as number[]);
 
     const response = await this.vaultClient!.verifyData({ data, signature });
     this.sendResponse(id, WorkerMessageType.SUCCESS, response);
@@ -358,7 +362,10 @@ class EnclaveWorker {
   /**
    * Handle switch account
    */
-  private async handleSwitchAccount(id: string, payload: { accountAddress: string }): Promise<void> {
+  private async handleSwitchAccount(
+    id: string,
+    payload: { accountAddress: string }
+  ): Promise<void> {
     this.ensureInitialized();
     await this.vaultClient!.switchAccount(payload.accountAddress);
     this.sendResponse(id, WorkerMessageType.SUCCESS, { message: 'Account switched' });
@@ -376,7 +383,10 @@ class EnclaveWorker {
   /**
    * Handle remove account
    */
-  private async handleRemoveAccount(id: string, payload: { accountAddress: string }): Promise<void> {
+  private async handleRemoveAccount(
+    id: string,
+    payload: { accountAddress: string }
+  ): Promise<void> {
     this.ensureInitialized();
     await this.vaultClient!.removeAccount(payload.accountAddress);
     this.sendResponse(id, WorkerMessageType.SUCCESS, { message: 'Account removed' });
@@ -455,4 +465,3 @@ class EnclaveWorker {
 new EnclaveWorker();
 
 // Export for TypeScript type checking
-

@@ -1,8 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/main/.schema/devbox.schema.json",
-  "packages": [
-    "go@1.24"
-  ],
+  "packages": ["go@1.24"],
   "env": {
     "GOOS": "wasip1",
     "GOARCH": "wasm",
@@ -12,14 +10,9 @@
     "GUM_SPIN_SPINNER": "pulse"
   },
   "shell": {
-    "init_hook": [
-      "go mod download",
-      "bun install"
-    ],
+    "init_hook": ["go mod download", "bun install"],
     "scripts": {
-      "bump": [
-        "cz --no-raise 6,21 bump --yes --increment PATCH"
-      ],
+      "bump": ["cz --no-raise 6,21 bump --yes --increment PATCH"],
       "release": [
         "devbox run wasm",
         "wrangler r2 object put cdn/enclave.wasm -f dist/enclave.wasm --remote"
@@ -27,7 +20,7 @@
       "publish": "echo 'Skipping publish - unimplemented'",
       "wasm": "mkdir -p dist && go build -ldflags='-s -w' -o dist/enclave.wasm .",
       "test": "go test ./... || echo 'No Go tests found in enclave'",
-      "format": "go fmt ./..."
+      "format": "go fmt ./... || echo 'No Go formatting issues found in enclave'"
     }
   }
 }

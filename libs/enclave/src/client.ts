@@ -1,22 +1,22 @@
-import { createPlugin, Plugin } from '@extism/extism';
+import { createPlugin, type Plugin } from '@extism/extism';
+import { loadVaultWASM } from './loader.js';
+import { VaultStorageManager } from './storage.js';
 import {
+  type GetIssuerDIDResponse,
+  type NewAttenuatedTokenRequest,
+  type NewOriginTokenRequest,
+  type SignDataRequest,
+  type SignDataResponse,
+  type StoredUCANToken,
+  type StoredVaultState,
+  type UCANTokenResponse,
+  type VaultConfigWithStorage,
   VaultError,
   VaultErrorCode,
   type VaultPlugin,
-  type NewOriginTokenRequest,
-  type NewAttenuatedTokenRequest,
-  type SignDataRequest,
   type VerifyDataRequest,
-  type UCANTokenResponse,
-  type SignDataResponse,
   type VerifyDataResponse,
-  type GetIssuerDIDResponse,
-  type VaultConfigWithStorage,
-  type StoredVaultState,
-  type StoredUCANToken,
 } from './types.js';
-import { loadVaultWASM } from './loader.js';
-import { VaultStorageManager } from './storage.js';
 
 /**
  * Vault client for interacting with the WASM vault module
@@ -39,38 +39,38 @@ export class VaultClient implements VaultPlugin {
   }
 
   /**
-    * Initialize the vault with WASM module
-    */
-   async initialize(wasmPath?: string, accountAddress?: string): Promise<void> {
-     // Initialize storage first if account address is provided and persistence is enabled
-     // This ensures storage works even if WASM loading fails
-     if (accountAddress && this.config.enablePersistence && this.storageManager) {
-       this.accountAddress = accountAddress;
-       this.database = await this.storageManager.getDatabase(accountAddress);
-       await this.loadPersistedState();
-     }
+   * Initialize the vault with WASM module
+   */
+  async initialize(wasmPath?: string, accountAddress?: string): Promise<void> {
+    // Initialize storage first if account address is provided and persistence is enabled
+    // This ensures storage works even if WASM loading fails
+    if (accountAddress && this.config.enablePersistence && this.storageManager) {
+      this.accountAddress = accountAddress;
+      this.database = await this.storageManager.getDatabase(accountAddress);
+      await this.loadPersistedState();
+    }
 
-     try {
-       // Load WASM module using the new loader
-       this.wasmModule = await loadVaultWASM({ url: wasmPath });
+    try {
+      // Load WASM module using the new loader
+      this.wasmModule = await loadVaultWASM({ url: wasmPath });
 
-       // Create Extism plugin with configuration
-       const pluginConfig = {
-         wasm: [{ data: new Uint8Array(this.wasmModule) }],
-         config: this.prepareConfig(),
-       };
+      // Create Extism plugin with configuration
+      const pluginConfig = {
+        wasm: [{ data: new Uint8Array(this.wasmModule) }],
+        config: this.prepareConfig(),
+      };
 
-       this.plugin = await createPlugin(pluginConfig, {
-         useWasi: true,
-       });
-     } catch (error) {
-       throw new VaultError(
-         VaultErrorCode.WASM_NOT_LOADED,
-         `Failed to initialize vault: ${error}`,
-         error
-       );
-     }
-   }
+      this.plugin = await createPlugin(pluginConfig, {
+        useWasi: true,
+      });
+    } catch (error) {
+      throw new VaultError(
+        VaultErrorCode.WASM_NOT_LOADED,
+        `Failed to initialize vault: ${error}`,
+        error
+      );
+    }
+  }
 
   /**
    * Prepare configuration for the plugin
@@ -316,7 +316,7 @@ export class VaultClient implements VaultPlugin {
     if (!this.database) return null;
 
     const state = await this.database.state.get('current');
-    if (state && state.enclave) {
+    if (state?.enclave) {
       // Restore enclave configuration if present
       this.config.enclave = JSON.parse(state.enclave);
     }

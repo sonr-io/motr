@@ -15,53 +15,50 @@
  * @packageDocumentation
  */
 
-// Type definitions
-export * from './types';
+// Vault client (main thread - synchronous WASM execution)
+export {
+  createVaultClient,
+  getDefaultVaultClient,
+  VaultClient,
+} from './client.js';
 
 // Storage management
 export {
-  VaultStorageManager,
   AccountVaultDatabase,
-  type StoredSession,
   type StoredMetadata,
+  type StoredSession,
+  VaultStorageManager,
 } from './storage.js';
-
-// Vault client (main thread - synchronous WASM execution)
+// Type definitions
+export * from './types';
+// Web Worker message types (for advanced usage)
 export {
-  VaultClient,
-  createVaultClient,
-  getDefaultVaultClient,
-} from './client.js';
-
+  type InitMessagePayload,
+  type WorkerMessage,
+  WorkerMessageType,
+  type WorkerResponse,
+} from './worker.js';
 // Web Worker client (main thread - async background execution)
 export {
-  EnclaveWorkerClient,
   createWorkerClient,
+  EnclaveWorkerClient,
   getDefaultWorkerClient,
   isWorkerSupported,
   type WorkerClientConfig,
 } from './worker-client.js';
-
-// Web Worker message types (for advanced usage)
-export {
-  WorkerMessageType,
-  type WorkerMessage,
-  type WorkerResponse,
-  type InitMessagePayload,
-} from './worker.js';
 
 // Vite plugin is available via '@sonr.io/enclave/vite-plugin' import
 // DO NOT export it from main entry point to avoid bundling Node.js dependencies
 
 // WASM loader utilities
 export {
+  getWASMInfo,
   loadVaultWASM,
   loadVaultWASMCached,
   preloadVaultWASM,
   verifyWASM,
-  getWASMInfo,
-  wasmCache,
   type WASMLoadOptions,
+  wasmCache,
 } from './loader.js';
 
 /**

@@ -10,8 +10,8 @@
  * @see https://vitejs.dev/config/
  */
 
+import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
-import { resolve } from 'path';
 import { enclavePlugin } from './src/vite-plugin-enclave';
 
 export default defineConfig({
@@ -29,7 +29,7 @@ export default defineConfig({
         'vite-plugin-enclave': resolve(__dirname, 'src/vite-plugin-enclave.ts'),
       },
       formats: ['es'],
-      fileName: (format, entryName) => `${entryName}.js`,
+      fileName: (_format, entryName) => `${entryName}.js`,
     },
 
     // Rollup options
@@ -40,6 +40,9 @@ export default defineConfig({
         'fs',
         'path',
         'url',
+        'node:fs',
+        'node:path',
+        'node:url',
         '@extism/extism',
         'dexie',
         // Optional IPFS dependencies

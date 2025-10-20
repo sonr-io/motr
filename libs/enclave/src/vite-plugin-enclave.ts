@@ -13,10 +13,10 @@
  * @see https://vitejs.dev/guide/features.html#web-workers
  */
 
+import { existsSync, readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Plugin, ResolvedConfig } from 'vite';
-import { resolve, dirname } from 'path';
-import { readFileSync, existsSync } from 'fs';
-import { fileURLToPath } from 'url';
 
 export interface EnclavePluginOptions {
   /**
@@ -73,7 +73,7 @@ export function enclavePlugin(options: EnclavePluginOptions = {}): Plugin {
     enableExtism = true,
   } = options;
 
-  let config: ResolvedConfig;
+  let _config: ResolvedConfig;
   const __dirname = dirname(fileURLToPath(import.meta.url));
 
   return {
@@ -135,7 +135,7 @@ export function enclavePlugin(options: EnclavePluginOptions = {}): Plugin {
     },
 
     configResolved(resolvedConfig) {
-      config = resolvedConfig;
+      _config = resolvedConfig;
     },
 
     buildStart() {

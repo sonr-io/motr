@@ -15,25 +15,25 @@
  */
 
 import type {
-  VaultPlugin,
-  VaultConfigWithStorage,
-  NewOriginTokenRequest,
-  NewAttenuatedTokenRequest,
-  SignDataRequest,
-  VerifyDataRequest,
-  UCANTokenResponse,
-  SignDataResponse,
-  VerifyDataResponse,
   GetIssuerDIDResponse,
-  StoredVaultState,
+  NewAttenuatedTokenRequest,
+  NewOriginTokenRequest,
+  SignDataRequest,
+  SignDataResponse,
   StoredUCANToken,
+  StoredVaultState,
+  UCANTokenResponse,
+  VaultConfigWithStorage,
+  VaultPlugin,
+  VerifyDataRequest,
+  VerifyDataResponse,
 } from './types.js';
 
 import type {
-  WorkerMessage,
-  WorkerResponse,
-  WorkerMessageType,
   InitMessagePayload,
+  WorkerMessage,
+  WorkerMessageType,
+  WorkerResponse,
 } from './worker.js';
 
 /**
@@ -284,7 +284,7 @@ export class EnclaveWorkerClient implements VaultPlugin {
     console.error('[EnclaveWorkerClient] Worker error:', event.error || event.message);
 
     // Reject all pending requests
-    for (const [id, pending] of this.pendingRequests) {
+    for (const [_id, pending] of this.pendingRequests) {
       if (pending.timeoutId) {
         clearTimeout(pending.timeoutId);
       }
@@ -332,7 +332,10 @@ export class EnclaveWorkerClient implements VaultPlugin {
       data: Array.from(request.data),
     };
 
-    const response = await this.sendMessage<{ signature: number[]; error?: string }>('sign_data', payload);
+    const response = await this.sendMessage<{ signature: number[]; error?: string }>(
+      'sign_data',
+      payload
+    );
 
     return {
       signature: new Uint8Array(response.signature),
@@ -462,7 +465,7 @@ export class EnclaveWorkerClient implements VaultPlugin {
     }
 
     // Clear pending requests
-    for (const [id, pending] of this.pendingRequests) {
+    for (const [_id, pending] of this.pendingRequests) {
       if (pending.timeoutId) {
         clearTimeout(pending.timeoutId);
       }
@@ -494,7 +497,9 @@ let defaultWorkerClient: EnclaveWorkerClient | null = null;
 /**
  * Get or create the default worker client
  */
-export async function getDefaultWorkerClient(config?: WorkerClientConfig): Promise<EnclaveWorkerClient> {
+export async function getDefaultWorkerClient(
+  config?: WorkerClientConfig
+): Promise<EnclaveWorkerClient> {
   if (!defaultWorkerClient) {
     defaultWorkerClient = createWorkerClient(config);
     await defaultWorkerClient.initialize();
