@@ -12,7 +12,6 @@ import { FloatingHeader } from "@sonr.io/ui/components/ui/floating-header";
 import { HoverButton } from "@sonr.io/ui/components/ui/hover-button";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { EnclaveStatusCheck } from "@/components/EnclaveStatusCheck";
 
 export const Route = createFileRoute("/")({
   component: App,
@@ -87,9 +86,51 @@ function App() {
           </div>
         </div>
 
-        {/* Enclave Status Check Component */}
+        {/* Identity Manager Demo */}
         <div className="w-full max-w-2xl px-6 mt-8">
-          <EnclaveStatusCheck />
+          <GlassCard>
+            <GlassCardHeader>
+              <GlassCardTitle>Sonr Identity System</GlassCardTitle>
+              <GlassCardDescription>
+                Powered by SonrIdentityDurable from @pkgs/cloudflare
+              </GlassCardDescription>
+            </GlassCardHeader>
+            <GlassCardContent className="space-y-4">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Architecture</span>
+                <Badge variant="outline">Cloudflare Durable Objects</Badge>
+              </div>
+
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Backend</span>
+                <span className="font-mono text-xs">@sonr.io/enclave</span>
+              </div>
+
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Storage</span>
+                <Badge variant="default">Persistent Global State</Badge>
+              </div>
+
+              <Separator />
+
+              <div className="rounded-lg bg-muted/50 p-4 space-y-2">
+                <div className="text-sm font-medium">Key Features:</div>
+                <ul className="text-xs text-muted-foreground space-y-1 ml-4 list-disc">
+                  <li>MPC-based key management</li>
+                  <li>UCAN token operations</li>
+                  <li>Cryptographic signing & verification</li>
+                  <li>WebSocket real-time updates</li>
+                  <li>Global state persistence</li>
+                </ul>
+              </div>
+
+              <HoverButton
+                text="Try Identity Manager"
+                to="/identity"
+                className="w-full"
+              />
+            </GlassCardContent>
+          </GlassCard>
         </div>
 
         {/* Payment Handler Demo */}

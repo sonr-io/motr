@@ -10,6 +10,12 @@
  * - And all other Cloudflare features
  */
 
+// Export Durable Objects and Workflows from @pkgs/cloudflare
+console.log('[Worker Init] Loading Cloudflare features from @pkgs/cloudflare...');
+export { CounterDurable, SonrIdentityDurable, OTPEmailWorkflow } from '@pkgs/cloudflare';
+console.log('[Worker Init] ✓ Loaded Durable Objects: CounterDurable, SonrIdentityDurable');
+console.log('[Worker Init] ✓ Loaded Workflows: OTPEmailWorkflow');
+
 export interface Env {
   // Assets binding for serving static files
   ASSETS: Fetcher;
@@ -17,10 +23,23 @@ export interface Env {
   // Environment variables
   ENVIRONMENT: string;
 
+  // Durable Objects from @pkgs/cloudflare
+  COUNTER: DurableObjectNamespace;
+  SONR_IDENTITY: DurableObjectNamespace;
+
+  // Workflows from @pkgs/cloudflare
+  OTP_EMAIL_WORKFLOW: Workflow;
+
+  // KV namespace for OTP storage
+  OTP_STORE: KVNamespace;
+
+  // Environment variables
+  EMAIL_FROM?: string;
+  RESEND_API_KEY?: string;
+
   // Add your Cloudflare bindings here:
   // MY_KV: KVNamespace;
   // MY_BUCKET: R2Bucket;
-  // MY_DURABLE_OBJECT: DurableObjectNamespace;
   // AI: Ai;
 }
 
@@ -31,6 +50,7 @@ export default {
     _ctx: ExecutionContext,
   ): Promise<Response> {
     const url = new URL(request.url);
+    console.log(`[Worker] Request received: ${request.method} ${url.pathname}`);
 
     // Payment method manifest endpoint
     if (url.pathname === "/pay" || url.pathname === "/pay/") {
@@ -115,11 +135,142 @@ async function handleApiRequest(
     });
   }
 
-  // Example: Access Cloudflare features
-  // if (url.pathname === '/api/kv-example' && env.MY_KV) {
-  //   const value = await env.MY_KV.get('key');
-  //   return Response.json({ value });
-  // }
+  // Counter Durable Object endpoints
+  if (url.pathname.startsWith('/api/counter/')) {
+    console.log('[Durable Object] Accessing CounterDurable from @pkgs/cloudflare');
+    const id = env.COUNTER.idFromName('global-counter');
+    const stub = env.COUNTER.get(id);
+    console.log('[Durable Object] CounterDurable instance created with ID:', id.toString());
+    // Forward the request to the Durable Object
+    const counterPath = url.pathname.replace('/api/counter', '');
+    const counterUrl = new URL(request.url);
+    counterUrl.pathname = counterPath;
+    return stub.fetch(counterUrl.toString(), request);
+  }
+
+  // Sonr Identity Durable Object endpoints
+  if (url.pathname.startsWith('/api/identity/')) {
+    console.log('[Durable Object] Accessing SonrIdentityDurable from @pkgs/cloudflare (wrapping @libs/enclave)');
+
+    // Extract identity ID from path (e.g., /api/identity/sonr1abc.../initialize)
+    const pathParts = url.pathname.split('/');
+    const identityId = pathParts[3]; // /api/identity/{id}/{action}
+
+    if (!identityId) {
+      return Response.json({ error: 'Identity ID required' }, { status: 400 });
+    }
+
+    const id = env.SONR_IDENTITY.idFromName(identityId);
+    const stub = env.SONR_IDENTITY.get(id);
+    console.log('[Durable Object] SonrIdentityDurable instance created with ID:', id.toString(), 'for identity:', identityId);
+
+    // Forward the request to the Durable Object, removing the identity ID from path
+    const identityPath = '/' + pathParts.slice(4).join('/');
+    const identityUrl = new URL(request.url);
+    identityUrl.pathname = identityPath;
+    return stub.fetch(identityUrl.toString(), request);
+  }
+
+  // Send OTP Email Workflow
+  if (url.pathname === '/api/auth/send-otp' && request.method === 'POST') {
+    console.log('[Workflow] Starting OTPEmailWorkflow from @pkgs/cloudflare');
+    const body = await request.json() as {
+      email: string;
+      username?: string;
+      purpose?: 'registration' | 'login' | 'password-reset';
+      expiresInMinutes?: number;
+    };
+
+    try {
+      const instance = await env.OTP_EMAIL_WORKFLOW.create({
+        params: {
+          email: body.email,
+          username: body.username,
+          purpose: body.purpose || 'registration',
+          expiresInMinutes: body.expiresInMinutes || 10,
+        },
+      });
+
+      console.log('[Workflow] OTPEmailWorkflow instance created with ID:', instance.id);
+
+      return Response.json({
+        success: true,
+        instanceId: instance.id,
+        message: 'OTP email sent successfully',
+      });
+    } catch (error) {
+      console.error('[Workflow] Failed to create OTPEmailWorkflow:', error);
+      return Response.json(
+        {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to send OTP email',
+        },
+        { status: 500 }
+      );
+    }
+  }
+
+  // Validate OTP Code
+  if (url.pathname === '/api/auth/verify-otp' && request.method === 'POST') {
+    const body = await request.json() as { email: string; code: string };
+
+    try {
+      const key = `otp:${body.email}`;
+      const storedData = await env.OTP_STORE.get(key);
+
+      if (!storedData) {
+        return Response.json(
+          {
+            success: false,
+            error: 'OTP code expired or not found',
+          },
+          { status: 400 }
+        );
+      }
+
+      const { code: storedCode, expiresAt } = JSON.parse(storedData);
+
+      // Check if OTP is expired
+      if (Date.now() > expiresAt) {
+        await env.OTP_STORE.delete(key);
+        return Response.json(
+          {
+            success: false,
+            error: 'OTP code expired',
+          },
+          { status: 400 }
+        );
+      }
+
+      // Verify the code
+      if (body.code !== storedCode) {
+        return Response.json(
+          {
+            success: false,
+            error: 'Invalid OTP code',
+          },
+          { status: 400 }
+        );
+      }
+
+      // Valid OTP - delete it to prevent reuse
+      await env.OTP_STORE.delete(key);
+
+      return Response.json({
+        success: true,
+        message: 'OTP verified successfully',
+      });
+    } catch (error) {
+      console.error('[OTP] Verification error:', error);
+      return Response.json(
+        {
+          success: false,
+          error: error instanceof Error ? error.message : 'Verification failed',
+        },
+        { status: 500 }
+      );
+    }
+  }
 
   return new Response("Not Found", { status: 404 });
 }

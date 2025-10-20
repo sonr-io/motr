@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@pkgs/cloudflare": "workspace:*",
     "@sonr.io/react": "workspace:*",
     "@sonr.io/sdk": "workspace:*",
     "@sonr.io/ui": "workspace:*",
