@@ -1,34 +1,34 @@
-import React from "react";
-import { MenuIcon } from "lucide-react";
-import { Sheet, SheetContent } from "./sheet";
-import { Button, buttonVariants } from "./button";
-import { SonrIcon } from "./sonr-icon";
-import { cn } from "../../lib/utils";
+import { MenuIcon } from 'lucide-react';
+import React from 'react';
+import { cn } from '../../lib/utils';
+import { Button, buttonVariants } from './button';
+import { Sheet, SheetContent } from './sheet';
+import { SonrIcon } from './sonr-icon';
 
 export function FloatingHeader() {
   const [open, setOpen] = React.useState(false);
 
   const links = [
     {
-      label: "Docs",
-      href: "https://sonr.dev",
+      label: 'Docs',
+      href: 'https://sonr.dev',
     },
     {
-      label: "About",
-      href: "https://sonr.io",
+      label: 'About',
+      href: 'https://sonr.io',
     },
     {
-      label: "Changelog",
-      href: "https://x.com/sonr_io",
+      label: 'Changelog',
+      href: 'https://x.com/sonr_io',
     },
   ];
 
   return (
     <header
       className={cn(
-        "sticky top-5 z-50",
-        "mx-auto w-full max-w-2xl rounded-2xl border border-border/50",
-        "bg-white/30 dark:bg-black/50 backdrop-blur-xl",
+        'sticky top-5 z-50',
+        'mx-auto w-full max-w-2xl rounded-2xl border border-border/50',
+        'bg-white/30 dark:bg-black/50 backdrop-blur-xl'
       )}
     >
       <nav className="mx-auto flex items-center justify-between px-3 py-1.5">
@@ -41,7 +41,7 @@ export function FloatingHeader() {
             {links.map((link) => (
               <a
                 key={link.label}
-                className={buttonVariants({ variant: "ghost", size: "sm" })}
+                className={buttonVariants({ variant: 'ghost', size: 'sm' })}
                 href={link.href}
               >
                 {link.label}
@@ -73,9 +73,9 @@ export function FloatingHeader() {
                       <a
                         key={link.label}
                         className={buttonVariants({
-                          variant: "ghost",
-                          size: "lg",
-                          className: "justify-start text-base",
+                          variant: 'ghost',
+                          size: 'lg',
+                          className: 'justify-start text-base',
                         })}
                         href={link.href}
                         onClick={() => setOpen(false)}

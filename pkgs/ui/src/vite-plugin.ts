@@ -23,22 +23,21 @@ export function sonrUI(options: SonrUIPluginOptions = {}): Plugin {
   return {
     name: 'vite-plugin-sonr-ui',
     config: () => ({
-      css: injectCSS ? {
-        preprocessorOptions: {
-          css: {
-            charset: false,
-          },
-        },
-      } : undefined,
+      css: injectCSS
+        ? {
+            preprocessorOptions: {
+              css: {
+                charset: false,
+              },
+            },
+          }
+        : undefined,
     }),
     transformIndexHtml: {
       order: 'pre',
       handler(html: string) {
         if (injectCSS) {
-          return html.replace(
-            '<head>',
-            `<head>\n    <link rel="stylesheet" href="${cssPath}" />`
-          );
+          return html.replace('<head>', `<head>\n    <link rel="stylesheet" href="${cssPath}" />`);
         }
         return html;
       },
