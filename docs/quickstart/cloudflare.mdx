@@ -35,48 +35,31 @@ This guide covers integrating Sonr with Cloudflare Workers using the `@pkgs/clou
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    @apps/frontend                           │
-│                                                             │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │  React Components                                    │  │
-│  │  - IdentityManager.tsx                               │  │
-│  │  - Other UI components                               │  │
-│  └────────────────┬─────────────────────────────────────┘  │
-│                   │ HTTP Requests                           │
-│                   ▼                                         │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │  Cloudflare Worker (worker.ts)                       │  │
-│  │  - Serves static assets                              │  │
-│  │  - Routes API requests to Durable Objects            │  │
-│  └────────────────┬─────────────────────────────────────┘  │
-│                   │                                         │
-└───────────────────┼─────────────────────────────────────────┘
-                    │
-                    ▼
-┌─────────────────────────────────────────────────────────────┐
-│              @pkgs/cloudflare                               │
-│                                                             │
-│  ┌────────────────────┐  ┌─────────────────────────────┐  │
-│  │ CounterDurable     │  │ SonrIdentityDurable         │  │
-│  │ - Simple example   │  │ - Identity management       │  │
-│  └────────────────────┘  │ - Wraps @libs/enclave       │  │
-│                          │ - Persistent state          │  │
-│                          │ - WebSocket support         │  │
-│                          └─────────────┬───────────────┘  │
-│                                        │                   │
-└────────────────────────────────────────┼───────────────────┘
-                                         │
-                                         ▼
-                        ┌──────────────────────────────────┐
-                        │      @libs/enclave               │
-                        │  - EnclaveWorkerClient           │
-                        │  - Web Worker                    │
-                        │  - WASM Runtime                  │
-                        │  - IndexedDB Storage             │
-                        └──────────────────────────────────┘
-```
+<Mermaid chart={`
+graph TB
+    subgraph Frontend["@apps/frontend"]
+        ReactComponents["React Components<br/>- IdentityManager.tsx<br/>- Other UI components"]
+        Worker["Cloudflare Worker (worker.ts)<br/>- Serves static assets<br/>- Routes API requests to Durable Objects"]
+        ReactComponents -->|HTTP Requests| Worker
+    end
+
+    subgraph Cloudflare["@pkgs/cloudflare"]
+        Counter["CounterDurable<br/>- Simple example"]
+        Identity["SonrIdentityDurable<br/>- Identity management<br/>- Wraps @libs/enclave<br/>- Persistent state<br/>- WebSocket support"]
+    end
+
+    subgraph Enclave["@libs/enclave"]
+        EnclaveClient["EnclaveWorkerClient<br/>- Web Worker<br/>- WASM Runtime<br/>- IndexedDB Storage"]
+    end
+
+    Worker --> Counter
+    Worker --> Identity
+    Identity --> EnclaveClient
+
+    style Frontend fill:#e3f2fd
+    style Cloudflare fill:#fff3e0
+    style Enclave fill:#f3e5f5
+`} />
 
 ## Prerequisites
 
