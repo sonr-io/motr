@@ -171,6 +171,49 @@ async function handleApiRequest(
     return stub.fetch(identityUrl.toString(), request);
   }
 
+  // Get OTP Status
+  if (url.pathname === '/api/auth/otp-status' && request.method === 'POST') {
+    const body = await request.json() as { email: string };
+
+    try {
+      const key = `otp:${body.email}`;
+      const storedData = await env.OTP_STORE.get(key);
+
+      if (!storedData) {
+        return Response.json({
+          validated: false,
+          canSend: true,
+          remainingSeconds: 0,
+        });
+      }
+
+      const data = JSON.parse(storedData);
+      const now = Date.now();
+
+      // Calculate rate limit
+      const timeSinceLastSent = now - (data.lastSentAt || 0);
+      const rateLimitMs = 60 * 1000; // 1 minute
+      const canSend = timeSinceLastSent >= rateLimitMs;
+      const remainingSeconds = canSend ? 0 : Math.ceil((rateLimitMs - timeSinceLastSent) / 1000);
+
+      return Response.json({
+        validated: data.validated || false,
+        canSend,
+        remainingSeconds,
+        expiresAt: data.expiresAt,
+      });
+    } catch (error) {
+      console.error('[OTP] Status check error:', error);
+      return Response.json(
+        {
+          success: false,
+          error: error instanceof Error ? error.message : 'Status check failed',
+        },
+        { status: 500 }
+      );
+    }
+  }
+
   // Send OTP Email Workflow
   if (url.pathname === '/api/auth/send-otp' && request.method === 'POST') {
     console.log('[Workflow] Starting OTPEmailWorkflow from @pkgs/cloudflare');
@@ -182,6 +225,41 @@ async function handleApiRequest(
     };
 
     try {
+      // Check rate limiting
+      const key = `otp:${body.email}`;
+      const storedData = await env.OTP_STORE.get(key);
+
+      if (storedData) {
+        const data = JSON.parse(storedData);
+        const now = Date.now();
+        const timeSinceLastSent = now - (data.lastSentAt || 0);
+        const rateLimitMs = 60 * 1000; // 1 minute
+
+        // Check if already validated
+        if (data.validated) {
+          return Response.json(
+            {
+              success: false,
+              error: 'Email already verified',
+            },
+            { status: 400 }
+          );
+        }
+
+        // Check rate limit
+        if (timeSinceLastSent < rateLimitMs) {
+          const remainingSeconds = Math.ceil((rateLimitMs - timeSinceLastSent) / 1000);
+          return Response.json(
+            {
+              success: false,
+              error: `Please wait ${remainingSeconds} seconds before requesting another code`,
+              remainingSeconds,
+            },
+            { status: 429 }
+          );
+        }
+      }
+
       const instance = await env.OTP_EMAIL_WORKFLOW.create({
         params: {
           email: body.email,
@@ -228,10 +306,19 @@ async function handleApiRequest(
         );
       }
 
-      const { code: storedCode, expiresAt } = JSON.parse(storedData);
+      const data = JSON.parse(storedData);
+
+      // Check if already validated
+      if (data.validated) {
+        return Response.json({
+          success: true,
+          message: 'Email already verified',
+          alreadyValidated: true,
+        });
+      }
 
       // Check if OTP is expired
-      if (Date.now() > expiresAt) {
+      if (Date.now() > data.expiresAt) {
         await env.OTP_STORE.delete(key);
         return Response.json(
           {
@@ -243,7 +330,7 @@ async function handleApiRequest(
       }
 
       // Verify the code
-      if (body.code !== storedCode) {
+      if (body.code !== data.code) {
         return Response.json(
           {
             success: false,
@@ -253,8 +340,14 @@ async function handleApiRequest(
         );
       }
 
-      // Valid OTP - delete it to prevent reuse
-      await env.OTP_STORE.delete(key);
+      // Valid OTP - mark as validated (keep in KV for status checking)
+      data.validated = true;
+      data.validatedAt = Date.now();
+
+      // Store validated status for 24 hours
+      await env.OTP_STORE.put(key, JSON.stringify(data), {
+        expirationTtl: 24 * 60 * 60,
+      });
 
       return Response.json({
         success: true,

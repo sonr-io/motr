@@ -40,6 +40,22 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 
+// Simple check icon component
+const CheckIcon = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <polyline points="20 6 9 17 4 12" />
+  </svg>
+);
+
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   otpCode: z.string().length(6, "OTP code must be 6 digits"),
@@ -70,10 +86,22 @@ const steps = [
   },
 ];
 
+interface StepStatus {
+  email: boolean;
+  verify: boolean;
+  passkey: boolean;
+}
+
 export function RegisterFlow() {
   const [currentStep, setCurrentStep] = React.useState("email");
   const [isSendingOTP, setIsSendingOTP] = React.useState(false);
   const [isVerifying, setIsVerifying] = React.useState(false);
+  const [validatedSteps, setValidatedSteps] = React.useState<StepStatus>({
+    email: false,
+    verify: false,
+    passkey: false,
+  });
+  const [rateLimitSeconds, setRateLimitSeconds] = React.useState(0);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -87,7 +115,57 @@ export function RegisterFlow() {
 
   const currentIndex = steps.findIndex((step) => step.value === currentStep);
 
+  // Check OTP status when email changes
+  const checkOTPStatus = React.useCallback(async (email: string) => {
+    if (!email || !z.string().email().safeParse(email).success) return;
+
+    try {
+      const response = await fetch("/api/auth/otp-status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (data.validated) {
+        setValidatedSteps((prev) => ({ ...prev, email: true, verify: true }));
+        setRateLimitSeconds(0);
+      } else {
+        setRateLimitSeconds(data.remainingSeconds || 0);
+      }
+    } catch (error) {
+      console.error("Failed to check OTP status:", error);
+    }
+  }, []);
+
+  // Watch email field and check status
+  const emailValue = form.watch("email");
+  React.useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      checkOTPStatus(emailValue);
+    }, 500); // Debounce
+
+    return () => clearTimeout(timeoutId);
+  }, [emailValue, checkOTPStatus]);
+
+  // Countdown timer for rate limiting
+  React.useEffect(() => {
+    if (rateLimitSeconds <= 0) return;
+
+    const intervalId = setInterval(() => {
+      setRateLimitSeconds((prev) => Math.max(0, prev - 1));
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [rateLimitSeconds]);
+
   const sendOTP = React.useCallback(async (email: string) => {
+    if (rateLimitSeconds > 0) {
+      toast.error(`Please wait ${rateLimitSeconds} seconds before requesting another code`);
+      return false;
+    }
+
     setIsSendingOTP(true);
     try {
       const response = await fetch("/api/auth/send-otp", {
@@ -103,10 +181,15 @@ export function RegisterFlow() {
       const data = await response.json();
 
       if (!data.success) {
+        if (data.remainingSeconds) {
+          setRateLimitSeconds(data.remainingSeconds);
+        }
         throw new Error(data.error || "Failed to send OTP");
       }
 
       toast.success("OTP sent to your email! Check your inbox.");
+      setValidatedSteps((prev) => ({ ...prev, email: true }));
+      setRateLimitSeconds(60); // Set 1 minute cooldown
       return true;
     } catch (error) {
       toast.error(
@@ -116,7 +199,7 @@ export function RegisterFlow() {
     } finally {
       setIsSendingOTP(false);
     }
-  }, []);
+  }, [rateLimitSeconds]);
 
   const verifyOTP = React.useCallback(
     async (email: string, code: string) => {
@@ -135,6 +218,7 @@ export function RegisterFlow() {
         }
 
         toast.success("Email verified successfully!");
+        setValidatedSteps((prev) => ({ ...prev, verify: true }));
         return true;
       } catch (error) {
         toast.error(
@@ -154,6 +238,11 @@ export function RegisterFlow() {
 
       const currentStepData = steps.find((s) => s.value === currentStep);
       if (!currentStepData) return true;
+
+      // Skip validation if step is already validated
+      if (validatedSteps[currentStep as keyof StepStatus]) {
+        return true;
+      }
 
       const isValid = await form.trigger(currentStepData.fields);
 
@@ -183,7 +272,7 @@ export function RegisterFlow() {
 
       return true;
     },
-    [form, currentStep, sendOTP, verifyOTP],
+    [form, currentStep, sendOTP, verifyOTP, validatedSteps],
   );
 
   const onValueChange = React.useCallback((value: string) => {
@@ -208,22 +297,31 @@ export function RegisterFlow() {
           >
             <GlassCardHeader>
               <StepperList className="gap-2">
-                {steps.map((step) => (
-                  <StepperItem key={step.value} value={step.value}>
-                    <StepperTrigger className="group hover:bg-accent/50 transition-all rounded-lg p-3">
-                      <StepperIndicator className="transition-all" />
-                      <div className="flex flex-col gap-1 text-left">
-                        <StepperTitle className="text-foreground/85 drop-shadow-sm group-hover:text-foreground transition-all">
-                          {step.title}
-                        </StepperTitle>
-                        <StepperDescription className="text-muted-foreground text-xs">
-                          {step.description}
-                        </StepperDescription>
-                      </div>
-                    </StepperTrigger>
-                    <StepperSeparator className="mx-2 bg-border/50" />
-                  </StepperItem>
-                ))}
+                {steps.map((step) => {
+                  const isValidated = validatedSteps[step.value as keyof StepStatus];
+                  return (
+                    <StepperItem key={step.value} value={step.value}>
+                      <StepperTrigger className="group hover:bg-accent/50 transition-all rounded-lg p-3">
+                        {isValidated ? (
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                            <CheckIcon className="h-5 w-5" />
+                          </div>
+                        ) : (
+                          <StepperIndicator className="transition-all" />
+                        )}
+                        <div className="flex flex-col gap-1 text-left">
+                          <StepperTitle className="text-foreground/85 drop-shadow-sm group-hover:text-foreground transition-all">
+                            {step.title}
+                          </StepperTitle>
+                          <StepperDescription className="text-muted-foreground text-xs">
+                            {step.description}
+                          </StepperDescription>
+                        </div>
+                      </StepperTrigger>
+                      <StepperSeparator className="mx-2 bg-border/50" />
+                    </StepperItem>
+                  );
+                })}
               </StepperList>
             </GlassCardHeader>
             <GlassCardContent>
@@ -237,16 +335,31 @@ export function RegisterFlow() {
                         Email Address
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="john.doe@example.com"
-                          type="email"
-                          {...field}
-                          className="transition-all"
-                          disabled={isSendingOTP}
-                        />
+                        <div className="relative">
+                          <Input
+                            placeholder="john.doe@example.com"
+                            type="email"
+                            {...field}
+                            className="transition-all"
+                            disabled={isSendingOTP || validatedSteps.email}
+                          />
+                          {validatedSteps.email && (
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                              <CheckIcon className="h-5 w-5 text-primary" />
+                            </div>
+                          )}
+                        </div>
                       </FormControl>
                       <FormDescription className="text-muted-foreground text-xs mt-2">
-                        We'll send a verification code to this email
+                        {validatedSteps.email ? (
+                          <span className="text-primary">✓ Code sent successfully</span>
+                        ) : rateLimitSeconds > 0 ? (
+                          <span className="text-amber-500">
+                            Wait {rateLimitSeconds}s before requesting another code
+                          </span>
+                        ) : (
+                          "We'll send a verification code to this email"
+                        )}
                       </FormDescription>
                       <FormMessage className="text-xs" />
                     </FormItem>
@@ -264,8 +377,12 @@ export function RegisterFlow() {
                         Verification Code
                       </FormLabel>
                       <FormControl>
-                        <div className="flex justify-center">
-                          <InputOTP maxLength={6} {...field} disabled={isVerifying}>
+                        <div className="flex flex-col items-center gap-3">
+                          <InputOTP
+                            maxLength={6}
+                            {...field}
+                            disabled={isVerifying || validatedSteps.verify}
+                          >
                             <InputOTPGroup>
                               <InputOTPSlot index={0} />
                               <InputOTPSlot index={1} />
@@ -275,10 +392,20 @@ export function RegisterFlow() {
                               <InputOTPSlot index={5} />
                             </InputOTPGroup>
                           </InputOTP>
+                          {validatedSteps.verify && (
+                            <div className="flex items-center gap-2 text-primary">
+                              <CheckIcon className="h-5 w-5" />
+                              <span className="text-sm font-medium">Verified</span>
+                            </div>
+                          )}
                         </div>
                       </FormControl>
                       <FormDescription className="text-muted-foreground text-xs mt-2 text-center">
-                        Enter the 6-digit code sent to {form.getValues("email")}
+                        {validatedSteps.verify ? (
+                          <span className="text-primary">Email verified successfully!</span>
+                        ) : (
+                          `Enter the 6-digit code sent to ${form.getValues("email")}`
+                        )}
                       </FormDescription>
                       <FormMessage className="text-xs text-center" />
                     </FormItem>
