@@ -22,7 +22,7 @@ export {
   isServiceWorkerSupported,
   loadVault,
   type VaultConfig,
-} from './loader.js';
+} from "./loader.js";
 // Service Worker registration helper
 export {
   getRegistration,
@@ -31,7 +31,7 @@ export {
   registerSW,
   type ServiceWorkerController,
   unregisterAll,
-} from './register-sw.js';
+} from "./register-sw.js";
 // TypeScript types for Service Worker APIs
 export type {
   Cache,
@@ -56,32 +56,32 @@ export type {
   VaultServiceWorkerMessage,
   VaultVersionResponse,
   WindowClient,
-} from './types/service-worker.js';
+} from "./types/service-worker.js";
 // Vite plugin for Service Worker integration
-export { type VaultPluginOptions, vaultPlugin } from './vite-plugin-vault.js';
+export { type VaultPluginOptions, vaultPlugin } from "./vite-plugin-vault.js";
 
 /**
  * Package version
  */
-export const VERSION = '0.0.1';
+export const VERSION = "0.0.1";
 
 /**
  * Default ServiceWorker path for the vault module
  */
-export const VAULT_SW_PATH = '/sw.js';
+export const VAULT_SW_PATH = "/sw.js";
 
 /**
  * Check if the current environment supports WASM
  */
 export function isWasmSupported(): boolean {
-  return typeof WebAssembly !== 'undefined';
+  return typeof WebAssembly !== "undefined";
 }
 
 /**
  * Check if the current environment is secure (HTTPS or localhost)
  */
 export function isSecureContext(): boolean {
-  return typeof window !== 'undefined' && window.isSecureContext;
+  return typeof window !== "undefined" && window.isSecureContext;
 }
 
 /**
@@ -89,19 +89,20 @@ export function isSecureContext(): boolean {
  */
 export function getVaultInfo() {
   return {
-    name: '@sonr.io/vault',
+    name: "@sonr.io/vault",
     version: VERSION,
     features: [
-      'WebAssembly HTTP Server',
-      'Modern Service Worker',
-      'Advanced Caching Strategies',
-      'PWA Support',
-      'Background Sync',
-      'Push Notifications',
-      'Offline-First Architecture',
+      "WebAssembly HTTP Server",
+      "Modern Service Worker",
+      "Advanced Caching Strategies",
+      "PWA Support",
+      "Background Sync",
+      "Push Notifications",
+      "Offline-First Architecture",
     ],
     requirements: {
-      serviceWorker: typeof window !== 'undefined' && 'serviceWorker' in navigator,
+      serviceWorker:
+        typeof window !== "undefined" && "serviceWorker" in navigator,
       wasm: isWasmSupported(),
       secureContext: isSecureContext(),
     },

@@ -31,12 +31,14 @@ interface PaymentRequestEvent extends ExtendableEvent {
   respondWith(response: Promise<PaymentHandlerResponse>): void;
   changePaymentMethod(
     methodName: string,
-    methodDetails?: any
+    methodDetails?: any,
   ): Promise<PaymentRequestDetailsUpdate | null>;
   changeShippingAddress(
-    shippingAddress: PaymentAddress
+    shippingAddress: PaymentAddress,
   ): Promise<PaymentRequestDetailsUpdate | null>;
-  changeShippingOption(shippingOption: string): Promise<PaymentRequestDetailsUpdate | null>;
+  changeShippingOption(
+    shippingOption: string,
+  ): Promise<PaymentRequestDetailsUpdate | null>;
 }
 
 interface PaymentMethodData {
@@ -94,10 +96,10 @@ interface PaymentHandlerResponse {
 }
 
 // Configuration
-const SW_VERSION = '1.0.0';
+const SW_VERSION = "1.0.0";
 const CACHE_VERSION = `motor-vault-v${SW_VERSION}`;
 const CACHE_NAME = `${CACHE_VERSION}-${Date.now()}`;
-const PRECACHE_ASSETS = ['/vault.wasm', '/wasm_exec.js'];
+const PRECACHE_ASSETS = ["/vault.wasm", "/wasm_exec.js"];
 
 // Vault WASM state
 let vaultInitialized = false;
@@ -105,9 +107,9 @@ let vaultReady = false;
 
 // Cache strategies
 const CACHE_STRATEGIES = {
-  NETWORK_FIRST: 'network-first',
-  CACHE_FIRST: 'cache-first',
-  STALE_WHILE_REVALIDATE: 'stale-while-revalidate',
+  NETWORK_FIRST: "network-first",
+  CACHE_FIRST: "cache-first",
+  STALE_WHILE_REVALIDATE: "stale-while-revalidate",
 } as const;
 
 // Request patterns for different caching strategies
@@ -126,7 +128,7 @@ const STRATEGY_PATTERNS = {
  * Install Event Handler
  * Triggered when service worker is first installed
  */
-self.addEventListener('install', (event: ExtendableEvent) => {
+self.addEventListener("install", (event: ExtendableEvent) => {
   console.log(`[Motor Vault SW] Installing version ${SW_VERSION}`);
 
   event.waitUntil(
@@ -136,7 +138,7 @@ self.addEventListener('install', (event: ExtendableEvent) => {
         const cache = await caches.open(CACHE_NAME);
         await cache.addAll(PRECACHE_ASSETS);
 
-        console.log('[Motor Vault SW] Pre-cached critical assets');
+        console.log("[Motor Vault SW] Pre-cached critical assets");
 
         // Initialize vault WASM
         await initializeVault();
@@ -144,12 +146,12 @@ self.addEventListener('install', (event: ExtendableEvent) => {
         // Skip waiting to activate immediately
         await self.skipWaiting();
 
-        console.log('[Motor Vault SW] Installation complete');
+        console.log("[Motor Vault SW] Installation complete");
       } catch (error) {
-        console.error('[Motor Vault SW] Installation failed:', error);
+        console.error("[Motor Vault SW] Installation failed:", error);
         throw error;
       }
-    })()
+    })(),
   );
 });
 
@@ -157,7 +159,7 @@ self.addEventListener('install', (event: ExtendableEvent) => {
  * Activate Event Handler
  * Triggered when service worker becomes active
  */
-self.addEventListener('activate', (event: ExtendableEvent) => {
+self.addEventListener("activate", (event: ExtendableEvent) => {
   console.log(`[Motor Vault SW] Activating version ${SW_VERSION}`);
 
   event.waitUntil(
@@ -166,25 +168,25 @@ self.addEventListener('activate', (event: ExtendableEvent) => {
         // Clean up old caches
         const cacheKeys = await caches.keys();
         const oldCaches = cacheKeys.filter(
-          (key) => key.startsWith('motor-vault-') && key !== CACHE_NAME
+          (key) => key.startsWith("motor-vault-") && key !== CACHE_NAME,
         );
 
         await Promise.all(
           oldCaches.map((key) => {
             console.log(`[Motor Vault SW] Deleting old cache: ${key}`);
             return caches.delete(key);
-          })
+          }),
         );
 
         // Take control of all clients immediately
         await self.clients.claim();
 
-        console.log('[Motor Vault SW] Activation complete');
+        console.log("[Motor Vault SW] Activation complete");
       } catch (error) {
-        console.error('[Motor Vault SW] Activation failed:', error);
+        console.error("[Motor Vault SW] Activation failed:", error);
         throw error;
       }
-    })()
+    })(),
   );
 });
 
@@ -192,27 +194,27 @@ self.addEventListener('activate', (event: ExtendableEvent) => {
  * Fetch Event Handler
  * Intercepts all network requests
  */
-self.addEventListener('fetch', (event: FetchEvent) => {
+self.addEventListener("fetch", (event: FetchEvent) => {
   const { request } = event;
   const url = new URL(request.url);
 
   // Skip chrome-extension and other non-http(s) protocols
-  if (!url.protocol.startsWith('http')) {
+  if (!url.protocol.startsWith("http")) {
     return;
   }
 
   // Route payment API requests to vault WASM HTTP server
   if (
-    url.pathname.startsWith('/api/payment/') ||
-    url.pathname.startsWith('/payment/') ||
-    url.pathname.startsWith('/.well-known/')
+    url.pathname.startsWith("/api/payment/") ||
+    url.pathname.startsWith("/payment/") ||
+    url.pathname.startsWith("/.well-known/")
   ) {
     event.respondWith(handleVaultRequest(request));
     return;
   }
 
   // Skip non-GET requests for other paths
-  if (request.method !== 'GET') {
+  if (request.method !== "GET") {
     return;
   }
 
@@ -226,27 +228,27 @@ self.addEventListener('fetch', (event: FetchEvent) => {
  * Message Event Handler
  * Handles messages from clients
  */
-self.addEventListener('message', (event: ExtendableMessageEvent) => {
+self.addEventListener("message", (event: ExtendableMessageEvent) => {
   const { data } = event;
 
   switch (data.type) {
-    case 'SKIP_WAITING':
+    case "SKIP_WAITING":
       self.skipWaiting();
       break;
 
-    case 'CLAIM_CLIENTS':
+    case "CLAIM_CLIENTS":
       self.clients.claim();
       break;
 
-    case 'CLEAR_CACHE':
+    case "CLEAR_CACHE":
       event.waitUntil(clearCache(data.cacheName));
       break;
 
-    case 'GET_VERSION':
+    case "GET_VERSION":
       event.ports[0]?.postMessage({ version: SW_VERSION });
       break;
 
-    case 'CACHE_URLS':
+    case "CACHE_URLS":
       event.waitUntil(cacheUrls(data.urls));
       break;
 
@@ -259,11 +261,11 @@ self.addEventListener('message', (event: ExtendableMessageEvent) => {
  * Sync Event Handler (Background Sync API)
  * Handles background synchronization
  */
-self.addEventListener('sync', (event: Event) => {
+self.addEventListener("sync", (event: Event) => {
   const syncEvent = event as unknown as SyncEvent;
   console.log(`[Motor Vault SW] Background sync: ${syncEvent.tag}`);
 
-  if (syncEvent.tag === 'vault-sync') {
+  if (syncEvent.tag === "vault-sync") {
     syncEvent.waitUntil(syncVaultData());
   }
 });
@@ -272,11 +274,11 @@ self.addEventListener('sync', (event: Event) => {
  * Push Event Handler (Push Notifications)
  * Handles push notifications
  */
-self.addEventListener('push', (event: PushEvent) => {
+self.addEventListener("push", (event: PushEvent) => {
   const options = {
-    body: event.data?.text() || 'New update available',
-    icon: '/icons/icon-192x192.png',
-    badge: '/icons/badge-72x72.png',
+    body: event.data?.text() || "New update available",
+    icon: "/icons/icon-192x192.png",
+    badge: "/icons/badge-72x72.png",
     vibrate: [200, 100, 200],
     data: {
       dateOfArrival: Date.now(),
@@ -284,30 +286,30 @@ self.addEventListener('push', (event: PushEvent) => {
     },
     actions: [
       {
-        action: 'explore',
-        title: 'View Details',
+        action: "explore",
+        title: "View Details",
       },
       {
-        action: 'close',
-        title: 'Dismiss',
+        action: "close",
+        title: "Dismiss",
       },
     ],
   };
 
-  event.waitUntil(self.registration.showNotification('Motor Vault', options));
+  event.waitUntil(self.registration.showNotification("Motor Vault", options));
 });
 
 /**
  * Notification Click Handler
  * Handles notification click events
  */
-self.addEventListener('notificationclick', (event: NotificationEvent) => {
-  console.log('[Motor Vault SW] Notification clicked:', event.action);
+self.addEventListener("notificationclick", (event: NotificationEvent) => {
+  console.log("[Motor Vault SW] Notification clicked:", event.action);
 
   event.notification.close();
 
-  if (event.action === 'explore') {
-    event.waitUntil(self.clients.openWindow('/'));
+  if (event.action === "explore") {
+    event.waitUntil(self.clients.openWindow("/"));
   }
 });
 
@@ -330,7 +332,10 @@ function getCachingStrategy(pathname: string): string {
 /**
  * Handles fetch requests with the specified caching strategy
  */
-async function handleFetchWithStrategy(request: Request, strategy: string): Promise<Response> {
+async function handleFetchWithStrategy(
+  request: Request,
+  strategy: string,
+): Promise<Response> {
   switch (strategy) {
     case CACHE_STRATEGIES.CACHE_FIRST:
       return cacheFirst(request);
@@ -368,10 +373,10 @@ async function cacheFirst(request: Request): Promise<Response> {
 
     return networkResponse;
   } catch (error) {
-    console.error('[Motor Vault SW] Cache-first fetch failed:', error);
-    return new Response('Network error', {
+    console.error("[Motor Vault SW] Cache-first fetch failed:", error);
+    return new Response("Network error", {
       status: 408,
-      statusText: 'Request Timeout',
+      statusText: "Request Timeout",
     });
   }
 }
@@ -392,7 +397,10 @@ async function networkFirst(request: Request): Promise<Response> {
 
     return networkResponse;
   } catch (error) {
-    console.warn('[Motor Vault SW] Network request failed, trying cache:', error);
+    console.warn(
+      "[Motor Vault SW] Network request failed, trying cache:",
+      error,
+    );
 
     const cachedResponse = await caches.match(request);
 
@@ -400,9 +408,9 @@ async function networkFirst(request: Request): Promise<Response> {
       return cachedResponse;
     }
 
-    return new Response('Offline', {
+    return new Response("Offline", {
       status: 503,
-      statusText: 'Service Unavailable',
+      statusText: "Service Unavailable",
     });
   }
 }
@@ -423,12 +431,12 @@ async function staleWhileRevalidate(request: Request): Promise<Response> {
       return networkResponse;
     })
     .catch((error) => {
-      console.warn('[Motor Vault SW] Background fetch failed:', error);
+      console.warn("[Motor Vault SW] Background fetch failed:", error);
       return (
         cachedResponse ||
-        new Response('Network error', {
+        new Response("Network error", {
           status: 503,
-          statusText: 'Service Unavailable',
+          statusText: "Service Unavailable",
         })
       );
     });
@@ -446,7 +454,7 @@ async function clearCache(cacheName?: string): Promise<void> {
   } else {
     const cacheKeys = await caches.keys();
     await Promise.all(cacheKeys.map((key) => caches.delete(key)));
-    console.log('[Motor Vault SW] Cleared all caches');
+    console.log("[Motor Vault SW] Cleared all caches");
   }
 }
 
@@ -463,15 +471,15 @@ async function cacheUrls(urls: string[]): Promise<void> {
  * Synchronizes vault data in the background
  */
 async function syncVaultData(): Promise<void> {
-  console.log('[Motor Vault SW] Starting vault data sync...');
+  console.log("[Motor Vault SW] Starting vault data sync...");
 
   try {
     // Implement your sync logic here
     // This could involve fetching latest vault state, updating local storage, etc.
 
-    console.log('[Motor Vault SW] Vault data sync complete');
+    console.log("[Motor Vault SW] Vault data sync complete");
   } catch (error) {
-    console.error('[Motor Vault SW] Vault data sync failed:', error);
+    console.error("[Motor Vault SW] Vault data sync failed:", error);
     throw error;
   }
 }
@@ -480,10 +488,10 @@ async function syncVaultData(): Promise<void> {
  * Payment Request Event Handler (Payment Handler API)
  * Handles payment requests from merchants
  */
-self.addEventListener('paymentrequest', (event: Event) => {
+self.addEventListener("paymentrequest", (event: Event) => {
   const paymentEvent = event as unknown as PaymentRequestEvent;
 
-  console.log('[Motor Vault SW] Payment request received:', {
+  console.log("[Motor Vault SW] Payment request received:", {
     topOrigin: paymentEvent.topOrigin,
     paymentRequestOrigin: paymentEvent.paymentRequestOrigin,
     paymentRequestId: paymentEvent.paymentRequestId,
@@ -498,27 +506,34 @@ self.addEventListener('paymentrequest', (event: Event) => {
  * Handles the payment request by opening a payment window
  * and coordinating with the vault for transaction signing
  */
-async function handlePaymentRequest(event: PaymentRequestEvent): Promise<PaymentHandlerResponse> {
+async function handlePaymentRequest(
+  event: PaymentRequestEvent,
+): Promise<PaymentHandlerResponse> {
   try {
     // Open payment UI window for user confirmation
-    const paymentUrl = new URL('/payment', self.location.origin);
-    paymentUrl.searchParams.set('paymentRequestId', event.paymentRequestId);
-    paymentUrl.searchParams.set('total', event.total.value);
-    paymentUrl.searchParams.set('currency', event.total.currency);
-    paymentUrl.searchParams.set('merchantOrigin', event.topOrigin);
+    const paymentUrl = new URL("/payment", self.location.origin);
+    paymentUrl.searchParams.set("paymentRequestId", event.paymentRequestId);
+    paymentUrl.searchParams.set("total", event.total.value);
+    paymentUrl.searchParams.set("currency", event.total.currency);
+    paymentUrl.searchParams.set("merchantOrigin", event.topOrigin);
 
-    console.log('[Motor Vault SW] Opening payment window:', paymentUrl.toString());
+    console.log(
+      "[Motor Vault SW] Opening payment window:",
+      paymentUrl.toString(),
+    );
 
     const paymentWindow = await event.openWindow(paymentUrl.toString());
 
     if (!paymentWindow) {
-      throw new Error('Failed to open payment window');
+      throw new Error("Failed to open payment window");
     }
 
     // Wait for payment confirmation from the payment window
-    const paymentResult = await waitForPaymentConfirmation(event.paymentRequestId);
+    const paymentResult = await waitForPaymentConfirmation(
+      event.paymentRequestId,
+    );
 
-    console.log('[Motor Vault SW] Payment result:', paymentResult);
+    console.log("[Motor Vault SW] Payment result:", paymentResult);
 
     // Return payment response
     return {
@@ -526,7 +541,7 @@ async function handlePaymentRequest(event: PaymentRequestEvent): Promise<Payment
       details: paymentResult,
     };
   } catch (error) {
-    console.error('[Motor Vault SW] Payment request failed:', error);
+    console.error("[Motor Vault SW] Payment request failed:", error);
     throw error;
   }
 }
@@ -538,29 +553,29 @@ async function handlePaymentRequest(event: PaymentRequestEvent): Promise<Payment
 function waitForPaymentConfirmation(paymentRequestId: string): Promise<any> {
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => {
-      reject(new Error('Payment confirmation timeout'));
+      reject(new Error("Payment confirmation timeout"));
     }, 300000); // 5 minute timeout
 
     // Listen for payment confirmation message
     const messageHandler = (event: ExtendableMessageEvent) => {
       if (
-        event.data.type === 'PAYMENT_CONFIRMED' &&
+        event.data.type === "PAYMENT_CONFIRMED" &&
         event.data.paymentRequestId === paymentRequestId
       ) {
         clearTimeout(timeout);
-        self.removeEventListener('message', messageHandler as any);
+        self.removeEventListener("message", messageHandler as any);
         resolve(event.data.paymentDetails);
       } else if (
-        event.data.type === 'PAYMENT_CANCELLED' &&
+        event.data.type === "PAYMENT_CANCELLED" &&
         event.data.paymentRequestId === paymentRequestId
       ) {
         clearTimeout(timeout);
-        self.removeEventListener('message', messageHandler as any);
-        reject(new Error('Payment cancelled by user'));
+        self.removeEventListener("message", messageHandler as any);
+        reject(new Error("Payment cancelled by user"));
       }
     };
 
-    self.addEventListener('message', messageHandler as any);
+    self.addEventListener("message", messageHandler as any);
   });
 }
 
@@ -569,28 +584,28 @@ function waitForPaymentConfirmation(paymentRequestId: string): Promise<any> {
  */
 async function initializeVault(): Promise<void> {
   if (vaultInitialized) {
-    console.log('[Motor Vault SW] Vault already initialized');
+    console.log("[Motor Vault SW] Vault already initialized");
     return;
   }
 
-  console.log('[Motor Vault SW] Initializing vault WASM HTTP server...');
+  console.log("[Motor Vault SW] Initializing vault WASM HTTP server...");
 
   try {
     // Import wasm_exec.js (Go's JS/WASM bridge)
     // Note: This should be loaded from cache
-    const wasmExecResponse = await caches.match('/wasm_exec.js');
+    const wasmExecResponse = await caches.match("/wasm_exec.js");
     if (wasmExecResponse) {
       const wasmExecCode = await wasmExecResponse.text();
       // Execute in global scope
       (0, eval)(wasmExecCode);
     } else {
-      throw new Error('wasm_exec.js not found in cache');
+      throw new Error("wasm_exec.js not found in cache");
     }
 
     // Load vault.wasm from cache
-    const wasmResponse = await caches.match('/vault.wasm');
+    const wasmResponse = await caches.match("/vault.wasm");
     if (!wasmResponse) {
-      throw new Error('vault.wasm not found in cache');
+      throw new Error("vault.wasm not found in cache");
     }
 
     const wasmBytes = await wasmResponse.arrayBuffer();
@@ -607,9 +622,11 @@ async function initializeVault(): Promise<void> {
     vaultInitialized = true;
     vaultReady = true;
 
-    console.log('[Motor Vault SW] Vault WASM HTTP server initialized successfully');
+    console.log(
+      "[Motor Vault SW] Vault WASM HTTP server initialized successfully",
+    );
   } catch (error) {
-    console.error('[Motor Vault SW] Failed to initialize vault:', error);
+    console.error("[Motor Vault SW] Failed to initialize vault:", error);
     vaultInitialized = false;
     vaultReady = false;
     throw error;
@@ -622,20 +639,20 @@ async function initializeVault(): Promise<void> {
 async function handleVaultRequest(request: Request): Promise<Response> {
   // Ensure vault is initialized
   if (!vaultReady) {
-    console.warn('[Motor Vault SW] Vault not ready, initializing...');
+    console.warn("[Motor Vault SW] Vault not ready, initializing...");
     try {
       await initializeVault();
     } catch (error) {
-      console.error('[Motor Vault SW] Vault initialization failed:', error);
+      console.error("[Motor Vault SW] Vault initialization failed:", error);
       return new Response(
         JSON.stringify({
-          error: 'Vault not available',
-          message: 'Payment service is currently unavailable',
+          error: "Vault not available",
+          message: "Payment service is currently unavailable",
         }),
         {
           status: 503,
-          headers: { 'Content-Type': 'application/json' },
-        }
+          headers: { "Content-Type": "application/json" },
+        },
       );
     }
   }
@@ -643,26 +660,26 @@ async function handleVaultRequest(request: Request): Promise<Response> {
   try {
     // The Go WASM HTTP server intercepts fetch requests via the go-wasm-http-server library
     // We just need to make a fetch request and it will be handled by the Go server
-    console.log('[Motor Vault SW] Routing request to vault:', request.url);
+    console.log("[Motor Vault SW] Routing request to vault:", request.url);
 
     // Forward the request to the WASM server
     // The go-wasm-http-server library patches the global fetch to intercept requests
     const response = await fetch(request);
 
-    console.log('[Motor Vault SW] Vault response:', response.status);
+    console.log("[Motor Vault SW] Vault response:", response.status);
 
     return response;
   } catch (error) {
-    console.error('[Motor Vault SW] Vault request failed:', error);
+    console.error("[Motor Vault SW] Vault request failed:", error);
     return new Response(
       JSON.stringify({
-        error: 'Request failed',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        error: "Request failed",
+        message: error instanceof Error ? error.message : "Unknown error",
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      }
+        headers: { "Content-Type": "application/json" },
+      },
     );
   }
 }

@@ -31,16 +31,20 @@ export interface VaultConfig {
  * ```
  */
 export async function loadVault(config: VaultConfig = {}): Promise<void> {
-  const { serviceWorkerPath = '/vault/sw.js', env: _env = {}, debug = false } = config;
+  const {
+    serviceWorkerPath = "/vault/sw.js",
+    env: _env = {},
+    debug = false,
+  } = config;
 
   if (debug) {
-    console.log('[Vault] Loading Motor vault via ServiceWorker...');
-    console.log('[Vault] ServiceWorker path:', serviceWorkerPath);
+    console.log("[Vault] Loading Motor vault via ServiceWorker...");
+    console.log("[Vault] ServiceWorker path:", serviceWorkerPath);
   }
 
   // Check if ServiceWorker is supported
   if (!isServiceWorkerSupported()) {
-    throw new Error('ServiceWorker is not supported in this environment');
+    throw new Error("ServiceWorker is not supported in this environment");
   }
 
   // Register ServiceWorker if not already registered
@@ -49,26 +53,30 @@ export async function loadVault(config: VaultConfig = {}): Promise<void> {
   }
 
   if (debug) {
-    console.log('[Vault] Motor vault ServiceWorker is ready');
+    console.log("[Vault] Motor vault ServiceWorker is ready");
   }
 }
 
 /**
  * Register the ServiceWorker for the vault
  */
-async function registerServiceWorker(serviceWorkerPath: string, debug: boolean): Promise<void> {
+async function registerServiceWorker(
+  serviceWorkerPath: string,
+  debug: boolean,
+): Promise<void> {
   if (debug) {
-    console.log('[Vault] Registering ServiceWorker...');
+    console.log("[Vault] Registering ServiceWorker...");
   }
 
   try {
-    const _registration = await navigator.serviceWorker.register(serviceWorkerPath);
+    const _registration =
+      await navigator.serviceWorker.register(serviceWorkerPath);
     if (debug) {
-      console.log('[Vault] ServiceWorker registered successfully');
+      console.log("[Vault] ServiceWorker registered successfully");
     }
   } catch (error) {
-    console.error('[Vault] Failed to register ServiceWorker:', error);
-    const err = new Error('Failed to register ServiceWorker');
+    console.error("[Vault] Failed to register ServiceWorker:", error);
+    const err = new Error("Failed to register ServiceWorker");
     (err as any).cause = error;
     throw err;
   }
@@ -78,7 +86,7 @@ async function registerServiceWorker(serviceWorkerPath: string, debug: boolean):
  * Check if ServiceWorker is supported
  */
 export function isServiceWorkerSupported(): boolean {
-  return typeof navigator !== 'undefined' && 'serviceWorker' in navigator;
+  return typeof navigator !== "undefined" && "serviceWorker" in navigator;
 }
 
 /**
@@ -92,5 +100,5 @@ export function isServiceWorkerRegistered(): boolean {
  * Helper to check if the vault is already loaded
  */
 export function isVaultLoaded(): boolean {
-  return typeof (globalThis as any).Go !== 'undefined';
+  return typeof (globalThis as any).Go !== "undefined";
 }

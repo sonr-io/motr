@@ -1,9 +1,9 @@
-import { vi } from 'vitest';
+import { vi } from "vitest";
 
 // Vitest setup file for @sonr.io/vault
 
 // Mock ServiceWorker if not available
-Object.defineProperty(navigator, 'serviceWorker', {
+Object.defineProperty(navigator, "serviceWorker", {
   value: {
     register: vi.fn().mockResolvedValue({}),
     controller: null,
@@ -12,7 +12,7 @@ Object.defineProperty(navigator, 'serviceWorker', {
 });
 
 // Mock WebAssembly if needed
-Object.defineProperty(global, 'WebAssembly', {
+Object.defineProperty(global, "WebAssembly", {
   value: {
     instantiate: vi.fn(),
   },

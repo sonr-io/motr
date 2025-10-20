@@ -128,9 +128,11 @@ export interface ServiceWorkerController {
  * await controller.skipWaiting()
  * ```
  */
-export function registerSW(options: RegisterSWOptions = {}): ServiceWorkerController {
+export function registerSW(
+  options: RegisterSWOptions = {},
+): ServiceWorkerController {
   const {
-    scope = '/',
+    scope = "/",
     updateCheckInterval = 3600000,
     onNeedRefresh,
     onOfflineReady,
@@ -145,22 +147,25 @@ export function registerSW(options: RegisterSWOptions = {}): ServiceWorkerContro
   let updateInterval: number | null = null;
 
   // Check if Service Worker is supported
-  if (!('serviceWorker' in navigator)) {
-    const error = new Error('Service Worker not supported in this browser');
+  if (!("serviceWorker" in navigator)) {
+    const error = new Error("Service Worker not supported in this browser");
     onRegisterError?.(error);
 
     return createDummyController();
   }
 
   // Register the service worker
-  window.addEventListener('load', async () => {
+  window.addEventListener("load", async () => {
     try {
-      registration = await navigator.serviceWorker.register('/sw.js', {
+      registration = await navigator.serviceWorker.register("/sw.js", {
         scope,
-        updateViaCache: 'none',
+        updateViaCache: "none",
       });
 
-      console.log('[Motor Vault] Service Worker registered:', registration.scope);
+      console.log(
+        "[Motor Vault] Service Worker registered:",
+        registration.scope,
+      );
 
       // Call registered callback
       onRegistered?.(registration);
@@ -173,41 +178,47 @@ export function registerSW(options: RegisterSWOptions = {}): ServiceWorkerContro
       }
 
       // Handle service worker updates
-      registration.addEventListener('updatefound', () => {
+      registration.addEventListener("updatefound", () => {
         const newWorker = registration?.installing;
 
         if (!newWorker) return;
 
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+        newWorker.addEventListener("statechange", () => {
+          if (
+            newWorker.state === "installed" &&
+            navigator.serviceWorker.controller
+          ) {
             // New service worker is ready
-            console.log('[Motor Vault] New Service Worker available');
+            console.log("[Motor Vault] New Service Worker available");
 
             if (autoUpdate) {
               // Automatically activate new service worker
-              newWorker.postMessage({ type: 'SKIP_WAITING' });
+              newWorker.postMessage({ type: "SKIP_WAITING" });
             } else {
               // Notify about available update
               onNeedRefresh?.();
 
               if (immediate) {
-                newWorker.postMessage({ type: 'SKIP_WAITING' });
+                newWorker.postMessage({ type: "SKIP_WAITING" });
                 window.location.reload();
               }
             }
 
             onUpdated?.(registration!);
-          } else if (newWorker.state === 'activated' && !navigator.serviceWorker.controller) {
+          } else if (
+            newWorker.state === "activated" &&
+            !navigator.serviceWorker.controller
+          ) {
             // First time activation (no previous controller)
-            console.log('[Motor Vault] Service Worker activated');
+            console.log("[Motor Vault] Service Worker activated");
             onOfflineReady?.();
           }
         });
       });
 
       // Handle controller changes (when new SW becomes active)
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        console.log('[Motor Vault] Service Worker controller changed');
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        console.log("[Motor Vault] Service Worker controller changed");
 
         if (immediate || autoUpdate) {
           window.location.reload();
@@ -219,7 +230,7 @@ export function registerSW(options: RegisterSWOptions = {}): ServiceWorkerContro
         onOfflineReady?.();
       }
     } catch (error) {
-      console.error('[Motor Vault] Service Worker registration failed:', error);
+      console.error("[Motor Vault] Service Worker registration failed:", error);
       onRegisterError?.(error as Error);
     }
   });
@@ -228,7 +239,7 @@ export function registerSW(options: RegisterSWOptions = {}): ServiceWorkerContro
   const controller: ServiceWorkerController = {
     async skipWaiting() {
       if (!registration) {
-        throw new Error('Service Worker not registered');
+        throw new Error("Service Worker not registered");
       }
 
       const waiting = registration.waiting;
@@ -238,16 +249,16 @@ export function registerSW(options: RegisterSWOptions = {}): ServiceWorkerContro
       }
 
       // Send skip waiting message
-      waiting.postMessage({ type: 'SKIP_WAITING' });
+      waiting.postMessage({ type: "SKIP_WAITING" });
 
       // Wait for controller change
       await new Promise<void>((resolve) => {
         navigator.serviceWorker.addEventListener(
-          'controllerchange',
+          "controllerchange",
           () => {
             resolve();
           },
-          { once: true }
+          { once: true },
         );
       });
 
@@ -257,11 +268,11 @@ export function registerSW(options: RegisterSWOptions = {}): ServiceWorkerContro
 
     async update() {
       if (!registration) {
-        throw new Error('Service Worker not registered');
+        throw new Error("Service Worker not registered");
       }
 
       await registration.update();
-      console.log('[Motor Vault] Service Worker update check completed');
+      console.log("[Motor Vault] Service Worker update check completed");
     },
 
     async unregister() {
@@ -276,14 +287,14 @@ export function registerSW(options: RegisterSWOptions = {}): ServiceWorkerContro
       }
 
       const result = await registration.unregister();
-      console.log('[Motor Vault] Service Worker unregistered:', result);
+      console.log("[Motor Vault] Service Worker unregistered:", result);
 
       return result;
     },
 
     postMessage(message: any) {
       if (!navigator.serviceWorker.controller) {
-        console.warn('[Motor Vault] No active Service Worker controller');
+        console.warn("[Motor Vault] No active Service Worker controller");
         return;
       }
 
@@ -303,7 +314,10 @@ export function registerSW(options: RegisterSWOptions = {}): ServiceWorkerContro
           resolve(event.data.version || null);
         };
 
-        navigator.serviceWorker.controller.postMessage({ type: 'GET_VERSION' }, [channel.port2]);
+        navigator.serviceWorker.controller.postMessage(
+          { type: "GET_VERSION" },
+          [channel.port2],
+        );
 
         // Timeout after 5 seconds
         setTimeout(() => resolve(null), 5000);
@@ -311,19 +325,19 @@ export function registerSW(options: RegisterSWOptions = {}): ServiceWorkerContro
     },
 
     async clearCache() {
-      this.postMessage({ type: 'CLEAR_CACHE' });
+      this.postMessage({ type: "CLEAR_CACHE" });
 
       // Also clear caches from client side
-      if ('caches' in window) {
+      if ("caches" in window) {
         const cacheKeys = await caches.keys();
         await Promise.all(cacheKeys.map((key) => caches.delete(key)));
       }
 
-      console.log('[Motor Vault] All caches cleared');
+      console.log("[Motor Vault] All caches cleared");
     },
 
     async cacheUrls(urls: string[]) {
-      this.postMessage({ type: 'CACHE_URLS', urls });
+      this.postMessage({ type: "CACHE_URLS", urls });
       console.log(`[Motor Vault] Requested caching of ${urls.length} URLs`);
     },
 
@@ -358,21 +372,23 @@ function createDummyController(): ServiceWorkerController {
  * Utility function to check if Service Worker is supported
  */
 export function isServiceWorkerSupported(): boolean {
-  return 'serviceWorker' in navigator;
+  return "serviceWorker" in navigator;
 }
 
 /**
  * Utility function to check if the page is controlled by a Service Worker
  */
 export function isControlled(): boolean {
-  return 'serviceWorker' in navigator && !!navigator.serviceWorker.controller;
+  return "serviceWorker" in navigator && !!navigator.serviceWorker.controller;
 }
 
 /**
  * Utility function to get the current Service Worker registration
  */
-export async function getRegistration(): Promise<ServiceWorkerRegistration | undefined> {
-  if (!('serviceWorker' in navigator)) {
+export async function getRegistration(): Promise<
+  ServiceWorkerRegistration | undefined
+> {
+  if (!("serviceWorker" in navigator)) {
     return undefined;
   }
 
@@ -383,13 +399,15 @@ export async function getRegistration(): Promise<ServiceWorkerRegistration | und
  * Utility function to unregister all service workers
  */
 export async function unregisterAll(): Promise<void> {
-  if (!('serviceWorker' in navigator)) {
+  if (!("serviceWorker" in navigator)) {
     return;
   }
 
   const registrations = await navigator.serviceWorker.getRegistrations();
 
-  await Promise.all(registrations.map((registration) => registration.unregister()));
+  await Promise.all(
+    registrations.map((registration) => registration.unregister()),
+  );
 
-  console.log('[Motor Vault] All Service Workers unregistered');
+  console.log("[Motor Vault] All Service Workers unregistered");
 }

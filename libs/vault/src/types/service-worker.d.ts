@@ -32,21 +32,25 @@ export interface ServiceWorkerGlobalScope extends WorkerGlobalScope {
 
   addEventListener<K extends keyof ServiceWorkerGlobalScopeEventMap>(
     type: K,
-    listener: (this: ServiceWorkerGlobalScope, ev: ServiceWorkerGlobalScopeEventMap[K]) => any,
-    options?: boolean | AddEventListenerOptions
+    listener: (
+      this: ServiceWorkerGlobalScope,
+      ev: ServiceWorkerGlobalScopeEventMap[K],
+    ) => any,
+    options?: boolean | AddEventListenerOptions,
   ): void;
 
   addEventListener(
     type: string,
     listener: EventListenerOrEventListenerObject,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void;
 
   skipWaiting(): Promise<void>;
 }
 
 // Service Worker event maps
-export interface ServiceWorkerGlobalScopeEventMap extends WorkerGlobalScopeEventMap {
+export interface ServiceWorkerGlobalScopeEventMap
+  extends WorkerGlobalScopeEventMap {
   install: ExtendableEvent;
   activate: ExtendableEvent;
   fetch: FetchEvent;
@@ -64,17 +68,32 @@ export interface CacheStorage {
   delete(cacheName: string): Promise<boolean>;
   has(cacheName: string): Promise<boolean>;
   keys(): Promise<string[]>;
-  match(request: RequestInfo | URL, options?: CacheQueryOptions): Promise<Response | undefined>;
+  match(
+    request: RequestInfo | URL,
+    options?: CacheQueryOptions,
+  ): Promise<Response | undefined>;
   open(cacheName: string): Promise<Cache>;
 }
 
 export interface Cache {
   add(request: RequestInfo | URL): Promise<void>;
   addAll(requests: (RequestInfo | URL)[]): Promise<void>;
-  delete(request: RequestInfo | URL, options?: CacheQueryOptions): Promise<boolean>;
-  keys(request?: RequestInfo | URL, options?: CacheQueryOptions): Promise<readonly Request[]>;
-  match(request: RequestInfo | URL, options?: CacheQueryOptions): Promise<Response | undefined>;
-  matchAll(request?: RequestInfo | URL, options?: CacheQueryOptions): Promise<readonly Response[]>;
+  delete(
+    request: RequestInfo | URL,
+    options?: CacheQueryOptions,
+  ): Promise<boolean>;
+  keys(
+    request?: RequestInfo | URL,
+    options?: CacheQueryOptions,
+  ): Promise<readonly Request[]>;
+  match(
+    request: RequestInfo | URL,
+    options?: CacheQueryOptions,
+  ): Promise<Response | undefined>;
+  matchAll(
+    request?: RequestInfo | URL,
+    options?: CacheQueryOptions,
+  ): Promise<readonly Response[]>;
   put(request: RequestInfo | URL, response: Response): Promise<void>;
 }
 
@@ -88,7 +107,9 @@ export interface CacheQueryOptions {
 export interface Clients {
   claim(): Promise<void>;
   get(id: string): Promise<Client | undefined>;
-  matchAll<T extends ClientQueryOptions>(options?: T): Promise<ReadonlyArray<ClientType<T>>>;
+  matchAll<T extends ClientQueryOptions>(
+    options?: T,
+  ): Promise<ReadonlyArray<ClientType<T>>>;
   openWindow(url: string | URL): Promise<WindowClient | null>;
 }
 
@@ -109,17 +130,17 @@ export interface WindowClient extends Client {
   navigate(url: string | URL): Promise<WindowClient>;
 }
 
-export type FrameType = 'auxiliary' | 'top-level' | 'nested' | 'none';
-export type ClientType = 'window' | 'worker' | 'sharedworker' | 'all';
+export type FrameType = "auxiliary" | "top-level" | "nested" | "none";
+export type ClientType = "window" | "worker" | "sharedworker" | "all";
 
 export interface ClientQueryOptions {
   includeUncontrolled?: boolean;
   type?: ClientType;
 }
 
-type ClientType<T extends ClientQueryOptions> = T extends { type: 'window' }
+type ClientType<T extends ClientQueryOptions> = T extends { type: "window" }
   ? WindowClient
-  : T extends { type: 'worker' | 'sharedworker' }
+  : T extends { type: "worker" | "sharedworker" }
     ? Client
     : Client | WindowClient;
 
@@ -182,7 +203,9 @@ export interface SyncManager {
 // Push API types
 export interface PushManager {
   getSubscription(): Promise<PushSubscription | null>;
-  permissionState(options?: PushSubscriptionOptionsInit): Promise<PushPermissionState>;
+  permissionState(
+    options?: PushSubscriptionOptionsInit,
+  ): Promise<PushPermissionState>;
   subscribe(options?: PushSubscriptionOptionsInit): Promise<PushSubscription>;
 }
 
@@ -195,8 +218,8 @@ export interface PushSubscription {
   unsubscribe(): Promise<boolean>;
 }
 
-export type PushPermissionState = 'denied' | 'granted' | 'prompt';
-export type PushEncryptionKeyName = 'auth' | 'p256dh';
+export type PushPermissionState = "denied" | "granted" | "prompt";
+export type PushEncryptionKeyName = "auth" | "p256dh";
 
 export interface PushSubscriptionOptions {
   readonly applicationServerKey: ArrayBuffer | null;
@@ -238,7 +261,7 @@ export interface NotificationAction {
   icon?: string;
 }
 
-export type NotificationDirection = 'auto' | 'ltr' | 'rtl';
+export type NotificationDirection = "auto" | "ltr" | "rtl";
 export type VibratePattern = number | number[];
 
 // Motor Vault specific message types
@@ -248,16 +271,16 @@ export interface VaultServiceWorkerMessage {
 }
 
 export type VaultMessageType =
-  | 'SKIP_WAITING'
-  | 'CLAIM_CLIENTS'
-  | 'CLEAR_CACHE'
-  | 'GET_VERSION'
-  | 'CACHE_URLS'
-  | 'SYNC_VAULT'
-  | 'UPDATE_CONFIG';
+  | "SKIP_WAITING"
+  | "CLAIM_CLIENTS"
+  | "CLEAR_CACHE"
+  | "GET_VERSION"
+  | "CACHE_URLS"
+  | "SYNC_VAULT"
+  | "UPDATE_CONFIG";
 
 export interface VaultCacheMessage extends VaultServiceWorkerMessage {
-  type: 'CACHE_URLS';
+  type: "CACHE_URLS";
   payload: {
     urls: string[];
   };
@@ -271,11 +294,11 @@ export interface VaultVersionResponse {
 
 // Cache strategy types
 export type CacheStrategy =
-  | 'network-first'
-  | 'cache-first'
-  | 'stale-while-revalidate'
-  | 'network-only'
-  | 'cache-only';
+  | "network-first"
+  | "cache-first"
+  | "stale-while-revalidate"
+  | "network-only"
+  | "cache-only";
 
 export interface CacheStrategyConfig {
   strategy: CacheStrategy;
@@ -296,9 +319,14 @@ export interface CachePlugin {
     cachedResponse: Response | null;
   }) => Promise<Response | null> | Response | null;
 
-  requestWillFetch?: (options: { request: Request }) => Promise<Request> | Request;
+  requestWillFetch?: (options: {
+    request: Request;
+  }) => Promise<Request> | Request;
 
-  fetchDidFail?: (options: { request: Request; error: Error }) => Promise<void> | void;
+  fetchDidFail?: (options: {
+    request: Request;
+    error: Error;
+  }) => Promise<void> | void;
 }
 
 // Route matching types
