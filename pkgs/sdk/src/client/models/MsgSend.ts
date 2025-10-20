@@ -1,4 +1,5 @@
 import type { PlainMessage } from '@bufbuild/protobuf';
+
 // TODO: CosmosBankV1beta1MsgSend not available in protobufs
 // // TODO: Missing from protobufs
 // import { CosmosBankV1beta1MsgSend as ProtoMsgSend } from "@sonr.io/sdk/protobufs";
@@ -8,7 +9,7 @@ type ProtoMsgSend = any;
 import type { DeepPrettify } from '../../typeutils/prettify';
 import type { Adapter } from './Adapter';
 
-type Data = DeepPrettify<PlainMessage<ProtoMsgSend>>;
+type Data = DeepPrettify<ProtoMsgSend>;
 
 export class MsgSend implements Adapter {
   private readonly data: Data;

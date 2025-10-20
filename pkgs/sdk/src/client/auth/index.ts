@@ -1,27 +1,27 @@
 // Export passkey authentication functions
-export {
-  registerWithPasskey,
-  loginWithPasskey,
-  // Utility functions
-  bufferToBase64url,
-  base64urlToBuffer,
-  isWebAuthnSupported,
-  isWebAuthnAvailable,
-  isConditionalMediationAvailable,
-  // Enhanced utilities
-  checkConditionalMediationSupport,
-  createRegistrationButton,
-  createLoginButton,
-  // Configuration and presets
-  DEFAULT_WEBAUTHN_CONFIG,
-  WEBAUTHN_PRESETS,
-} from './webauthn';
 
 // Export types
 export type {
-  PasskeyRegistrationOptions,
   PasskeyLoginOptions,
-  PasskeyRegistrationResult,
   PasskeyLoginResult,
+  PasskeyRegistrationOptions,
+  PasskeyRegistrationResult,
   WebAuthnConfig,
+} from './webauthn';
+export {
+  base64urlToBuffer,
+  // Utility functions
+  bufferToBase64url,
+  // Enhanced utilities
+  checkConditionalMediationSupport,
+  createLoginButton,
+  createRegistrationButton,
+  // Configuration and presets
+  DEFAULT_WEBAUTHN_CONFIG,
+  isConditionalMediationAvailable,
+  isWebAuthnAvailable,
+  isWebAuthnSupported,
+  loginWithPasskey,
+  registerWithPasskey,
+  WEBAUTHN_PRESETS,
 } from './webauthn';

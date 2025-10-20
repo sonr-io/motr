@@ -1,18 +1,15 @@
-import type { PlainMessage } from '@bufbuild/protobuf';
 import { base64 } from '@sonr.io/sdk/codec';
 import {
   EthermintCryptoV1Ethsecp256k1PubKey as ProtoEthermintSecp256k1PubKey,
   CosmosCryptoSecp256k1PubKey as ProtoSecp256k1PubKey,
 } from '@sonr.io/sdk/protobufs';
 
-import type { DeepPrettify } from '../../typeutils/prettify';
 import type { Adapter } from './Adapter';
 
-type Data = DeepPrettify<
-  {
-    chainId?: string | undefined;
-  } & PlainMessage<ProtoSecp256k1PubKey>
->;
+type Data = {
+  chainId?: string | undefined;
+  key: Uint8Array;
+};
 
 export class Secp256k1PubKey implements Adapter {
   private readonly data: Data;
@@ -27,8 +24,8 @@ export class Secp256k1PubKey implements Adapter {
     const isEthermintChain =
       this.type === 'dymension' || this.type === 'evmos' || this.type === 'injective';
     return isEthermintChain
-      ? new ProtoEthermintSecp256k1PubKey(this.data)
-      : new ProtoSecp256k1PubKey(this.data);
+      ? new ProtoEthermintSecp256k1PubKey(this.data as any)
+      : new ProtoSecp256k1PubKey(this.data as any);
   }
 
   public toAmino() {

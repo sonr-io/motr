@@ -1,4 +1,5 @@
 import type { PlainMessage } from '@bufbuild/protobuf';
+
 // TODO: CosmosStakingV1beta1MsgBeginRedelegate not available in protobufs
 // // TODO: Missing from protobufs
 // import { CosmosStakingV1beta1MsgBeginRedelegate as ProtoMsgBeginRedelegate } from "../../protobufs";
@@ -8,7 +9,7 @@ type ProtoMsgBeginRedelegate = any;
 import type { DeepPrettify } from '../../typeutils/prettify';
 import type { Adapter } from './Adapter';
 
-type Data = DeepPrettify<PlainMessage<ProtoMsgBeginRedelegate>>;
+type Data = DeepPrettify<ProtoMsgBeginRedelegate>;
 
 export class MsgBeginRedelegate implements Adapter {
   private readonly data: Data;

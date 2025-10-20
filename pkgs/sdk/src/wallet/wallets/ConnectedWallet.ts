@@ -1,13 +1,13 @@
 import type { PlainMessage } from '@bufbuild/protobuf';
 import {
   type Adapter,
-  type PollTxParams,
-  type Secp256k1PubKey,
-  Tx,
   calculateFee,
   getAccount,
+  type PollTxParams,
   pollTx,
+  type Secp256k1PubKey,
   simulateTx,
+  Tx,
   toBaseAccount,
 } from '@sonr.io/sdk/client';
 import {
@@ -66,7 +66,7 @@ export abstract class ConnectedWallet {
     pubKey: Secp256k1PubKey,
     address: string,
     rpc: string,
-    gasPrice: PlainMessage<Coin>
+    gasPrice: Coin
   ) {
     this.id = id;
     this.type = type;
@@ -169,7 +169,7 @@ export abstract class ConnectedWallet {
   public async pollTx(
     txHash: string,
     { maxAttempts, intervalSeconds }: PollTxOptions = {}
-  ): Promise<Required<PlainMessage<GetTxResponse>>> {
+  ): Promise<Required<GetTxResponse>> {
     return pollTx(this.rpc, {
       hash: txHash,
       maxAttempts,
@@ -187,7 +187,7 @@ export abstract class ConnectedWallet {
     unsignedTx: UnsignedTx,
     feeOrFeeMultiplier: Fee | number = 1.4,
     pollOpts: PollTxOptions = {}
-  ): Promise<Required<PlainMessage<GetTxResponse>>> {
+  ): Promise<Required<GetTxResponse>> {
     const fee =
       typeof feeOrFeeMultiplier === 'number'
         ? await this.estimateFee(unsignedTx, feeOrFeeMultiplier)

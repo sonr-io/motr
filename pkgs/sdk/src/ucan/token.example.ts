@@ -6,12 +6,7 @@
  */
 
 import { parseToken } from './parser.js';
-import {
-  createSigningMessage,
-  formatHeader,
-  formatPayload,
-  formatToken,
-} from './token.js';
+import { createSigningMessage, formatHeader, formatPayload, formatToken } from './token.js';
 import type { UCANHeader, UCANPayload, UCANToken } from './types.js';
 
 /**
@@ -186,7 +181,7 @@ export function formatTokenWithFacts() {
         {
           'user-type': 'premium',
           'subscription-tier': 'gold',
-          'region': 'us-west-2',
+          region: 'us-west-2',
         },
       ],
       att: [

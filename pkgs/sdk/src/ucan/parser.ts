@@ -9,9 +9,9 @@
  * @see https://tools.ietf.org/html/rfc7519 - JWT specification
  */
 
-import { base64urlDecode, base64urlDecodeJSON } from "./encoding.js";
-import type { UCANToken } from "./types.js";
-import { isUCANHeader, isUCANPayload } from "./types.js";
+import { base64urlDecode, base64urlDecodeJSON } from './encoding.js';
+import type { UCANToken } from './types.js';
+import { isUCANHeader, isUCANPayload } from './types.js';
 
 /**
  * Parses a UCAN JWT token string into a structured UCANToken object.
@@ -33,102 +33,97 @@ import { isUCANHeader, isUCANPayload } from "./types.js";
  * ```
  */
 export function parseToken(token: string): UCANToken {
-	// Validate input
-	if (typeof token !== "string" || token.trim() === "") {
-		throw new Error("UCAN token must be a non-empty string");
-	}
+  // Validate input
+  if (typeof token !== 'string' || token.trim() === '') {
+    throw new Error('UCAN token must be a non-empty string');
+  }
 
-	// Split JWT on '.' separator - must have exactly 3 parts
-	const parts = token.split(".");
-	if (parts.length !== 3) {
-		throw new Error(
-			`Invalid JWT format: expected 3 parts (header.payload.signature), got ${parts.length} parts`,
-		);
-	}
+  // Split JWT on '.' separator - must have exactly 3 parts
+  const parts = token.split('.');
+  if (parts.length !== 3) {
+    throw new Error(
+      `Invalid JWT format: expected 3 parts (header.payload.signature), got ${parts.length} parts`
+    );
+  }
 
-	const [headerEncoded, payloadEncoded, signatureEncoded] = parts;
+  const [headerEncoded, payloadEncoded, signatureEncoded] = parts;
 
-	// Validate that each part is non-empty
-	if (!headerEncoded || !payloadEncoded || !signatureEncoded) {
-		throw new Error(
-			"Invalid JWT format: header, payload, and signature segments must be non-empty",
-		);
-	}
+  // Validate that each part is non-empty
+  if (!headerEncoded || !payloadEncoded || !signatureEncoded) {
+    throw new Error(
+      'Invalid JWT format: header, payload, and signature segments must be non-empty'
+    );
+  }
 
-	// Decode header
-	let header: unknown;
-	try {
-		header = base64urlDecodeJSON(headerEncoded);
-	} catch (error) {
-		const message = error instanceof Error ? error.message : String(error);
-		const err = new Error(`Failed to decode JWT header: ${message}`);
-		(err as any).cause = error;
-		throw err;
-	}
+  // Decode header
+  let header: unknown;
+  try {
+    header = base64urlDecodeJSON(headerEncoded);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    const err = new Error(`Failed to decode JWT header: ${message}`);
+    (err as any).cause = error;
+    throw err;
+  }
 
-	// Validate header structure using type guard
-	if (!isUCANHeader(header)) {
-		throw new Error(
-			`Invalid UCAN header: must contain 'alg' (EdDSA|ES256|RS256), 'typ' (JWT), and 'ucv' (version). Got: ${JSON.stringify(header)}`,
-		);
-	}
+  // Validate header structure using type guard
+  if (!isUCANHeader(header)) {
+    throw new Error(
+      `Invalid UCAN header: must contain 'alg' (EdDSA|ES256|RS256), 'typ' (JWT), and 'ucv' (version). Got: ${JSON.stringify(header)}`
+    );
+  }
 
-	// Decode payload
-	let payload: unknown;
-	try {
-		payload = base64urlDecodeJSON(payloadEncoded);
-	} catch (error) {
-		const message = error instanceof Error ? error.message : String(error);
-		const err = new Error(`Failed to decode JWT payload: ${message}`);
-		(err as any).cause = error;
-		throw err;
-	}
+  // Decode payload
+  let payload: unknown;
+  try {
+    payload = base64urlDecodeJSON(payloadEncoded);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    const err = new Error(`Failed to decode JWT payload: ${message}`);
+    (err as any).cause = error;
+    throw err;
+  }
 
-	// Validate payload structure using type guard
-	if (!isUCANPayload(payload)) {
-		const errors: string[] = [];
+  // Validate payload structure using type guard
+  if (!isUCANPayload(payload)) {
+    const errors: string[] = [];
 
-		if (typeof payload !== "object" || payload === null) {
-			errors.push("payload must be an object");
-		} else {
-			const p = payload as Record<string, unknown>;
-			if (typeof p.iss !== "string")
-				errors.push("missing or invalid 'iss' (issuer DID)");
-			if (typeof p.aud !== "string")
-				errors.push("missing or invalid 'aud' (audience DID)");
-			if (p.exp !== null && typeof p.exp !== "number")
-				errors.push("invalid 'exp' (expiration)");
-			if (!Array.isArray(p.att) || p.att.length === 0) {
-				errors.push("missing or empty 'att' (capabilities array)");
-			}
-		}
+    if (typeof payload !== 'object' || payload === null) {
+      errors.push('payload must be an object');
+    } else {
+      const p = payload as Record<string, unknown>;
+      if (typeof p.iss !== 'string') errors.push("missing or invalid 'iss' (issuer DID)");
+      if (typeof p.aud !== 'string') errors.push("missing or invalid 'aud' (audience DID)");
+      if (p.exp !== null && typeof p.exp !== 'number') errors.push("invalid 'exp' (expiration)");
+      if (!Array.isArray(p.att) || p.att.length === 0) {
+        errors.push("missing or empty 'att' (capabilities array)");
+      }
+    }
 
-		throw new Error(
-			`Invalid UCAN payload: ${errors.join(", ")}. Got: ${JSON.stringify(payload)}`,
-		);
-	}
+    throw new Error(`Invalid UCAN payload: ${errors.join(', ')}. Got: ${JSON.stringify(payload)}`);
+  }
 
-	// Decode signature
-	let signature: Uint8Array;
-	try {
-		signature = base64urlDecode(signatureEncoded);
-	} catch (error) {
-		const message = error instanceof Error ? error.message : String(error);
-		const err = new Error(`Failed to decode JWT signature: ${message}`);
-		(err as any).cause = error;
-		throw err;
-	}
+  // Decode signature
+  let signature: Uint8Array;
+  try {
+    signature = base64urlDecode(signatureEncoded);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    const err = new Error(`Failed to decode JWT signature: ${message}`);
+    (err as any).cause = error;
+    throw err;
+  }
 
-	// Validate signature is not empty
-	if (signature.length === 0) {
-		throw new Error("Invalid JWT signature: signature cannot be empty");
-	}
+  // Validate signature is not empty
+  if (signature.length === 0) {
+    throw new Error('Invalid JWT signature: signature cannot be empty');
+  }
 
-	return {
-		header,
-		payload,
-		signature,
-	};
+  return {
+    header,
+    payload,
+    signature,
+  };
 }
 
 /**
@@ -151,11 +146,11 @@ export function parseToken(token: string): UCANToken {
  * ```
  */
 export function tryParseToken(token: string): UCANToken | null {
-	try {
-		return parseToken(token);
-	} catch {
-		return null;
-	}
+  try {
+    return parseToken(token);
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -179,18 +174,18 @@ export function tryParseToken(token: string): UCANToken | null {
  * ```
  */
 export function isValidJWTFormat(token: string): boolean {
-	if (typeof token !== "string" || token.trim() === "") {
-		return false;
-	}
+  if (typeof token !== 'string' || token.trim() === '') {
+    return false;
+  }
 
-	const parts = token.split(".");
-	if (parts.length !== 3) {
-		return false;
-	}
+  const parts = token.split('.');
+  if (parts.length !== 3) {
+    return false;
+  }
 
-	// Check that each part is non-empty and looks like base64url
-	const base64urlRegex = /^[A-Za-z0-9_-]+$/;
-	return parts.every((part) => part.length > 0 && base64urlRegex.test(part));
+  // Check that each part is non-empty and looks like base64url
+  const base64urlRegex = /^[A-Za-z0-9_-]+$/;
+  return parts.every((part) => part.length > 0 && base64urlRegex.test(part));
 }
 
 /**
@@ -211,19 +206,19 @@ export function isValidJWTFormat(token: string): boolean {
  * ```
  */
 export function extractPayload(token: string): unknown {
-	const parts = token.split(".");
-	if (parts.length !== 3) {
-		throw new Error("Invalid JWT format: expected 3 parts");
-	}
+  const parts = token.split('.');
+  if (parts.length !== 3) {
+    throw new Error('Invalid JWT format: expected 3 parts');
+  }
 
-	try {
-		return base64urlDecodeJSON(parts[1]);
-	} catch (error) {
-		const message = error instanceof Error ? error.message : String(error);
-		const err = new Error(`Failed to decode payload: ${message}`);
-		(err as any).cause = error;
-		throw err;
-	}
+  try {
+    return base64urlDecodeJSON(parts[1]);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    const err = new Error(`Failed to decode payload: ${message}`);
+    (err as any).cause = error;
+    throw err;
+  }
 }
 
 /**
@@ -244,17 +239,17 @@ export function extractPayload(token: string): unknown {
  * ```
  */
 export function extractHeader(token: string): unknown {
-	const parts = token.split(".");
-	if (parts.length !== 3) {
-		throw new Error("Invalid JWT format: expected 3 parts");
-	}
+  const parts = token.split('.');
+  if (parts.length !== 3) {
+    throw new Error('Invalid JWT format: expected 3 parts');
+  }
 
-	try {
-		return base64urlDecodeJSON(parts[0]);
-	} catch (error) {
-		const message = error instanceof Error ? error.message : String(error);
-		const err = new Error(`Failed to decode header: ${message}`);
-		(err as any).cause = error;
-		throw err;
-	}
+  try {
+    return base64urlDecodeJSON(parts[0]);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    const err = new Error(`Failed to decode header: ${message}`);
+    (err as any).cause = error;
+    throw err;
+  }
 }

@@ -22,7 +22,7 @@ export type ChainInfo<T extends string> = {
   /**
    * The current gas price of the chain.
    */
-  gasPrice: PlainMessage<Coin>;
+  gasPrice: Coin;
 };
 
 export type EventCallback = (wallets: ConnectedWallet[]) => unknown;

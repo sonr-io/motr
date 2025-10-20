@@ -1,6 +1,6 @@
 import { hmac } from '@noble/hashes/hmac';
 import { keccak_256 } from '@noble/hashes/sha3';
-import { sha256 } from '@noble/hashes/sha256';
+import { sha256 } from '@noble/hashes/sha2';
 import * as secp256k1 from '@noble/secp256k1';
 import { utf8 } from '@scure/base';
 import type { CosmosTxV1beta1SignDoc as SignDoc } from '@sonr.io/sdk/protobufs';

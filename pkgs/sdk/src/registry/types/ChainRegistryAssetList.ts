@@ -89,7 +89,6 @@ export interface Asset {
       theme?: {
         circle?: boolean;
         dark_mode?: boolean;
-        monochrome?: boolean;
       };
     },
     ...{
@@ -99,7 +98,6 @@ export interface Asset {
       theme?: {
         circle?: boolean;
         dark_mode?: boolean;
-        monochrome?: boolean;
       };
     }[]
   ];

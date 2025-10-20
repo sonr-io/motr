@@ -12,27 +12,26 @@
 
 // Import all modules
 import * as auth from './client/auth/index.js';
-import * as client from './client/index.js';
-import * as codec from './codec/index.js';
-import * as wallet from './wallet/index.js';
-import * as registry from './registry/index.js';
-import * as plugins from './plugins/index.js';
-
 // Import specific auth utilities for convenience
 import {
-  registerWithPasskey,
-  loginWithPasskey,
-  isWebAuthnSupported,
-  isWebAuthnAvailable,
-  isConditionalMediationAvailable,
-  bufferToBase64url,
   base64urlToBuffer,
+  bufferToBase64url,
   checkConditionalMediationSupport,
-  createRegistrationButton,
   createLoginButton,
+  createRegistrationButton,
   DEFAULT_WEBAUTHN_CONFIG,
+  isConditionalMediationAvailable,
+  isWebAuthnAvailable,
+  isWebAuthnSupported,
+  loginWithPasskey,
+  registerWithPasskey,
   WEBAUTHN_PRESETS,
 } from './client/auth/webauthn.js';
+import * as client from './client/index.js';
+import * as codec from './codec/index.js';
+import * as plugins from './plugins/index.js';
+import * as registry from './registry/index.js';
+import * as wallet from './wallet/index.js';
 
 // Create the main Sonr namespace
 const Sonr = {

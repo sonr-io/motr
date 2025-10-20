@@ -1,4 +1,5 @@
 import type { PlainMessage } from '@bufbuild/protobuf';
+
 // TODO: CosmosDistributionV1beta1MsgWithdrawValidatorCommission not available in protobufs
 // import { CosmosDistributionV1beta1MsgWithdrawValidatorCommission as ProtoMsgWithdrawValidatorCommission } from "@sonr.io/sdk/protobufs";
 type ProtoMsgWithdrawValidatorCommission = any;
@@ -6,7 +7,7 @@ type ProtoMsgWithdrawValidatorCommission = any;
 import type { DeepPrettify } from '../../typeutils/prettify';
 import type { Adapter } from './Adapter';
 
-type Data = DeepPrettify<PlainMessage<ProtoMsgWithdrawValidatorCommission>>;
+type Data = DeepPrettify<ProtoMsgWithdrawValidatorCommission>;
 
 export class MsgWithdrawValidatorCommission implements Adapter {
   private readonly data: Data;

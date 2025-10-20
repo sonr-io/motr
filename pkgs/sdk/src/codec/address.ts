@@ -1,6 +1,6 @@
-import { ripemd160 } from '@noble/hashes/ripemd160';
+import { ripemd160 } from '@noble/hashes/legacy';
 import { keccak_256 } from '@noble/hashes/sha3';
-import { sha256 } from '@noble/hashes/sha256';
+import { sha256 } from '@noble/hashes/sha2';
 import { ProjectivePoint } from '@noble/secp256k1';
 import { base64, bech32 } from '@scure/base';
 

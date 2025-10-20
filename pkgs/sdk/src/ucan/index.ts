@@ -10,6 +10,8 @@
  * @see https://github.com/ucan-wg/spec - UCAN specification
  */
 
+// Export builder utilities
+export { UCANBuilder } from './builder';
 // Export encoding utilities
 export {
   base64urlDecode,
@@ -20,7 +22,6 @@ export {
   base64urlEncodeString,
   isValidBase64url,
 } from './encoding';
-
 // Export parser utilities
 export {
   extractHeader,
@@ -29,23 +30,6 @@ export {
   parseToken,
   tryParseToken,
 } from './parser';
-
-// Export builder utilities
-export { UCANBuilder } from './builder';
-
-// Export validation utilities
-export {
-  isTokenExpired,
-  isTokenNotYetValid,
-  validateAlgorithm,
-  validateCapabilities,
-  validateCapabilityAttenuation,
-  validateDID,
-  validateSignature,
-  validateTimestamps,
-  validateToken,
-} from './validation';
-
 // Export token formatting utilities
 export {
   createSigningMessage,
@@ -53,7 +37,6 @@ export {
   formatPayload,
   formatToken,
 } from './token';
-
 // Export type definitions
 export type {
   Capability,
@@ -70,7 +53,6 @@ export type {
   ValidationOptions,
   ValidationResult,
 } from './types';
-
 // Export type guards and enums
 export {
   isCapability,
@@ -80,3 +62,15 @@ export {
   isUCANToken,
   UCANValidationError,
 } from './types';
+// Export validation utilities
+export {
+  isTokenExpired,
+  isTokenNotYetValid,
+  validateAlgorithm,
+  validateCapabilities,
+  validateCapabilityAttenuation,
+  validateDID,
+  validateSignature,
+  validateTimestamps,
+  validateToken,
+} from './validation';

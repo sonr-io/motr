@@ -5,7 +5,7 @@ import { CosmwasmWasmV1MsgStoreCode as ProtoMsgStoreCode } from '@sonr.io/sdk/pr
 import type { DeepPrettify } from '../../typeutils/prettify';
 import type { Adapter } from './Adapter';
 
-type Data = DeepPrettify<PlainMessage<ProtoMsgStoreCode>>;
+type Data = DeepPrettify<ProtoMsgStoreCode>;
 
 export class MsgStoreCode implements Adapter {
   private readonly data: Data;

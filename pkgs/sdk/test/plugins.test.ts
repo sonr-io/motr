@@ -1,4 +1,5 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+
 // TODO: Fix import path - should be '../src/plugin' not '../src/plugins'
 // import * as plugins from '../src/plugins';
 

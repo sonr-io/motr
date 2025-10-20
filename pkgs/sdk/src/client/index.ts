@@ -23,6 +23,24 @@ export { type PollTxParams, pollTx } from './apis/pollTx';
 //   simulateKujiraSinglePoolSwap,
 // } from "./apis/simulateKujiraSinglePoolSwap";
 export { type SimulateTxParams, simulateTx } from './apis/simulateTx';
+// Export passkey types
+export type {
+  PasskeyLoginOptions,
+  PasskeyLoginResult,
+  PasskeyRegistrationOptions,
+  PasskeyRegistrationResult,
+} from './auth';
+// Export passkey authentication functions
+export {
+  base64urlToBuffer,
+  // Utility functions
+  bufferToBase64url,
+  isConditionalMediationAvailable,
+  isWebAuthnAvailable,
+  isWebAuthnSupported,
+  loginWithPasskey,
+  registerWithPasskey,
+} from './auth';
 export { RpcClient } from './clients/RpcClient';
 export type { Adapter } from './models/Adapter';
 export { MsgBeginRedelegate } from './models/MsgBeginRedelegate';
@@ -33,7 +51,6 @@ export { MsgStoreCode } from './models/MsgStoreCode';
 export { MsgUndelegate } from './models/MsgUndelegate';
 export { MsgWithdrawDelegatorRewards } from './models/MsgWithdrawDelegatorRewards';
 export { MsgWithdrawValidatorCommission } from './models/MsgWithdrawValidatorCommission';
-
 export { Secp256k1PubKey } from './models/Secp256k1PubKey';
 export {
   type ToSignDocParams,
@@ -45,23 +62,3 @@ export {
 export { calculateFee } from './utils/calculateFee';
 export { toAny } from './utils/toAny';
 export { toBaseAccount } from './utils/toBaseAccount';
-
-// Export passkey authentication functions
-export {
-  registerWithPasskey,
-  loginWithPasskey,
-  // Utility functions
-  bufferToBase64url,
-  base64urlToBuffer,
-  isWebAuthnSupported,
-  isWebAuthnAvailable,
-  isConditionalMediationAvailable,
-} from './auth';
-
-// Export passkey types
-export type {
-  PasskeyRegistrationOptions,
-  PasskeyLoginOptions,
-  PasskeyRegistrationResult,
-  PasskeyLoginResult,
-} from './auth';

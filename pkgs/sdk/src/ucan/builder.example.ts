@@ -12,7 +12,7 @@ import { UCANBuilder } from './builder.js';
  *
  * Creates a simple token with issuer, audience, expiration, and one capability.
  */
-function basicExample(): void {
+function _basicExample(): void {
   const signature = new Uint8Array([1, 2, 3, 4, 5]); // Placeholder signature
 
   const token = new UCANBuilder()
@@ -33,7 +33,7 @@ function basicExample(): void {
  *
  * Demonstrates usage of notBefore, nonce, facts, proofs, and caveats.
  */
-function fullExample(): void {
+function _fullExample(): void {
   const signature = new Uint8Array([1, 2, 3, 4, 5]); // Placeholder signature
   const now = Math.floor(Date.now() / 1000);
 
@@ -70,7 +70,7 @@ function fullExample(): void {
  *
  * Shows how to override default version and signature algorithm.
  */
-function customConfigExample(): void {
+function _customConfigExample(): void {
   const signature = new Uint8Array([1, 2, 3, 4, 5]); // Placeholder signature
 
   // Set custom defaults in constructor
@@ -95,7 +95,7 @@ function customConfigExample(): void {
  *
  * Demonstrates creating a delegated token with reduced capabilities.
  */
-function delegationExample(): void {
+function _delegationExample(): void {
   const signature = new Uint8Array([1, 2, 3, 4, 5]); // Placeholder signature
 
   // Child token with attenuated (more restrictive) capabilities
@@ -121,7 +121,7 @@ function delegationExample(): void {
  *
  * Shows validation errors when required fields are missing.
  */
-function errorHandlingExample(): void {
+function _errorHandlingExample(): void {
   try {
     const signature = new Uint8Array([1, 2, 3, 4, 5]);
 
@@ -166,7 +166,7 @@ function errorHandlingExample(): void {
  *
  * Shows how to build tokens with conditional logic.
  */
-function conditionalBuildingExample(isPremiumUser: boolean, includeProof: boolean): void {
+function _conditionalBuildingExample(isPremiumUser: boolean, includeProof: boolean): void {
   const signature = new Uint8Array([1, 2, 3, 4, 5]);
 
   let builder = new UCANBuilder()

@@ -4,8 +4,8 @@
  * This file demonstrates how to parse and work with UCAN JWT tokens.
  */
 
-import { parseToken, tryParseToken, isValidJWTFormat, extractPayload } from './parser.js';
 import { base64urlEncodeJSON } from './encoding.js';
+import { extractPayload, isValidJWTFormat, parseToken, tryParseToken } from './parser.js';
 import type { UCANHeader, UCANPayload } from './types.js';
 
 /**

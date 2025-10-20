@@ -3,14 +3,9 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { base64urlDecode, base64urlDecodeJSON, base64urlEncode } from './encoding.js';
+import { base64urlDecode, base64urlDecodeJSON } from './encoding.js';
 import { parseToken } from './parser.js';
-import {
-  createSigningMessage,
-  formatHeader,
-  formatPayload,
-  formatToken,
-} from './token.js';
+import { createSigningMessage, formatHeader, formatPayload, formatToken } from './token.js';
 import type { UCANHeader, UCANPayload, UCANToken } from './types.js';
 
 describe('formatHeader', () => {
@@ -161,10 +156,7 @@ describe('formatPayload', () => {
       iss: 'did:key:abc',
       aud: 'did:key:xyz',
       exp: 123,
-      fct: [
-        { z_key: 'last', a_key: 'first', m_key: 'middle' },
-        { nested: { z: 3, a: 1, m: 2 } },
-      ],
+      fct: [{ z_key: 'last', a_key: 'first', m_key: 'middle' }, { nested: { z: 3, a: 1, m: 2 } }],
       att: [
         {
           with: 'resource',
@@ -179,11 +171,7 @@ describe('formatPayload', () => {
 
     // Verify nested objects are sorted
     expect(Object.keys(decoded.fct![0])).toEqual(['a_key', 'm_key', 'z_key']);
-    expect(Object.keys(decoded.fct![1].nested as Record<string, unknown>)).toEqual([
-      'a',
-      'm',
-      'z',
-    ]);
+    expect(Object.keys(decoded.fct![1].nested as Record<string, unknown>)).toEqual(['a', 'm', 'z']);
     expect(Object.keys(decoded.att[0].nb!)).toEqual(['a_param', 'z_param']);
   });
 });
@@ -427,10 +415,7 @@ describe('formatToken', () => {
         iss: 'did:key:abc',
         aud: 'did:key:xyz',
         exp: 123,
-        prf: [
-          'eyJhbGc.eyJpc3M.abc123',
-          'eyJhbGc.eyJpc3M.def456',
-        ],
+        prf: ['eyJhbGc.eyJpc3M.abc123', 'eyJhbGc.eyJpc3M.def456'],
         att: [{ with: 'resource', can: 'read' }],
       },
       signature: new TextEncoder().encode('sig'),

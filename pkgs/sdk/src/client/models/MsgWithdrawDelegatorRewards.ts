@@ -1,4 +1,5 @@
 import type { PlainMessage } from '@bufbuild/protobuf';
+
 // TODO: CosmosDistributionV1beta1MsgWithdrawDelegatorReward not available in protobufs
 // import { CosmosDistributionV1beta1MsgWithdrawDelegatorReward as ProtoMsgWithdrawDelegatorRewards } from "@sonr.io/sdk/protobufs";
 type ProtoMsgWithdrawDelegatorRewards = any;
@@ -6,7 +7,7 @@ type ProtoMsgWithdrawDelegatorRewards = any;
 import type { DeepPrettify } from '../../typeutils/prettify';
 import type { Adapter } from './Adapter';
 
-type Data = DeepPrettify<PlainMessage<ProtoMsgWithdrawDelegatorRewards>>;
+type Data = DeepPrettify<ProtoMsgWithdrawDelegatorRewards>;
 
 export class MsgWithdrawDelegatorRewards implements Adapter {
   private readonly data: Data;

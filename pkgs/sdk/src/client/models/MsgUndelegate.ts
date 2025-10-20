@@ -1,4 +1,5 @@
 import type { PlainMessage } from '@bufbuild/protobuf';
+
 // TODO: CosmosStakingV1beta1MsgUndelegate not available in protobufs
 // // TODO: Missing from protobufs
 // import { CosmosStakingV1beta1MsgUndelegate as ProtoMsgUndelegate } from "@sonr.io/sdk/protobufs";
@@ -8,7 +9,7 @@ type ProtoMsgUndelegate = any;
 import type { DeepPrettify } from '../../typeutils/prettify';
 import type { Adapter } from './Adapter';
 
-type Data = DeepPrettify<PlainMessage<ProtoMsgUndelegate>>;
+type Data = DeepPrettify<ProtoMsgUndelegate>;
 
 export class MsgUndelegate implements Adapter {
   private readonly data: Data;

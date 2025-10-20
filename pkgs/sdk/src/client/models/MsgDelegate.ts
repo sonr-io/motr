@@ -1,4 +1,5 @@
 import type { PlainMessage } from '@bufbuild/protobuf';
+
 // TODO: CosmosStakingV1beta1MsgDelegate not available in protobufs
 // // TODO: Missing from protobufs
 // import { CosmosStakingV1beta1MsgDelegate as ProtoMsgDelegate } from "../../protobufs";
@@ -8,7 +9,7 @@ type ProtoMsgDelegate = any;
 import type { DeepPrettify } from '../../typeutils/prettify';
 import type { Adapter } from './Adapter';
 
-type Data = DeepPrettify<PlainMessage<ProtoMsgDelegate>>;
+type Data = DeepPrettify<ProtoMsgDelegate>;
 
 export class MsgDelegate implements Adapter {
   private readonly data: Data;

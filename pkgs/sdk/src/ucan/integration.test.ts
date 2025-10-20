@@ -1,20 +1,13 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
-  UCANBuilder,
-  parseToken,
-  validateToken,
-  formatToken,
-  formatPayload,
   isTokenExpired,
   isTokenNotYetValid,
+  parseToken,
+  UCANBuilder,
   validateCapabilityAttenuation,
+  validateToken,
 } from './index';
-import type {
-  UCANToken,
-  Capability,
-  ValidationOptions,
-  UCANAlgorithm,
-} from './types';
+import type { Capability, UCANAlgorithm, ValidationOptions } from './types';
 
 // Mock DIDs for testing
 const MOCK_DIDS = {
@@ -41,7 +34,7 @@ describe('UCAN Integration Tests', () => {
       {
         with: 'storage://example.com/data',
         can: 'write',
-      }
+      },
     ];
 
     it('should create, format, parse, and validate a complete token', async () => {
@@ -91,14 +84,14 @@ describe('UCAN Integration Tests', () => {
       {
         with: 'storage://example.com/metadata',
         can: 'read',
-      }
+      },
     ];
 
     const childCapabilities: Capability[] = [
       {
         with: 'storage://example.com/data',
         can: 'read',
-      }
+      },
     ];
 
     it('should validate proper capability attenuation', () => {
@@ -166,12 +159,14 @@ describe('UCAN Integration Tests', () => {
   // 3. Multi-Algorithm Support
   describe('Multi-Algorithm Token Support', () => {
     const algorithms: UCANAlgorithm[] = ['EdDSA', 'ES256', 'RS256'];
-    const capabilities: Capability[] = [{
-      with: 'storage://example.com/data',
-      can: 'read',
-    }];
+    const capabilities: Capability[] = [
+      {
+        with: 'storage://example.com/data',
+        can: 'read',
+      },
+    ];
 
-    algorithms.forEach(algorithm => {
+    algorithms.forEach((algorithm) => {
       it(`should create and validate token with ${algorithm} algorithm`, () => {
         const builder = new UCANBuilder({ algorithm });
 
@@ -191,10 +186,12 @@ describe('UCAN Integration Tests', () => {
 
   // 4. Timestamp Scenarios
   describe('Token Timestamp Scenarios', () => {
-    const baseCapabilities: Capability[] = [{
-      with: 'storage://example.com/data',
-      can: 'read',
-    }];
+    const baseCapabilities: Capability[] = [
+      {
+        with: 'storage://example.com/data',
+        can: 'read',
+      },
+    ];
 
     it('should handle tokens with future start time', () => {
       const futureStart = Math.floor(Date.now() / 1000) + 3600; // 1 hour in future
@@ -259,7 +256,7 @@ describe('UCAN Integration Tests', () => {
       'did:pkh:eip155:1:0x1234567890123456789012345678901234567890',
     ];
 
-    didFormats.forEach(did => {
+    didFormats.forEach((did) => {
       it(`should handle DID format: ${did}`, () => {
         const builder = new UCANBuilder();
 
@@ -324,7 +321,7 @@ describe('UCAN Integration Tests', () => {
         'invalid.base64.token!@#',
       ];
 
-      malformedTokens.forEach(malformedToken => {
+      malformedTokens.forEach((malformedToken) => {
         expect(() => parseToken(malformedToken)).toThrow();
       });
     });
@@ -346,7 +343,7 @@ describe('UCAN Integration Tests', () => {
         .expiration(Math.floor(Date.now() / 1000) + 3600);
 
       // Add all capabilities
-      largeCaps.forEach(cap => builder.addCapability(cap));
+      largeCaps.forEach((cap) => builder.addCapability(cap));
 
       const jwtString = builder.build(createMockSignature('EdDSA'));
       const token = parseToken(jwtString);

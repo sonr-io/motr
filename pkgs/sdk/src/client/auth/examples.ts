@@ -6,11 +6,11 @@
  */
 
 import {
-  registerWithPasskey,
-  loginWithPasskey,
-  isWebAuthnSupported,
-  isWebAuthnAvailable,
   isConditionalMediationAvailable,
+  isWebAuthnAvailable,
+  isWebAuthnSupported,
+  loginWithPasskey,
+  registerWithPasskey,
 } from './webauthn';
 
 // Example 1: Check WebAuthn/Passkey availability

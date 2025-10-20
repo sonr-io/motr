@@ -6,12 +6,13 @@
  * files, and then generates an `index.ts` file to re-export the generated code.
  */
 
-import { spawnSync } from 'child_process';
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import { spawnSync } from 'node:child_process';
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { homedir } from 'node:os';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { globSync } from 'glob';
 import { capitalize } from 'lodash-es';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
 
 /**
  * @typedef Repo
@@ -24,6 +25,14 @@ import { fileURLToPath } from 'url';
  * @type {Repo[]}
  */
 const REPOS = [
+  {
+    repo: 'cosmos/cosmos-proto#v1.0.0-beta.5',
+    paths: ['proto'],
+  },
+  {
+    repo: 'cosmos/gogoproto#v1.7.0',
+    paths: ['gogoproto'],
+  },
   {
     repo: 'cosmos/cosmos-sdk#v0.50.10',
     paths: ['proto'],
@@ -60,15 +69,15 @@ const REPOS = [
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROTOBUFS_DIR = join(__dirname, '..', 'src', 'protobufs');
-const TMP_DIR = join(PROTOBUFS_DIR, '.tmp');
+const CACHE_DIR = join(homedir(), '.cache', 'motr-protos');
 const MANIFEST_FILE = join(PROTOBUFS_DIR, '.manifest.json');
 
 /** Generates a unique dirname from `repo` to use in `TMP_DIR`. */
 const id = (/** @type {string} */ repo) => repo.replace(/[#/]/g, '-');
 
 /**
- * Load the manifest file that tracks repository commit hashes
- * @returns {Record<string, string>} Map of repo ID to commit hash
+ * Load the manifest file that tracks repository refs
+ * @returns {Record<string, string>} Map of repo ID to ref
  */
 function loadManifest() {
   if (!existsSync(MANIFEST_FILE)) {
@@ -84,7 +93,7 @@ function loadManifest() {
 }
 
 /**
- * Save the manifest file with updated repository commit hashes
+ * Save the manifest file with updated repository refs
  * @param {Record<string, string>} manifest
  */
 function saveManifest(manifest) {
@@ -96,179 +105,73 @@ function saveManifest(manifest) {
 }
 
 /**
- * Get the current commit hash for a repository
- * @param {string} repoPath
- * @returns {string | null}
- */
-function getCurrentCommitHash(repoPath) {
-  try {
-    const result = spawnSync('git', ['rev-parse', 'HEAD'], {
-      cwd: repoPath,
-      stdio: 'pipe',
-      encoding: 'utf8',
-    });
-    if (result.status === 0) {
-      return result.stdout.trim();
-    }
-  } catch {
-    // Ignore errors for repositories without git
-  }
-  return null;
-}
-
-/**
- * Check if a repository has uncommitted changes
- * @param {string} repoPath
- * @returns {boolean}
- */
-function isRepoDirty(repoPath) {
-  try {
-    const result = spawnSync('git', ['status', '--porcelain'], {
-      cwd: repoPath,
-      stdio: 'pipe',
-      encoding: 'utf8',
-    });
-    if (result.status === 0) {
-      return result.stdout.trim().length > 0;
-    }
-  } catch {
-    // Ignore errors for repositories without git
-  }
-  return false;
-}
-
-/**
- * Check if ghq is available
- * @returns {boolean}
- */
-function isGhqAvailable() {
-  const result = spawnSync('ghq', ['--version'], { stdio: 'pipe', encoding: 'utf8' });
-  return result.status === 0;
-}
-
-/**
- * Get ghq root directory
- * @returns {string | null}
- */
-function getGhqRoot() {
-  const result = spawnSync('ghq', ['root'], { stdio: 'pipe', encoding: 'utf8' });
-  if (result.status === 0) {
-    return result.stdout.trim();
-  }
-  return null;
-}
-
-/**
- * Gets repository using ghq or falls back to git clone
+ * Downloads proto files from a GitHub repository using gh download extension
  * @param {string} repo - Repository string (format: owner/repo#ref)
- * @param {string} dest - Destination directory (used only for git clone fallback)
- * @param {boolean} useGhq - Whether to use ghq
- * @param {string | null} ghqRoot - ghq root directory
+ * @param {string} path - Path to download (e.g., 'proto', 'gogoproto')
+ * @param {string} dest - Destination directory
  * @returns {{ success: boolean, path: string | null }} - Result with path
  */
-function getRepo(repo, dest, useGhq, ghqRoot) {
+function downloadProtoFiles(repo, path, dest) {
   const [repoPath, ref] = repo.split('#');
 
-  if (useGhq && ghqRoot) {
-    // Use ghq to get the repo
-    const args = ['get', '-u', '--shallow'];
+  console.log(`  📥 ${repo} (${path})...`);
 
-    if (ref && ref !== 'master' && ref !== 'main') {
-      args.push('--branch', ref);
-    }
+  // Create destination directory if it doesn't exist
+  mkdirSync(dest, { recursive: true });
 
-    args.push(`github.com/${repoPath}`);
+  // Use gh download to get the specified directory
+  // Format: gh download owner/repo path --branch ref --outdir destination
+  const args = ['download', repoPath, path, '--branch', ref, '--outdir', dest];
 
-    console.log(`  📦 ${repo}...`);
-    const result = spawnSync('ghq', args, {
-      stdio: 'pipe',
-      encoding: 'utf8',
-      env: {
-        ...process.env,
-        GIT_LFS_SKIP_SMUDGE: '1',
-      },
-    });
+  const result = spawnSync('gh', args, {
+    stdio: 'pipe',
+    encoding: 'utf8',
+  });
 
-    if (result.status !== 0) {
-      console.error(`  ✗ Failed to get ${repo}: ${result.stderr.trim()}`);
-      return { success: false, path: null };
-    }
+  if (result.status !== 0) {
+    const errorMsg = result.stderr.trim() || result.stdout.trim();
+    console.error(`  ✗ Failed to download ${repo} (${path}): ${errorMsg}`);
+    return { success: false, path: null };
+  }
 
-    // Build the path to the repo in ghq
-    const repoPathInGhq = join(ghqRoot, 'github.com', repoPath);
+  // gh-download strips the directory prefix, so if we downloaded 'gogoproto',
+  // the files end up directly in dest instead of dest/gogoproto
+  // We need to restructure for non-'proto' paths
+  if (path !== 'proto') {
+    const subdir = join(dest, path);
+    mkdirSync(subdir, { recursive: true });
 
-    // Checkout the specific ref if needed
-    if (ref && ref !== 'master' && ref !== 'main') {
-      const checkoutResult = spawnSync('git', ['checkout', ref], {
-        cwd: repoPathInGhq,
-        stdio: 'pipe',
-        encoding: 'utf8',
-      });
-
-      if (checkoutResult.status !== 0) {
-        console.warn(`  ⚠ Could not checkout ${ref}, using default branch`);
+    // Move .proto files into the subdirectory
+    const { readdirSync, renameSync } = require('node:fs');
+    const files = readdirSync(dest);
+    for (const file of files) {
+      if (file.endsWith('.proto')) {
+        const src = join(dest, file);
+        const dst = join(subdir, file);
+        try {
+          renameSync(src, dst);
+        } catch (e) {
+          // File might already be moved
+        }
       }
     }
-
-    console.log(`  ✓ ${repo}`);
-    return { success: true, path: repoPathInGhq };
   }
 
-  // Fallback to git clone
-  const gitUrl = `https://github.com/${repoPath}.git`;
-  const args = [
-    'clone',
-    '--depth', '1',
-    '--single-branch',
-    // Disable LFS filter to avoid git-lfs dependency - use cat as no-op
-    '-c', 'filter.lfs.smudge=cat',
-    '-c', 'filter.lfs.process=',
-    '-c', 'filter.lfs.required=false',
-  ];
-
-  if (ref) {
-    args.push('--branch', ref);
-  }
-
-  args.push(gitUrl, dest);
-
-   console.log(`  📥 ${repo}...`);
-   const result = spawnSync('git', args, {
-     stdio: 'pipe',
-     encoding: 'utf8',
-     env: {
-       ...process.env,
-       GIT_LFS_SKIP_SMUDGE: '1',
-     },
-   });
-
-   if (result.status !== 0) {
-     console.error(`  ✗ Failed to clone ${repo}: ${result.stderr.trim()}`);
-     return { success: false, path: null };
-   }
-
-   console.log(`  ✓ ${repo}`);
-   return { success: true, path: dest };
+  console.log(`  ✓ ${repo} (${path})`);
+  return { success: true, path: dest };
 }
-
-// Check if ghq is available
-const useGhq = isGhqAvailable();
-const ghqRoot = useGhq ? getGhqRoot() : null;
 
 // Load manifest early to check for changes before any cleanup
 const manifest = loadManifest();
 
 console.log('🔧 Initialising...');
 {
-  // Only need TMP_DIR if not using ghq
-  if (!useGhq) {
-    rmSync(TMP_DIR, { recursive: true, force: true });
-    mkdirSync(TMP_DIR, { recursive: true });
-  }
+  // Create cache and protobufs directories
+  mkdirSync(CACHE_DIR, { recursive: true });
   mkdirSync(PROTOBUFS_DIR, { recursive: true });
 }
 
-console.log(useGhq && ghqRoot ? `📦 Using ghq (${ghqRoot})` : '📥 Using git clone');
+console.log('📥 Using gh download extension');
 
 console.log('📥 Fetching repos...');
 /** @type {Map<string, string>} */
@@ -279,37 +182,43 @@ const skippedRepos = new Set();
   let successCount = 0;
   let failCount = 0;
   let skippedCount = 0;
-  let dirtyCount = 0;
 
-  for (const { repo } of REPOS) {
+  for (const { repo, paths } of REPOS) {
     const repoId = id(repo);
-    const result = getRepo(repo, join(TMP_DIR, repoId), useGhq, ghqRoot);
+    const [_repoPath, ref] = repo.split('#');
+    const protoPath = paths[0]; // Use first path from paths array
+
+    // Create a unique cache directory for this repo+ref combination
+    const cacheDir = join(CACHE_DIR, repoId);
+
+    // Check if we need to download by comparing refs in manifest
+    const lastRef = manifest[repoId];
+
+    if (lastRef === ref && existsSync(cacheDir)) {
+      console.log(`  ⏭️  ${repo} (cached)`);
+      repoPaths.set(repo, cacheDir);
+      skippedRepos.add(repo);
+      skippedCount++;
+      continue;
+    }
+
+    // Clean the cache directory before downloading
+    rmSync(cacheDir, { recursive: true, force: true });
+
+    const result = downloadProtoFiles(repo, protoPath, cacheDir);
     if (result.success && result.path) {
-      // Check if repo has uncommitted changes
-      if (isRepoDirty(result.path)) {
-        console.log(`  ⚠️ ${repo} (dirty)`);
-        skippedRepos.add(repo);
-        dirtyCount++;
-        continue;
-      }
-
-      const currentCommit = getCurrentCommitHash(result.path);
-      const lastCommit = manifest[repoId];
-
-      if (currentCommit && lastCommit === currentCommit) {
-        console.log(`  ⏭️  ${repo} (no changes)`);
-        skippedRepos.add(repo);
-        skippedCount++;
-      } else {
-        repoPaths.set(repo, result.path);
-        successCount++;
-      }
+      repoPaths.set(repo, result.path);
+      // Update manifest with the ref
+      manifest[repoId] = ref;
+      successCount++;
     } else {
       failCount++;
     }
   }
 
-  console.log(`\n📊 Repo summary: ${successCount} to process, ${skippedCount} skipped, ${dirtyCount} dirty, ${failCount} failed\n`);
+  console.log(
+    `\n📊 Repo summary: ${successCount} to process, ${skippedCount} skipped, ${failCount} failed\n`
+  );
 
   if (successCount === 0 && failCount > 0) {
     console.error('❌ All repos failed');
@@ -324,13 +233,17 @@ if (repoPaths.size === REPOS.length) {
   {
     // Clean directories for regenerated repos
     const dirsToClean = [
+      'amino',
       'cosmos',
-      'tendermint',
-      'ibc',
+      'cosmos_proto',
       'cosmwasm',
-      'osmosis',
       'ethermint',
+      'gogoproto',
+      'google',
+      'ibc',
+      'osmosis',
       'sonr',
+      'tendermint',
     ];
 
     for (const dir of dirsToClean) {
@@ -350,7 +263,7 @@ if (repoPaths.size > 0) {
   {
     let processedCount = 0;
 
-    for (const { repo, paths } of REPOS) {
+    for (const { repo } of REPOS) {
       const repoDir = repoPaths.get(repo);
 
       // Skip if repo wasn't retrieved successfully
@@ -363,45 +276,32 @@ if (repoPaths.size > 0) {
         continue;
       }
 
-      const repoId = id(repo);
-      const currentCommit = getCurrentCommitHash(repoDir);
+      // gh download puts the proto directory contents directly in repoDir
+      // so we use repoDir as the protoPath
+      const protoPath = repoDir;
 
-      for (const path of paths) {
-        const protoPath = join(repoDir, path);
-
-        if (!existsSync(protoPath)) {
-          console.log(`⚠️ ${repo} proto not found`);
-          continue;
-        }
-
-        // Don't use subdirectories - all protobufs go to same level
-        // This ensures relative imports work correctly
-        let outputSubdir = '';
-
-        const result = spawnSync(
-          'pnpm',
-          [
-            'buf',
-            'generate',
-            protoPath,
-            '--output',
-            join(PROTOBUFS_DIR, outputSubdir),
-          ],
-          {
-            stdio: 'inherit',
-            encoding: 'utf8',
-          }
-        );
-
-        if (result.status !== 0) {
-          console.error(`⚠️ ${repo} generation failed`);
-          continue;
-        }
+      if (!existsSync(protoPath)) {
+        console.log(`⚠️ ${repo} proto not found`);
+        continue;
       }
 
-      // Update manifest with current commit hash after successful generation
-      if (currentCommit) {
-        manifest[repoId] = currentCommit;
+      // Don't use subdirectories - all protobufs go to same level
+      // This ensures relative imports work correctly
+      const outputSubdir = '';
+
+      const result = spawnSync(
+        'bunx',
+        ['buf', 'generate', protoPath, '--output', join(PROTOBUFS_DIR, outputSubdir)],
+        {
+          stdio: 'pipe',
+          encoding: 'utf8',
+        }
+      );
+
+      if (result.status !== 0 || result.error) {
+        const errorMsg = (result.stderr || result.stdout || result.error?.message || '').trim();
+        console.error(`⚠️ ${repo} generation failed: ${errorMsg}`);
+        continue;
       }
 
       console.log(`  ✓ ${repo}`);
@@ -421,7 +321,10 @@ if (repoPaths.size > 0) {
   console.log('📝 Generating index...');
   {
     const LAST_SEGMENT_REGEX = /[^/]+$/;
-    const EXPORTED_NAME_REGEX = /^export \w+ (\w+) /gm;
+    const EXPORTED_TYPE_REGEX = /^export type (\w+) /gm;
+    const EXPORTED_CONST_REGEX = /^export const (\w+)/gm;
+    const EXPORTED_CLASS_REGEX = /^export class (\w+)/gm;
+    const EXPORTED_ENUM_REGEX = /^export enum (\w+)/gm;
     let contents = '/** This file is generated by gen-protobufs.mjs. Do not edit. */\n\n';
 
     /**
@@ -439,17 +342,20 @@ if (repoPaths.size > 0) {
         return;
       }
 
-      const prefixName = dir
-        .replace(PROTOBUFS_DIR + '/', '')
-        .split('/')
-        .map((name) =>
-          // convert all names to PascalCase
-          name
-            .split(/[-_]/)
-            .map(capitalize)
+      const relativePath = dir.replace(PROTOBUFS_DIR, '').replace(/^\//, '');
+      const prefixName = relativePath
+        ? relativePath
+            .split('/')
+            .map((name) =>
+              // convert all names to PascalCase
+              name
+                .split(/[-_.]/)
+                .filter((part) => part.length > 0)
+                .map(capitalize)
+                .join('')
+            )
             .join('')
-        )
-        .join('');
+        : '';
 
       for (const file of files) {
         const fileName = file.match(LAST_SEGMENT_REGEX)?.[0];
@@ -461,14 +367,54 @@ if (repoPaths.size > 0) {
           continue;
         }
 
-        const code = readFileSync(file, 'utf8');
-        contents += `export {\n`;
-        for (const match of code.matchAll(EXPORTED_NAME_REGEX)) {
-          const exportedName = match[1];
-          contents += `  ${exportedName} as ${prefixName + exportedName},\n`;
+        // Skip files at the proto root (no prefix)
+        if (!relativePath) {
+          continue;
         }
+
+        const code = readFileSync(file, 'utf8');
         const exportedFile = file.replace(PROTOBUFS_DIR + '/', '').replace('.ts', '.js');
-        contents += `} from "@/protobufs/${exportedFile}";\n`;
+
+        // Export types
+        const types = [];
+        for (const match of code.matchAll(EXPORTED_TYPE_REGEX)) {
+          types.push(match[1]);
+        }
+        if (types.length > 0) {
+          contents += `export type {\n`;
+          for (const exportedName of types) {
+            contents += `  ${exportedName} as ${prefixName + exportedName},\n`;
+          }
+          contents += `} from "@/protobufs/${exportedFile}";\n`;
+        }
+
+        // Export consts
+        const consts = [];
+        for (const match of code.matchAll(EXPORTED_CONST_REGEX)) {
+          consts.push(match[1]);
+        }
+
+        // Export classes (v1 message classes)
+        const classes = [];
+        for (const match of code.matchAll(EXPORTED_CLASS_REGEX)) {
+          classes.push(match[1]);
+        }
+
+        // Export enums
+        const enums = [];
+        for (const match of code.matchAll(EXPORTED_ENUM_REGEX)) {
+          enums.push(match[1]);
+        }
+
+        // Combine consts, classes, and enums for export
+        const allExports = [...consts, ...classes, ...enums];
+        if (allExports.length > 0) {
+          contents += `export {\n`;
+          for (const exportedName of allExports) {
+            contents += `  ${exportedName} as ${prefixName + exportedName},\n`;
+          }
+          contents += `} from "@/protobufs/${exportedFile}";\n`;
+        }
       }
 
       for (const file of files) {
@@ -481,19 +427,9 @@ if (repoPaths.size > 0) {
   }
 
   console.log('💾 Saving manifest...');
-  {
-    saveManifest(manifest);
-  }
+  saveManifest(manifest);
 } else {
   console.log('ℹ️ No changes, skipping index and manifest update');
-}
-
-console.log('🧹 Cleanup...');
-{
-  // Only clean TMP_DIR if we used git clone (not ghq)
-  if (!useGhq) {
-    rmSync(TMP_DIR, { recursive: true, force: true });
-  }
 }
 
 console.log('✅ Done!');

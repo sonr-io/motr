@@ -4,7 +4,7 @@ import { IbcApplicationsTransferV1MsgTransfer as ProtoMsgIbcTransfer } from '../
 import type { DeepPrettify } from '../../typeutils/prettify';
 import type { Adapter } from './Adapter';
 
-type Data = DeepPrettify<PlainMessage<ProtoMsgIbcTransfer>>;
+type Data = DeepPrettify<ProtoMsgIbcTransfer>;
 
 export class MsgIbcTransfer implements Adapter {
   private readonly data: Data;

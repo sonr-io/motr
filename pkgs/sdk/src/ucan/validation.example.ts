@@ -248,7 +248,7 @@ async function exampleCustomOptions() {
 }
 
 // Run all examples
-async function runAllExamples() {
+async function _runAllExamples() {
   console.log('\n=== Example 1: Complete Token Validation ===');
   await exampleCompleteValidation();
 

@@ -2,14 +2,14 @@
  * Integration tests for WebAuthn/Passkey authentication
  */
 
-import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import {
-  registerWithPasskey,
-  loginWithPasskey,
-  isWebAuthnSupported,
-  isWebAuthnAvailable,
-  bufferToBase64url,
   base64urlToBuffer,
+  bufferToBase64url,
+  isWebAuthnAvailable,
+  isWebAuthnSupported,
+  loginWithPasskey,
+  registerWithPasskey,
 } from './webauthn';
 
 // Mock @simplewebauthn/browser for testing

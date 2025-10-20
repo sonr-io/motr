@@ -130,11 +130,11 @@ export class RpcClient {
 class BatchQuery {
   private readonly endpoint: string;
   private readonly queries: {
-     // oxlint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line @typescript-eslint/no-explicit-any
     queryService: QueryService<any, any>;
-     // oxlint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line @typescript-eslint/no-explicit-any
     requestMsg: RequestMessage<any>;
-     // oxlint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line @typescript-eslint/no-explicit-any
     callback: (err: Error | null, response: any) => unknown;
   }[] = [];
 
