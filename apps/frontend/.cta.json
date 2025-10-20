@@ -8,12 +8,5 @@
   "git": true,
   "version": 1,
   "framework": "react-cra",
-  "chosenAddOns": [
-    "biome",
-    "cloudflare",
-    "form",
-    "tanstack-query",
-    "shadcn",
-    "table"
-  ]
+  "chosenAddOns": ["biome", "cloudflare", "form", "tanstack-query", "shadcn", "table"]
 }

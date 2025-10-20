@@ -1,10 +1,10 @@
-import { defineConfig, type Plugin } from 'vite'
-import viteReact from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
-import { tanstackRouter } from '@tanstack/router-plugin/vite'
-import { resolve } from 'node:path'
-import { enclavePlugin } from '@sonr.io/enclave/vite-plugin'
-import { vaultPlugin } from '@sonr.io/vault/vite-plugin'
+import { resolve } from 'node:path';
+import { enclavePlugin } from '../../libs/enclave/dist/vite-plugin-enclave.js';
+import { vaultPlugin } from '../../libs/vault/dist/vite-plugin-vault.js';
+import tailwindcss from '@tailwindcss/vite';
+import { tanstackRouter } from '@tanstack/router-plugin/vite';
+import viteReact from '@vitejs/plugin-react';
+import { defineConfig, type Plugin } from 'vite';
 
 // Plugin to handle .js extension imports for @noble packages
 function nobleHashesPlugin(): Plugin {
@@ -36,12 +36,15 @@ function paymentMethodPlugin(): Plugin {
 
           const manifest = {
             default_applications: [`${origin}/site.webmanifest`],
-            supported_origins: [origin]
+            supported_origins: [origin],
           };
 
           res.setHeader('Content-Type', 'application/json');
           res.setHeader('Access-Control-Allow-Origin', '*');
-          res.setHeader('Link', `<${origin}/pay/payment-manifest.json>; rel="payment-method-manifest"`);
+          res.setHeader(
+            'Link',
+            `<${origin}/pay/payment-manifest.json>; rel="payment-method-manifest"`
+          );
           res.statusCode = 200;
           res.end(JSON.stringify(manifest, null, 2));
           return;
@@ -88,4 +91,4 @@ export default defineConfig({
       transformMixedEsModules: true,
     },
   },
-})
+});

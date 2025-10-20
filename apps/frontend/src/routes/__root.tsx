@@ -1,8 +1,8 @@
-import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { HoleBackground } from "@sonr.io/ui/components/backgrounds/hole";
-import type { QueryClient } from "@tanstack/react-query";
+import { HoleBackground } from '@sonr.io/ui/components/backgrounds/hole';
+import type { QueryClient } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 
 interface MyRouterContext {
   queryClient: QueryClient;

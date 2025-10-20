@@ -1,14 +1,14 @@
-import { StrictMode } from 'react'
-import ReactDOM from 'react-dom/client'
-import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { createRouter, RouterProvider } from '@tanstack/react-router';
+import { StrictMode } from 'react';
+import ReactDOM from 'react-dom/client';
 
-import { AppProviders, getProvidersContext } from './lib/providers.tsx'
+import { AppProviders, getProvidersContext } from './lib/providers.tsx';
 
 // Import the generated route tree
-import { routeTree } from './routeTree.gen'
+import { routeTree } from './routeTree.gen';
 
-import './styles.css'
-import reportWebVitals from './reportWebVitals.ts'
+import './styles.css';
+import reportWebVitals from './reportWebVitals.ts';
 
 // Register Service Worker for Payment Handler API and Vault
 if ('serviceWorker' in navigator) {
@@ -16,7 +16,7 @@ if ('serviceWorker' in navigator) {
     try {
       const registration = await navigator.serviceWorker.register('/sw.js', {
         scope: '/',
-        updateViaCache: 'none'
+        updateViaCache: 'none',
       });
       console.log('[Motor Vault] ServiceWorker registered:', registration.scope);
 
@@ -36,7 +36,6 @@ if ('serviceWorker' in navigator) {
           }
         });
       });
-
     } catch (error) {
       console.error('[Motor Vault] ServiceWorker registration failed:', error);
     }
@@ -45,7 +44,7 @@ if ('serviceWorker' in navigator) {
 
 // Create a new router instance
 
-const providersContext = getProvidersContext()
+const providersContext = getProvidersContext();
 const router = createRouter({
   routeTree,
   context: {
@@ -56,29 +55,29 @@ const router = createRouter({
   defaultStructuralSharing: true,
   defaultPreloadStaleTime: 0,
   defaultViewTransition: true,
-})
+});
 
 // Register the router instance for type safety
 declare module '@tanstack/react-router' {
   interface Register {
-    router: typeof router
+    router: typeof router;
   }
 }
 
 // Render the app
-const rootElement = document.getElementById('app')
+const rootElement = document.getElementById('app');
 if (rootElement && !rootElement.innerHTML) {
-  const root = ReactDOM.createRoot(rootElement)
+  const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
       <AppProviders {...providersContext}>
         <RouterProvider router={router} />
       </AppProviders>
-    </StrictMode>,
-  )
+    </StrictMode>
+  );
 }
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals()
+reportWebVitals();

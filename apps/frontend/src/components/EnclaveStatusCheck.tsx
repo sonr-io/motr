@@ -1,13 +1,13 @@
 import { useEnclave, useEnclaveClient } from '@sonr.io/react';
 import {
+  Alert,
+  AlertDescription,
+  Badge,
   GlassCard,
   GlassCardContent,
   GlassCardDescription,
   GlassCardHeader,
   GlassCardTitle,
-  Badge,
-  Alert,
-  AlertDescription,
   Separator,
 } from '@sonr.io/ui';
 
@@ -17,12 +17,8 @@ import {
 function StatusBadge({ isReady, label }: { isReady: boolean; label: string }) {
   return (
     <div className="flex items-center justify-between py-2">
-      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-        {label}
-      </span>
-      <Badge variant={isReady ? 'default' : 'secondary'}>
-        {isReady ? 'Ready' : 'Not Ready'}
-      </Badge>
+      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</span>
+      <Badge variant={isReady ? 'default' : 'secondary'}>{isReady ? 'Ready' : 'Not Ready'}</Badge>
     </div>
   );
 }
@@ -35,17 +31,9 @@ function StatusBadge({ isReady, label }: { isReady: boolean; label: string }) {
  * and available operations.
  */
 export function EnclaveStatusCheck() {
-  const {
-    isReady,
-    isInitialized,
-    accountAddress,
-    error,
-    initialize,
-    cleanup,
-  } = useEnclave();
+  const { isReady, isInitialized, accountAddress, error, initialize, cleanup } = useEnclave();
 
-  const { newOriginToken, signData, verifyData, getIssuerDID } =
-    useEnclaveClient();
+  const { newOriginToken, signData, verifyData, getIssuerDID } = useEnclaveClient();
 
   return (
     <GlassCard>
@@ -147,20 +135,12 @@ export function EnclaveStatusCheck() {
 /**
  * Operation status indicator
  */
-function OperationStatus({
-  label,
-  available,
-}: {
-  label: string;
-  available: boolean;
-}) {
+function OperationStatus({ label, available }: { label: string; available: boolean }) {
   return (
     <div className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded-md">
       <div
         className={`w-2 h-2 rounded-full ${
-          available
-            ? 'bg-green-500'
-            : 'bg-gray-300 dark:bg-gray-600'
+          available ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'
         }`}
       />
       <span className="text-xs text-gray-700 dark:text-gray-300">{label}</span>

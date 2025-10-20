@@ -1,8 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { RegisterFlow } from "@/components/RegisterFlow";
-import { SonrIcon } from "@sonr.io/ui/components/ui/sonr-icon";
+import { SonrIcon } from '@sonr.io/ui/components/ui/sonr-icon';
+import { createFileRoute } from '@tanstack/react-router';
+import { RegisterFlow } from '@/components/RegisterFlow';
 
-export const Route = createFileRoute("/register")({
+export const Route = createFileRoute('/register')({
   component: App,
 });
 
@@ -12,12 +12,12 @@ function App() {
       {/* 50% overlay to focus content */}
       <div
         className="fixed inset-0 bg-background/40 backdrop-blur-xl"
-        style={{ viewTransitionName: "register-overlay" }}
+        style={{ viewTransitionName: 'register-overlay' }}
       />
 
       <div
         className="flex w-full max-w-xl flex-col gap-6 z-10"
-        style={{ viewTransitionName: "register-page" }}
+        style={{ viewTransitionName: 'register-page' }}
       >
         {/* Header Section */}
         <div className="mb-2 text-center w-full">

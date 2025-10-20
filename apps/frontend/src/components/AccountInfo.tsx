@@ -1,31 +1,38 @@
-import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, Button, Input, Label } from '@sonr.io/ui'
-import { useAccountQuery } from '@/queries'
+import {
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Input,
+  Label,
+} from '@sonr.io/ui';
+import { useState } from 'react';
+import { useAccountQuery } from '@/queries';
 
 /**
  * Component to demonstrate querying account information
  */
 export function AccountInfo() {
-  const [address, setAddress] = useState('')
-  const [submittedAddress, setSubmittedAddress] = useState('')
+  const [address, setAddress] = useState('');
+  const [submittedAddress, setSubmittedAddress] = useState('');
 
   const { data, isLoading, error } = useAccountQuery({
     address: submittedAddress,
     enabled: !!submittedAddress,
-  })
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setSubmittedAddress(address)
-  }
+    e.preventDefault();
+    setSubmittedAddress(address);
+  };
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Account Query</CardTitle>
-        <CardDescription>
-          Query account information from the Sonr blockchain
-        </CardDescription>
+        <CardDescription>Query account information from the Sonr blockchain</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -65,5 +72,5 @@ export function AccountInfo() {
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

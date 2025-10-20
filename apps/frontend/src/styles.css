@@ -1,21 +1,20 @@
-@import '@sonr.io/ui/styles/globals.css';
+@import "@sonr.io/ui/styles/globals.css";
 
 @source './components/**/*.{ts,tsx}';
 @source './routes/**/*.{ts,tsx}';
 @source './lib/**/*.{ts,tsx}';
 
-@import 'tw-animate-css';
+@import "tw-animate-css";
 
 body {
   @apply m-0;
   font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
+    "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family:
-    source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }

@@ -1,25 +1,27 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { HoverButton } from "@sonr.io/ui/components/ui/hover-button";
-import { FloatingHeader } from "@sonr.io/ui/components/ui/floating-header";
-import { EnclaveStatusCheck } from "@/components/EnclaveStatusCheck";
 import {
+  Badge,
+  Button,
   GlassCard,
+  GlassCardContent,
+  GlassCardDescription,
   GlassCardHeader,
   GlassCardTitle,
-  GlassCardDescription,
-  GlassCardContent,
-  Button,
-  Badge,
-  Separator
-} from "@sonr.io/ui";
+  Separator,
+} from '@sonr.io/ui';
+import { FloatingHeader } from '@sonr.io/ui/components/ui/floating-header';
+import { HoverButton } from '@sonr.io/ui/components/ui/hover-button';
+import { createFileRoute } from '@tanstack/react-router';
+import { useState } from 'react';
+import { EnclaveStatusCheck } from '@/components/EnclaveStatusCheck';
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute('/')({
   component: App,
 });
 
 function App() {
-  const [paymentStatus, setPaymentStatus] = useState<'idle' | 'requesting' | 'success' | 'error'>('idle');
+  const [paymentStatus, setPaymentStatus] = useState<'idle' | 'requesting' | 'success' | 'error'>(
+    'idle'
+  );
   const [paymentResult, setPaymentResult] = useState<string | null>(null);
 
   const handleTestPayment = async () => {
@@ -36,10 +38,12 @@ function App() {
       // Use dynamic payment method identifier based on current origin
       const paymentMethodId = `${window.location.origin}/pay`;
 
-      const methodData = [{
-        supportedMethods: paymentMethodId,
-        data: { environment: 'demo' },
-      }];
+      const methodData = [
+        {
+          supportedMethods: paymentMethodId,
+          data: { environment: 'demo' },
+        },
+      ];
 
       const details = {
         total: {
@@ -52,7 +56,9 @@ function App() {
       const response = await request.show();
       await response.complete('success');
 
-      setPaymentResult(`Payment successful! Transaction ID: ${response.details?.transactionId || 'N/A'}`);
+      setPaymentResult(
+        `Payment successful! Transaction ID: ${response.details?.transactionId || 'N/A'}`
+      );
       setPaymentStatus('success');
     } catch (err) {
       setPaymentResult(err instanceof Error ? err.message : 'Payment failed');
@@ -69,13 +75,12 @@ function App() {
       <div className="relative z-10 flex h-full w-full flex-col items-center justify-center pt-24 pb-12">
         <div className="flex w-full max-w-xl flex-col items-center gap-8 p-6 lg:max-w-2xl rounded-full mb-12">
           <h1 className="text-center font-serif text-4xl font-stretch-semi-condensed text-foreground/85 drop-shadow-lg md:text-5xl lg:text-7xl">
-            Your <span className="italic tracking-tight">Personal</span>{" "}
+            Your <span className="italic tracking-tight">Personal</span>{' '}
             <span className="whitespace-nowrap">Identity Gateway</span>
           </h1>
           <p className="text-center backdrop-blur-xs text-base drop-shadow-md text-foreground/70 md:text-lg lg:text-xl max-w-xl">
-            Protect your digital footprint with Sonr - the Next-Generation
-            Blockchain Secured Wallet Identity System.
-
+            Protect your digital footprint with Sonr - the Next-Generation Blockchain Secured Wallet
+            Identity System.
           </p>
           <div className="mt-2 flex flex-col items-center justify-center gap-4 md:flex-row md:gap-6">
             <HoverButton text="Start your Journey" to="/register" />
@@ -120,11 +125,13 @@ function App() {
               </Button>
 
               {paymentResult && (
-                <div className={`rounded-lg p-3 text-sm ${
-                  paymentStatus === 'success'
-                    ? 'bg-green-500/10 border border-green-500/50 text-green-600 dark:text-green-400'
-                    : 'bg-destructive/10 border border-destructive/50 text-destructive'
-                }`}>
+                <div
+                  className={`rounded-lg p-3 text-sm ${
+                    paymentStatus === 'success'
+                      ? 'bg-green-500/10 border border-green-500/50 text-green-600 dark:text-green-400'
+                      : 'bg-destructive/10 border border-destructive/50 text-destructive'
+                  }`}
+                >
                   {paymentResult}
                 </div>
               )}

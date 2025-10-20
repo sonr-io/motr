@@ -1,17 +1,17 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
 import { useEnclave } from '@sonr.io/react';
 import {
+  Badge,
+  Button,
   Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-  Button,
-  Badge,
   Separator,
 } from '@sonr.io/ui';
+import { createFileRoute } from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
 
 export const Route = createFileRoute('/payment')({
   component: PaymentComponent,
@@ -26,7 +26,9 @@ interface PaymentDetails {
 
 function PaymentComponent() {
   const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(null);
-  const [status, setStatus] = useState<'pending' | 'processing' | 'success' | 'cancelled'>('pending');
+  const [status, setStatus] = useState<'pending' | 'processing' | 'success' | 'cancelled'>(
+    'pending'
+  );
   const [error, setError] = useState<string | null>(null);
   const { isReady, accountAddress } = useEnclave();
 
@@ -166,7 +168,15 @@ function PaymentComponent() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Payment Request</CardTitle>
-            <Badge variant={status === 'success' ? 'default' : status === 'cancelled' ? 'destructive' : 'secondary'}>
+            <Badge
+              variant={
+                status === 'success'
+                  ? 'default'
+                  : status === 'cancelled'
+                    ? 'destructive'
+                    : 'secondary'
+              }
+            >
               {status}
             </Badge>
           </div>
@@ -189,7 +199,9 @@ function PaymentComponent() {
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Merchant</span>
-                <span className="font-medium">{new URL(paymentDetails.merchantOrigin).hostname}</span>
+                <span className="font-medium">
+                  {new URL(paymentDetails.merchantOrigin).hostname}
+                </span>
               </div>
 
               <div className="flex items-center justify-between text-sm">
@@ -200,15 +212,15 @@ function PaymentComponent() {
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Account</span>
                 <span className="font-mono text-xs">
-                  {accountAddress ? `${accountAddress.slice(0, 10)}...${accountAddress.slice(-8)}` : 'Not connected'}
+                  {accountAddress
+                    ? `${accountAddress.slice(0, 10)}...${accountAddress.slice(-8)}`
+                    : 'Not connected'}
                 </span>
               </div>
 
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Status</span>
-                <Badge variant="outline">
-                  {isReady ? 'Ready' : 'Not Ready'}
-                </Badge>
+                <Badge variant="outline">{isReady ? 'Ready' : 'Not Ready'}</Badge>
               </div>
             </div>
           </div>
@@ -248,7 +260,9 @@ function PaymentComponent() {
           <Button
             className="flex-1"
             onClick={handleConfirmPayment}
-            disabled={!isReady || status === 'processing' || status === 'success' || status === 'cancelled'}
+            disabled={
+              !isReady || status === 'processing' || status === 'success' || status === 'cancelled'
+            }
           >
             {status === 'processing' ? 'Processing...' : 'Confirm Payment'}
           </Button>
