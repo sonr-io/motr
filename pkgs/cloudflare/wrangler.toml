@@ -1,0 +1,29 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "cloudflare-pkg"
+main = "src/index.ts"
+compatibility_date = "2024-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Durable Objects bindings
+[[durable_objects.bindings]]
+name = "COUNTER"
+class_name = "CounterDurable"
+script_name = "cloudflare-pkg"
+
+# Durable Object migrations
+[[migrations]]
+tag = "v1"
+new_classes = ["CounterDurable"]
+
+# Workflows configuration
+[workflows]
+# Workflow bindings will be configured in the consuming application
+# This is a reference configuration
+
+# Development configuration
+[env.development]
+name = "cloudflare-pkg-dev"
+
+# Production configuration
+[env.production]
+name = "cloudflare-pkg-prod"
