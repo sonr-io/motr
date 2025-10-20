@@ -1,4 +1,4 @@
-import type { PlainMessage } from '@bufbuild/protobuf';
+import type { PlainMessage } from "@bufbuild/protobuf";
 
 // TODO: CosmosBankV1beta1MsgSend not available in protobufs
 // // TODO: Missing from protobufs
@@ -6,8 +6,8 @@ import type { PlainMessage } from '@bufbuild/protobuf';
 const _ProtoMsgSend: any = {};
 type ProtoMsgSend = any;
 
-import type { DeepPrettify } from '../../typeutils/prettify';
-import type { Adapter } from './Adapter';
+import type { DeepPrettify } from "../../typeutils/prettify";
+import type { Adapter } from "./Adapter";
 
 type Data = DeepPrettify<ProtoMsgSend>;
 
@@ -39,7 +39,7 @@ export class MsgSend implements Adapter {
   // This method converts the message to amino JSON format for legacy support
   public toAmino() {
     return {
-      type: this.legacy ? 'bank/MsgSend' : 'cosmos-sdk/MsgSend',
+      type: this.legacy ? "bank/MsgSend" : "cosmos-sdk/MsgSend",
       value: {
         from_address: this.data.fromAddress,
         to_address: this.data.toAddress,

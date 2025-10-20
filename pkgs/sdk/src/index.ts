@@ -4,7 +4,7 @@
  */
 
 // Re-export client functionality
-export * from './client';
+export * from "./client";
 // Re-export auth functions directly for CDN usage
 export {
   base64urlToBuffer,
@@ -14,14 +14,14 @@ export {
   isWebAuthnSupported,
   loginWithPasskey,
   registerWithPasskey,
-} from './client/auth/webauthn';
+} from "./client/auth/webauthn";
 // Export IPFS services namespace
-export * as ipfs from './client/services';
+export * as ipfs from "./client/services";
 // Re-export codec utilities
-export * from './codec';
+export * from "./codec";
 // Re-export protobufs
-export * from './protobufs';
+export * from "./protobufs";
 // Re-export registry
-export * from './registry';
+export * from "./registry";
 // Re-export wallet functionality (be selective to avoid conflicts)
-export type { ChainInfo, ConnectedWallet, WalletType } from './wallet';
+export type { ChainInfo, ConnectedWallet, WalletType } from "./wallet";

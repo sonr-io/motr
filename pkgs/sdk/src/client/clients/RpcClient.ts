@@ -1,8 +1,8 @@
-import type { JsonValue, Message, PartialMessage } from '@bufbuild/protobuf';
-import { base16, base64 } from '@sonr.io/sdk/codec';
-import type { CosmosTxV1beta1TxRaw as TxRaw } from '@sonr.io/sdk/protobufs';
+import type { JsonValue, Message, PartialMessage } from "@bufbuild/protobuf";
+import { base16, base64 } from "@sonr.io/sdk/codec";
+import type { CosmosTxV1beta1TxRaw as TxRaw } from "@sonr.io/sdk/protobufs";
 
-import { FetchClient } from './FetchClient';
+import { FetchClient } from "./FetchClient";
 
 type ErrorResponse = {
   id: number;
@@ -67,10 +67,14 @@ type RequestMessage<T extends Message<T>> = T extends {
     };
 
 export class RpcClient {
-  private static async doRequest<T>(endpoint: string, method: string, params: JsonValue) {
+  private static async doRequest<T>(
+    endpoint: string,
+    method: string,
+    params: JsonValue,
+  ) {
     const { result, error } = await FetchClient.post<Response<T>>(endpoint, {
       id: Date.now(),
-      jsonrpc: '2.0',
+      jsonrpc: "2.0",
       method,
       params,
     });
@@ -87,13 +91,17 @@ export class RpcClient {
   public static async query<T extends Message<T>, U extends Message<U>>(
     endpoint: string,
     { typeName, method, Request, Response }: QueryService<T, U>,
-    requestMsg: RequestMessage<T>
+    requestMsg: RequestMessage<T>,
   ): Promise<U> {
-    const { response } = await RpcClient.doRequest<QueryResult>(endpoint, 'abci_query', {
-      path: `/${typeName}/${method}`,
-      data: base16.encode(new Request(requestMsg).toBinary()),
-      ...(requestMsg.height ? { height: requestMsg.height.toString() } : {}),
-    });
+    const { response } = await RpcClient.doRequest<QueryResult>(
+      endpoint,
+      "abci_query",
+      {
+        path: `/${typeName}/${method}`,
+        data: base16.encode(new Request(requestMsg).toBinary()),
+        ...(requestMsg.height ? { height: requestMsg.height.toString() } : {}),
+      },
+    );
     const { log, value } = response;
     if (!value) {
       throw new Error(log);
@@ -105,13 +113,16 @@ export class RpcClient {
    * Posts a `broadcast_tx_sync` request to the RPC `endpoint`. If successful,
    * returns the tx hash, otherwise throws an error.
    */
-  public static async broadcastTx(endpoint: string, txRaw: TxRaw): Promise<string> {
+  public static async broadcastTx(
+    endpoint: string,
+    txRaw: TxRaw,
+  ): Promise<string> {
     const { code, log, hash } = await RpcClient.doRequest<BroadcastTxResult>(
       endpoint,
-      'broadcast_tx_sync',
+      "broadcast_tx_sync",
       {
         tx: base64.encode(txRaw.toBinary()),
-      }
+      },
     );
     if (code !== 0) {
       throw new Error(log);
@@ -151,7 +162,7 @@ class BatchQuery {
   public add<T extends Message<T>, U extends Message<U>>(
     queryService: QueryService<T, U>,
     requestMsg: RequestMessage<T>,
-    callback: (err: Error | null, response: U) => unknown
+    callback: (err: Error | null, response: U) => unknown,
   ) {
     this.queries.push({ queryService, requestMsg, callback });
     return this;
@@ -166,8 +177,8 @@ class BatchQuery {
     }
     const payload = this.queries.map(({ queryService, requestMsg }, idx) => ({
       id: idx,
-      jsonrpc: '2.0',
-      method: 'abci_query',
+      jsonrpc: "2.0",
+      method: "abci_query",
       params: {
         path: `/${queryService.typeName}/${queryService.method}`,
         data: base16.encode(new queryService.Request(requestMsg).toBinary()),
@@ -192,7 +203,9 @@ class BatchQuery {
         handler(new Error(log), null);
         continue;
       }
-      const responseMsg = queryService.Response.fromBinary(base64.decode(value));
+      const responseMsg = queryService.Response.fromBinary(
+        base64.decode(value),
+      );
       handler(null, responseMsg);
     }
   }

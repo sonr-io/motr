@@ -1,4 +1,4 @@
-import { queryContract } from './queryContract';
+import { queryContract } from "./queryContract";
 
 export type SimulateKujiraSinglePoolSwapParams = {
   poolId: string;
@@ -18,7 +18,7 @@ type Response = {
  */
 export async function simulateKujiraSinglePoolSwap(
   endpoint: string,
-  { poolId, fromAsset, fromAmount }: SimulateKujiraSinglePoolSwapParams
+  { poolId, fromAsset, fromAmount }: SimulateKujiraSinglePoolSwapParams,
 ): Promise<bigint> {
   try {
     const { return_amount } = await queryContract<Response>(endpoint, {

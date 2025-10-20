@@ -16,12 +16,12 @@
  * - ES256: ECDSA using P-256 curve and SHA-256
  * - RS256: RSA signature with SHA-256
  */
-export type UCANAlgorithm = 'EdDSA' | 'ES256' | 'RS256';
+export type UCANAlgorithm = "EdDSA" | "ES256" | "RS256";
 
 /**
  * UCAN version identifier. Current specification is version "0.10.0".
  */
-export type UCANVersion = '0.10.0' | string;
+export type UCANVersion = "0.10.0" | string;
 
 /**
  * UCAN token header following JWT standard with UCAN-specific extensions.
@@ -34,7 +34,7 @@ export interface UCANHeader {
   alg: UCANAlgorithm;
 
   /** Token type, must be 'JWT' for UCAN tokens */
-  typ: 'JWT';
+  typ: "JWT";
 
   /** UCAN specification version */
   ucv: UCANVersion;
@@ -234,7 +234,11 @@ export interface ValidationOptions {
  * Used to determine if a delegated capability is properly attenuated
  * (equal or more restrictive) compared to the parent capability.
  */
-export type CapabilityComparison = 'equal' | 'attenuated' | 'expanded' | 'unrelated';
+export type CapabilityComparison =
+  | "equal"
+  | "attenuated"
+  | "expanded"
+  | "unrelated";
 
 /**
  * UCAN builder configuration options.
@@ -262,34 +266,38 @@ export interface TimeBounds {
  * Type guard to check if a value is a valid UCAN algorithm.
  */
 export function isUCANAlgorithm(value: unknown): value is UCANAlgorithm {
-  return value === 'EdDSA' || value === 'ES256' || value === 'RS256';
+  return value === "EdDSA" || value === "ES256" || value === "RS256";
 }
 
 /**
  * Type guard to check if a value is a valid UCAN header.
  */
 export function isUCANHeader(value: unknown): value is UCANHeader {
-  if (typeof value !== 'object' || value === null) {
+  if (typeof value !== "object" || value === null) {
     return false;
   }
 
   const header = value as Partial<UCANHeader>;
-  return isUCANAlgorithm(header.alg) && header.typ === 'JWT' && typeof header.ucv === 'string';
+  return (
+    isUCANAlgorithm(header.alg) &&
+    header.typ === "JWT" &&
+    typeof header.ucv === "string"
+  );
 }
 
 /**
  * Type guard to check if a value is a valid capability.
  */
 export function isCapability(value: unknown): value is Capability {
-  if (typeof value !== 'object' || value === null) {
+  if (typeof value !== "object" || value === null) {
     return false;
   }
 
   const cap = value as Partial<Capability>;
   return (
-    typeof cap.with === 'string' &&
-    typeof cap.can === 'string' &&
-    (cap.nb === undefined || (typeof cap.nb === 'object' && cap.nb !== null))
+    typeof cap.with === "string" &&
+    typeof cap.can === "string" &&
+    (cap.nb === undefined || (typeof cap.nb === "object" && cap.nb !== null))
   );
 }
 
@@ -297,7 +305,7 @@ export function isCapability(value: unknown): value is Capability {
  * Type guard to check if a value is a valid UCAN payload.
  */
 export function isUCANPayload(value: unknown): value is UCANPayload {
-  if (typeof value !== 'object' || value === null) {
+  if (typeof value !== "object" || value === null) {
     return false;
   }
 
@@ -305,9 +313,9 @@ export function isUCANPayload(value: unknown): value is UCANPayload {
 
   // Check required fields
   if (
-    typeof payload.iss !== 'string' ||
-    typeof payload.aud !== 'string' ||
-    (payload.exp !== null && typeof payload.exp !== 'number') ||
+    typeof payload.iss !== "string" ||
+    typeof payload.aud !== "string" ||
+    (payload.exp !== null && typeof payload.exp !== "number") ||
     !Array.isArray(payload.att) ||
     payload.att.length === 0
   ) {
@@ -320,11 +328,11 @@ export function isUCANPayload(value: unknown): value is UCANPayload {
   }
 
   // Check optional fields if present
-  if (payload.nbf !== undefined && typeof payload.nbf !== 'number') {
+  if (payload.nbf !== undefined && typeof payload.nbf !== "number") {
     return false;
   }
 
-  if (payload.nnc !== undefined && typeof payload.nnc !== 'string') {
+  if (payload.nnc !== undefined && typeof payload.nnc !== "string") {
     return false;
   }
 
@@ -334,7 +342,8 @@ export function isUCANPayload(value: unknown): value is UCANPayload {
 
   if (
     payload.prf !== undefined &&
-    (!Array.isArray(payload.prf) || !payload.prf.every((p) => typeof p === 'string'))
+    (!Array.isArray(payload.prf) ||
+      !payload.prf.every((p) => typeof p === "string"))
   ) {
     return false;
   }
@@ -346,7 +355,7 @@ export function isUCANPayload(value: unknown): value is UCANPayload {
  * Type guard to check if a value is a valid UCAN token.
  */
 export function isUCANToken(value: unknown): value is UCANToken {
-  if (typeof value !== 'object' || value === null) {
+  if (typeof value !== "object" || value === null) {
     return false;
   }
 
@@ -372,15 +381,15 @@ export type PartialUCANPayload = Partial<UCANPayload> & {
  * Error codes for UCAN validation failures.
  */
 export enum UCANValidationError {
-  INVALID_FORMAT = 'INVALID_FORMAT',
-  INVALID_HEADER = 'INVALID_HEADER',
-  INVALID_PAYLOAD = 'INVALID_PAYLOAD',
-  INVALID_SIGNATURE = 'INVALID_SIGNATURE',
-  EXPIRED = 'EXPIRED',
-  NOT_YET_VALID = 'NOT_YET_VALID',
-  INVALID_ISSUER = 'INVALID_ISSUER',
-  INVALID_AUDIENCE = 'INVALID_AUDIENCE',
-  INVALID_CAPABILITY = 'INVALID_CAPABILITY',
-  INVALID_PROOF_CHAIN = 'INVALID_PROOF_CHAIN',
-  UNSUPPORTED_ALGORITHM = 'UNSUPPORTED_ALGORITHM',
+  INVALID_FORMAT = "INVALID_FORMAT",
+  INVALID_HEADER = "INVALID_HEADER",
+  INVALID_PAYLOAD = "INVALID_PAYLOAD",
+  INVALID_SIGNATURE = "INVALID_SIGNATURE",
+  EXPIRED = "EXPIRED",
+  NOT_YET_VALID = "NOT_YET_VALID",
+  INVALID_ISSUER = "INVALID_ISSUER",
+  INVALID_AUDIENCE = "INVALID_AUDIENCE",
+  INVALID_CAPABILITY = "INVALID_CAPABILITY",
+  INVALID_PROOF_CHAIN = "INVALID_PROOF_CHAIN",
+  UNSUPPORTED_ALGORITHM = "UNSUPPORTED_ALGORITHM",
 }

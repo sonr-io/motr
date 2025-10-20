@@ -1,10 +1,13 @@
-import WalletConnect from '@walletconnect/legacy-client';
-import type { IWalletConnectSession } from '@walletconnect/legacy-types';
+import WalletConnect from "@walletconnect/legacy-client";
+import type { IWalletConnectSession } from "@walletconnect/legacy-types";
 
-import { type MobileAppDetails, QRCodeModal } from './QRCodeModal';
+import { type MobileAppDetails, QRCodeModal } from "./QRCodeModal";
 
 type ConnectOptions = Required<
-  Pick<ConstructorParameters<typeof WalletConnect>[0], 'bridge' | 'signingMethods'>
+  Pick<
+    ConstructorParameters<typeof WalletConnect>[0],
+    "bridge" | "signingMethods"
+  >
 >;
 
 export class WalletConnectV1 {
@@ -16,7 +19,7 @@ export class WalletConnectV1 {
   constructor(
     sessionStorageKey: string,
     mobileAppDetails: MobileAppDetails,
-    connectOpts: ConnectOptions
+    connectOpts: ConnectOptions,
   ) {
     this.sessionStorageKey = sessionStorageKey;
     this.mobileAppDetails = mobileAppDetails;
@@ -40,7 +43,7 @@ export class WalletConnectV1 {
       qrcodeModal: new QRCodeModal(this.mobileAppDetails),
       session,
     });
-    wc.on('disconnect', () => {
+    wc.on("disconnect", () => {
       localStorage.removeItem(this.sessionStorageKey);
       for (const cb of this.onDisconnectCbs) {
         cb();
@@ -60,7 +63,7 @@ export class WalletConnectV1 {
 
     // Return the WalletConnect instance once connected
     return new Promise((resolve, reject) => {
-      wc.on('connect', (error, _payload) => {
+      wc.on("connect", (error, _payload) => {
         // Do NOT cache the session here as the user may not have approved the connection
         if (error) {
           reject(error);

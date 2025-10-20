@@ -1,15 +1,15 @@
 // Setup file for Vitest with jsdom environment
 // Provides browser-like APIs including navigator
 
-import { vi } from 'vitest';
+import { vi } from "vitest";
 
 // Ensure navigator is available (jsdom provides this)
-if (typeof navigator === 'undefined') {
+if (typeof navigator === "undefined") {
   global.navigator = {} as Navigator;
 }
 
 // Mock storage APIs if needed
-if (typeof localStorage === 'undefined') {
+if (typeof localStorage === "undefined") {
   global.localStorage = {
     getItem: vi.fn(),
     setItem: vi.fn(),
@@ -20,7 +20,7 @@ if (typeof localStorage === 'undefined') {
   } as Storage;
 }
 
-if (typeof sessionStorage === 'undefined') {
+if (typeof sessionStorage === "undefined") {
   global.sessionStorage = {
     getItem: vi.fn(),
     setItem: vi.fn(),
@@ -32,8 +32,8 @@ if (typeof sessionStorage === 'undefined') {
 }
 
 // Mock WebAuthn APIs if needed for tests
-if (typeof navigator !== 'undefined' && !navigator.credentials) {
-  Object.defineProperty(navigator, 'credentials', {
+if (typeof navigator !== "undefined" && !navigator.credentials) {
+  Object.defineProperty(navigator, "credentials", {
     value: {
       create: vi.fn(),
       get: vi.fn(),

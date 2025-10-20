@@ -1,11 +1,11 @@
-import type { PlainMessage } from '@bufbuild/protobuf';
+import type { PlainMessage } from "@bufbuild/protobuf";
 
 // TODO: CosmosDistributionV1beta1MsgWithdrawDelegatorReward not available in protobufs
 // import { CosmosDistributionV1beta1MsgWithdrawDelegatorReward as ProtoMsgWithdrawDelegatorRewards } from "@sonr.io/sdk/protobufs";
 type ProtoMsgWithdrawDelegatorRewards = any;
 
-import type { DeepPrettify } from '../../typeutils/prettify';
-import type { Adapter } from './Adapter';
+import type { DeepPrettify } from "../../typeutils/prettify";
+import type { Adapter } from "./Adapter";
 
 type Data = DeepPrettify<ProtoMsgWithdrawDelegatorRewards>;
 
@@ -33,8 +33,8 @@ export class MsgWithdrawDelegatorRewards implements Adapter {
   public toAmino() {
     return {
       type: this.isLegacy
-        ? 'distribution/MsgWithdrawDelegationReward'
-        : 'cosmos-sdk/MsgWithdrawDelegationReward',
+        ? "distribution/MsgWithdrawDelegationReward"
+        : "cosmos-sdk/MsgWithdrawDelegationReward",
       value: {
         validator_address: this.data.validatorAddress,
         delegator_address: this.data.delegatorAddress,

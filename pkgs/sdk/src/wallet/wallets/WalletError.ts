@@ -9,7 +9,7 @@ export class WalletError extends Error {
 
   constructor(message: string, raw: unknown) {
     super(message);
-    this.name = 'WalletError';
+    this.name = "WalletError";
     this.raw = raw;
   }
 
@@ -24,18 +24,18 @@ export class WalletError extends Error {
     try {
       return await promise;
     } catch (err) {
-      if (typeof err === 'string') {
+      if (typeof err === "string") {
         throw new WalletError(err, err);
       }
       if (WalletError.isRecord(err)) {
         // Takes into account normal error instances and objects with the 'error' key
-        throw new WalletError(err.message ?? err.error ?? 'unknown error', err);
+        throw new WalletError(err.message ?? err.error ?? "unknown error", err);
       }
-      throw new WalletError('unknown error', err);
+      throw new WalletError("unknown error", err);
     }
   }
 
   private static isRecord(value: unknown): value is Record<string, string> {
-    return typeof value === 'object' && value != null;
+    return typeof value === "object" && value != null;
   }
 }

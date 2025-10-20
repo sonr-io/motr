@@ -1,4 +1,4 @@
-import type { Message } from '@bufbuild/protobuf';
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * An adapter to translate between protobuf and amino encodings.

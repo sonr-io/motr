@@ -8,7 +8,7 @@
  * @see https://github.com/ucan-wg/spec - UCAN specification
  */
 
-import { base64urlEncode, base64urlEncodeJSON } from './encoding.js';
+import { base64urlEncode, base64urlEncodeJSON } from "./encoding.js";
 import type {
   Capability,
   Fact,
@@ -17,8 +17,8 @@ import type {
   UCANHeader,
   UCANPayload,
   UCANVersion,
-} from './types.js';
-import { isCapability } from './types.js';
+} from "./types.js";
+import { isCapability } from "./types.js";
 
 /**
  * Maximum safe integer for JavaScript timestamps (2^53 - 1).
@@ -41,7 +41,7 @@ const MIN_SAFE_TIMESTAMP = Number.MIN_SAFE_INTEGER;
  * @returns true if DID format is valid
  */
 function isValidDID(did: string): boolean {
-  if (typeof did !== 'string' || did.length === 0) {
+  if (typeof did !== "string" || did.length === 0) {
     return false;
   }
 
@@ -63,7 +63,7 @@ function isValidDID(did: string): boolean {
  */
 function isValidTimestamp(timestamp: number): boolean {
   return (
-    typeof timestamp === 'number' &&
+    typeof timestamp === "number" &&
     Number.isInteger(timestamp) &&
     timestamp >= MIN_SAFE_TIMESTAMP &&
     timestamp <= MAX_SAFE_TIMESTAMP
@@ -104,8 +104,8 @@ export class UCANBuilder {
    * @param options - Optional configuration for UCAN version and algorithm
    */
   constructor(options?: UCANBuilderOptions) {
-    this._version = options?.version ?? '0.10.0';
-    this._algorithm = options?.algorithm ?? 'EdDSA';
+    this._version = options?.version ?? "0.10.0";
+    this._algorithm = options?.algorithm ?? "EdDSA";
   }
 
   /**
@@ -118,7 +118,7 @@ export class UCANBuilder {
   issuer(did: string): this {
     if (!isValidDID(did)) {
       throw new Error(
-        `Invalid issuer DID format: '${did}'. Expected format: did:<method>:<identifier>`
+        `Invalid issuer DID format: '${did}'. Expected format: did:<method>:<identifier>`,
       );
     }
     this._issuer = did;
@@ -135,7 +135,7 @@ export class UCANBuilder {
   audience(did: string): this {
     if (!isValidDID(did)) {
       throw new Error(
-        `Invalid audience DID format: '${did}'. Expected format: did:<method>:<identifier>`
+        `Invalid audience DID format: '${did}'. Expected format: did:<method>:<identifier>`,
       );
     }
     this._audience = did;
@@ -155,7 +155,7 @@ export class UCANBuilder {
   expiration(timestamp: number | null): this {
     if (timestamp !== null && !isValidTimestamp(timestamp)) {
       throw new Error(
-        `Invalid expiration timestamp: ${timestamp}. Must be integer in range [${MIN_SAFE_TIMESTAMP}, ${MAX_SAFE_TIMESTAMP}]`
+        `Invalid expiration timestamp: ${timestamp}. Must be integer in range [${MIN_SAFE_TIMESTAMP}, ${MAX_SAFE_TIMESTAMP}]`,
       );
     }
     this._expiration = timestamp;
@@ -175,7 +175,7 @@ export class UCANBuilder {
   notBefore(timestamp: number): this {
     if (!isValidTimestamp(timestamp)) {
       throw new Error(
-        `Invalid notBefore timestamp: ${timestamp}. Must be integer in range [${MIN_SAFE_TIMESTAMP}, ${MAX_SAFE_TIMESTAMP}]`
+        `Invalid notBefore timestamp: ${timestamp}. Must be integer in range [${MIN_SAFE_TIMESTAMP}, ${MAX_SAFE_TIMESTAMP}]`,
       );
     }
     this._notBefore = timestamp;
@@ -198,8 +198,14 @@ export class UCANBuilder {
    * ```
    */
   expiresIn(seconds: number): this {
-    if (typeof seconds !== 'number' || seconds <= 0 || !Number.isFinite(seconds)) {
-      throw new Error(`Invalid expiresIn value: ${seconds}. Must be a positive number`);
+    if (
+      typeof seconds !== "number" ||
+      seconds <= 0 ||
+      !Number.isFinite(seconds)
+    ) {
+      throw new Error(
+        `Invalid expiresIn value: ${seconds}. Must be a positive number`,
+      );
     }
 
     const now = Math.floor(Date.now() / 1000);
@@ -207,7 +213,7 @@ export class UCANBuilder {
 
     if (!isValidTimestamp(expiration)) {
       throw new Error(
-        `Calculated expiration ${expiration} is out of safe range. Reduce expiresIn value.`
+        `Calculated expiration ${expiration} is out of safe range. Reduce expiresIn value.`,
       );
     }
 
@@ -225,8 +231,8 @@ export class UCANBuilder {
    * @throws {Error} If nonce is empty
    */
   nonce(nonce: string): this {
-    if (typeof nonce !== 'string' || nonce.length === 0) {
-      throw new Error('Nonce must be a non-empty string');
+    if (typeof nonce !== "string" || nonce.length === 0) {
+      throw new Error("Nonce must be a non-empty string");
     }
     this._nonce = nonce;
     return this;
@@ -280,7 +286,7 @@ export class UCANBuilder {
   addCapability(capability: Capability): this {
     if (!isCapability(capability)) {
       throw new Error(
-        `Invalid capability structure. Must have 'with' (string) and 'can' (string) fields. Got: ${JSON.stringify(capability)}`
+        `Invalid capability structure. Must have 'with' (string) and 'can' (string) fields. Got: ${JSON.stringify(capability)}`,
       );
     }
     this._capabilities.push(capability);
@@ -303,8 +309,8 @@ export class UCANBuilder {
    * ```
    */
   addFact(fact: Fact): this {
-    if (typeof fact !== 'object' || fact === null || Array.isArray(fact)) {
-      throw new Error('Fact must be a non-null object');
+    if (typeof fact !== "object" || fact === null || Array.isArray(fact)) {
+      throw new Error("Fact must be a non-null object");
     }
     this._facts.push(fact);
     return this;
@@ -326,8 +332,8 @@ export class UCANBuilder {
    * ```
    */
   addProof(ucan: string): this {
-    if (typeof ucan !== 'string' || ucan.length === 0) {
-      throw new Error('Proof UCAN must be a non-empty string');
+    if (typeof ucan !== "string" || ucan.length === 0) {
+      throw new Error("Proof UCAN must be a non-empty string");
     }
     this._proofs.push(ucan);
     return this;
@@ -342,19 +348,23 @@ export class UCANBuilder {
     const errors: string[] = [];
 
     if (!this._issuer) {
-      errors.push('issuer DID is required (use .issuer() method)');
+      errors.push("issuer DID is required (use .issuer() method)");
     }
 
     if (!this._audience) {
-      errors.push('audience DID is required (use .audience() method)');
+      errors.push("audience DID is required (use .audience() method)");
     }
 
     if (this._expiration === undefined) {
-      errors.push('expiration is required (use .expiration() or .expiresIn() method)');
+      errors.push(
+        "expiration is required (use .expiration() or .expiresIn() method)",
+      );
     }
 
     if (this._capabilities.length === 0) {
-      errors.push('at least one capability is required (use .addCapability() method)');
+      errors.push(
+        "at least one capability is required (use .addCapability() method)",
+      );
     }
 
     // Validate notBefore is before expiration if both are set
@@ -364,11 +374,13 @@ export class UCANBuilder {
       this._expiration !== undefined &&
       this._notBefore >= this._expiration
     ) {
-      errors.push(`notBefore (${this._notBefore}) must be before expiration (${this._expiration})`);
+      errors.push(
+        `notBefore (${this._notBefore}) must be before expiration (${this._expiration})`,
+      );
     }
 
     if (errors.length > 0) {
-      throw new Error(`UCAN validation failed: ${errors.join('; ')}`);
+      throw new Error(`UCAN validation failed: ${errors.join("; ")}`);
     }
   }
 
@@ -395,16 +407,16 @@ export class UCANBuilder {
 
     // Validate signature
     if (!(signature instanceof Uint8Array)) {
-      throw new Error('Signature must be a Uint8Array');
+      throw new Error("Signature must be a Uint8Array");
     }
     if (signature.length === 0) {
-      throw new Error('Signature cannot be empty');
+      throw new Error("Signature cannot be empty");
     }
 
     // Construct header
     const header: UCANHeader = {
       alg: this._algorithm,
-      typ: 'JWT',
+      typ: "JWT",
       ucv: this._version,
     };
 

@@ -9,7 +9,7 @@ export function isIOS() {
   return (
     navigator &&
     (/iPhone|iPad|iPod/i.test(navigator.userAgent) ||
-      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1))
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1))
   );
 }
 

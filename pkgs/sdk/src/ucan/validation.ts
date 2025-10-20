@@ -7,9 +7,9 @@
  * @see https://github.com/ucan-wg/spec - Official UCAN specification
  */
 
-import { sha256 } from '@noble/hashes/sha2';
+import { sha256 } from "@noble/hashes/sha2";
 
-import { base64urlEncodeJSON } from './encoding';
+import { base64urlEncodeJSON } from "./encoding";
 import type {
   Capability,
   UCANPayload,
@@ -17,7 +17,7 @@ import type {
   UCANValidationError,
   ValidationOptions,
   ValidationResult,
-} from './types';
+} from "./types";
 
 /**
  * Default clock drift tolerance in seconds.
@@ -54,7 +54,7 @@ const DEFAULT_CLOCK_DRIFT_TOLERANCE = 60;
  */
 export async function validateToken(
   token: UCANToken,
-  options?: ValidationOptions
+  options?: ValidationOptions,
 ): Promise<ValidationResult> {
   // Validate algorithm support
   const algorithmResult = validateAlgorithm(token);
@@ -68,7 +68,7 @@ export async function validateToken(
     return {
       valid: false,
       error: `Invalid issuer DID: ${issuerResult.error}`,
-      details: { code: 'INVALID_ISSUER' as UCANValidationError },
+      details: { code: "INVALID_ISSUER" as UCANValidationError },
     };
   }
 
@@ -77,7 +77,7 @@ export async function validateToken(
     return {
       valid: false,
       error: `Invalid audience DID: ${audienceResult.error}`,
-      details: { code: 'INVALID_AUDIENCE' as UCANValidationError },
+      details: { code: "INVALID_AUDIENCE" as UCANValidationError },
     };
   }
 
@@ -104,7 +104,11 @@ export async function validateToken(
 
   // Optionally validate proof chain
   const shouldValidateProofChain = options?.validateProofChain ?? false;
-  if (shouldValidateProofChain && token.payload.prf && token.payload.prf.length > 0) {
+  if (
+    shouldValidateProofChain &&
+    token.payload.prf &&
+    token.payload.prf.length > 0
+  ) {
     // Note: Proof chain validation would require parsing each proof token
     // and recursively validating them. This is a placeholder for future implementation.
     // For now, we just check that the proof array exists and is non-empty.
@@ -123,13 +127,13 @@ export async function validateToken(
  * @returns ValidationResult indicating if algorithm is supported
  */
 export function validateAlgorithm(token: UCANToken): ValidationResult {
-  const supportedAlgorithms = ['EdDSA', 'ES256', 'RS256'];
+  const supportedAlgorithms = ["EdDSA", "ES256", "RS256"];
 
   if (!supportedAlgorithms.includes(token.header.alg)) {
     return {
       valid: false,
-      error: `Unsupported algorithm: ${token.header.alg}. Must be one of: ${supportedAlgorithms.join(', ')}`,
-      details: { code: 'UNSUPPORTED_ALGORITHM' as UCANValidationError },
+      error: `Unsupported algorithm: ${token.header.alg}. Must be one of: ${supportedAlgorithms.join(", ")}`,
+      details: { code: "UNSUPPORTED_ALGORITHM" as UCANValidationError },
     };
   }
 
@@ -198,18 +202,19 @@ export function validateDID(did: string): ValidationResult {
  */
 export function validateTimestamps(
   payload: UCANPayload,
-  options?: ValidationOptions
+  options?: ValidationOptions,
 ): ValidationResult {
   const now = options?.now ?? Math.floor(Date.now() / 1000);
-  const clockDrift = options?.clockDriftTolerance ?? DEFAULT_CLOCK_DRIFT_TOLERANCE;
+  const clockDrift =
+    options?.clockDriftTolerance ?? DEFAULT_CLOCK_DRIFT_TOLERANCE;
 
   // Validate expiration
   if (payload.exp !== null) {
-    if (typeof payload.exp !== 'number') {
+    if (typeof payload.exp !== "number") {
       return {
         valid: false,
-        error: 'Expiration (exp) must be a number or null',
-        details: { code: 'INVALID_PAYLOAD' as UCANValidationError },
+        error: "Expiration (exp) must be a number or null",
+        details: { code: "INVALID_PAYLOAD" as UCANValidationError },
       };
     }
 
@@ -219,7 +224,7 @@ export function validateTimestamps(
         valid: false,
         error: `Token has expired. Expiration: ${expDate}, Current time: ${new Date(now * 1000).toISOString()}`,
         details: {
-          code: 'EXPIRED' as UCANValidationError,
+          code: "EXPIRED" as UCANValidationError,
           exp: payload.exp,
           now,
         },
@@ -229,11 +234,11 @@ export function validateTimestamps(
 
   // Validate not before (if present)
   if (payload.nbf !== undefined) {
-    if (typeof payload.nbf !== 'number') {
+    if (typeof payload.nbf !== "number") {
       return {
         valid: false,
-        error: 'Not before (nbf) must be a number',
-        details: { code: 'INVALID_PAYLOAD' as UCANValidationError },
+        error: "Not before (nbf) must be a number",
+        details: { code: "INVALID_PAYLOAD" as UCANValidationError },
       };
     }
 
@@ -243,7 +248,7 @@ export function validateTimestamps(
         valid: false,
         error: `Token is not yet valid. Not before: ${nbfDate}, Current time: ${new Date(now * 1000).toISOString()}`,
         details: {
-          code: 'NOT_YET_VALID' as UCANValidationError,
+          code: "NOT_YET_VALID" as UCANValidationError,
           nbf: payload.nbf,
           now,
         },
@@ -272,20 +277,22 @@ export function validateTimestamps(
  * validateCapabilities(capabilities); // valid
  * ```
  */
-export function validateCapabilities(capabilities: Capability[]): ValidationResult {
+export function validateCapabilities(
+  capabilities: Capability[],
+): ValidationResult {
   if (!Array.isArray(capabilities)) {
     return {
       valid: false,
-      error: 'Capabilities (att) must be an array',
-      details: { code: 'INVALID_CAPABILITY' as UCANValidationError },
+      error: "Capabilities (att) must be an array",
+      details: { code: "INVALID_CAPABILITY" as UCANValidationError },
     };
   }
 
   if (capabilities.length === 0) {
     return {
       valid: false,
-      error: 'Token must have at least one capability',
-      details: { code: 'INVALID_CAPABILITY' as UCANValidationError },
+      error: "Token must have at least one capability",
+      details: { code: "INVALID_CAPABILITY" as UCANValidationError },
     };
   }
 
@@ -293,24 +300,24 @@ export function validateCapabilities(capabilities: Capability[]): ValidationResu
     const cap = capabilities[i];
 
     // Check required fields
-    if (!cap.with || typeof cap.with !== 'string') {
+    if (!cap.with || typeof cap.with !== "string") {
       return {
         valid: false,
         error: `Capability at index ${i} missing or invalid 'with' field`,
         details: {
-          code: 'INVALID_CAPABILITY' as UCANValidationError,
+          code: "INVALID_CAPABILITY" as UCANValidationError,
           index: i,
           capability: cap,
         },
       };
     }
 
-    if (!cap.can || typeof cap.can !== 'string') {
+    if (!cap.can || typeof cap.can !== "string") {
       return {
         valid: false,
         error: `Capability at index ${i} missing or invalid 'can' field`,
         details: {
-          code: 'INVALID_CAPABILITY' as UCANValidationError,
+          code: "INVALID_CAPABILITY" as UCANValidationError,
           index: i,
           capability: cap,
         },
@@ -319,12 +326,16 @@ export function validateCapabilities(capabilities: Capability[]): ValidationResu
 
     // Validate caveats structure if present
     if (cap.nb !== undefined) {
-      if (typeof cap.nb !== 'object' || cap.nb === null || Array.isArray(cap.nb)) {
+      if (
+        typeof cap.nb !== "object" ||
+        cap.nb === null ||
+        Array.isArray(cap.nb)
+      ) {
         return {
           valid: false,
           error: `Capability at index ${i} has invalid 'nb' field. Must be an object`,
           details: {
-            code: 'INVALID_CAPABILITY' as UCANValidationError,
+            code: "INVALID_CAPABILITY" as UCANValidationError,
             index: i,
             capability: cap,
           },
@@ -360,7 +371,9 @@ export function validateCapabilities(capabilities: Capability[]): ValidationResu
  * }
  * ```
  */
-export async function validateSignature(token: UCANToken): Promise<ValidationResult> {
+export async function validateSignature(
+  token: UCANToken,
+): Promise<ValidationResult> {
   try {
     // Reconstruct the signing message: base64url(header) + '.' + base64url(payload)
     const headerEncoded = base64urlEncodeJSON(token.header);
@@ -375,7 +388,7 @@ export async function validateSignature(token: UCANToken): Promise<ValidationRes
 
     // Algorithm-specific verification
     switch (token.header.alg) {
-      case 'ES256': {
+      case "ES256": {
         // ES256: ECDSA with P-256 curve and SHA-256
         // Hash the message for signature verification
         sha256(messageBytes);
@@ -389,16 +402,16 @@ export async function validateSignature(token: UCANToken): Promise<ValidationRes
         return {
           valid: false,
           error:
-            'Signature verification not fully implemented. Requires DID resolution to extract public key.',
+            "Signature verification not fully implemented. Requires DID resolution to extract public key.",
           details: {
-            code: 'INVALID_SIGNATURE' as UCANValidationError,
+            code: "INVALID_SIGNATURE" as UCANValidationError,
             algorithm: token.header.alg,
-            note: 'Implementation requires DID resolver integration',
+            note: "Implementation requires DID resolver integration",
           },
         };
       }
 
-      case 'EdDSA': {
+      case "EdDSA": {
         // EdDSA: Ed25519 signature
         // Note: Requires @noble/ed25519 library (not currently in dependencies)
         // In production, you would:
@@ -408,16 +421,17 @@ export async function validateSignature(token: UCANToken): Promise<ValidationRes
 
         return {
           valid: false,
-          error: 'EdDSA signature verification not implemented. Requires @noble/ed25519 library.',
+          error:
+            "EdDSA signature verification not implemented. Requires @noble/ed25519 library.",
           details: {
-            code: 'INVALID_SIGNATURE' as UCANValidationError,
+            code: "INVALID_SIGNATURE" as UCANValidationError,
             algorithm: token.header.alg,
-            note: 'Add @noble/ed25519 to dependencies for EdDSA support',
+            note: "Add @noble/ed25519 to dependencies for EdDSA support",
           },
         };
       }
 
-      case 'RS256': {
+      case "RS256": {
         // RS256: RSA signature with SHA-256
         // Note: Requires Web Crypto API or a suitable RSA library
         // In production, you would:
@@ -429,11 +443,11 @@ export async function validateSignature(token: UCANToken): Promise<ValidationRes
         return {
           valid: false,
           error:
-            'RS256 signature verification not implemented. Requires Web Crypto API integration.',
+            "RS256 signature verification not implemented. Requires Web Crypto API integration.",
           details: {
-            code: 'INVALID_SIGNATURE' as UCANValidationError,
+            code: "INVALID_SIGNATURE" as UCANValidationError,
             algorithm: token.header.alg,
-            note: 'Use Web Crypto API for RS256 verification',
+            note: "Use Web Crypto API for RS256 verification",
           },
         };
       }
@@ -442,7 +456,7 @@ export async function validateSignature(token: UCANToken): Promise<ValidationRes
         return {
           valid: false,
           error: `Unsupported algorithm for signature verification: ${token.header.alg}`,
-          details: { code: 'UNSUPPORTED_ALGORITHM' as UCANValidationError },
+          details: { code: "UNSUPPORTED_ALGORITHM" as UCANValidationError },
         };
     }
   } catch (error) {
@@ -450,7 +464,7 @@ export async function validateSignature(token: UCANToken): Promise<ValidationRes
       valid: false,
       error: `Signature verification failed: ${error instanceof Error ? error.message : String(error)}`,
       details: {
-        code: 'INVALID_SIGNATURE' as UCANValidationError,
+        code: "INVALID_SIGNATURE" as UCANValidationError,
         error: error instanceof Error ? error.message : String(error),
       },
     };
@@ -477,7 +491,7 @@ export async function validateSignature(token: UCANToken): Promise<ValidationRes
  */
 export function validateCapabilityAttenuation(
   childCapability: Capability,
-  parentCapability: Capability
+  parentCapability: Capability,
 ): ValidationResult {
   // Basic validation: check that 'with' is more specific or equal
   // Full implementation would require URI pattern matching and capability semantics
@@ -491,12 +505,12 @@ export function validateCapabilityAttenuation(
   const childWith = childCapability.with;
 
   // Simple check: child must start with parent prefix (after removing wildcards)
-  const parentPrefix = parentWith.replace(/\*/g, '');
+  const parentPrefix = parentWith.replace(/\*/g, "");
   if (!childWith.startsWith(parentPrefix)) {
     return {
       valid: false,
       error: `Capability 'with' field is not properly attenuated. Child: ${childWith}, Parent: ${parentWith}`,
-      details: { code: 'INVALID_CAPABILITY' as UCANValidationError },
+      details: { code: "INVALID_CAPABILITY" as UCANValidationError },
     };
   }
 
@@ -504,12 +518,12 @@ export function validateCapabilityAttenuation(
   const parentCan = parentCapability.can;
   const childCan = childCapability.can;
 
-  const parentCanPrefix = parentCan.replace(/\*/g, '');
+  const parentCanPrefix = parentCan.replace(/\*/g, "");
   if (!childCan.startsWith(parentCanPrefix)) {
     return {
       valid: false,
       error: `Capability 'can' field is not properly attenuated. Child: ${childCan}, Parent: ${parentCan}`,
-      details: { code: 'INVALID_CAPABILITY' as UCANValidationError },
+      details: { code: "INVALID_CAPABILITY" as UCANValidationError },
     };
   }
 
@@ -526,13 +540,17 @@ export function validateCapabilityAttenuation(
  * @param options - Optional validation configuration
  * @returns true if token is expired, false otherwise
  */
-export function isTokenExpired(payload: UCANPayload, options?: ValidationOptions): boolean {
+export function isTokenExpired(
+  payload: UCANPayload,
+  options?: ValidationOptions,
+): boolean {
   if (payload.exp === null) {
     return false; // Never-expiring tokens are not expired
   }
 
   const now = options?.now ?? Math.floor(Date.now() / 1000);
-  const clockDrift = options?.clockDriftTolerance ?? DEFAULT_CLOCK_DRIFT_TOLERANCE;
+  const clockDrift =
+    options?.clockDriftTolerance ?? DEFAULT_CLOCK_DRIFT_TOLERANCE;
 
   return now > payload.exp + clockDrift;
 }
@@ -544,13 +562,17 @@ export function isTokenExpired(payload: UCANPayload, options?: ValidationOptions
  * @param options - Optional validation configuration
  * @returns true if token is not yet valid, false otherwise
  */
-export function isTokenNotYetValid(payload: UCANPayload, options?: ValidationOptions): boolean {
+export function isTokenNotYetValid(
+  payload: UCANPayload,
+  options?: ValidationOptions,
+): boolean {
   if (payload.nbf === undefined) {
     return false; // Tokens without nbf are immediately valid
   }
 
   const now = options?.now ?? Math.floor(Date.now() / 1000);
-  const clockDrift = options?.clockDriftTolerance ?? DEFAULT_CLOCK_DRIFT_TOLERANCE;
+  const clockDrift =
+    options?.clockDriftTolerance ?? DEFAULT_CLOCK_DRIFT_TOLERANCE;
 
   return now < payload.nbf - clockDrift;
 }

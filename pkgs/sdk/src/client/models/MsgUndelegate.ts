@@ -1,4 +1,4 @@
-import type { PlainMessage } from '@bufbuild/protobuf';
+import type { PlainMessage } from "@bufbuild/protobuf";
 
 // TODO: CosmosStakingV1beta1MsgUndelegate not available in protobufs
 // // TODO: Missing from protobufs
@@ -6,8 +6,8 @@ import type { PlainMessage } from '@bufbuild/protobuf';
 const _ProtoMsgUndelegate: any = {};
 type ProtoMsgUndelegate = any;
 
-import type { DeepPrettify } from '../../typeutils/prettify';
-import type { Adapter } from './Adapter';
+import type { DeepPrettify } from "../../typeutils/prettify";
+import type { Adapter } from "./Adapter";
 
 type Data = DeepPrettify<ProtoMsgUndelegate>;
 
@@ -32,7 +32,7 @@ export class MsgUndelegate implements Adapter {
   // This method converts the undelegation message to amino JSON format
   public toAmino() {
     return {
-      type: 'cosmos-sdk/MsgUndelegate',
+      type: "cosmos-sdk/MsgUndelegate",
       value: {
         delegator_address: this.data.delegatorAddress,
         validator_address: this.data.validatorAddress,

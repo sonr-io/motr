@@ -2,4 +2,4 @@
  * Client services
  */
 
-export * from './ipfs';
+export * from "./ipfs";

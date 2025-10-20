@@ -1,5 +1,5 @@
-import { utf8 } from '@scure/base';
-import type { StdSignDoc } from '@sonr.io/sdk/registry';
+import { utf8 } from "@scure/base";
+import type { StdSignDoc } from "@sonr.io/sdk/registry";
 
 /**
  * Escapes <,>,& in string.
@@ -9,11 +9,14 @@ import type { StdSignDoc } from '@sonr.io/sdk/registry';
  * @param str
  */
 function escapeHtml(str: string): string {
-  return str.replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026');
+  return str
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026");
 }
 
 export function sortObjectByKey<T>(obj: T): T {
-  if (typeof obj !== 'object' || obj == null) {
+  if (typeof obj !== "object" || obj == null) {
     return obj;
   }
   if (Array.isArray(obj)) {

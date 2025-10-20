@@ -2,7 +2,7 @@
  * Integration tests for WebAuthn/Passkey authentication
  */
 
-import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import {
   base64urlToBuffer,
   bufferToBase64url,
@@ -10,10 +10,10 @@ import {
   isWebAuthnSupported,
   loginWithPasskey,
   registerWithPasskey,
-} from './webauthn';
+} from "./webauthn";
 
 // Mock @simplewebauthn/browser for testing
-vi.mock('@simplewebauthn/browser', () => ({
+vi.mock("@simplewebauthn/browser", () => ({
   browserSupportsWebAuthn: () => true,
   platformAuthenticatorIsAvailable: () => Promise.resolve(true),
   browserSupportsWebAuthnAutofill: () => Promise.resolve(true),
@@ -21,14 +21,17 @@ vi.mock('@simplewebauthn/browser', () => ({
   startAuthentication: vi.fn(),
   bufferToBase64URLString: (buffer: ArrayBuffer) => {
     const bytes = new Uint8Array(buffer);
-    let binary = '';
+    let binary = "";
     for (let i = 0; i < bytes.byteLength; i++) {
       binary += String.fromCharCode(bytes[i]);
     }
-    return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+    return btoa(binary)
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=/g, "");
   },
   base64URLStringToBuffer: (base64url: string) => {
-    const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
+    const base64 = base64url.replace(/-/g, "+").replace(/_/g, "/");
     const binary = atob(base64);
     const bytes = new Uint8Array(binary.length);
     for (let i = 0; i < binary.length; i++) {
@@ -41,8 +44,8 @@ vi.mock('@simplewebauthn/browser', () => ({
 // Mock fetch for API calls
 global.fetch = vi.fn();
 
-describe('WebAuthn/Passkey Authentication', () => {
-  const mockApiUrl = 'http://localhost:1317';
+describe("WebAuthn/Passkey Authentication", () => {
+  const mockApiUrl = "http://localhost:1317";
 
   beforeAll(() => {
     // Setup any global mocks or test data
@@ -52,27 +55,27 @@ describe('WebAuthn/Passkey Authentication', () => {
     vi.clearAllMocks();
   });
 
-  describe('Utility Functions', () => {
-    it('should check WebAuthn support', () => {
+  describe("Utility Functions", () => {
+    it("should check WebAuthn support", () => {
       const supported = isWebAuthnSupported();
       expect(supported).toBe(true);
     });
 
-    it('should check platform authenticator availability', async () => {
+    it("should check platform authenticator availability", async () => {
       const available = await isWebAuthnAvailable();
       expect(available).toBe(true);
     });
 
-    it('should convert buffer to base64url and back', () => {
-      const testString = 'Hello, WebAuthn!';
+    it("should convert buffer to base64url and back", () => {
+      const testString = "Hello, WebAuthn!";
       const encoder = new TextEncoder();
       const buffer = encoder.encode(testString).buffer;
 
       const base64url = bufferToBase64url(buffer);
       expect(base64url).toBeTruthy();
-      expect(base64url).not.toContain('+');
-      expect(base64url).not.toContain('/');
-      expect(base64url).not.toContain('=');
+      expect(base64url).not.toContain("+");
+      expect(base64url).not.toContain("/");
+      expect(base64url).not.toContain("=");
 
       const decodedBuffer = base64urlToBuffer(base64url);
       const decoder = new TextDecoder();
@@ -81,296 +84,306 @@ describe('WebAuthn/Passkey Authentication', () => {
     });
   });
 
-  describe('Registration with Passkey', () => {
-    it('should successfully register with email assertion', async () => {
-      const { startRegistration } = await import('@simplewebauthn/browser');
+  describe("Registration with Passkey", () => {
+    it("should successfully register with email assertion", async () => {
+      const { startRegistration } = await import("@simplewebauthn/browser");
 
       // Mock RegisterStart response
       (global.fetch as any).mockResolvedValueOnce({
         ok: true,
         json: async () => ({
-          challenge: 'test-challenge',
-          rp: { id: 'localhost', name: 'Sonr Network' },
-          user: { id: 'user-id', name: 'alice', displayName: 'Alice' },
+          challenge: "test-challenge",
+          rp: { id: "localhost", name: "Sonr Network" },
+          user: { id: "user-id", name: "alice", displayName: "Alice" },
         }),
       });
 
       // Mock startRegistration
       (startRegistration as any).mockResolvedValueOnce({
-        id: 'credential-id',
-        rawId: 'credential-raw-id',
+        id: "credential-id",
+        rawId: "credential-raw-id",
         response: {
-          publicKey: 'mock-public-key',
-          attestationObject: 'mock-attestation',
-          clientDataJSON: 'mock-client-data',
+          publicKey: "mock-public-key",
+          attestationObject: "mock-attestation",
+          clientDataJSON: "mock-client-data",
         },
-        authenticatorAttachment: 'platform',
-        type: 'public-key',
+        authenticatorAttachment: "platform",
+        type: "public-key",
       });
 
       // Mock registration submission response
       (global.fetch as any).mockResolvedValueOnce({
         ok: true,
         json: async () => ({
-          did: 'did:email:abc123',
-          vault_id: 'vault-123',
-          ucan_token: 'ucan-token-123',
-          credential: { id: 'credential-id' },
+          did: "did:email:abc123",
+          vault_id: "vault-123",
+          ucan_token: "ucan-token-123",
+          credential: { id: "credential-id" },
         }),
       });
 
       const result = await registerWithPasskey(mockApiUrl, {
-        username: 'alice',
-        email: 'alice@example.com',
-        rpId: 'localhost',
-        rpName: 'Sonr Network',
-        displayName: 'Alice Smith',
+        username: "alice",
+        email: "alice@example.com",
+        rpId: "localhost",
+        rpName: "Sonr Network",
+        displayName: "Alice Smith",
         createVault: true,
       });
 
       expect(result.success).toBe(true);
-      expect(result.did).toBe('did:email:abc123');
-      expect(result.vaultId).toBe('vault-123');
-      expect(result.ucanToken).toBe('ucan-token-123');
-      expect(result.assertionMethods).toEqual(['did:sonr:alice', 'did:email:alice@example.com']);
+      expect(result.did).toBe("did:email:abc123");
+      expect(result.vaultId).toBe("vault-123");
+      expect(result.ucanToken).toBe("ucan-token-123");
+      expect(result.assertionMethods).toEqual([
+        "did:sonr:alice",
+        "did:email:alice@example.com",
+      ]);
     });
 
-    it('should successfully register with phone assertion', async () => {
-      const { startRegistration } = await import('@simplewebauthn/browser');
+    it("should successfully register with phone assertion", async () => {
+      const { startRegistration } = await import("@simplewebauthn/browser");
 
       // Mock RegisterStart response
       (global.fetch as any).mockResolvedValueOnce({
         ok: true,
         json: async () => ({
-          challenge: 'test-challenge',
-          rp: { id: 'localhost', name: 'Sonr Network' },
-          user: { id: 'user-id', name: 'bob', displayName: 'Bob' },
+          challenge: "test-challenge",
+          rp: { id: "localhost", name: "Sonr Network" },
+          user: { id: "user-id", name: "bob", displayName: "Bob" },
         }),
       });
 
       // Mock startRegistration
       (startRegistration as any).mockResolvedValueOnce({
-        id: 'credential-id-2',
-        rawId: 'credential-raw-id-2',
+        id: "credential-id-2",
+        rawId: "credential-raw-id-2",
         response: {
-          publicKey: 'mock-public-key-2',
-          attestationObject: 'mock-attestation-2',
-          clientDataJSON: 'mock-client-data-2',
+          publicKey: "mock-public-key-2",
+          attestationObject: "mock-attestation-2",
+          clientDataJSON: "mock-client-data-2",
         },
-        authenticatorAttachment: 'platform',
-        type: 'public-key',
+        authenticatorAttachment: "platform",
+        type: "public-key",
       });
 
       // Mock registration submission response
       (global.fetch as any).mockResolvedValueOnce({
         ok: true,
         json: async () => ({
-          did: 'did:tel:xyz789',
-          vault_id: 'vault-456',
-          ucan_token: 'ucan-token-456',
-          credential: { id: 'credential-id-2' },
+          did: "did:tel:xyz789",
+          vault_id: "vault-456",
+          ucan_token: "ucan-token-456",
+          credential: { id: "credential-id-2" },
         }),
       });
 
       const result = await registerWithPasskey(mockApiUrl, {
-        username: 'bob',
-        tel: '+1234567890',
-        rpId: 'localhost',
-        rpName: 'Sonr Network',
-        displayName: 'Bob Johnson',
+        username: "bob",
+        tel: "+1234567890",
+        rpId: "localhost",
+        rpName: "Sonr Network",
+        displayName: "Bob Johnson",
         createVault: true,
       });
 
       expect(result.success).toBe(true);
-      expect(result.did).toBe('did:tel:xyz789');
-      expect(result.vaultId).toBe('vault-456');
-      expect(result.assertionMethods).toEqual(['did:sonr:bob', 'did:tel:+1234567890']);
+      expect(result.did).toBe("did:tel:xyz789");
+      expect(result.vaultId).toBe("vault-456");
+      expect(result.assertionMethods).toEqual([
+        "did:sonr:bob",
+        "did:tel:+1234567890",
+      ]);
     });
 
-    it('should handle registration failure gracefully', async () => {
+    it("should handle registration failure gracefully", async () => {
       // Mock RegisterStart failure
       (global.fetch as any).mockResolvedValueOnce({
         ok: false,
-        json: async () => ({ error: 'Invalid origin' }),
+        json: async () => ({ error: "Invalid origin" }),
       });
 
       const result = await registerWithPasskey(mockApiUrl, {
-        username: 'charlie',
-        email: 'charlie@example.com',
-        rpId: 'malicious.com',
-        rpName: 'Malicious Site',
+        username: "charlie",
+        email: "charlie@example.com",
+        rpId: "malicious.com",
+        rpName: "Malicious Site",
         createVault: false,
       });
 
       expect(result.success).toBe(false);
-      expect(result.error).toContain('Invalid origin');
+      expect(result.error).toContain("Invalid origin");
     });
 
-    it('should handle WebAuthn ceremony cancellation', async () => {
-      const { startRegistration } = await import('@simplewebauthn/browser');
+    it("should handle WebAuthn ceremony cancellation", async () => {
+      const { startRegistration } = await import("@simplewebauthn/browser");
 
       // Mock RegisterStart success
       (global.fetch as any).mockResolvedValueOnce({
         ok: true,
         json: async () => ({
-          challenge: 'test-challenge',
-          rp: { id: 'localhost', name: 'Sonr Network' },
-          user: { id: 'user-id', name: 'dave', displayName: 'Dave' },
+          challenge: "test-challenge",
+          rp: { id: "localhost", name: "Sonr Network" },
+          user: { id: "user-id", name: "dave", displayName: "Dave" },
         }),
       });
 
       // Mock user cancellation
-      (startRegistration as any).mockRejectedValueOnce(new Error('User cancelled the ceremony'));
+      (startRegistration as any).mockRejectedValueOnce(
+        new Error("User cancelled the ceremony"),
+      );
 
       const result = await registerWithPasskey(mockApiUrl, {
-        username: 'dave',
-        email: 'dave@example.com',
-        rpId: 'localhost',
-        rpName: 'Sonr Network',
+        username: "dave",
+        email: "dave@example.com",
+        rpId: "localhost",
+        rpName: "Sonr Network",
         createVault: true,
       });
 
       expect(result.success).toBe(false);
-      expect(result.error).toContain('User cancelled');
+      expect(result.error).toContain("User cancelled");
     });
   });
 
-  describe('Login with Passkey', () => {
-    it('should successfully authenticate with passkey', async () => {
-      const { startAuthentication } = await import('@simplewebauthn/browser');
+  describe("Login with Passkey", () => {
+    it("should successfully authenticate with passkey", async () => {
+      const { startAuthentication } = await import("@simplewebauthn/browser");
 
       // Mock LoginStart response
       (global.fetch as any).mockResolvedValueOnce({
         ok: true,
         json: async () => ({
-          challenge: 'login-challenge',
-          rpId: 'localhost',
-          allowCredentials: [{ id: 'credential-id', type: 'public-key' }],
-          userVerification: 'preferred',
+          challenge: "login-challenge",
+          rpId: "localhost",
+          allowCredentials: [{ id: "credential-id", type: "public-key" }],
+          userVerification: "preferred",
         }),
       });
 
       // Mock startAuthentication
       (startAuthentication as any).mockResolvedValueOnce({
-        id: 'credential-id',
-        rawId: 'credential-raw-id',
+        id: "credential-id",
+        rawId: "credential-raw-id",
         response: {
-          authenticatorData: 'mock-auth-data',
-          clientDataJSON: 'mock-client-data',
-          signature: 'mock-signature',
+          authenticatorData: "mock-auth-data",
+          clientDataJSON: "mock-client-data",
+          signature: "mock-signature",
         },
-        type: 'public-key',
+        type: "public-key",
       });
 
       // Mock login finish response
       (global.fetch as any).mockResolvedValueOnce({
         ok: true,
         json: async () => ({
-          did: 'did:email:abc123',
-          vault_id: 'vault-123',
-          session_token: 'session-token-xyz',
+          did: "did:email:abc123",
+          vault_id: "vault-123",
+          session_token: "session-token-xyz",
         }),
       });
 
       const result = await loginWithPasskey(mockApiUrl, {
-        username: 'alice',
-        rpId: 'localhost',
+        username: "alice",
+        rpId: "localhost",
       });
 
       expect(result.success).toBe(true);
-      expect(result.did).toBe('did:email:abc123');
-      expect(result.vaultId).toBe('vault-123');
-      expect(result.sessionToken).toBe('session-token-xyz');
+      expect(result.did).toBe("did:email:abc123");
+      expect(result.vaultId).toBe("vault-123");
+      expect(result.sessionToken).toBe("session-token-xyz");
     });
 
-    it('should handle authentication failure', async () => {
+    it("should handle authentication failure", async () => {
       // Mock LoginStart failure
       (global.fetch as any).mockResolvedValueOnce({
         ok: false,
-        text: async () => 'User not found',
+        text: async () => "User not found",
       });
 
       const result = await loginWithPasskey(mockApiUrl, {
-        username: 'nonexistent',
-        rpId: 'localhost',
+        username: "nonexistent",
+        rpId: "localhost",
       });
 
       expect(result.success).toBe(false);
-      expect(result.error).toContain('User not found');
+      expect(result.error).toContain("User not found");
     });
 
-    it('should handle invalid credentials', async () => {
-      const { startAuthentication } = await import('@simplewebauthn/browser');
+    it("should handle invalid credentials", async () => {
+      const { startAuthentication } = await import("@simplewebauthn/browser");
 
       // Mock LoginStart success
       (global.fetch as any).mockResolvedValueOnce({
         ok: true,
         json: async () => ({
-          challenge: 'login-challenge',
-          rpId: 'localhost',
+          challenge: "login-challenge",
+          rpId: "localhost",
           allowCredentials: [],
         }),
       });
 
       // Mock authentication with wrong credential
       (startAuthentication as any).mockResolvedValueOnce({
-        id: 'wrong-credential-id',
-        rawId: 'wrong-credential-raw-id',
+        id: "wrong-credential-id",
+        rawId: "wrong-credential-raw-id",
         response: {
-          authenticatorData: 'mock-auth-data',
-          clientDataJSON: 'mock-client-data',
-          signature: 'mock-signature',
+          authenticatorData: "mock-auth-data",
+          clientDataJSON: "mock-client-data",
+          signature: "mock-signature",
         },
-        type: 'public-key',
+        type: "public-key",
       });
 
       // Mock login finish failure
       (global.fetch as any).mockResolvedValueOnce({
         ok: false,
-        json: async () => ({ error: 'Invalid credential' }),
+        json: async () => ({ error: "Invalid credential" }),
       });
 
       const result = await loginWithPasskey(mockApiUrl, {
-        username: 'alice',
-        rpId: 'localhost',
+        username: "alice",
+        rpId: "localhost",
       });
 
       expect(result.success).toBe(false);
-      expect(result.error).toContain('Invalid credential');
+      expect(result.error).toContain("Invalid credential");
     });
   });
 
-  describe('Edge Cases and Error Handling', () => {
-    it('should handle network errors', async () => {
+  describe("Edge Cases and Error Handling", () => {
+    it("should handle network errors", async () => {
       // Mock network error
-      (global.fetch as any).mockRejectedValueOnce(new Error('Network request failed'));
+      (global.fetch as any).mockRejectedValueOnce(
+        new Error("Network request failed"),
+      );
 
       const result = await registerWithPasskey(mockApiUrl, {
-        username: 'network-test',
-        email: 'test@example.com',
-        rpId: 'localhost',
-        rpName: 'Sonr Network',
+        username: "network-test",
+        email: "test@example.com",
+        rpId: "localhost",
+        rpName: "Sonr Network",
         createVault: false,
       });
 
       expect(result.success).toBe(false);
-      expect(result.error).toContain('Network request failed');
+      expect(result.error).toContain("Network request failed");
     });
 
-    it('should handle malformed API responses', async () => {
+    it("should handle malformed API responses", async () => {
       // Mock malformed response
       (global.fetch as any).mockResolvedValueOnce({
         ok: true,
         json: async () => {
-          throw new Error('Invalid JSON');
+          throw new Error("Invalid JSON");
         },
       });
 
       const result = await registerWithPasskey(mockApiUrl, {
-        username: 'malformed-test',
-        email: 'test@example.com',
-        rpId: 'localhost',
-        rpName: 'Sonr Network',
+        username: "malformed-test",
+        email: "test@example.com",
+        rpId: "localhost",
+        rpName: "Sonr Network",
         createVault: false,
       });
 
@@ -378,24 +391,26 @@ describe('WebAuthn/Passkey Authentication', () => {
       expect(result.error).toBeTruthy();
     });
 
-    it('should handle timeout scenarios', async () => {
+    it("should handle timeout scenarios", async () => {
       // Mock timeout
       (global.fetch as any).mockImplementationOnce(
         () =>
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Request timeout')), 100))
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Request timeout")), 100),
+          ),
       );
 
       const result = await registerWithPasskey(mockApiUrl, {
-        username: 'timeout-test',
-        email: 'test@example.com',
-        rpId: 'localhost',
-        rpName: 'Sonr Network',
+        username: "timeout-test",
+        email: "test@example.com",
+        rpId: "localhost",
+        rpName: "Sonr Network",
         timeout: 50, // Very short timeout
         createVault: false,
       });
 
       expect(result.success).toBe(false);
-      expect(result.error).toContain('timeout');
+      expect(result.error).toContain("timeout");
     });
   });
 });

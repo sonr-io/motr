@@ -6,9 +6,9 @@
 export function onWindowEvent(
   event: string,
   cb: EventListenerOrEventListenerObject,
-  opts?: AddEventListenerOptions | undefined
+  opts?: AddEventListenerOptions | undefined,
 ): () => void {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     // oxlint-disable-next-line @typescript-eslint/no-empty-function
     return () => {};
   }

@@ -7,7 +7,7 @@ export type {
   PasskeyRegistrationOptions,
   PasskeyRegistrationResult,
   WebAuthnConfig,
-} from './webauthn';
+} from "./webauthn";
 export {
   base64urlToBuffer,
   // Utility functions
@@ -24,4 +24,4 @@ export {
   loginWithPasskey,
   registerWithPasskey,
   WEBAUTHN_PRESETS,
-} from './webauthn';
+} from "./webauthn";

@@ -1,11 +1,11 @@
-import { keccak_256 } from '@noble/hashes/sha3';
-import { sha256 } from '@noble/hashes/sha2';
-import * as secp256k1 from '@noble/secp256k1';
-import { base64 } from '@scure/base';
+import { keccak_256 } from "@noble/hashes/sha3";
+import { sha256 } from "@noble/hashes/sha2";
+import * as secp256k1 from "@noble/secp256k1";
+import { base64 } from "@scure/base";
 
-import { resolveBech32Address } from './address';
-import { serialiseSignDoc } from './serialise';
-import { recoverPubKeyFromEthSignature } from './sign';
+import { resolveBech32Address } from "./address";
+import { serialiseSignDoc } from "./serialise";
+import { recoverPubKeyFromEthSignature } from "./sign";
 
 type VerifyArbitraryParams = {
   /** The public key which created the signature */
@@ -17,7 +17,7 @@ type VerifyArbitraryParams = {
   /** The signature bytes */
   signature: Uint8Array;
   /** The type of the signature */
-  type?: 'secp256k1' | 'ethsecp256k1';
+  type?: "secp256k1" | "ethsecp256k1";
 };
 
 export function verifyECDSA({
@@ -25,11 +25,11 @@ export function verifyECDSA({
   data,
   signature,
   type,
-}: Omit<VerifyArbitraryParams, 'bech32Prefix'>): boolean {
+}: Omit<VerifyArbitraryParams, "bech32Prefix">): boolean {
   return secp256k1.verify(
     signature,
-    type === 'ethsecp256k1' ? keccak_256(data) : sha256(data),
-    pubKey
+    type === "ethsecp256k1" ? keccak_256(data) : sha256(data),
+    pubKey,
   );
 }
 
@@ -41,23 +41,23 @@ export function verifyADR36({
   type,
 }: VerifyArbitraryParams): boolean {
   const msg = serialiseSignDoc({
-    chain_id: '',
-    account_number: '0',
-    sequence: '0',
+    chain_id: "",
+    account_number: "0",
+    sequence: "0",
     fee: {
-      gas: '0',
+      gas: "0",
       amount: [],
     },
     msgs: [
       {
-        type: 'sign/MsgSignData',
+        type: "sign/MsgSignData",
         value: {
           signer: resolveBech32Address(pubKey, bech32Prefix, type),
           data: base64.encode(data),
         },
       },
     ],
-    memo: '',
+    memo: "",
   });
   return verifyECDSA({
     pubKey,
@@ -71,9 +71,10 @@ export function verifyEIP191({
   pubKey,
   data,
   signature,
-}: Omit<VerifyArbitraryParams, 'bech32Prefix'>): boolean {
+}: Omit<VerifyArbitraryParams, "bech32Prefix">): boolean {
   const recoveredPubKey = recoverPubKeyFromEthSignature(data, signature);
   return (
-    pubKey.length === recoveredPubKey.length && pubKey.every((v, i) => v === recoveredPubKey[i])
+    pubKey.length === recoveredPubKey.length &&
+    pubKey.every((v, i) => v === recoveredPubKey[i])
   );
 }

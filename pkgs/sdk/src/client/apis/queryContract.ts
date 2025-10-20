@@ -1,8 +1,8 @@
-import type { JsonValue } from '@bufbuild/protobuf';
-import { utf8 } from '@sonr.io/sdk/codec';
-import { CosmwasmWasmV1QuerySmartContractStateService as QuerySmartContractStateService } from '@sonr.io/sdk/protobufs';
+import type { JsonValue } from "@bufbuild/protobuf";
+import { utf8 } from "@sonr.io/sdk/codec";
+import { CosmwasmWasmV1QuerySmartContractStateService as QuerySmartContractStateService } from "@sonr.io/sdk/protobufs";
 
-import { RpcClient } from '../clients/RpcClient';
+import { RpcClient } from "../clients/RpcClient";
 
 export type QueryContractParams = {
   address: string;
@@ -15,11 +15,15 @@ export type QueryContractParams = {
  */
 export async function queryContract<T extends JsonValue>(
   endpoint: string,
-  { address, query }: QueryContractParams
+  { address, query }: QueryContractParams,
 ): Promise<T> {
-  const { data } = await RpcClient.query(endpoint, QuerySmartContractStateService, {
-    address,
-    queryData: utf8.decode(JSON.stringify(query)) as any,
-  });
+  const { data } = await RpcClient.query(
+    endpoint,
+    QuerySmartContractStateService,
+    {
+      address,
+      queryData: utf8.decode(JSON.stringify(query)) as any,
+    },
+  );
   return JSON.parse(utf8.encode(data));
 }

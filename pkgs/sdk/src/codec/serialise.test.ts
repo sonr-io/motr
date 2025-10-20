@@ -1,9 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from "vitest";
 
-import { sortObjectByKey } from './serialise';
+import { sortObjectByKey } from "./serialise";
 
-describe('sortObjectByKey', () => {
-  it('should sort keys correctly', () => {
+describe("sortObjectByKey", () => {
+  it("should sort keys correctly", () => {
     const obj = {
       zzz: 1,
       aaa: 1,
@@ -12,7 +12,7 @@ describe('sortObjectByKey', () => {
         ttt: {
           ppp: true,
           iii: undefined,
-          lll: '1',
+          lll: "1",
         },
         ddd: [4, 8, 3, undefined, 4, 5, 7, 8],
       },
@@ -23,7 +23,7 @@ describe('sortObjectByKey', () => {
         ddd: [4, 8, 3, undefined, 4, 5, 7, 8], // arrays are not sorted
         ttt: {
           iii: undefined,
-          lll: '1',
+          lll: "1",
           ppp: true,
         },
       },

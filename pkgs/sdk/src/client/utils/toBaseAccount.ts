@@ -1,11 +1,11 @@
-import type { Any } from '@bufbuild/protobuf';
+import type { Any } from "@bufbuild/protobuf";
 import {
   EthermintTypesV1EthAccount as EthermintAccount,
   IbcApplicationsInterchainAccountsV1InterchainAccount as InterchainAccount,
-} from '@sonr.io/sdk/protobufs';
+} from "@sonr.io/sdk/protobufs";
 
-const ERR_UNKNOWN_ACCOUNT_TYPE = 'Unknown account type';
-const ERR_UNABLE_TO_RESOLVE_BASE_ACCOUNT = 'Unable to resolve base account';
+const ERR_UNKNOWN_ACCOUNT_TYPE = "Unknown account type";
+const ERR_UNABLE_TO_RESOLVE_BASE_ACCOUNT = "Unable to resolve base account";
 
 // Type definition for BaseAccount - this should match the cosmos auth BaseAccount structure
 type BaseAccount = {

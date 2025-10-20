@@ -1,4 +1,4 @@
-import { queryContract } from './queryContract';
+import { queryContract } from "./queryContract";
 
 export type SimulateAstroportSinglePoolSwapParams = {
   poolId: string;
@@ -20,7 +20,12 @@ type Response = {
  */
 export async function simulateAstroportSinglePoolSwap(
   endpoint: string,
-  { poolId, fromAsset, fromAmount, isCW20 }: SimulateAstroportSinglePoolSwapParams
+  {
+    poolId,
+    fromAsset,
+    fromAmount,
+    isCW20,
+  }: SimulateAstroportSinglePoolSwapParams,
 ): Promise<bigint> {
   try {
     const { return_amount } = await queryContract<Response>(endpoint, {

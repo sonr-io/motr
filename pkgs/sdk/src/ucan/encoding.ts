@@ -9,7 +9,7 @@
  * @see https://tools.ietf.org/html/rfc7515#appendix-C - JWT base64url notes
  */
 
-import { base64url, base64urlnopad } from '@scure/base';
+import { base64url, base64urlnopad } from "@scure/base";
 
 /**
  * Encodes a Uint8Array to base64url string (URL-safe, no padding).

@@ -11,7 +11,7 @@
  */
 
 // Import all modules
-import * as auth from './client/auth/index.js';
+import * as auth from "./client/auth/index.js";
 // Import specific auth utilities for convenience
 import {
   base64urlToBuffer,
@@ -26,12 +26,12 @@ import {
   loginWithPasskey,
   registerWithPasskey,
   WEBAUTHN_PRESETS,
-} from './client/auth/webauthn.js';
-import * as client from './client/index.js';
-import * as codec from './codec/index.js';
-import * as plugins from './plugins/index.js';
-import * as registry from './registry/index.js';
-import * as wallet from './wallet/index.js';
+} from "./client/auth/webauthn.js";
+import * as client from "./client/index.js";
+import * as codec from "./codec/index.js";
+import * as plugins from "./plugins/index.js";
+import * as registry from "./registry/index.js";
+import * as wallet from "./wallet/index.js";
 
 // Create the main Sonr namespace
 const Sonr = {
@@ -70,23 +70,23 @@ const Sonr = {
   createVaultClient: plugins.createVaultClient,
 
   // Version info
-  version: '0.0.8',
+  version: "0.0.8",
 
   // Initialization function for custom configuration
   init: async (config = {}) => {
-    console.log('[Sonr] Initializing with config:', config);
+    console.log("[Sonr] Initializing with config:", config);
 
     // Initialize Motor plugin if service worker is available
-    if ('serviceWorker' in navigator && config.enableMotor !== false) {
+    if ("serviceWorker" in navigator && config.enableMotor !== false) {
       try {
         const motorPlugin = await plugins.createMotorPluginForBrowser({
-          wasmUrl: config.motorWasmUrl || '/motor.wasm',
+          wasmUrl: config.motorWasmUrl || "/motor.wasm",
           ...config.motor,
         });
         Sonr.motor.instance = motorPlugin;
-        console.log('[Sonr] Motor plugin initialized');
+        console.log("[Sonr] Motor plugin initialized");
       } catch (error) {
-        console.warn('[Sonr] Motor plugin initialization failed:', error);
+        console.warn("[Sonr] Motor plugin initialization failed:", error);
       }
     }
 
@@ -95,20 +95,20 @@ const Sonr = {
       try {
         const vaultClient = await plugins.createVaultClient(config.vault);
         Sonr.vault.instance = vaultClient;
-        console.log('[Sonr] Vault client initialized');
+        console.log("[Sonr] Vault client initialized");
       } catch (error) {
-        console.warn('[Sonr] Vault client initialization failed:', error);
+        console.warn("[Sonr] Vault client initialization failed:", error);
       }
     }
 
     // Check WebAuthn availability
     if (await isWebAuthnAvailable()) {
-      console.log('[Sonr] WebAuthn is available');
+      console.log("[Sonr] WebAuthn is available");
       Sonr.webauthn.available = true;
 
       // Check for conditional mediation (autofill)
       if (await isConditionalMediationAvailable()) {
-        console.log('[Sonr] Conditional mediation (autofill) is available');
+        console.log("[Sonr] Conditional mediation (autofill) is available");
         Sonr.webauthn.conditionalAvailable = true;
       }
     }
@@ -117,50 +117,51 @@ const Sonr = {
   },
 
   // Helper to check if running in browser
-  isBrowser: typeof window !== 'undefined',
+  isBrowser: typeof window !== "undefined",
 
   // Helper to check if running in Node.js
-  isNode: typeof process !== 'undefined' && process.versions && process.versions.node,
+  isNode:
+    typeof process !== "undefined" && process.versions && process.versions.node,
 
   // Helper to get environment info
   getEnvironment: () => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       return {
-        type: 'browser',
+        type: "browser",
         userAgent: navigator.userAgent,
         platform: navigator.platform,
         language: navigator.language,
         online: navigator.onLine,
-        serviceWorker: 'serviceWorker' in navigator,
-        webauthn: 'credentials' in navigator,
+        serviceWorker: "serviceWorker" in navigator,
+        webauthn: "credentials" in navigator,
       };
-    } else if (typeof process !== 'undefined') {
+    } else if (typeof process !== "undefined") {
       return {
-        type: 'node',
+        type: "node",
         version: process.version,
         platform: process.platform,
         arch: process.arch,
       };
     }
-    return { type: 'unknown' };
+    return { type: "unknown" };
   },
 };
 
 // Auto-initialize with default settings if in browser
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   // Make Sonr globally available
   window.Sonr = Sonr;
 
   // Auto-init on DOMContentLoaded if not already loaded
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', async () => {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", async () => {
       if (!window.Sonr.initialized) {
         await Sonr.init();
         window.Sonr.initialized = true;
-        console.log('[Sonr] Auto-initialized on DOMContentLoaded');
+        console.log("[Sonr] Auto-initialized on DOMContentLoaded");
 
         // Dispatch custom event
-        window.dispatchEvent(new CustomEvent('sonr:ready', { detail: Sonr }));
+        window.dispatchEvent(new CustomEvent("sonr:ready", { detail: Sonr }));
       }
     });
   } else {
@@ -169,17 +170,19 @@ if (typeof window !== 'undefined') {
       if (!window.Sonr.initialized) {
         await Sonr.init();
         window.Sonr.initialized = true;
-        console.log('[Sonr] Auto-initialized (DOM already loaded)');
+        console.log("[Sonr] Auto-initialized (DOM already loaded)");
 
         // Dispatch custom event
-        window.dispatchEvent(new CustomEvent('sonr:ready', { detail: Sonr }));
+        window.dispatchEvent(new CustomEvent("sonr:ready", { detail: Sonr }));
       }
     })();
   }
 
   // Log availability
-  console.log('[Sonr] Library loaded. Access via window.Sonr or import modules directly.');
-  console.log('[Sonr] Environment:', Sonr.getEnvironment());
+  console.log(
+    "[Sonr] Library loaded. Access via window.Sonr or import modules directly.",
+  );
+  console.log("[Sonr] Environment:", Sonr.getEnvironment());
 }
 
 // Export everything for ES module usage

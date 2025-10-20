@@ -1,5 +1,5 @@
-import { wait } from '../utils/wait';
-import { getTx } from './getTx';
+import { wait } from "../utils/wait";
+import { getTx } from "./getTx";
 
 export type PollTxParams = {
   hash: string;
@@ -14,7 +14,7 @@ export type PollTxParams = {
  */
 export async function pollTx(
   endpoint: string,
-  { intervalSeconds = 2, maxAttempts = 64, ...getTxParams }: PollTxParams
+  { intervalSeconds = 2, maxAttempts = 64, ...getTxParams }: PollTxParams,
 ) {
   const intervalMillis = intervalSeconds * 1000;
   for (let i = 0; i < maxAttempts; i++) {
@@ -24,5 +24,5 @@ export async function pollTx(
       await wait(intervalMillis);
     }
   }
-  throw new Error('Tx not found');
+  throw new Error("Tx not found");
 }

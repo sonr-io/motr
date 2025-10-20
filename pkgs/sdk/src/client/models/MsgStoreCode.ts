@@ -1,9 +1,9 @@
-import type { PlainMessage } from '@bufbuild/protobuf';
-import { base64 } from '@sonr.io/sdk/codec';
-import { CosmwasmWasmV1MsgStoreCode as ProtoMsgStoreCode } from '@sonr.io/sdk/protobufs';
+import type { PlainMessage } from "@bufbuild/protobuf";
+import { base64 } from "@sonr.io/sdk/codec";
+import { CosmwasmWasmV1MsgStoreCode as ProtoMsgStoreCode } from "@sonr.io/sdk/protobufs";
 
-import type { DeepPrettify } from '../../typeutils/prettify';
-import type { Adapter } from './Adapter';
+import type { DeepPrettify } from "../../typeutils/prettify";
+import type { Adapter } from "./Adapter";
 
 type Data = DeepPrettify<ProtoMsgStoreCode>;
 
@@ -22,7 +22,7 @@ export class MsgStoreCode implements Adapter {
 
   public toAmino() {
     return {
-      type: 'wasm/MsgStoreCode',
+      type: "wasm/MsgStoreCode",
       value: {
         sender: this.data.sender,
         wasm_byte_code: base64.encode(this.data.wasmByteCode),

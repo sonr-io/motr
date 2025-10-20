@@ -14,7 +14,7 @@ export type GetAccountResponse = any; // TODO: Define proper type
 // Returns: Account information including account number, sequence, and public key
 export async function getAccount(
   _endpoint: string,
-  _params: GetAccountParams
+  _params: GetAccountParams,
 ): Promise<GetAccountResponse> {
   // TODO: Implement when QueryAccountService is available
   // Steps needed:
@@ -22,5 +22,5 @@ export async function getAccount(
   // 2. Create query request with address from params
   // 3. Send query to endpoint
   // 4. Parse and return account response
-  throw new Error('getAccount not implemented - missing QueryAccountService');
+  throw new Error("getAccount not implemented - missing QueryAccountService");
 }

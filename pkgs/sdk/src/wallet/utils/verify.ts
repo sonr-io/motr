@@ -1,6 +1,12 @@
-import { base64, utf8, verifyADR36, verifyECDSA, verifyEIP191 } from '@sonr.io/sdk/codec';
+import {
+  base64,
+  utf8,
+  verifyADR36,
+  verifyECDSA,
+  verifyEIP191,
+} from "@sonr.io/sdk/codec";
 
-import { WalletName } from '../constants/WalletName';
+import { WalletName } from "../constants/WalletName";
 
 type VerifyArbitraryParams = {
   /** The identifier of the wallet which created the signature */
@@ -14,7 +20,7 @@ type VerifyArbitraryParams = {
   /** The base64 encoded string of the signature */
   signature: string;
   /** The type of the signature */
-  type?: 'secp256k1' | 'ethsecp256k1';
+  type?: "secp256k1" | "ethsecp256k1";
 };
 
 /**
@@ -34,7 +40,7 @@ export function verifyArbitrary({
   bech32Prefix,
   data,
   signature,
-  type = 'secp256k1',
+  type = "secp256k1",
 }: VerifyArbitraryParams): boolean {
   const params = {
     pubKey: base64.decode(pubKey),

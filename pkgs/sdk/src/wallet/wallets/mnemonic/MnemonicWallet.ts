@@ -1,4 +1,4 @@
-import { RpcClient, Secp256k1PubKey, Tx } from '@sonr.io/sdk/client';
+import { RpcClient, Secp256k1PubKey, Tx } from "@sonr.io/sdk/client";
 import {
   base64,
   resolveBech32Address,
@@ -6,15 +6,19 @@ import {
   signAmino,
   signDirect,
   utf8,
-} from '@sonr.io/sdk/codec';
-import type { CosmosTxV1beta1Fee as Fee } from '@sonr.io/sdk/protobufs';
-import type { StdSignDoc } from '@sonr.io/sdk/registry';
+} from "@sonr.io/sdk/codec";
+import type { CosmosTxV1beta1Fee as Fee } from "@sonr.io/sdk/protobufs";
+import type { StdSignDoc } from "@sonr.io/sdk/registry";
 
-import type { Prettify } from '../../../typeutils/prettify';
-import type { WalletName } from '../../constants/WalletName';
-import type { WalletType } from '../../constants/WalletType';
-import { ConnectedWallet, type SignArbitraryResponse, type UnsignedTx } from '../ConnectedWallet';
-import type { ChainInfo } from '../WalletController';
+import type { Prettify } from "../../../typeutils/prettify";
+import type { WalletName } from "../../constants/WalletName";
+import type { WalletType } from "../../constants/WalletType";
+import {
+  ConnectedWallet,
+  type SignArbitraryResponse,
+  type UnsignedTx,
+} from "../ConnectedWallet";
+import type { ChainInfo } from "../WalletController";
 
 export type ConnectMnemonicWalletOptions = Prettify<
   {
@@ -74,7 +78,7 @@ export type ConnectMnemonicWalletOptions = Prettify<
 export class MnemonicWallet extends ConnectedWallet {
   public readonly publicKey: string;
   public readonly privateKey: Uint8Array;
-  public readonly keyType: 'secp256k1' | 'ethsecp256k1';
+  public readonly keyType: "secp256k1" | "ethsecp256k1";
 
   constructor({
     mnemonic,
@@ -90,16 +94,16 @@ export class MnemonicWallet extends ConnectedWallet {
       index,
     });
     const keyType =
-      chainId.startsWith('injective') || chainId.startsWith('dymension')
-        ? 'ethsecp256k1'
-        : 'secp256k1';
+      chainId.startsWith("injective") || chainId.startsWith("dymension")
+        ? "ethsecp256k1"
+        : "secp256k1";
     const address = resolveBech32Address(publicKey, bech32Prefix, keyType);
     super(
       // We typecast here instead of adding "mnemonic" to `WalletName` and
       // `WalletType` as this wallet is considered a special wallet that is
       // unlikely to be used by most consumers of @sonr.io/sdk.
-      'mnemonic' as WalletName,
-      'mnemonic' as WalletType,
+      "mnemonic" as WalletName,
+      "mnemonic" as WalletType,
       undefined,
       chainId,
       new Secp256k1PubKey({
@@ -108,7 +112,7 @@ export class MnemonicWallet extends ConnectedWallet {
       }),
       address,
       rpc,
-      gasPrice
+      gasPrice,
     );
     this.publicKey = base64.encode(publicKey);
     this.privateKey = privateKey;
@@ -119,23 +123,23 @@ export class MnemonicWallet extends ConnectedWallet {
     // This sign doc follows ADR 036 specs.
     // See: https://github.com/cosmos/cosmos-sdk/blob/main/docs/architecture/adr-036-arbitrary-signature.md
     const doc: StdSignDoc = {
-      chain_id: '',
-      account_number: '0',
-      sequence: '0',
+      chain_id: "",
+      account_number: "0",
+      sequence: "0",
       fee: {
-        gas: '0',
+        gas: "0",
         amount: [],
       },
       msgs: [
         {
-          type: 'sign/MsgSignData',
+          type: "sign/MsgSignData",
           value: {
             signer: this.address,
             data: base64.encode(utf8.decode(data)),
           },
         },
       ],
-      memo: '',
+      memo: "",
     };
     const signature = signAmino(doc, this.privateKey, this.keyType);
     return {
@@ -149,7 +153,7 @@ export class MnemonicWallet extends ConnectedWallet {
     { msgs, memo, timeoutHeight }: UnsignedTx,
     fee: Fee,
     accountNumber: bigint,
-    sequence: bigint
+    sequence: bigint,
   ): Promise<string> {
     const tx = new Tx({
       chainId: this.chainId,

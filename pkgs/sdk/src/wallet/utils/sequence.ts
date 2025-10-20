@@ -5,7 +5,7 @@
 export function extractExpectedAccountSequence(err: Error): bigint | null {
   const matches = err.message.match(
     // This regex is intentionally kept as strict as possible
-    /account sequence mismatch, expected (\d+), got (\d+):/
+    /account sequence mismatch, expected (\d+), got (\d+):/,
   );
   if (!matches || matches.length < 3) {
     return null;

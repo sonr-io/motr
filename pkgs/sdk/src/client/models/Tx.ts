@@ -1,5 +1,5 @@
-import type { Message, PlainMessage } from '@bufbuild/protobuf';
-import { base64 } from '@scure/base';
+import type { Message, PlainMessage } from "@bufbuild/protobuf";
+import { base64 } from "@scure/base";
 import {
   CosmosTxV1beta1AuthInfo as ProtoAuthInfo,
   CosmosTxV1beta1Fee as ProtoFee,
@@ -8,12 +8,12 @@ import {
   type CosmosTxV1beta1SignerInfo as ProtoSignerInfo,
   CosmosTxV1beta1TxBody as ProtoTxBody,
   CosmosTxV1beta1TxRaw as ProtoTxRaw,
-} from '@sonr.io/sdk/protobufs';
-import type { SignDoc, StdSignDoc } from '@sonr.io/sdk/registry';
+} from "@sonr.io/sdk/protobufs";
+import type { SignDoc, StdSignDoc } from "@sonr.io/sdk/registry";
 
-import { toAny } from '../utils/toAny';
-import type { Adapter } from './Adapter';
-import type { Secp256k1PubKey } from './Secp256k1PubKey';
+import { toAny } from "../utils/toAny";
+import type { Adapter } from "./Adapter";
+import type { Secp256k1PubKey } from "./Secp256k1PubKey";
 
 type Data = {
   chainId: string;
@@ -33,7 +33,7 @@ export type ToSignedProtoParams = {
 
 export type ToUnsignedProtoParams = Pick<
   ToSignedProtoParams,
-  'sequence' | 'memo' | 'timeoutHeight'
+  "sequence" | "memo" | "timeoutHeight"
 >;
 
 export type ToSignDocParams = {
@@ -102,7 +102,7 @@ export class Tx {
    */
   public toSignedAmino(
     { sequence, fee, memo, timeout_height }: StdSignDoc,
-    signature: string | Uint8Array
+    signature: string | Uint8Array,
   ): ProtoTxRaw {
     return this.toSignedProto({
       sequence: BigInt(sequence),
@@ -113,7 +113,8 @@ export class Tx {
         granter: fee.granter,
       }),
       signMode: ProtoSignMode.LEGACY_AMINO_JSON,
-      signature: typeof signature === 'string' ? base64.decode(signature) : signature,
+      signature:
+        typeof signature === "string" ? base64.decode(signature) : signature,
       memo: memo,
       timeoutHeight: timeout_height ? BigInt(timeout_height) : undefined,
     });
@@ -127,12 +128,14 @@ export class Tx {
    */
   public toSignedDirect(
     { bodyBytes, authInfoBytes }: SignDoc,
-    signature: string | Uint8Array
+    signature: string | Uint8Array,
   ): ProtoTxRaw {
     return new ProtoTxRaw({
       authInfoBytes: authInfoBytes as any,
       bodyBytes: bodyBytes as any,
-      signatures: [typeof signature === 'string' ? base64.decode(signature) : signature],
+      signatures: [
+        typeof signature === "string" ? base64.decode(signature) : signature,
+      ],
     });
   }
 
@@ -180,7 +183,7 @@ export class Tx {
         gas: fee.gasLimit.toString(),
       },
       msgs: this.data.msgs.map((m) => m.toAmino()),
-      memo: memo ?? '',
+      memo: memo ?? "",
       timeout_height: timeoutHeight?.toString(),
     };
   }
@@ -191,13 +194,16 @@ export class Tx {
    *
    * **Warning**: Injective's chain ID might change, causing potential issues here.
    */
-  private getSignerInfo(sequence: bigint, mode: ProtoSignMode): PlainMessage<ProtoSignerInfo> {
+  private getSignerInfo(
+    sequence: bigint,
+    mode: ProtoSignMode,
+  ): PlainMessage<ProtoSignerInfo> {
     return {
       publicKey: toAny(this.data.pubKey.toProto()),
       sequence: sequence,
       modeInfo: {
         sum: {
-          case: 'single',
+          case: "single",
           value: {
             mode: mode,
           },

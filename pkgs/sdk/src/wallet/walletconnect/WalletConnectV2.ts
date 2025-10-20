@@ -1,9 +1,9 @@
-import type { SignDoc, StdSignDoc } from '@sonr.io/sdk/registry';
-import SignClient from '@walletconnect/sign-client';
-import { debounce } from 'lodash-es';
+import type { SignDoc, StdSignDoc } from "@sonr.io/sdk/registry";
+import SignClient from "@walletconnect/sign-client";
+import { debounce } from "lodash-es";
 
-import { isAndroid, isMobile } from '../utils/os';
-import { type MobileAppDetails, QRCodeModal } from './QRCodeModal';
+import { isAndroid, isMobile } from "../utils/os";
+import { type MobileAppDetails, QRCodeModal } from "./QRCodeModal";
 
 /** The JSON data stored in `localStorage` to recover previous sessions. */
 type StorageSession = {
@@ -45,15 +45,15 @@ type WcSignDirectResponse = {
 type SignDirectResponse = Required<WcSignDirectResponse>;
 
 const Method = {
-  GET_ACCOUNTS: 'cosmos_getAccounts',
-  SIGN_AMINO: 'cosmos_signAmino',
-  SIGN_DIRECT: 'cosmos_signDirect',
+  GET_ACCOUNTS: "cosmos_getAccounts",
+  SIGN_AMINO: "cosmos_signAmino",
+  SIGN_DIRECT: "cosmos_signDirect",
 } as const;
 type Method = (typeof Method)[keyof typeof Method];
 
 const Event = {
-  CHAIN_CHANGED: 'chainChanged',
-  ACCOUNTS_CHANGED: 'accountsChanged',
+  CHAIN_CHANGED: "chainChanged",
+  ACCOUNTS_CHANGED: "accountsChanged",
 } as const;
 type Event = (typeof Event)[keyof typeof Event];
 
@@ -86,17 +86,21 @@ export class WalletConnectV2 {
         projectId: this.projectId,
       });
       // Disconnect if the session is disconnected or expired
-      this.signClient.on('session_delete', ({ topic }) => this.disconnect(topic));
-      this.signClient.on('session_expire', ({ topic }) => this.disconnect(topic));
+      this.signClient.on("session_delete", ({ topic }) =>
+        this.disconnect(topic),
+      );
+      this.signClient.on("session_expire", ({ topic }) =>
+        this.disconnect(topic),
+      );
       // Handle the `accountsChanged` event
       const handleAccountChange = debounce(
         // Handler is debounced as the `accountsChanged` event is fired once for
         // each connected chain, but we only want to trigger the callback once.
         () => this.onAccountChangeCbs.forEach((cb) => cb()),
         300,
-        { leading: true, trailing: false }
+        { leading: true, trailing: false },
       );
-      this.signClient.on('session_event', ({ params }) => {
+      this.signClient.on("session_event", ({ params }) => {
         if (params.event.name === Event.ACCOUNTS_CHANGED) {
           handleAccountChange();
         }
@@ -107,7 +111,9 @@ export class WalletConnectV2 {
     const oldSession = localStorage.getItem(this.sessionStorageKey);
     const chainIdsSet = new Set(chainIds);
     if (oldSession) {
-      const { topic, chainIds: storedIds } = JSON.parse(oldSession) as StorageSession;
+      const { topic, chainIds: storedIds } = JSON.parse(
+        oldSession,
+      ) as StorageSession;
       const storedIdsSet = new Set(storedIds);
       if (chainIds.every((id) => storedIdsSet.has(id))) {
         // If the requested chain IDs are a subset of the stored chain IDs, we can
@@ -153,7 +159,7 @@ export class WalletConnectV2 {
         const { topic } = JSON.parse(oldSession) as StorageSession;
         this.signClient.disconnect({
           topic,
-          reason: { code: 6000, message: 'User rejected connection' },
+          reason: { code: 6000, message: "User rejected connection" },
         });
       }
     }
@@ -170,14 +176,18 @@ export class WalletConnectV2 {
   }
 
   public async getAccount(chainId: string): Promise<GetAccountResponse> {
-    const [res] = await this.request<GetAccountResponse[]>(chainId, Method.GET_ACCOUNTS, {});
-    return res || { address: '', algo: '', pubkey: '' };
+    const [res] = await this.request<GetAccountResponse[]>(
+      chainId,
+      Method.GET_ACCOUNTS,
+      {},
+    );
+    return res || { address: "", algo: "", pubkey: "" };
   }
 
   public async signAmino(
     chainId: string,
     signerAddress: string,
-    stdSignDoc: StdSignDoc
+    stdSignDoc: StdSignDoc,
   ): Promise<SignAminoResponse> {
     const { signature, signed } = await this.request<WcSignAminoResponse>(
       chainId,
@@ -186,7 +196,7 @@ export class WalletConnectV2 {
         signerAddress,
         signDoc: stdSignDoc,
         signOptions: DEFAULT_SIGN_OPTIONS,
-      }
+      },
     );
     return {
       signature: signature,
@@ -197,7 +207,7 @@ export class WalletConnectV2 {
   public async signDirect(
     chainId: string,
     signerAddress: string,
-    signDoc: SignDoc
+    signDoc: SignDoc,
   ): Promise<SignDirectResponse> {
     const { signature, signed } = await this.request<WcSignDirectResponse>(
       chainId,
@@ -206,7 +216,7 @@ export class WalletConnectV2 {
         signerAddress,
         signDoc,
         signOptions: DEFAULT_SIGN_OPTIONS,
-      }
+      },
     );
     return {
       signature: signature,
@@ -224,7 +234,7 @@ export class WalletConnectV2 {
   private isConnected(
     signClient: SignClient,
     topic: string,
-    timeoutSeconds: number
+    timeoutSeconds: number,
   ): Promise<boolean> {
     const tryPing = async (): Promise<boolean> =>
       signClient
@@ -233,19 +243,21 @@ export class WalletConnectV2 {
         .catch(() => false);
     const waitDisconnect = async (): Promise<boolean> =>
       new Promise((resolve) => {
-        signClient.on('session_delete', (res) => {
+        signClient.on("session_delete", (res) => {
           if (topic === res.topic) {
             resolve(false);
           }
         });
-        signClient.on('session_expire', (res) => {
+        signClient.on("session_expire", (res) => {
           if (topic === res.topic) {
             resolve(false);
           }
         });
       });
     const timeout = async (): Promise<boolean> =>
-      new Promise((resolve) => setTimeout(() => resolve(false), timeoutSeconds * 1_000));
+      new Promise((resolve) =>
+        setTimeout(() => resolve(false), timeoutSeconds * 1_000),
+      );
     return Promise.race([tryPing(), waitDisconnect(), timeout()]);
   }
 

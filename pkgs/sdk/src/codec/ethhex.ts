@@ -1,4 +1,4 @@
-import { type BytesCoder, hex } from '@scure/base';
+import { type BytesCoder, hex } from "@scure/base";
 
 /**
  * Convenience wrapper around `hex` that deals with hex strings typically
@@ -9,5 +9,5 @@ import { type BytesCoder, hex } from '@scure/base';
  */
 export const ethhex = {
   encode: (bytes) => `0x${hex.encode(bytes)}`,
-  decode: (str) => hex.decode(str.replace(/^0x/, '').toLowerCase()),
+  decode: (str) => hex.decode(str.replace(/^0x/, "").toLowerCase()),
 } satisfies BytesCoder;

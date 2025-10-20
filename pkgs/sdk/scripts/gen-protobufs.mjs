@@ -6,13 +6,19 @@
  * files, and then generates an `index.ts` file to re-export the generated code.
  */
 
-import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { homedir } from 'node:os';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { globSync } from 'glob';
-import { capitalize } from 'lodash-es';
+import { spawnSync } from "node:child_process";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { homedir } from "node:os";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { globSync } from "glob";
+import { capitalize } from "lodash-es";
 
 /**
  * @typedef Repo
@@ -26,54 +32,54 @@ import { capitalize } from 'lodash-es';
  */
 const REPOS = [
   {
-    repo: 'cosmos/cosmos-proto#v1.0.0-beta.5',
-    paths: ['proto'],
+    repo: "cosmos/cosmos-proto#v1.0.0-beta.5",
+    paths: ["proto"],
   },
   {
-    repo: 'cosmos/gogoproto#v1.7.0',
-    paths: ['gogoproto'],
+    repo: "cosmos/gogoproto#v1.7.0",
+    paths: ["gogoproto"],
   },
   {
-    repo: 'cosmos/cosmos-sdk#v0.50.10',
-    paths: ['proto'],
+    repo: "cosmos/cosmos-sdk#v0.50.10",
+    paths: ["proto"],
   },
   {
-    repo: 'cometbft/cometbft#v0.38.12',
-    paths: ['proto'],
+    repo: "cometbft/cometbft#v0.38.12",
+    paths: ["proto"],
   },
   {
-    repo: 'cosmos/ibc-go#v8.5.1',
-    paths: ['proto'],
+    repo: "cosmos/ibc-go#v8.5.1",
+    paths: ["proto"],
   },
   {
-    repo: 'confio/ics23#master',
-    paths: ['proto'],
+    repo: "confio/ics23#master",
+    paths: ["proto"],
   },
   {
-    repo: 'sonr-io/sonr#master',
-    paths: ['proto'],
+    repo: "sonr-io/sonr#master",
+    paths: ["proto"],
   },
   {
-    repo: 'CosmWasm/wasmd#v0.53.0',
-    paths: ['proto'],
+    repo: "CosmWasm/wasmd#v0.53.0",
+    paths: ["proto"],
   },
   {
-    repo: 'osmosis-labs/osmosis#v27.0.0',
-    paths: ['proto'],
+    repo: "osmosis-labs/osmosis#v27.0.0",
+    paths: ["proto"],
   },
   {
-    repo: 'evmos/ethermint#v0.22.0',
-    paths: ['proto'],
+    repo: "evmos/ethermint#v0.22.0",
+    paths: ["proto"],
   },
 ];
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROTOBUFS_DIR = join(__dirname, '..', 'src', 'protobufs');
-const CACHE_DIR = join(homedir(), '.cache', 'motr-protos');
-const MANIFEST_FILE = join(PROTOBUFS_DIR, '.manifest.json');
+const PROTOBUFS_DIR = join(__dirname, "..", "src", "protobufs");
+const CACHE_DIR = join(homedir(), ".cache", "motr-protos");
+const MANIFEST_FILE = join(PROTOBUFS_DIR, ".manifest.json");
 
 /** Generates a unique dirname from `repo` to use in `TMP_DIR`. */
-const id = (/** @type {string} */ repo) => repo.replace(/[#/]/g, '-');
+const id = (/** @type {string} */ repo) => repo.replace(/[#/]/g, "-");
 
 /**
  * Load the manifest file that tracks repository refs
@@ -84,10 +90,10 @@ function loadManifest() {
     return {};
   }
   try {
-    const content = readFileSync(MANIFEST_FILE, 'utf8');
+    const content = readFileSync(MANIFEST_FILE, "utf8");
     return JSON.parse(content);
   } catch {
-    console.warn('⚠️ Manifest load failed, starting fresh');
+    console.warn("⚠️ Manifest load failed, starting fresh");
     return {};
   }
 }
@@ -100,7 +106,7 @@ function saveManifest(manifest) {
   try {
     writeFileSync(MANIFEST_FILE, JSON.stringify(manifest, null, 2));
   } catch {
-    console.warn('⚠️ Manifest save failed');
+    console.warn("⚠️ Manifest save failed");
   }
 }
 
@@ -112,7 +118,7 @@ function saveManifest(manifest) {
  * @returns {{ success: boolean, path: string | null }} - Result with path
  */
 function downloadProtoFiles(repo, path, dest) {
-  const [repoPath, ref] = repo.split('#');
+  const [repoPath, ref] = repo.split("#");
 
   console.log(`  📥 ${repo} (${path})...`);
 
@@ -121,11 +127,11 @@ function downloadProtoFiles(repo, path, dest) {
 
   // Use gh download to get the specified directory
   // Format: gh download owner/repo path --branch ref --outdir destination
-  const args = ['download', repoPath, path, '--branch', ref, '--outdir', dest];
+  const args = ["download", repoPath, path, "--branch", ref, "--outdir", dest];
 
-  const result = spawnSync('gh', args, {
-    stdio: 'pipe',
-    encoding: 'utf8',
+  const result = spawnSync("gh", args, {
+    stdio: "pipe",
+    encoding: "utf8",
   });
 
   if (result.status !== 0) {
@@ -137,15 +143,15 @@ function downloadProtoFiles(repo, path, dest) {
   // gh-download strips the directory prefix, so if we downloaded 'gogoproto',
   // the files end up directly in dest instead of dest/gogoproto
   // We need to restructure for non-'proto' paths
-  if (path !== 'proto') {
+  if (path !== "proto") {
     const subdir = join(dest, path);
     mkdirSync(subdir, { recursive: true });
 
     // Move .proto files into the subdirectory
-    const { readdirSync, renameSync } = require('node:fs');
+    const { readdirSync, renameSync } = require("node:fs");
     const files = readdirSync(dest);
     for (const file of files) {
-      if (file.endsWith('.proto')) {
+      if (file.endsWith(".proto")) {
         const src = join(dest, file);
         const dst = join(subdir, file);
         try {
@@ -164,16 +170,16 @@ function downloadProtoFiles(repo, path, dest) {
 // Load manifest early to check for changes before any cleanup
 const manifest = loadManifest();
 
-console.log('🔧 Initialising...');
+console.log("🔧 Initialising...");
 {
   // Create cache and protobufs directories
   mkdirSync(CACHE_DIR, { recursive: true });
   mkdirSync(PROTOBUFS_DIR, { recursive: true });
 }
 
-console.log('📥 Using gh download extension');
+console.log("📥 Using gh download extension");
 
-console.log('📥 Fetching repos...');
+console.log("📥 Fetching repos...");
 /** @type {Map<string, string>} */
 const repoPaths = new Map();
 /** @type {Set<string>} */
@@ -185,7 +191,7 @@ const skippedRepos = new Set();
 
   for (const { repo, paths } of REPOS) {
     const repoId = id(repo);
-    const [_repoPath, ref] = repo.split('#');
+    const [_repoPath, ref] = repo.split("#");
     const protoPath = paths[0]; // Use first path from paths array
 
     // Create a unique cache directory for this repo+ref combination
@@ -217,11 +223,11 @@ const skippedRepos = new Set();
   }
 
   console.log(
-    `\n📊 Repo summary: ${successCount} to process, ${skippedCount} skipped, ${failCount} failed\n`
+    `\n📊 Repo summary: ${successCount} to process, ${skippedCount} skipped, ${failCount} failed\n`,
   );
 
   if (successCount === 0 && failCount > 0) {
-    console.error('❌ All repos failed');
+    console.error("❌ All repos failed");
     process.exit(1);
   }
 }
@@ -229,21 +235,21 @@ const skippedRepos = new Set();
 // Only clean if ALL repos need processing (fresh build)
 // Otherwise, buf will overwrite only the changed files
 if (repoPaths.size === REPOS.length) {
-  console.log('🧹 Cleaning directories...');
+  console.log("🧹 Cleaning directories...");
   {
     // Clean directories for regenerated repos
     const dirsToClean = [
-      'amino',
-      'cosmos',
-      'cosmos_proto',
-      'cosmwasm',
-      'ethermint',
-      'gogoproto',
-      'google',
-      'ibc',
-      'osmosis',
-      'sonr',
-      'tendermint',
+      "amino",
+      "cosmos",
+      "cosmos_proto",
+      "cosmwasm",
+      "ethermint",
+      "gogoproto",
+      "google",
+      "ibc",
+      "osmosis",
+      "sonr",
+      "tendermint",
     ];
 
     for (const dir of dirsToClean) {
@@ -252,14 +258,14 @@ if (repoPaths.size === REPOS.length) {
     }
   }
 } else if (repoPaths.size > 0) {
-  console.log('ℹ️ Incremental update, keeping existing files');
+  console.log("ℹ️ Incremental update, keeping existing files");
 } else {
-  console.log('ℹ️ No repos need processing');
+  console.log("ℹ️ No repos need processing");
 }
 
 // Only generate types if there are repos that need processing
 if (repoPaths.size > 0) {
-  console.log('⚙️ Generating types...');
+  console.log("⚙️ Generating types...");
   {
     let processedCount = 0;
 
@@ -287,19 +293,30 @@ if (repoPaths.size > 0) {
 
       // Don't use subdirectories - all protobufs go to same level
       // This ensures relative imports work correctly
-      const outputSubdir = '';
+      const outputSubdir = "";
 
       const result = spawnSync(
-        'bunx',
-        ['buf', 'generate', protoPath, '--output', join(PROTOBUFS_DIR, outputSubdir)],
+        "bunx",
+        [
+          "buf",
+          "generate",
+          protoPath,
+          "--output",
+          join(PROTOBUFS_DIR, outputSubdir),
+        ],
         {
-          stdio: 'pipe',
-          encoding: 'utf8',
-        }
+          stdio: "pipe",
+          encoding: "utf8",
+        },
       );
 
       if (result.status !== 0 || result.error) {
-        const errorMsg = (result.stderr || result.stdout || result.error?.message || '').trim();
+        const errorMsg = (
+          result.stderr ||
+          result.stdout ||
+          result.error?.message ||
+          ""
+        ).trim();
         console.error(`⚠️ ${repo} generation failed: ${errorMsg}`);
         continue;
       }
@@ -309,23 +326,24 @@ if (repoPaths.size > 0) {
     }
 
     if (processedCount === 0) {
-      console.log('ℹ️ No repos processed');
+      console.log("ℹ️ No repos processed");
     }
   }
 } else {
-  console.log('ℹ️ No repos need processing, skipping generation');
+  console.log("ℹ️ No repos need processing, skipping generation");
 }
 
 // Only generate index and save manifest if there were changes
 if (repoPaths.size > 0) {
-  console.log('📝 Generating index...');
+  console.log("📝 Generating index...");
   {
     const LAST_SEGMENT_REGEX = /[^/]+$/;
     const EXPORTED_TYPE_REGEX = /^export type (\w+) /gm;
     const EXPORTED_CONST_REGEX = /^export const (\w+)/gm;
     const EXPORTED_CLASS_REGEX = /^export class (\w+)/gm;
     const EXPORTED_ENUM_REGEX = /^export enum (\w+)/gm;
-    let contents = '/** This file is generated by gen-protobufs.mjs. Do not edit. */\n\n';
+    let contents =
+      "/** This file is generated by gen-protobufs.mjs. Do not edit. */\n\n";
 
     /**
      * Builds the `src/protobufs/index.ts` file to re-export generated code.
@@ -337,33 +355,33 @@ if (repoPaths.size > 0) {
      * @param {string} dir
      */
     function generateIndexExports(dir) {
-      const files = globSync(join(dir, '*'));
+      const files = globSync(join(dir, "*"));
       if (files.length === 0) {
         return;
       }
 
-      const relativePath = dir.replace(PROTOBUFS_DIR, '').replace(/^\//, '');
+      const relativePath = dir.replace(PROTOBUFS_DIR, "").replace(/^\//, "");
       const prefixName = relativePath
         ? relativePath
-            .split('/')
+            .split("/")
             .map((name) =>
               // convert all names to PascalCase
               name
                 .split(/[-_.]/)
                 .filter((part) => part.length > 0)
                 .map(capitalize)
-                .join('')
+                .join(""),
             )
-            .join('')
-        : '';
+            .join("")
+        : "";
 
       for (const file of files) {
         const fileName = file.match(LAST_SEGMENT_REGEX)?.[0];
         if (!fileName) {
-          console.error('Could not find name for', file);
+          console.error("Could not find name for", file);
           continue;
         }
-        if (!fileName.endsWith('.ts')) {
+        if (!fileName.endsWith(".ts")) {
           continue;
         }
 
@@ -372,8 +390,10 @@ if (repoPaths.size > 0) {
           continue;
         }
 
-        const code = readFileSync(file, 'utf8');
-        const exportedFile = file.replace(PROTOBUFS_DIR + '/', '').replace('.ts', '.js');
+        const code = readFileSync(file, "utf8");
+        const exportedFile = file
+          .replace(PROTOBUFS_DIR + "/", "")
+          .replace(".ts", ".js");
 
         // Export types
         const types = [];
@@ -423,13 +443,13 @@ if (repoPaths.size > 0) {
     }
 
     generateIndexExports(PROTOBUFS_DIR);
-    writeFileSync(join(PROTOBUFS_DIR, 'index.ts'), contents);
+    writeFileSync(join(PROTOBUFS_DIR, "index.ts"), contents);
   }
 
-  console.log('💾 Saving manifest...');
+  console.log("💾 Saving manifest...");
   saveManifest(manifest);
 } else {
-  console.log('ℹ️ No changes, skipping index and manifest update');
+  console.log("ℹ️ No changes, skipping index and manifest update");
 }
 
-console.log('✅ Done!');
+console.log("✅ Done!");

@@ -9,9 +9,9 @@
  * @see https://tools.ietf.org/html/rfc7519 - JWT specification
  */
 
-import { base64urlDecode, base64urlDecodeJSON } from './encoding.js';
-import type { UCANToken } from './types.js';
-import { isUCANHeader, isUCANPayload } from './types.js';
+import { base64urlDecode, base64urlDecodeJSON } from "./encoding.js";
+import type { UCANToken } from "./types.js";
+import { isUCANHeader, isUCANPayload } from "./types.js";
 
 /**
  * Parses a UCAN JWT token string into a structured UCANToken object.
@@ -34,15 +34,15 @@ import { isUCANHeader, isUCANPayload } from './types.js';
  */
 export function parseToken(token: string): UCANToken {
   // Validate input
-  if (typeof token !== 'string' || token.trim() === '') {
-    throw new Error('UCAN token must be a non-empty string');
+  if (typeof token !== "string" || token.trim() === "") {
+    throw new Error("UCAN token must be a non-empty string");
   }
 
   // Split JWT on '.' separator - must have exactly 3 parts
-  const parts = token.split('.');
+  const parts = token.split(".");
   if (parts.length !== 3) {
     throw new Error(
-      `Invalid JWT format: expected 3 parts (header.payload.signature), got ${parts.length} parts`
+      `Invalid JWT format: expected 3 parts (header.payload.signature), got ${parts.length} parts`,
     );
   }
 
@@ -51,7 +51,7 @@ export function parseToken(token: string): UCANToken {
   // Validate that each part is non-empty
   if (!headerEncoded || !payloadEncoded || !signatureEncoded) {
     throw new Error(
-      'Invalid JWT format: header, payload, and signature segments must be non-empty'
+      "Invalid JWT format: header, payload, and signature segments must be non-empty",
     );
   }
 
@@ -69,7 +69,7 @@ export function parseToken(token: string): UCANToken {
   // Validate header structure using type guard
   if (!isUCANHeader(header)) {
     throw new Error(
-      `Invalid UCAN header: must contain 'alg' (EdDSA|ES256|RS256), 'typ' (JWT), and 'ucv' (version). Got: ${JSON.stringify(header)}`
+      `Invalid UCAN header: must contain 'alg' (EdDSA|ES256|RS256), 'typ' (JWT), and 'ucv' (version). Got: ${JSON.stringify(header)}`,
     );
   }
 
@@ -88,19 +88,24 @@ export function parseToken(token: string): UCANToken {
   if (!isUCANPayload(payload)) {
     const errors: string[] = [];
 
-    if (typeof payload !== 'object' || payload === null) {
-      errors.push('payload must be an object');
+    if (typeof payload !== "object" || payload === null) {
+      errors.push("payload must be an object");
     } else {
       const p = payload as Record<string, unknown>;
-      if (typeof p.iss !== 'string') errors.push("missing or invalid 'iss' (issuer DID)");
-      if (typeof p.aud !== 'string') errors.push("missing or invalid 'aud' (audience DID)");
-      if (p.exp !== null && typeof p.exp !== 'number') errors.push("invalid 'exp' (expiration)");
+      if (typeof p.iss !== "string")
+        errors.push("missing or invalid 'iss' (issuer DID)");
+      if (typeof p.aud !== "string")
+        errors.push("missing or invalid 'aud' (audience DID)");
+      if (p.exp !== null && typeof p.exp !== "number")
+        errors.push("invalid 'exp' (expiration)");
       if (!Array.isArray(p.att) || p.att.length === 0) {
         errors.push("missing or empty 'att' (capabilities array)");
       }
     }
 
-    throw new Error(`Invalid UCAN payload: ${errors.join(', ')}. Got: ${JSON.stringify(payload)}`);
+    throw new Error(
+      `Invalid UCAN payload: ${errors.join(", ")}. Got: ${JSON.stringify(payload)}`,
+    );
   }
 
   // Decode signature
@@ -116,7 +121,7 @@ export function parseToken(token: string): UCANToken {
 
   // Validate signature is not empty
   if (signature.length === 0) {
-    throw new Error('Invalid JWT signature: signature cannot be empty');
+    throw new Error("Invalid JWT signature: signature cannot be empty");
   }
 
   return {
@@ -174,11 +179,11 @@ export function tryParseToken(token: string): UCANToken | null {
  * ```
  */
 export function isValidJWTFormat(token: string): boolean {
-  if (typeof token !== 'string' || token.trim() === '') {
+  if (typeof token !== "string" || token.trim() === "") {
     return false;
   }
 
-  const parts = token.split('.');
+  const parts = token.split(".");
   if (parts.length !== 3) {
     return false;
   }
@@ -206,9 +211,9 @@ export function isValidJWTFormat(token: string): boolean {
  * ```
  */
 export function extractPayload(token: string): unknown {
-  const parts = token.split('.');
+  const parts = token.split(".");
   if (parts.length !== 3) {
-    throw new Error('Invalid JWT format: expected 3 parts');
+    throw new Error("Invalid JWT format: expected 3 parts");
   }
 
   try {
@@ -239,9 +244,9 @@ export function extractPayload(token: string): unknown {
  * ```
  */
 export function extractHeader(token: string): unknown {
-  const parts = token.split('.');
+  const parts = token.split(".");
   if (parts.length !== 3) {
-    throw new Error('Invalid JWT format: expected 3 parts');
+    throw new Error("Invalid JWT format: expected 3 parts");
   }
 
   try {

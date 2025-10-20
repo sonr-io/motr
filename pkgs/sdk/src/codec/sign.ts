@@ -1,22 +1,23 @@
-import { hmac } from '@noble/hashes/hmac';
-import { keccak_256 } from '@noble/hashes/sha3';
-import { sha256 } from '@noble/hashes/sha2';
-import * as secp256k1 from '@noble/secp256k1';
-import { utf8 } from '@scure/base';
-import type { CosmosTxV1beta1SignDoc as SignDoc } from '@sonr.io/sdk/protobufs';
-import type { StdSignDoc } from '@sonr.io/sdk/registry';
+import { hmac } from "@noble/hashes/hmac";
+import { keccak_256 } from "@noble/hashes/sha3";
+import { sha256 } from "@noble/hashes/sha2";
+import * as secp256k1 from "@noble/secp256k1";
+import { utf8 } from "@scure/base";
+import type { CosmosTxV1beta1SignDoc as SignDoc } from "@sonr.io/sdk/protobufs";
+import type { StdSignDoc } from "@sonr.io/sdk/registry";
 
-import { serialiseSignDoc } from './serialise';
+import { serialiseSignDoc } from "./serialise";
 
 function sign(
   bytes: Uint8Array,
   privateKey: Uint8Array,
-  type: 'secp256k1' | 'ethsecp256k1'
+  type: "secp256k1" | "ethsecp256k1",
 ): Uint8Array {
   // Required polyfills for secp256k1 that must be called before any sign ops.
   // See: https://github.com/paulmillr/noble-secp256k1?tab=readme-ov-file#usage
-  secp256k1.etc.hmacSha256Sync = (k, ...m) => hmac(sha256, k, secp256k1.etc.concatBytes(...m));
-  const hash = type === 'secp256k1' ? sha256(bytes) : keccak_256(bytes);
+  secp256k1.etc.hmacSha256Sync = (k, ...m) =>
+    hmac(sha256, k, secp256k1.etc.concatBytes(...m));
+  const hash = type === "secp256k1" ? sha256(bytes) : keccak_256(bytes);
   return secp256k1.sign(hash, privateKey).toCompactRawBytes();
 }
 
@@ -28,7 +29,7 @@ function sign(
 export function signAmino(
   stdSignDoc: StdSignDoc,
   privateKey: Uint8Array,
-  type: 'secp256k1' | 'ethsecp256k1' = 'secp256k1'
+  type: "secp256k1" | "ethsecp256k1" = "secp256k1",
 ): Uint8Array {
   return sign(serialiseSignDoc(stdSignDoc), privateKey, type);
 }
@@ -41,7 +42,7 @@ export function signAmino(
 export function signDirect(
   signDoc: SignDoc,
   privateKey: Uint8Array,
-  type: 'secp256k1' | 'ethsecp256k1' = 'secp256k1'
+  type: "secp256k1" | "ethsecp256k1" = "secp256k1",
 ): Uint8Array {
   return sign(signDoc.toBinary(), privateKey, type);
 }
@@ -52,10 +53,10 @@ export function signDirect(
 export function hashEthArbitraryMessage(message: Uint8Array): Uint8Array {
   return keccak_256(
     Uint8Array.from([
-      ...utf8.decode('\x19Ethereum Signed Message:\n'),
+      ...utf8.decode("\x19Ethereum Signed Message:\n"),
       ...utf8.decode(message.length.toString()),
       ...message,
-    ])
+    ]),
   );
 }
 
@@ -65,10 +66,10 @@ export function hashEthArbitraryMessage(message: Uint8Array): Uint8Array {
  */
 export function recoverPubKeyFromEthSignature(
   message: Uint8Array,
-  signature: Uint8Array
+  signature: Uint8Array,
 ): Uint8Array {
   if (signature.length !== 65) {
-    throw new Error('Invalid signature');
+    throw new Error("Invalid signature");
   }
   const r = signature.slice(0, 32);
   const s = signature.slice(32, 64);
@@ -76,7 +77,7 @@ export function recoverPubKeyFromEthSignature(
   // Adapted from https://github.com/ethers-io/ethers.js/blob/6017d3d39a4d428793bddae33d82fd814cacd878/src.ts/crypto/signature.ts#L255-L265
   const yParity = v <= 1 ? v : (v + 1) % 2;
   const secpSignature = secp256k1.Signature.fromCompact(
-    Uint8Array.from([...r, ...s])
+    Uint8Array.from([...r, ...s]),
   ).addRecoveryBit(yParity);
   const digest = hashEthArbitraryMessage(message);
   return secpSignature.recoverPublicKey(digest).toRawBytes(true);

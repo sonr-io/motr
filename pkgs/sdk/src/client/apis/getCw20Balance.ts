@@ -1,4 +1,4 @@
-import { queryContract } from './queryContract';
+import { queryContract } from "./queryContract";
 
 export type GetCw20BalanceParams = {
   address: string;
@@ -11,7 +11,7 @@ type Response = {
 
 export async function getCw20Balance(
   endpoint: string,
-  { address, token }: GetCw20BalanceParams
+  { address, token }: GetCw20BalanceParams,
 ): Promise<bigint> {
   try {
     const { balance } = await queryContract<Response>(endpoint, {

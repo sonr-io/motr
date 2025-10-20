@@ -11,7 +11,7 @@
  */
 
 // Export builder utilities
-export { UCANBuilder } from './builder';
+export { UCANBuilder } from "./builder";
 // Export encoding utilities
 export {
   base64urlDecode,
@@ -21,7 +21,7 @@ export {
   base64urlEncodeJSON,
   base64urlEncodeString,
   isValidBase64url,
-} from './encoding';
+} from "./encoding";
 // Export parser utilities
 export {
   extractHeader,
@@ -29,14 +29,14 @@ export {
   isValidJWTFormat,
   parseToken,
   tryParseToken,
-} from './parser';
+} from "./parser";
 // Export token formatting utilities
 export {
   createSigningMessage,
   formatHeader,
   formatPayload,
   formatToken,
-} from './token';
+} from "./token";
 // Export type definitions
 export type {
   Capability,
@@ -52,7 +52,7 @@ export type {
   UCANVersion,
   ValidationOptions,
   ValidationResult,
-} from './types';
+} from "./types";
 // Export type guards and enums
 export {
   isCapability,
@@ -61,7 +61,7 @@ export {
   isUCANPayload,
   isUCANToken,
   UCANValidationError,
-} from './types';
+} from "./types";
 // Export validation utilities
 export {
   isTokenExpired,
@@ -73,4 +73,4 @@ export {
   validateSignature,
   validateTimestamps,
   validateToken,
-} from './validation';
+} from "./validation";

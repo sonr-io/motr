@@ -1,4 +1,4 @@
-import type { PlainMessage } from '@bufbuild/protobuf';
+import type { PlainMessage } from "@bufbuild/protobuf";
 
 // TODO: CosmosStakingV1beta1MsgDelegate not available in protobufs
 // // TODO: Missing from protobufs
@@ -6,8 +6,8 @@ import type { PlainMessage } from '@bufbuild/protobuf';
 const _ProtoMsgDelegate: any = {};
 type ProtoMsgDelegate = any;
 
-import type { DeepPrettify } from '../../typeutils/prettify';
-import type { Adapter } from './Adapter';
+import type { DeepPrettify } from "../../typeutils/prettify";
+import type { Adapter } from "./Adapter";
 
 type Data = DeepPrettify<ProtoMsgDelegate>;
 
@@ -38,7 +38,7 @@ export class MsgDelegate implements Adapter {
   // This method converts the staking delegation message to amino JSON format
   public toAmino() {
     return {
-      type: 'cosmos-sdk/MsgDelegate',
+      type: "cosmos-sdk/MsgDelegate",
       value: {
         delegator_address: this.data.delegatorAddress,
         validator_address: this.data.validatorAddress,

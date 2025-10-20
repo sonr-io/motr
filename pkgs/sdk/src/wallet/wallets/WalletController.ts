@@ -1,11 +1,11 @@
-import type { PlainMessage } from '@bufbuild/protobuf';
-import type { CosmosBaseV1beta1Coin as Coin } from '@sonr.io/sdk/protobufs';
+import type { PlainMessage } from "@bufbuild/protobuf";
+import type { CosmosBaseV1beta1Coin as Coin } from "@sonr.io/sdk/protobufs";
 
-import type { WalletName } from '../constants/WalletName';
-import { WalletType } from '../constants/WalletType';
-import type { WalletConnectV1 } from '../walletconnect/WalletConnectV1';
-import type { WalletConnectV2 } from '../walletconnect/WalletConnectV2';
-import type { ConnectedWallet } from './ConnectedWallet';
+import type { WalletName } from "../constants/WalletName";
+import { WalletType } from "../constants/WalletType";
+import type { WalletConnectV1 } from "../walletconnect/WalletConnectV1";
+import type { WalletConnectV2 } from "../walletconnect/WalletConnectV2";
+import type { ConnectedWallet } from "./ConnectedWallet";
 
 /**
  * Represents a chain that the wallet can connect to.
@@ -59,7 +59,7 @@ export abstract class WalletController {
    */
   public async connect<T extends string>(
     type: WalletType,
-    chains: ChainInfo<T>[]
+    chains: ChainInfo<T>[],
   ): Promise<Map<T, ConnectedWallet>> {
     if (chains.length === 0) {
       return new Map();
@@ -75,8 +75,10 @@ export abstract class WalletController {
         wc.onDisconnect(() => {
           this.disconnect(
             Array.from(this.connectedWallets.keys()).filter(
-              (id) => this.connectedWallets.get(id)?.type === WalletType.WALLETCONNECT
-            )
+              (id) =>
+                this.connectedWallets.get(id)?.type ===
+                WalletType.WALLETCONNECT,
+            ),
           );
         });
       }
@@ -121,7 +123,7 @@ export abstract class WalletController {
     }
     // Find all wallets that were connected via the given `walletType`
     const wallets = [...this.connectedWallets.values()].filter(
-      (wallet) => wallet.type === walletType
+      (wallet) => wallet.type === walletType,
     );
     // Disconnect from those chains
     const chainIds = wallets.map((wallet) => wallet.chainId);
@@ -172,11 +174,11 @@ export abstract class WalletController {
   }
 
   protected abstract connectExtension<T extends string>(
-    chains: ChainInfo<T>[]
+    chains: ChainInfo<T>[],
   ): Promise<Map<T, ConnectedWallet>>;
 
   protected abstract connectWalletConnect<T extends string>(
-    chains: ChainInfo<T>[]
+    chains: ChainInfo<T>[],
   ): Promise<{
     wallets: Map<T, ConnectedWallet>;
     wc: WalletConnectV1 | WalletConnectV2;

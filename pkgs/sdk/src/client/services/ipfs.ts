@@ -2,10 +2,10 @@
  * IPFS Client for enclave data storage using Helia
  */
 
-import { type Strings, strings } from '@helia/strings';
-import { type UnixFS, unixfs } from '@helia/unixfs';
-import { verifiedFetch as heliaVerifiedFetch } from '@helia/verified-fetch';
-import { createHelia, type Helia } from 'helia';
+import { type Strings, strings } from "@helia/strings";
+import { type UnixFS, unixfs } from "@helia/unixfs";
+import { verifiedFetch as heliaVerifiedFetch } from "@helia/verified-fetch";
+import { createHelia, type Helia } from "helia";
 
 /**
  * IPFS client configuration
@@ -108,12 +108,12 @@ export class BrowserIPFSClient implements IPFSClient {
   constructor(config: IPFSClientConfig = {}) {
     this.config = {
       gateways: config.gateways || [
-        'https://ipfs.io',
-        'https://dweb.link',
-        'https://cloudflare-ipfs.com',
+        "https://ipfs.io",
+        "https://dweb.link",
+        "https://cloudflare-ipfs.com",
       ],
       enablePersistence: config.enablePersistence ?? true,
-      apiEndpoint: config.apiEndpoint || 'http://127.0.0.1:5001',
+      apiEndpoint: config.apiEndpoint || "http://127.0.0.1:5001",
       ...config,
     };
   }
@@ -146,7 +146,7 @@ export class BrowserIPFSClient implements IPFSClient {
 
   async addEnclaveData(data: Uint8Array): Promise<IPFSStorageResult> {
     if (!this.initialized || !this.fs) {
-      throw new Error('IPFS client not initialized');
+      throw new Error("IPFS client not initialized");
     }
 
     try {
@@ -167,7 +167,7 @@ export class BrowserIPFSClient implements IPFSClient {
 
   async getEnclaveData(cid: string): Promise<Uint8Array> {
     if (!this.initialized || !this.fs) {
-      throw new Error('IPFS client not initialized');
+      throw new Error("IPFS client not initialized");
     }
 
     try {
@@ -198,7 +198,7 @@ export class BrowserIPFSClient implements IPFSClient {
 
   async verifiedFetch(cid: string): Promise<Response> {
     if (!this.initialized || !this.helia) {
-      throw new Error('IPFS client not initialized');
+      throw new Error("IPFS client not initialized");
     }
 
     try {
@@ -213,7 +213,7 @@ export class BrowserIPFSClient implements IPFSClient {
 
   async pin(cid: string): Promise<void> {
     if (!this.initialized || !this.helia) {
-      throw new Error('IPFS client not initialized');
+      throw new Error("IPFS client not initialized");
     }
 
     try {
@@ -229,7 +229,7 @@ export class BrowserIPFSClient implements IPFSClient {
 
   async unpin(cid: string): Promise<void> {
     if (!this.initialized || !this.helia) {
-      throw new Error('IPFS client not initialized');
+      throw new Error("IPFS client not initialized");
     }
 
     try {
@@ -245,7 +245,7 @@ export class BrowserIPFSClient implements IPFSClient {
 
   async isPinned(cid: string): Promise<boolean> {
     if (!this.initialized || !this.helia) {
-      throw new Error('IPFS client not initialized');
+      throw new Error("IPFS client not initialized");
     }
 
     try {
@@ -264,7 +264,7 @@ export class BrowserIPFSClient implements IPFSClient {
 
   async listPins(): Promise<string[]> {
     if (!this.initialized || !this.helia) {
-      throw new Error('IPFS client not initialized');
+      throw new Error("IPFS client not initialized");
     }
 
     try {
@@ -283,7 +283,7 @@ export class BrowserIPFSClient implements IPFSClient {
 
   async getNodeStatus(): Promise<IPFSNodeStatus> {
     if (!this.initialized || !this.helia) {
-      throw new Error('IPFS client not initialized');
+      throw new Error("IPFS client not initialized");
     }
 
     try {
@@ -294,13 +294,13 @@ export class BrowserIPFSClient implements IPFSClient {
       return {
         online: this.initialized,
         peerCount: peers.length,
-        version: '4.0.0', // Helia version
+        version: "4.0.0", // Helia version
       };
     } catch {
       return {
         online: this.initialized,
         peerCount: 0,
-        version: '4.0.0',
+        version: "4.0.0",
       };
     }
   }
@@ -323,7 +323,7 @@ export class BrowserIPFSClient implements IPFSClient {
 
   async addString(data: string): Promise<string> {
     if (!this.initialized || !this.strings) {
-      throw new Error('IPFS client not initialized');
+      throw new Error("IPFS client not initialized");
     }
 
     try {
@@ -338,7 +338,7 @@ export class BrowserIPFSClient implements IPFSClient {
 
   async getString(cid: string): Promise<string> {
     if (!this.initialized || !this.strings) {
-      throw new Error('IPFS client not initialized');
+      throw new Error("IPFS client not initialized");
     }
 
     try {
@@ -354,7 +354,9 @@ export class BrowserIPFSClient implements IPFSClient {
 /**
  * Create an IPFS client instance
  */
-export async function createIPFSClient(config?: IPFSClientConfig): Promise<IPFSClient> {
+export async function createIPFSClient(
+  config?: IPFSClientConfig,
+): Promise<IPFSClient> {
   const client = new BrowserIPFSClient(config);
   await client.initialize();
   return client;
@@ -368,7 +370,9 @@ let defaultClient: IPFSClient | null = null;
 /**
  * Get or create the default IPFS client
  */
-export async function getDefaultIPFSClient(config?: IPFSClientConfig): Promise<IPFSClient> {
+export async function getDefaultIPFSClient(
+  config?: IPFSClientConfig,
+): Promise<IPFSClient> {
   if (!defaultClient) {
     defaultClient = await createIPFSClient(config);
   }

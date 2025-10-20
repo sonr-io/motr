@@ -24,7 +24,10 @@ export type GetNativeBalancesParams = {
 // This function should query all balances for a given address with pagination support
 // Parameters: endpoint (RPC/API endpoint), params (address and pagination options)
 // Returns: Array of coin balances with pagination metadata
-export async function getNativeBalances(_endpoint: string, _params: GetNativeBalancesParams) {
+export async function getNativeBalances(
+  _endpoint: string,
+  _params: GetNativeBalancesParams,
+) {
   // TODO: Implement when CosmosBankV1beta1QueryAllBalancesService is available
   // Steps needed:
   // 1. Import CosmosBankV1beta1QueryAllBalancesService from protobufs
@@ -32,7 +35,7 @@ export async function getNativeBalances(_endpoint: string, _params: GetNativeBal
   // 3. Send query to endpoint
   // 4. Parse and return balances with pagination info
   throw new Error(
-    'Bank module not available - CosmosBankV1beta1QueryAllBalancesService needs to be added to protobufs'
+    "Bank module not available - CosmosBankV1beta1QueryAllBalancesService needs to be added to protobufs",
   );
 }
 
@@ -40,7 +43,10 @@ export async function getNativeBalances(_endpoint: string, _params: GetNativeBal
 // This function should query all balances for a given address without pagination limits
 // Parameters: endpoint (RPC/API endpoint), address (account address to query)
 // Returns: Complete array of all coin balances for the address
-export async function getAllNativeBalances(_endpoint: string, _address: string): Promise<any[]> {
+export async function getAllNativeBalances(
+  _endpoint: string,
+  _address: string,
+): Promise<any[]> {
   // TODO: Implement when CosmosBankV1beta1QueryAllBalancesService is available
   // Steps needed:
   // 1. Import CosmosBankV1beta1QueryAllBalancesService from protobufs
@@ -48,6 +54,6 @@ export async function getAllNativeBalances(_endpoint: string, _address: string):
   // 3. Send multiple queries if needed to get all balances
   // 4. Aggregate and return complete balance list
   throw new Error(
-    'Bank module not available - CosmosBankV1beta1QueryAllBalancesService needs to be added to protobufs'
+    "Bank module not available - CosmosBankV1beta1QueryAllBalancesService needs to be added to protobufs",
   );
 }

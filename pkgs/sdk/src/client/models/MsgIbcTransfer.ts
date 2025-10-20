@@ -1,8 +1,8 @@
-import type { PlainMessage } from '@bufbuild/protobuf';
-import { IbcApplicationsTransferV1MsgTransfer as ProtoMsgIbcTransfer } from '../../protobufs';
+import type { PlainMessage } from "@bufbuild/protobuf";
+import { IbcApplicationsTransferV1MsgTransfer as ProtoMsgIbcTransfer } from "../../protobufs";
 
-import type { DeepPrettify } from '../../typeutils/prettify';
-import type { Adapter } from './Adapter';
+import type { DeepPrettify } from "../../typeutils/prettify";
+import type { Adapter } from "./Adapter";
 
 type Data = DeepPrettify<ProtoMsgIbcTransfer>;
 
@@ -19,7 +19,7 @@ export class MsgIbcTransfer implements Adapter {
 
   public toAmino() {
     return {
-      type: 'cosmos-sdk/MsgTransfer',
+      type: "cosmos-sdk/MsgTransfer",
       value: {
         source_port: this.data.sourcePort,
         source_channel: this.data.sourceChannel,
@@ -33,8 +33,10 @@ export class MsgIbcTransfer implements Adapter {
          */
         timeout_height: this.data.timeoutHeight
           ? {
-              revision_number: this.data.timeoutHeight.revisionNumber.toString(),
-              revision_height: this.data.timeoutHeight.revisionHeight.toString(),
+              revision_number:
+                this.data.timeoutHeight.revisionNumber.toString(),
+              revision_height:
+                this.data.timeoutHeight.revisionHeight.toString(),
             }
           : {},
         timeout_timestamp: this.data.timeoutTimestamp.toString(),

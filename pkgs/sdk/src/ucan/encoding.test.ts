@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 import {
   base64urlDecode,
   base64urlDecodeJSON,
@@ -7,33 +7,33 @@ import {
   base64urlEncodeJSON,
   base64urlEncodeString,
   isValidBase64url,
-} from './encoding';
+} from "./encoding";
 
-describe('base64url encoding utilities', () => {
-  describe('base64urlEncode', () => {
-    test('encodes empty Uint8Array', () => {
+describe("base64url encoding utilities", () => {
+  describe("base64urlEncode", () => {
+    test("encodes empty Uint8Array", () => {
       const data = new Uint8Array([]);
       const encoded = base64urlEncode(data);
-      expect(encoded).toBe('');
+      expect(encoded).toBe("");
     });
 
-    test('encodes simple binary data', () => {
+    test("encodes simple binary data", () => {
       const data = new Uint8Array([0x12, 0xab, 0xcd]);
       const encoded = base64urlEncode(data);
       expect(encoded).toBeTruthy();
-      expect(encoded).not.toContain('='); // No padding
-      expect(encoded).not.toContain('+'); // No + character
-      expect(encoded).not.toContain('/'); // No / character
+      expect(encoded).not.toContain("="); // No padding
+      expect(encoded).not.toContain("+"); // No + character
+      expect(encoded).not.toContain("/"); // No / character
     });
 
-    test('encodes UTF-8 text data', () => {
-      const text = 'Hello, UCAN!';
+    test("encodes UTF-8 text data", () => {
+      const text = "Hello, UCAN!";
       const data = new TextEncoder().encode(text);
       const encoded = base64urlEncode(data);
-      expect(encoded).toBe('SGVsbG8sIFVDQU4h');
+      expect(encoded).toBe("SGVsbG8sIFVDQU4h");
     });
 
-    test('produces URL-safe output', () => {
+    test("produces URL-safe output", () => {
       // Create data that would produce + or / in standard base64
       const data = new Uint8Array([0xff, 0xfe, 0xfd]);
       const encoded = base64urlEncode(data);
@@ -41,28 +41,28 @@ describe('base64url encoding utilities', () => {
     });
   });
 
-  describe('base64urlDecode', () => {
-    test('decodes empty string', () => {
-      const decoded = base64urlDecode('');
+  describe("base64urlDecode", () => {
+    test("decodes empty string", () => {
+      const decoded = base64urlDecode("");
       expect(decoded).toEqual(new Uint8Array([]));
     });
 
-    test('decodes unpadded base64url', () => {
-      const encoded = 'SGVsbG8sIFVDQU4h';
+    test("decodes unpadded base64url", () => {
+      const encoded = "SGVsbG8sIFVDQU4h";
       const decoded = base64urlDecode(encoded);
       const text = new TextDecoder().decode(decoded);
-      expect(text).toBe('Hello, UCAN!');
+      expect(text).toBe("Hello, UCAN!");
     });
 
-    test('decodes padded base64url', () => {
+    test("decodes padded base64url", () => {
       // Use a proper padded base64url string (using standard base64url with padding)
-      const encoded = 'SGk='; // "Hi" with padding
+      const encoded = "SGk="; // "Hi" with padding
       const decoded = base64urlDecode(encoded);
       const text = new TextDecoder().decode(decoded);
-      expect(text).toBe('Hi');
+      expect(text).toBe("Hi");
     });
 
-    test('handles URL-safe characters', () => {
+    test("handles URL-safe characters", () => {
       // Encode data that produces - and _ characters
       const data = new Uint8Array([0xff, 0xfe, 0xfd]);
       const encoded = base64urlEncode(data);
@@ -70,11 +70,11 @@ describe('base64url encoding utilities', () => {
       expect(decoded).toEqual(data);
     });
 
-    test('throws on invalid base64url', () => {
-      expect(() => base64urlDecode('invalid base64url!!!')).toThrow();
+    test("throws on invalid base64url", () => {
+      expect(() => base64urlDecode("invalid base64url!!!")).toThrow();
     });
 
-    test('roundtrip encoding/decoding', () => {
+    test("roundtrip encoding/decoding", () => {
       const original = new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
       const encoded = base64urlEncode(original);
       const decoded = base64urlDecode(encoded);
@@ -82,29 +82,29 @@ describe('base64url encoding utilities', () => {
     });
   });
 
-  describe('base64urlEncodeJSON', () => {
-    test('encodes simple object', () => {
-      const obj = { foo: 'bar', baz: 42 };
+  describe("base64urlEncodeJSON", () => {
+    test("encodes simple object", () => {
+      const obj = { foo: "bar", baz: 42 };
       const encoded = base64urlEncodeJSON(obj);
       expect(encoded).toBeTruthy();
-      expect(encoded).not.toContain('=');
+      expect(encoded).not.toContain("=");
     });
 
-    test('encodes UCAN header', () => {
+    test("encodes UCAN header", () => {
       const header = {
-        alg: 'EdDSA',
-        typ: 'JWT',
-        ucv: '0.10.0',
+        alg: "EdDSA",
+        typ: "JWT",
+        ucv: "0.10.0",
       };
       const encoded = base64urlEncodeJSON(header);
       expect(encoded).toMatch(/^[A-Za-z0-9_-]+$/);
     });
 
-    test('encodes nested objects', () => {
+    test("encodes nested objects", () => {
       const obj = {
         outer: {
           inner: {
-            value: 'nested',
+            value: "nested",
           },
         },
       };
@@ -112,44 +112,44 @@ describe('base64url encoding utilities', () => {
       expect(encoded).toBeTruthy();
     });
 
-    test('encodes arrays', () => {
-      const arr = [1, 2, 3, 'four', { five: 5 }];
+    test("encodes arrays", () => {
+      const arr = [1, 2, 3, "four", { five: 5 }];
       const encoded = base64urlEncodeJSON(arr);
       expect(encoded).toBeTruthy();
     });
   });
 
-  describe('base64urlDecodeJSON', () => {
-    test('decodes simple object', () => {
-      const original = { foo: 'bar', baz: 42 };
+  describe("base64urlDecodeJSON", () => {
+    test("decodes simple object", () => {
+      const original = { foo: "bar", baz: 42 };
       const encoded = base64urlEncodeJSON(original);
       const decoded = base64urlDecodeJSON(encoded);
       expect(decoded).toEqual(original);
     });
 
-    test('decodes UCAN header with type safety', () => {
+    test("decodes UCAN header with type safety", () => {
       interface UCANHeader {
         alg: string;
         typ: string;
         ucv: string;
       }
       const original: UCANHeader = {
-        alg: 'EdDSA',
-        typ: 'JWT',
-        ucv: '0.10.0',
+        alg: "EdDSA",
+        typ: "JWT",
+        ucv: "0.10.0",
       };
       const encoded = base64urlEncodeJSON(original);
       const decoded = base64urlDecodeJSON<UCANHeader>(encoded);
-      expect(decoded.alg).toBe('EdDSA');
-      expect(decoded.typ).toBe('JWT');
-      expect(decoded.ucv).toBe('0.10.0');
+      expect(decoded.alg).toBe("EdDSA");
+      expect(decoded.typ).toBe("JWT");
+      expect(decoded.ucv).toBe("0.10.0");
     });
 
-    test('roundtrip with nested objects', () => {
+    test("roundtrip with nested objects", () => {
       const original = {
         outer: {
           inner: {
-            value: 'nested',
+            value: "nested",
             number: 123,
           },
         },
@@ -159,122 +159,122 @@ describe('base64url encoding utilities', () => {
       expect(decoded).toEqual(original);
     });
 
-    test('throws on invalid JSON', () => {
-      const invalidJSON = base64urlEncodeString('not valid json {');
+    test("throws on invalid JSON", () => {
+      const invalidJSON = base64urlEncodeString("not valid json {");
       expect(() => base64urlDecodeJSON(invalidJSON)).toThrow();
     });
   });
 
-  describe('base64urlEncodeString', () => {
-    test('encodes empty string', () => {
-      const encoded = base64urlEncodeString('');
-      expect(encoded).toBe('');
+  describe("base64urlEncodeString", () => {
+    test("encodes empty string", () => {
+      const encoded = base64urlEncodeString("");
+      expect(encoded).toBe("");
     });
 
-    test('encodes ASCII text', () => {
-      const encoded = base64urlEncodeString('Hello, UCAN!');
-      expect(encoded).toBe('SGVsbG8sIFVDQU4h');
+    test("encodes ASCII text", () => {
+      const encoded = base64urlEncodeString("Hello, UCAN!");
+      expect(encoded).toBe("SGVsbG8sIFVDQU4h");
     });
 
-    test('encodes Unicode text', () => {
-      const text = 'Hello, 世界! 🌍';
+    test("encodes Unicode text", () => {
+      const text = "Hello, 世界! 🌍";
       const encoded = base64urlEncodeString(text);
       expect(encoded).toBeTruthy();
       expect(encoded).toMatch(/^[A-Za-z0-9_-]+$/);
     });
 
-    test('encodes special characters', () => {
-      const text = 'Special: @#$%^&*()';
+    test("encodes special characters", () => {
+      const text = "Special: @#$%^&*()";
       const encoded = base64urlEncodeString(text);
       expect(encoded).toBeTruthy();
     });
   });
 
-  describe('base64urlDecodeString', () => {
-    test('decodes empty string', () => {
-      const decoded = base64urlDecodeString('');
-      expect(decoded).toBe('');
+  describe("base64urlDecodeString", () => {
+    test("decodes empty string", () => {
+      const decoded = base64urlDecodeString("");
+      expect(decoded).toBe("");
     });
 
-    test('decodes ASCII text', () => {
-      const decoded = base64urlDecodeString('SGVsbG8sIFVDQU4h');
-      expect(decoded).toBe('Hello, UCAN!');
+    test("decodes ASCII text", () => {
+      const decoded = base64urlDecodeString("SGVsbG8sIFVDQU4h");
+      expect(decoded).toBe("Hello, UCAN!");
     });
 
-    test('roundtrip with Unicode', () => {
-      const original = 'Hello, 世界! 🌍';
+    test("roundtrip with Unicode", () => {
+      const original = "Hello, 世界! 🌍";
       const encoded = base64urlEncodeString(original);
       const decoded = base64urlDecodeString(encoded);
       expect(decoded).toBe(original);
     });
 
-    test('roundtrip with special characters', () => {
-      const original = 'Special: @#$%^&*()';
+    test("roundtrip with special characters", () => {
+      const original = "Special: @#$%^&*()";
       const encoded = base64urlEncodeString(original);
       const decoded = base64urlDecodeString(encoded);
       expect(decoded).toBe(original);
     });
   });
 
-  describe('isValidBase64url', () => {
-    test('accepts valid base64url without padding', () => {
-      expect(isValidBase64url('SGVsbG8')).toBe(true);
-      expect(isValidBase64url('SGVsbG8sIFVDQU4h')).toBe(true);
+  describe("isValidBase64url", () => {
+    test("accepts valid base64url without padding", () => {
+      expect(isValidBase64url("SGVsbG8")).toBe(true);
+      expect(isValidBase64url("SGVsbG8sIFVDQU4h")).toBe(true);
     });
 
-    test('accepts valid base64url with padding', () => {
-      expect(isValidBase64url('SGVsbG8=')).toBe(true);
-      expect(isValidBase64url('SGVsbG8==')).toBe(true);
+    test("accepts valid base64url with padding", () => {
+      expect(isValidBase64url("SGVsbG8=")).toBe(true);
+      expect(isValidBase64url("SGVsbG8==")).toBe(true);
     });
 
-    test('accepts URL-safe characters', () => {
-      expect(isValidBase64url('abc-def_ghi')).toBe(true);
-      expect(isValidBase64url('ABC123-_')).toBe(true);
+    test("accepts URL-safe characters", () => {
+      expect(isValidBase64url("abc-def_ghi")).toBe(true);
+      expect(isValidBase64url("ABC123-_")).toBe(true);
     });
 
-    test('rejects invalid characters', () => {
-      expect(isValidBase64url('hello+world')).toBe(false); // + not allowed
-      expect(isValidBase64url('hello/world')).toBe(false); // / not allowed
-      expect(isValidBase64url('hello world')).toBe(false); // space not allowed
-      expect(isValidBase64url('hello!')).toBe(false); // ! not allowed
+    test("rejects invalid characters", () => {
+      expect(isValidBase64url("hello+world")).toBe(false); // + not allowed
+      expect(isValidBase64url("hello/world")).toBe(false); // / not allowed
+      expect(isValidBase64url("hello world")).toBe(false); // space not allowed
+      expect(isValidBase64url("hello!")).toBe(false); // ! not allowed
     });
 
-    test('accepts empty string (valid for empty array)', () => {
-      expect(isValidBase64url('')).toBe(true);
+    test("accepts empty string (valid for empty array)", () => {
+      expect(isValidBase64url("")).toBe(true);
     });
 
-    test('rejects too much padding', () => {
-      expect(isValidBase64url('SGVsbG8===')).toBe(false);
+    test("rejects too much padding", () => {
+      expect(isValidBase64url("SGVsbG8===")).toBe(false);
     });
 
-    test('accepts empty array encoding', () => {
+    test("accepts empty array encoding", () => {
       const encoded = base64urlEncode(new Uint8Array([]));
       expect(isValidBase64url(encoded)).toBe(true);
     });
   });
 
-  describe('JWT compatibility', () => {
-    test('encodes JWT header correctly', () => {
+  describe("JWT compatibility", () => {
+    test("encodes JWT header correctly", () => {
       const header = {
-        alg: 'EdDSA',
-        typ: 'JWT',
-        ucv: '0.10.0',
+        alg: "EdDSA",
+        typ: "JWT",
+        ucv: "0.10.0",
       };
       const encoded = base64urlEncodeJSON(header);
 
       // JWT spec requires no padding
-      expect(encoded).not.toContain('=');
+      expect(encoded).not.toContain("=");
 
       // Verify can decode back
       const decoded = base64urlDecodeJSON(encoded);
       expect(decoded).toEqual(header);
     });
 
-    test('creates valid JWT token structure', () => {
-      const header = { alg: 'EdDSA', typ: 'JWT', ucv: '0.10.0' };
+    test("creates valid JWT token structure", () => {
+      const header = { alg: "EdDSA", typ: "JWT", ucv: "0.10.0" };
       const payload = {
-        iss: 'did:key:z6Mk...',
-        aud: 'did:key:z6Mk...',
+        iss: "did:key:z6Mk...",
+        aud: "did:key:z6Mk...",
         exp: 1234567890,
         att: [],
       };
@@ -287,14 +287,14 @@ describe('base64url encoding utilities', () => {
       const jwt = `${encodedHeader}.${encodedPayload}.${encodedSignature}`;
 
       // Verify JWT structure
-      const parts = jwt.split('.');
+      const parts = jwt.split(".");
       expect(parts).toHaveLength(3);
       expect(parts.every((part) => isValidBase64url(part))).toBe(true);
     });
   });
 
-  describe('edge cases', () => {
-    test('handles large payloads', () => {
+  describe("edge cases", () => {
+    test("handles large payloads", () => {
       const largeArray = new Uint8Array(10000);
       for (let i = 0; i < largeArray.length; i++) {
         largeArray[i] = i % 256;
@@ -305,7 +305,7 @@ describe('base64url encoding utilities', () => {
       expect(decoded).toEqual(largeArray);
     });
 
-    test('handles all byte values', () => {
+    test("handles all byte values", () => {
       const allBytes = new Uint8Array(256);
       for (let i = 0; i < 256; i++) {
         allBytes[i] = i;
@@ -316,14 +316,14 @@ describe('base64url encoding utilities', () => {
       expect(decoded).toEqual(allBytes);
     });
 
-    test('handles deep JSON structures', () => {
+    test("handles deep JSON structures", () => {
       const deep = {
         level1: {
           level2: {
             level3: {
               level4: {
                 level5: {
-                  value: 'deep',
+                  value: "deep",
                   array: [1, 2, 3],
                   bool: true,
                   null: null,

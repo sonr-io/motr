@@ -1,4 +1,4 @@
-import type { PlainMessage } from '@bufbuild/protobuf';
+import type { PlainMessage } from "@bufbuild/protobuf";
 
 // TODO: CosmosStakingV1beta1MsgBeginRedelegate not available in protobufs
 // // TODO: Missing from protobufs
@@ -6,8 +6,8 @@ import type { PlainMessage } from '@bufbuild/protobuf';
 const _ProtoMsgBeginRedelegate: any = {};
 type ProtoMsgBeginRedelegate = any;
 
-import type { DeepPrettify } from '../../typeutils/prettify';
-import type { Adapter } from './Adapter';
+import type { DeepPrettify } from "../../typeutils/prettify";
+import type { Adapter } from "./Adapter";
 
 type Data = DeepPrettify<ProtoMsgBeginRedelegate>;
 
@@ -32,7 +32,7 @@ export class MsgBeginRedelegate implements Adapter {
   // This method converts the redelegation message to amino JSON format
   public toAmino() {
     return {
-      type: 'cosmos-sdk/MsgBeginRedelegate',
+      type: "cosmos-sdk/MsgBeginRedelegate",
       value: {
         delegator_address: this.data.delegatorAddress,
         validator_src_address: this.data.validatorSrcAddress,

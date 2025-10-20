@@ -1,4 +1,4 @@
-import type { PlainMessage } from '@bufbuild/protobuf';
+import type { PlainMessage } from "@bufbuild/protobuf";
 import {
   type Adapter,
   calculateFee,
@@ -9,16 +9,16 @@ import {
   simulateTx,
   Tx,
   toBaseAccount,
-} from '@sonr.io/sdk/client';
+} from "@sonr.io/sdk/client";
 import {
   CosmosBaseV1beta1Coin as Coin,
   type CosmosTxV1beta1Fee as Fee,
   type CosmosTxV1beta1GetTxResponse as GetTxResponse,
-} from '@sonr.io/sdk/protobufs';
+} from "@sonr.io/sdk/protobufs";
 
-import type { WalletName } from '../constants/WalletName';
-import type { WalletType } from '../constants/WalletType';
-import { extractExpectedAccountSequence } from '../utils/sequence';
+import type { WalletName } from "../constants/WalletName";
+import type { WalletType } from "../constants/WalletType";
+import { extractExpectedAccountSequence } from "../utils/sequence";
 
 export type UnsignedTx = {
   msgs: Adapter[];
@@ -26,7 +26,10 @@ export type UnsignedTx = {
   timeoutHeight?: bigint | undefined;
 };
 
-export type PollTxOptions = Pick<PollTxParams, 'intervalSeconds' | 'maxAttempts'>;
+export type PollTxOptions = Pick<
+  PollTxParams,
+  "intervalSeconds" | "maxAttempts"
+>;
 
 export type SignArbitraryResponse = {
   data: string;
@@ -66,7 +69,7 @@ export abstract class ConnectedWallet {
     pubKey: Secp256k1PubKey,
     address: string,
     rpc: string,
-    gasPrice: Coin
+    gasPrice: Coin,
   ) {
     this.id = id;
     this.type = type;
@@ -106,7 +109,10 @@ export abstract class ConnectedWallet {
    *
    * @throws if the tx fails to simulate.
    */
-  public async estimateFee({ msgs, memo }: UnsignedTx, feeMultiplier = 1.4): Promise<Fee> {
+  public async estimateFee(
+    { msgs, memo }: UnsignedTx,
+    feeMultiplier = 1.4,
+  ): Promise<Fee> {
     const estimate = async () => {
       const { sequence } = await this.getAuthInfo(true);
       const { gasInfo } = await simulateTx(this.rpc, {
@@ -115,7 +121,7 @@ export abstract class ConnectedWallet {
         tx: new Tx({ chainId: this.chainId, pubKey: this.pubKey, msgs: msgs }),
       });
       if (!gasInfo) {
-        throw new Error('Unable to estimate fee');
+        throw new Error("Unable to estimate fee");
       }
       return calculateFee(gasInfo, this.gasPrice, feeMultiplier);
     };
@@ -153,7 +159,12 @@ export abstract class ConnectedWallet {
    */
   public async broadcastTx(unsignedTx: UnsignedTx, fee: Fee): Promise<string> {
     const { accountNumber, sequence } = await this.getAuthInfo(true);
-    const hash = await this.signAndBroadcastTx(unsignedTx, fee, accountNumber, sequence);
+    const hash = await this.signAndBroadcastTx(
+      unsignedTx,
+      fee,
+      accountNumber,
+      sequence,
+    );
     // Greedily increment the sequence for the next tx. This may result in the wrong
     // sequence, but if `estimateFee` was called prior to this, it will be corrected
     this.sequence = sequence + 1n;
@@ -168,7 +179,7 @@ export abstract class ConnectedWallet {
    */
   public async pollTx(
     txHash: string,
-    { maxAttempts, intervalSeconds }: PollTxOptions = {}
+    { maxAttempts, intervalSeconds }: PollTxOptions = {},
   ): Promise<Required<GetTxResponse>> {
     return pollTx(this.rpc, {
       hash: txHash,
@@ -186,10 +197,10 @@ export abstract class ConnectedWallet {
   public async broadcastTxSync(
     unsignedTx: UnsignedTx,
     feeOrFeeMultiplier: Fee | number = 1.4,
-    pollOpts: PollTxOptions = {}
+    pollOpts: PollTxOptions = {},
   ): Promise<Required<GetTxResponse>> {
     const fee =
-      typeof feeOrFeeMultiplier === 'number'
+      typeof feeOrFeeMultiplier === "number"
         ? await this.estimateFee(unsignedTx, feeOrFeeMultiplier)
         : feeOrFeeMultiplier;
     const txHash = await this.broadcastTx(unsignedTx, fee);
@@ -214,6 +225,6 @@ export abstract class ConnectedWallet {
     unsignedTx: UnsignedTx,
     fee: Fee,
     accountNumber: bigint,
-    sequence: bigint
+    sequence: bigint,
   ): Promise<string>;
 }
