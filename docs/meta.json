@@ -3,13 +3,5 @@
   "description": "Sonr Architecture and API Reference",
   "root": true,
   "icon": "Terminal",
-  "pages": [
-    "index",
-    "changelog",
-    "---Core---",
-    "x",
-    "tokenomics",
-    "whitepaper",
-    "---API---"
-  ]
+  "pages": ["index", "changelog", "---Core---", "x", "tokenomics", "whitepaper", "---API---"]
 }

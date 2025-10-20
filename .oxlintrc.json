@@ -1,48 +1,48 @@
 {
-	"$schema": "https://oxc-project.github.io/schemas/oxlintrc.json",
-	"categories": {
-		"correctness": "error",
-		"suspicious": "warn",
-		"pedantic": "off",
-		"style": "off",
-		"nursery": "off",
-		"restriction": "off"
-	},
-	"overrides": [
-		{
-			"files": [
-				"**/protobufs/**",
-				"**/routeTree.gen.ts",
-				"**/*.wasm",
-				"**/wasm_exec.js",
-				"**/pkgs/react/src/hooks/index.ts",
-				"**/pkgs/react/src/context/index.ts",
-				"**/pkgs/react/src/components/index.ts",
-				"**/pkgs/browser/src/webauthn/index.ts",
-				"**/pkgs/browser/src/storage/index.ts",
-				"**/pkgs/browser/src/crypto/index.ts",
-				"**/pkgs/browser/src/worker/index.ts"
-			],
-			"categories": {
-				"correctness": "off",
-				"suspicious": "off"
-			}
-		},
-		{
-			"files": ["packages/**/*.ts", "packages/**/*.tsx", "pkgs/**/*.ts", "pkgs/**/*.tsx"],
-			"rules": {
-				"typescript/no-explicit-any": "off",
-				"no-unused-vars": "warn",
-				"no-static-only-class": "off",
-				"unicorn/no-empty-file": "off"
-			}
-		},
-		{
-			"files": ["apps/**/*.ts", "apps/**/*.tsx"],
-			"rules": {
-				"prefer-template": "warn",
-				"no-template-curly-in-string": "warn"
-			}
-		}
-	]
+  "$schema": "https://oxc-project.github.io/schemas/oxlintrc.json",
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "pedantic": "off",
+    "style": "off",
+    "nursery": "off",
+    "restriction": "off"
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/protobufs/**",
+        "**/routeTree.gen.ts",
+        "**/*.wasm",
+        "**/wasm_exec.js",
+        "**/pkgs/react/src/hooks/index.ts",
+        "**/pkgs/react/src/context/index.ts",
+        "**/pkgs/react/src/components/index.ts",
+        "**/pkgs/browser/src/webauthn/index.ts",
+        "**/pkgs/browser/src/storage/index.ts",
+        "**/pkgs/browser/src/crypto/index.ts",
+        "**/pkgs/browser/src/worker/index.ts"
+      ],
+      "categories": {
+        "correctness": "off",
+        "suspicious": "off"
+      }
+    },
+    {
+      "files": ["packages/**/*.ts", "packages/**/*.tsx", "pkgs/**/*.ts", "pkgs/**/*.tsx"],
+      "rules": {
+        "typescript/no-explicit-any": "off",
+        "no-unused-vars": "warn",
+        "no-static-only-class": "off",
+        "unicorn/no-empty-file": "off"
+      }
+    },
+    {
+      "files": ["apps/**/*.ts", "apps/**/*.tsx"],
+      "rules": {
+        "prefer-template": "warn",
+        "no-template-curly-in-string": "warn"
+      }
+    }
+  ]
 }
