@@ -2,11 +2,7 @@
 export { cn } from '../lib/utils';
 // Export Animate-ui components
 export { HoleBackground } from './backgrounds/hole';
-export {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from './ui/alert';
+export { Alert, AlertDescription, AlertTitle } from './ui/alert';
 
 export { Badge, badgeVariants } from './ui/badge';
 export {
@@ -112,11 +108,7 @@ export { Input } from './ui/input';
 export { Label } from './ui/label';
 
 // Export Popover components
-export {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from './ui/popover';
+export { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 // Export Progress component
 export { Progress } from './ui/progress';
 // Export Select components
@@ -182,12 +174,7 @@ export {
   TableHeader,
   TableRow,
 } from './ui/table';
-export {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from './ui/tabs';
+export { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 export { Textarea } from './ui/textarea';
 export { Toggle, toggleVariants } from './ui/toggle';
 // Export Tooltip components
