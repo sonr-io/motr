@@ -1,5 +1,11 @@
 // Export utility functions
 export { cn } from "../lib/utils";
+
+// Export icon components and types
+export { LottieIcon, type LottieIconProps } from "./ui/lottie-icon";
+export { SvgIcon, type SvgIconProps } from "./ui/svg-icon";
+export type { LucideIcon } from "./ui/icon-types";
+
 // Export Animate-ui components
 export { HoleBackground } from "./backgrounds/hole";
 export { Alert, AlertDescription, AlertTitle } from "./ui/alert";
@@ -104,6 +110,7 @@ export {
   GlassCardHeader,
   GlassCardTitle,
 } from "./ui/glass-card";
+export { Icon, iconVariants } from "./ui/icon";
 export { Input } from "./ui/input";
 export { Label } from "./ui/label";
 
@@ -184,3 +191,24 @@ export {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
+
+
+// No generated icons found
+
+// No generated icons found
+
+// No generated icons found
+
+// No generated icons found
+
+// No generated icons found
+
+// No generated icons found
+
+// No generated icons found
+
+// No generated icons found
+
+// No generated icons found
+
+// No generated icons found

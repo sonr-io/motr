@@ -5,6 +5,7 @@
   "shell": {
     "init_hook": ["bun install"],
     "scripts": {
+      "build": "bun run build",
       "bump": "cz --no-raise 6,21 bump --yes --increment PATCH"
     }
   }
