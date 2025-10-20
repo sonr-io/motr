@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import type { StoredUCANToken, StoredVaultState } from '@sonr.io/enclave';
+import { useCallback, useEffect, useState } from 'react';
 import { useEnclaveContext } from '../providers/EnclaveProvider';
-import type { StoredVaultState, StoredUCANToken } from '@sonr.io/enclave';
 import type { UseEnclaveStorageResult, UseUCANTokensResult } from '../types';
 
 /**

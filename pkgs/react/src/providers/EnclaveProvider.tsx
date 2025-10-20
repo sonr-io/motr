@@ -1,5 +1,5 @@
-import { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { VaultClient, createVaultClient, VaultError } from '@sonr.io/enclave';
+import { createVaultClient, type VaultClient, VaultError } from '@sonr.io/enclave';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import type { EnclaveProviderProps, EnclaveState } from '../types';
 
 /**
@@ -20,7 +20,11 @@ const EnclaveContext = createContext<EnclaveContextValue | undefined>(undefined)
  * Enclave provider component
  * Manages enclave client lifecycle and state
  */
-export function EnclaveProvider({ children, config, client: externalClient }: EnclaveProviderProps) {
+export function EnclaveProvider({
+  children,
+  config,
+  client: externalClient,
+}: EnclaveProviderProps) {
   const [client, setClient] = useState<VaultClient | null>(externalClient || null);
   const [state, setState] = useState<EnclaveState>({
     isReady: false,

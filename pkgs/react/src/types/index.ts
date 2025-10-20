@@ -2,8 +2,13 @@
  * Type definitions for @sonr.io/react hooks and providers
  */
 
+import type {
+  StoredUCANToken,
+  StoredVaultState,
+  VaultClient,
+  VaultConfigWithStorage,
+} from '@sonr.io/enclave';
 import type { ReactNode } from 'react';
-import type { VaultClient, VaultConfigWithStorage, StoredUCANToken, StoredVaultState } from '@sonr.io/enclave';
 
 /**
  * Enclave state

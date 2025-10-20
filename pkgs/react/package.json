@@ -29,10 +29,18 @@
   },
   "typesVersions": {
     "*": {
-      "*": ["./dist/index.d.ts"],
-      "hooks": ["./dist/hooks/index.d.ts"],
-      "providers": ["./dist/providers/index.d.ts"],
-      "types": ["./dist/types/index.d.ts"]
+      "*": [
+        "./dist/index.d.ts"
+      ],
+      "hooks": [
+        "./dist/hooks/index.d.ts"
+      ],
+      "providers": [
+        "./dist/providers/index.d.ts"
+      ],
+      "types": [
+        "./dist/types/index.d.ts"
+      ]
     }
   },
   "files": [
@@ -49,9 +57,9 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
-    "lint": "oxlint",
-    "format": "oxlint --fix",
-    "check": "oxlint && tsc --noEmit",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "check": "biome check --write . && tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist *.tsbuildinfo",
     "clean:all": "rm -rf dist node_modules *.tsbuildinfo",

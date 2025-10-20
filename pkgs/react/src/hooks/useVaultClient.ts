@@ -1,15 +1,15 @@
+import type {
+  GetIssuerDIDResponse,
+  NewAttenuatedTokenRequest,
+  NewOriginTokenRequest,
+  SignDataRequest,
+  SignDataResponse,
+  UCANTokenResponse,
+  VerifyDataRequest,
+  VerifyDataResponse,
+} from '@sonr.io/enclave';
 import { useCallback, useState } from 'react';
 import { useEnclaveContext } from '../providers/EnclaveProvider';
-import type {
-  NewOriginTokenRequest,
-  NewAttenuatedTokenRequest,
-  SignDataRequest,
-  VerifyDataRequest,
-  UCANTokenResponse,
-  SignDataResponse,
-  VerifyDataResponse,
-  GetIssuerDIDResponse,
-} from '@sonr.io/enclave';
 
 /**
  * Hook result for vault client operations

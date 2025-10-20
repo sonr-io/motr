@@ -1,6 +1,12 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import type {
+  BroadcastTxRequest,
+  BroadcastTxResponse,
+  SignDataRequest,
+  SignDataResponse,
+  UseMutationResult,
+} from '../types';
 import { useEnclaveClient } from './useVaultClient';
-import type { UseMutationResult, SignDataRequest, SignDataResponse, BroadcastTxRequest, BroadcastTxResponse } from '../types';
 
 /**
  * Hook for signing data with the enclave

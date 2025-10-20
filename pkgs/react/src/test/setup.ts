@@ -2,14 +2,14 @@
  * Test setup for @sonr.io/react
  */
 
-import { afterEach, vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
+import { afterEach, vi } from 'vitest';
 import '@testing-library/jest-dom';
 
 // Setup fake IndexedDB for tests
-// @ts-ignore - fake-indexeddb types
+// @ts-expect-error - fake-indexeddb types
 import FDBFactory from 'fake-indexeddb/lib/FDBFactory';
-// @ts-ignore - fake-indexeddb types
+// @ts-expect-error - fake-indexeddb types
 import FDBKeyRange from 'fake-indexeddb/lib/FDBKeyRange';
 
 globalThis.indexedDB = new FDBFactory() as IDBFactory;
