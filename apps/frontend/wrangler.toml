@@ -42,19 +42,9 @@ ip = "0.0.0.0"
 command = "bunx --bun vite build && tsc"
 cwd = "."
 
-# Durable Objects from @pkgs/cloudflare
-[[durable_objects.bindings]]
-name = "COUNTER"
-class_name = "CounterDurable"
-
 [[durable_objects.bindings]]
 name = "SONR_IDENTITY"
 class_name = "SonrIdentityDurable"
-
-# Durable Object migrations
-[[migrations]]
-tag = "v1"
-new_classes = ["CounterDurable"]
 
 [[migrations]]
 tag = "v2"
@@ -69,7 +59,8 @@ class_name = "OTPEmailWorkflow"
 # KV namespace for OTP storage
 [[kv_namespaces]]
 binding = "OTP_STORE"
-id = "otp-store-dev"
+id = "0943b06e4f5b46799d4c16b794d62279"
+preview_id = "cf5b397898a34b01a62fd92aa82f18a6"
 
 # Environment variables for email sending
 [vars]
