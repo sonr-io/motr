@@ -4,6 +4,10 @@
     "path": "bun.lock"
   },
   {
+    "scope": "docs",
+    "path": "docs"
+  },
+  {
     "scope": "workspace",
     "path": "turbo.json"
   },
@@ -30,18 +34,27 @@
     "scope": "vault",
     "package": "@sonr.io/vault",
     "path": "libs/vault",
-    "uses": ["sdk"]
+    "uses": [
+      "sdk"
+    ]
   },
   {
     "scope": "react",
     "package": "@sonr.io/react",
     "path": "pkgs/react",
-    "uses": ["enclave", "sdk"]
+    "uses": [
+      "enclave",
+      "sdk"
+    ]
   },
   {
     "scope": "frontend",
     "package": "@sonr.io/frontend",
     "path": "apps/frontend",
-    "uses": ["react", "ui", "vault"]
+    "uses": [
+      "react",
+      "ui",
+      "vault"
+    ]
   }
 ]
