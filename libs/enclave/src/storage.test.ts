@@ -1,9 +1,9 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { AccountVaultDatabase, VaultStorageManager } from './storage.js';
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { AccountVaultDatabase, VaultStorageManager } from "./storage.js";
 
-describe('VaultStorageManager', () => {
+describe("VaultStorageManager", () => {
   let storageManager: VaultStorageManager;
-  const testAccountAddress = 'sonr1test123abc';
+  const testAccountAddress = "sonr1test123abc";
 
   beforeEach(() => {
     storageManager = new VaultStorageManager({
@@ -16,22 +16,22 @@ describe('VaultStorageManager', () => {
     await storageManager.closeAll();
   });
 
-  describe('Database Management', () => {
-    it('should create a database for an account', async () => {
+  describe("Database Management", () => {
+    it("should create a database for an account", async () => {
       const db = await storageManager.getDatabase(testAccountAddress);
       expect(db).toBeDefined();
       expect(db).toBeInstanceOf(AccountVaultDatabase);
     });
 
-    it('should reuse existing database for the same account', async () => {
+    it("should reuse existing database for the same account", async () => {
       const db1 = await storageManager.getDatabase(testAccountAddress);
       const db2 = await storageManager.getDatabase(testAccountAddress);
       expect(db1).toBe(db2);
     });
 
-    it('should create separate databases for different accounts', async () => {
-      const account1 = 'sonr1account1';
-      const account2 = 'sonr1account2';
+    it("should create separate databases for different accounts", async () => {
+      const account1 = "sonr1account1";
+      const account2 = "sonr1account2";
 
       const db1 = await storageManager.getDatabase(account1);
       const db2 = await storageManager.getDatabase(account2);
@@ -39,11 +39,13 @@ describe('VaultStorageManager', () => {
       expect(db1).not.toBe(db2);
     });
 
-    it('should throw error when account address is not provided', async () => {
-      await expect(storageManager.getDatabase('')).rejects.toThrow('Account address is required');
+    it("should throw error when account address is not provided", async () => {
+      await expect(storageManager.getDatabase("")).rejects.toThrow(
+        "Account address is required",
+      );
     });
 
-    it('should remove a database for an account', async () => {
+    it("should remove a database for an account", async () => {
       const db = await storageManager.getDatabase(testAccountAddress);
       expect(db).toBeDefined();
 
@@ -55,10 +57,10 @@ describe('VaultStorageManager', () => {
     });
   });
 
-  describe('Storage Persistence', () => {
-    it('should request persistent storage when enabled', async () => {
+  describe("Storage Persistence", () => {
+    it("should request persistent storage when enabled", async () => {
       const mockPersist = vi.fn().mockResolvedValue(true);
-      Object.defineProperty(global, 'navigator', {
+      Object.defineProperty(global, "navigator", {
         value: {
           storage: {
             persist: mockPersist,
@@ -72,8 +74,8 @@ describe('VaultStorageManager', () => {
       expect(mockPersist).toHaveBeenCalled();
     });
 
-    it('should handle missing storage API gracefully', async () => {
-      Object.defineProperty(global, 'navigator', {
+    it("should handle missing storage API gracefully", async () => {
+      Object.defineProperty(global, "navigator", {
         value: {},
         configurable: true,
       });
@@ -82,9 +84,9 @@ describe('VaultStorageManager', () => {
       expect(result).toBe(false);
     });
 
-    it('should check if storage is persisted', async () => {
+    it("should check if storage is persisted", async () => {
       const mockPersisted = vi.fn().mockResolvedValue(true);
-      Object.defineProperty(global, 'navigator', {
+      Object.defineProperty(global, "navigator", {
         value: {
           storage: {
             persisted: mockPersisted,
@@ -98,13 +100,13 @@ describe('VaultStorageManager', () => {
       expect(mockPersisted).toHaveBeenCalled();
     });
 
-    it('should get storage estimate', async () => {
+    it("should get storage estimate", async () => {
       const mockEstimate = {
         usage: 1024 * 1024 * 10, // 10MB
         quota: 1024 * 1024 * 100, // 100MB
       };
 
-      Object.defineProperty(global, 'navigator', {
+      Object.defineProperty(global, "navigator", {
         value: {
           storage: {
             estimate: vi.fn().mockResolvedValue(mockEstimate),
@@ -118,8 +120,8 @@ describe('VaultStorageManager', () => {
     });
   });
 
-  describe('Cleanup Operations', () => {
-    it('should clean up expired data', async () => {
+  describe("Cleanup Operations", () => {
+    it("should clean up expired data", async () => {
       const db = await storageManager.getDatabase(testAccountAddress);
 
       // Mock the database tables
@@ -152,9 +154,9 @@ describe('VaultStorageManager', () => {
       expect(mockStateModify).toHaveBeenCalled();
     });
 
-    it('should close all databases', async () => {
-      const db1 = await storageManager.getDatabase('account1');
-      const db2 = await storageManager.getDatabase('account2');
+    it("should close all databases", async () => {
+      const db1 = await storageManager.getDatabase("account1");
+      const db2 = await storageManager.getDatabase("account2");
 
       const mockClose1 = vi.fn();
       const mockClose2 = vi.fn();
@@ -169,9 +171,9 @@ describe('VaultStorageManager', () => {
     });
   });
 
-  describe('Persistence Status', () => {
+  describe("Persistence Status", () => {
     it('should return "persisted" when storage is already persisted', async () => {
-      Object.defineProperty(global, 'navigator', {
+      Object.defineProperty(global, "navigator", {
         value: {
           storage: {
             persisted: vi.fn().mockResolvedValue(true),
@@ -182,11 +184,11 @@ describe('VaultStorageManager', () => {
       });
 
       const status = await storageManager.tryPersistWithoutPromptingUser();
-      expect(status).toBe('persisted');
+      expect(status).toBe("persisted");
     });
 
     it('should return "prompt" when persistence requires user interaction', async () => {
-      Object.defineProperty(global, 'navigator', {
+      Object.defineProperty(global, "navigator", {
         value: {
           storage: {
             persisted: vi.fn().mockResolvedValue(false),
@@ -197,36 +199,36 @@ describe('VaultStorageManager', () => {
       });
 
       const status = await storageManager.tryPersistWithoutPromptingUser();
-      expect(status).toBe('prompt');
+      expect(status).toBe("prompt");
     });
 
     it('should return "never" when storage API is not available', async () => {
-      Object.defineProperty(global, 'navigator', {
+      Object.defineProperty(global, "navigator", {
         value: {},
         configurable: true,
       });
 
       const status = await storageManager.tryPersistWithoutPromptingUser();
-      expect(status).toBe('never');
+      expect(status).toBe("never");
     });
   });
 });
 
-describe('AccountVaultDatabase', () => {
-  const testAccountAddress = 'sonr1test123abc';
+describe("AccountVaultDatabase", () => {
+  const testAccountAddress = "sonr1test123abc";
 
-  it('should create database with correct name', () => {
+  it("should create database with correct name", () => {
     const db = new AccountVaultDatabase(testAccountAddress);
     expect(db.name).toBe(`vault_${testAccountAddress}`);
   });
 
-  it('should have correct table definitions', () => {
+  it("should have correct table definitions", () => {
     const db = new AccountVaultDatabase(testAccountAddress);
 
     // Verify table properties exist
-    expect(db).toHaveProperty('state');
-    expect(db).toHaveProperty('tokens');
-    expect(db).toHaveProperty('sessions');
-    expect(db).toHaveProperty('metadata');
+    expect(db).toHaveProperty("state");
+    expect(db).toHaveProperty("tokens");
+    expect(db).toHaveProperty("sessions");
+    expect(db).toHaveProperty("metadata");
   });
 });

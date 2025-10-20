@@ -13,10 +13,10 @@
  * @see https://vitejs.dev/guide/features.html#web-workers
  */
 
-import { existsSync, readFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import type { Plugin, ResolvedConfig } from 'vite';
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import type { Plugin, ResolvedConfig } from "vite";
 
 export interface EnclavePluginOptions {
   /**
@@ -64,10 +64,10 @@ export interface EnclavePluginOptions {
 
 export function enclavePlugin(options: EnclavePluginOptions = {}): Plugin {
   const {
-    wasmPath = 'dist/enclave.wasm',
-    virtualModuleId = 'virtual:enclave-wasm',
+    wasmPath = "dist/enclave.wasm",
+    virtualModuleId = "virtual:enclave-wasm",
     enableWorker = true,
-    workerPath = 'src/worker.ts',
+    workerPath = "src/worker.ts",
     debug = false,
     copyToPublic = true,
     enableExtism = true,
@@ -77,36 +77,36 @@ export function enclavePlugin(options: EnclavePluginOptions = {}): Plugin {
   const __dirname = dirname(fileURLToPath(import.meta.url));
 
   return {
-    name: 'vite-plugin-enclave',
+    name: "vite-plugin-enclave",
 
     config() {
       return {
         // Optimize dependencies
         optimizeDeps: {
-          exclude: ['@sonr.io/enclave', '@extism/extism'],
+          exclude: ["@sonr.io/enclave", "@extism/extism"],
           esbuildOptions: {
-            target: 'esnext',
+            target: "esnext",
             supported: {
-              'top-level-await': true,
+              "top-level-await": true,
             },
           },
         },
 
         // Worker configuration
         worker: {
-          format: 'es',
+          format: "es",
           plugins: () => [],
           rollupOptions: {
             output: {
-              format: 'es',
-              entryFileNames: '[name].js',
+              format: "es",
+              entryFileNames: "[name].js",
             },
           },
         },
 
         // Build configuration
         build: {
-          target: 'esnext',
+          target: "esnext",
           // Enable top-level await
           modulePreload: {
             polyfill: true,
@@ -116,19 +116,19 @@ export function enclavePlugin(options: EnclavePluginOptions = {}): Plugin {
         // Server configuration
         server: {
           headers: {
-            'Cross-Origin-Embedder-Policy': 'require-corp',
-            'Cross-Origin-Opener-Policy': 'same-origin',
+            "Cross-Origin-Embedder-Policy": "require-corp",
+            "Cross-Origin-Opener-Policy": "same-origin",
           },
           fs: {
-            allow: [resolve(__dirname, '..')],
+            allow: [resolve(__dirname, "..")],
           },
         },
 
         // Preview server configuration
         preview: {
           headers: {
-            'Cross-Origin-Embedder-Policy': 'require-corp',
-            'Cross-Origin-Opener-Policy': 'same-origin',
+            "Cross-Origin-Embedder-Policy": "require-corp",
+            "Cross-Origin-Opener-Policy": "same-origin",
           },
         },
       };
@@ -140,7 +140,7 @@ export function enclavePlugin(options: EnclavePluginOptions = {}): Plugin {
 
     buildStart() {
       if (debug) {
-        console.log('[EnclavePlugin] Build started');
+        console.log("[EnclavePlugin] Build started");
       }
 
       // Emit WASM file if it exists
@@ -148,13 +148,13 @@ export function enclavePlugin(options: EnclavePluginOptions = {}): Plugin {
       if (existsSync(absoluteWasmPath) && copyToPublic) {
         const wasmContent = readFileSync(absoluteWasmPath);
         this.emitFile({
-          type: 'asset',
-          fileName: 'enclave.wasm',
+          type: "asset",
+          fileName: "enclave.wasm",
           source: wasmContent,
         });
 
         if (debug) {
-          console.log('[EnclavePlugin] Emitted WASM file');
+          console.log("[EnclavePlugin] Emitted WASM file");
         }
       }
     },
@@ -166,7 +166,7 @@ export function enclavePlugin(options: EnclavePluginOptions = {}): Plugin {
       }
 
       // Resolve worker imports
-      if (enableWorker && id.includes('worker?worker')) {
+      if (enableWorker && id.includes("worker?worker")) {
         return id;
       }
 
@@ -184,7 +184,7 @@ export function enclavePlugin(options: EnclavePluginOptions = {}): Plugin {
 
     async generateBundle(_options, bundle) {
       if (debug) {
-        console.log('[EnclavePlugin] Generating bundle');
+        console.log("[EnclavePlugin] Generating bundle");
       }
 
       // Ensure WASM file is in the bundle
@@ -193,17 +193,17 @@ export function enclavePlugin(options: EnclavePluginOptions = {}): Plugin {
         const wasmContent = readFileSync(absoluteWasmPath);
 
         // Check if already emitted
-        const wasmFileName = 'enclave.wasm';
+        const wasmFileName = "enclave.wasm";
         if (!bundle[wasmFileName]) {
           this.emitFile({
-            type: 'asset',
+            type: "asset",
             fileName: wasmFileName,
             source: wasmContent,
           });
         }
 
         if (debug) {
-          console.log('[EnclavePlugin] WASM file added to bundle');
+          console.log("[EnclavePlugin] WASM file added to bundle");
         }
       }
     },
@@ -221,7 +221,7 @@ export function enclavePlugin(options: EnclavePluginOptions = {}): Plugin {
           </script>
         `;
 
-        return html.replace('</head>', `${script}\n</head>`);
+        return html.replace("</head>", `${script}\n</head>`);
       }
 
       return html;

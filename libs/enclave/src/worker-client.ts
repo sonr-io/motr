@@ -27,14 +27,14 @@ import type {
   VaultPlugin,
   VerifyDataRequest,
   VerifyDataResponse,
-} from './types.js';
+} from "./types.js";
 
 import type {
   InitMessagePayload,
   WorkerMessage,
   WorkerMessageType,
   WorkerResponse,
-} from './worker.js';
+} from "./worker.js";
 
 /**
  * Worker client configuration
@@ -99,15 +99,19 @@ export class EnclaveWorkerClient implements VaultPlugin {
 
     this.initPromise = (async () => {
       // Create worker
-      const workerUrl = this.config.workerUrl || new URL('./worker.js', import.meta.url);
+      const workerUrl =
+        this.config.workerUrl || new URL("./worker.js", import.meta.url);
       this.worker = new Worker(workerUrl, {
-        type: 'module',
-        name: 'enclave-worker',
+        type: "module",
+        name: "enclave-worker",
       });
 
       // Setup message handler
-      this.worker.addEventListener('message', this.handleWorkerMessage.bind(this));
-      this.worker.addEventListener('error', this.handleWorkerError.bind(this));
+      this.worker.addEventListener(
+        "message",
+        this.handleWorkerMessage.bind(this),
+      );
+      this.worker.addEventListener("error", this.handleWorkerError.bind(this));
 
       // Wait for worker ready signal
       await this.waitForReady();
@@ -119,7 +123,7 @@ export class EnclaveWorkerClient implements VaultPlugin {
         config: this.config.vaultConfig,
       };
 
-      await this.sendMessage('init', payload);
+      await this.sendMessage("init", payload);
 
       this.isInitialized = true;
 
@@ -127,7 +131,7 @@ export class EnclaveWorkerClient implements VaultPlugin {
       this.startHealthChecks();
 
       if (this.config.debug) {
-        console.log('[EnclaveWorkerClient] Initialized successfully');
+        console.log("[EnclaveWorkerClient] Initialized successfully");
       }
     })();
 
@@ -145,18 +149,18 @@ export class EnclaveWorkerClient implements VaultPlugin {
   private waitForReady(): Promise<void> {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
-        reject(new Error('Worker initialization timeout'));
+        reject(new Error("Worker initialization timeout"));
       }, this.config.requestTimeout!);
 
       const handler = (event: MessageEvent<WorkerResponse>) => {
-        if (event.data.type === 'ready') {
+        if (event.data.type === "ready") {
           clearTimeout(timeout);
-          this.worker?.removeEventListener('message', handler);
+          this.worker?.removeEventListener("message", handler);
           resolve();
         }
       };
 
-      this.worker?.addEventListener('message', handler);
+      this.worker?.addEventListener("message", handler);
     });
   }
 
@@ -167,7 +171,7 @@ export class EnclaveWorkerClient implements VaultPlugin {
     if (this.config.healthCheckInterval! > 0) {
       this.healthCheckInterval = setInterval(() => {
         this.ping().catch((error) => {
-          console.error('[EnclaveWorkerClient] Health check failed:', error);
+          console.error("[EnclaveWorkerClient] Health check failed:", error);
         });
       }, this.config.healthCheckInterval);
     }
@@ -187,7 +191,7 @@ export class EnclaveWorkerClient implements VaultPlugin {
    * Ping worker to check health
    */
   async ping(): Promise<number> {
-    const response = await this.sendMessage<{ timestamp: number }>('ping');
+    const response = await this.sendMessage<{ timestamp: number }>("ping");
     return response.timestamp;
   }
 
@@ -203,7 +207,7 @@ export class EnclaveWorkerClient implements VaultPlugin {
    */
   private sendMessage<T = any>(type: string, payload?: any): Promise<T> {
     if (!this.worker) {
-      return Promise.reject(new Error('Worker not initialized'));
+      return Promise.reject(new Error("Worker not initialized"));
     }
 
     return new Promise<T>((resolve, reject) => {
@@ -231,14 +235,14 @@ export class EnclaveWorkerClient implements VaultPlugin {
 
       // Null check for TypeScript (worker is guaranteed to exist from check above)
       if (!this.worker) {
-        reject(new Error('Worker was terminated'));
+        reject(new Error("Worker was terminated"));
         return;
       }
 
       this.worker.postMessage(message);
 
       if (this.config.debug) {
-        console.log('[EnclaveWorkerClient] Sent message:', type, payload);
+        console.log("[EnclaveWorkerClient] Sent message:", type, payload);
       }
     });
   }
@@ -252,7 +256,10 @@ export class EnclaveWorkerClient implements VaultPlugin {
 
     if (!pending) {
       if (this.config.debug) {
-        console.warn('[EnclaveWorkerClient] Received response for unknown request:', response.id);
+        console.warn(
+          "[EnclaveWorkerClient] Received response for unknown request:",
+          response.id,
+        );
       }
       return;
     }
@@ -269,11 +276,11 @@ export class EnclaveWorkerClient implements VaultPlugin {
     if (response.success) {
       pending.resolve(response.data);
     } else {
-      pending.reject(new Error(response.error || 'Unknown error'));
+      pending.reject(new Error(response.error || "Unknown error"));
     }
 
     if (this.config.debug) {
-      console.log('[EnclaveWorkerClient] Received response:', response);
+      console.log("[EnclaveWorkerClient] Received response:", response);
     }
   }
 
@@ -281,14 +288,17 @@ export class EnclaveWorkerClient implements VaultPlugin {
    * Handle worker errors
    */
   private handleWorkerError(event: ErrorEvent): void {
-    console.error('[EnclaveWorkerClient] Worker error:', event.error || event.message);
+    console.error(
+      "[EnclaveWorkerClient] Worker error:",
+      event.error || event.message,
+    );
 
     // Reject all pending requests
     for (const [_id, pending] of this.pendingRequests) {
       if (pending.timeoutId) {
         clearTimeout(pending.timeoutId);
       }
-      pending.reject(new Error(event.message || 'Worker error'));
+      pending.reject(new Error(event.message || "Worker error"));
     }
 
     this.pendingRequests.clear();
@@ -299,7 +309,9 @@ export class EnclaveWorkerClient implements VaultPlugin {
    */
   private ensureInitialized(): void {
     if (!this.isInitialized) {
-      throw new Error('Worker client not initialized. Call initialize() first.');
+      throw new Error(
+        "Worker client not initialized. Call initialize() first.",
+      );
     }
   }
 
@@ -308,17 +320,21 @@ export class EnclaveWorkerClient implements VaultPlugin {
   /**
    * Create a new origin UCAN token
    */
-  async newOriginToken(request: NewOriginTokenRequest): Promise<UCANTokenResponse> {
+  async newOriginToken(
+    request: NewOriginTokenRequest,
+  ): Promise<UCANTokenResponse> {
     this.ensureInitialized();
-    return this.sendMessage('new_origin_token', request);
+    return this.sendMessage("new_origin_token", request);
   }
 
   /**
    * Create a new attenuated UCAN token
    */
-  async newAttenuatedToken(request: NewAttenuatedTokenRequest): Promise<UCANTokenResponse> {
+  async newAttenuatedToken(
+    request: NewAttenuatedTokenRequest,
+  ): Promise<UCANTokenResponse> {
     this.ensureInitialized();
-    return this.sendMessage('new_attenuated_token', request);
+    return this.sendMessage("new_attenuated_token", request);
   }
 
   /**
@@ -335,7 +351,7 @@ export class EnclaveWorkerClient implements VaultPlugin {
     const response = await this.sendMessage<{
       signature: number[];
       error?: string;
-    }>('sign_data', payload);
+    }>("sign_data", payload);
 
     return {
       signature: new Uint8Array(response.signature),
@@ -355,7 +371,7 @@ export class EnclaveWorkerClient implements VaultPlugin {
       signature: Array.from(request.signature),
     };
 
-    return this.sendMessage('verify_data', payload);
+    return this.sendMessage("verify_data", payload);
   }
 
   /**
@@ -363,7 +379,7 @@ export class EnclaveWorkerClient implements VaultPlugin {
    */
   async getIssuerDID(): Promise<GetIssuerDIDResponse> {
     this.ensureInitialized();
-    return this.sendMessage('get_issuer_did');
+    return this.sendMessage("get_issuer_did");
   }
 
   /**
@@ -380,7 +396,7 @@ export class EnclaveWorkerClient implements VaultPlugin {
    */
   async persistState(): Promise<void> {
     this.ensureInitialized();
-    await this.sendMessage('persist_state');
+    await this.sendMessage("persist_state");
   }
 
   /**
@@ -388,7 +404,7 @@ export class EnclaveWorkerClient implements VaultPlugin {
    */
   async loadPersistedState(): Promise<StoredVaultState | null> {
     this.ensureInitialized();
-    return this.sendMessage('load_state');
+    return this.sendMessage("load_state");
   }
 
   /**
@@ -396,7 +412,7 @@ export class EnclaveWorkerClient implements VaultPlugin {
    */
   async clearPersistedState(): Promise<void> {
     this.ensureInitialized();
-    await this.sendMessage('clear_state');
+    await this.sendMessage("clear_state");
   }
 
   // ============= Account Management Methods =============
@@ -406,7 +422,7 @@ export class EnclaveWorkerClient implements VaultPlugin {
    */
   async switchAccount(newAccountAddress: string): Promise<void> {
     this.ensureInitialized();
-    await this.sendMessage('switch_account', {
+    await this.sendMessage("switch_account", {
       accountAddress: newAccountAddress,
     });
   }
@@ -416,7 +432,7 @@ export class EnclaveWorkerClient implements VaultPlugin {
    */
   async listPersistedAccounts(): Promise<string[]> {
     this.ensureInitialized();
-    return this.sendMessage('list_accounts');
+    return this.sendMessage("list_accounts");
   }
 
   /**
@@ -424,7 +440,7 @@ export class EnclaveWorkerClient implements VaultPlugin {
    */
   async removeAccount(accountAddress: string): Promise<void> {
     this.ensureInitialized();
-    await this.sendMessage('remove_account', { accountAddress });
+    await this.sendMessage("remove_account", { accountAddress });
   }
 
   // ============= Token Management Methods =============
@@ -434,7 +450,7 @@ export class EnclaveWorkerClient implements VaultPlugin {
    */
   async getPersistedTokens(): Promise<StoredUCANToken[]> {
     this.ensureInitialized();
-    return this.sendMessage('get_tokens');
+    return this.sendMessage("get_tokens");
   }
 
   /**
@@ -442,7 +458,7 @@ export class EnclaveWorkerClient implements VaultPlugin {
    */
   async removeExpiredTokens(): Promise<void> {
     this.ensureInitialized();
-    await this.sendMessage('remove_expired_tokens');
+    await this.sendMessage("remove_expired_tokens");
   }
 
   // ============= Lifecycle Management =============
@@ -456,9 +472,9 @@ export class EnclaveWorkerClient implements VaultPlugin {
     if (this.worker) {
       // Send cleanup message to worker
       try {
-        await this.sendMessage('cleanup');
+        await this.sendMessage("cleanup");
       } catch (error) {
-        console.error('[EnclaveWorkerClient] Cleanup message failed:', error);
+        console.error("[EnclaveWorkerClient] Cleanup message failed:", error);
       }
 
       // Terminate worker
@@ -471,7 +487,7 @@ export class EnclaveWorkerClient implements VaultPlugin {
       if (pending.timeoutId) {
         clearTimeout(pending.timeoutId);
       }
-      pending.reject(new Error('Worker terminated'));
+      pending.reject(new Error("Worker terminated"));
     }
 
     this.pendingRequests.clear();
@@ -479,7 +495,7 @@ export class EnclaveWorkerClient implements VaultPlugin {
     this.initPromise = null;
 
     if (this.config.debug) {
-      console.log('[EnclaveWorkerClient] Cleanup complete');
+      console.log("[EnclaveWorkerClient] Cleanup complete");
     }
   }
 }
@@ -487,7 +503,9 @@ export class EnclaveWorkerClient implements VaultPlugin {
 /**
  * Create a new worker client instance
  */
-export function createWorkerClient(config?: WorkerClientConfig): EnclaveWorkerClient {
+export function createWorkerClient(
+  config?: WorkerClientConfig,
+): EnclaveWorkerClient {
   return new EnclaveWorkerClient(config);
 }
 
@@ -500,7 +518,7 @@ let defaultWorkerClient: EnclaveWorkerClient | null = null;
  * Get or create the default worker client
  */
 export async function getDefaultWorkerClient(
-  config?: WorkerClientConfig
+  config?: WorkerClientConfig,
 ): Promise<EnclaveWorkerClient> {
   if (!defaultWorkerClient) {
     defaultWorkerClient = createWorkerClient(config);
@@ -513,5 +531,5 @@ export async function getDefaultWorkerClient(
  * Check if Web Workers are supported
  */
 export function isWorkerSupported(): boolean {
-  return typeof Worker !== 'undefined';
+  return typeof Worker !== "undefined";
 }

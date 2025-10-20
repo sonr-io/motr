@@ -101,7 +101,9 @@ export interface GetIssuerDIDResponse {
  */
 export interface VaultPlugin {
   newOriginToken(request: NewOriginTokenRequest): Promise<UCANTokenResponse>;
-  newAttenuatedToken(request: NewAttenuatedTokenRequest): Promise<UCANTokenResponse>;
+  newAttenuatedToken(
+    request: NewAttenuatedTokenRequest,
+  ): Promise<UCANTokenResponse>;
   signData(request: SignDataRequest): Promise<SignDataResponse>;
   verifyData(request: VerifyDataRequest): Promise<VerifyDataResponse>;
   getIssuerDID(): Promise<GetIssuerDIDResponse>;
@@ -111,15 +113,15 @@ export interface VaultPlugin {
  * Error codes for vault operations
  */
 export enum VaultErrorCode {
-  NOT_INITIALIZED = 'VAULT_NOT_INITIALIZED',
-  ALREADY_INITIALIZED = 'VAULT_ALREADY_INITIALIZED',
-  LOCKED = 'VAULT_LOCKED',
-  KEY_NOT_FOUND = 'KEY_NOT_FOUND',
-  INVALID_KEY_TYPE = 'INVALID_KEY_TYPE',
-  OPERATION_FAILED = 'OPERATION_FAILED',
-  INVALID_PASSPHRASE = 'INVALID_PASSPHRASE',
-  WASM_NOT_LOADED = 'WASM_NOT_LOADED',
-  TIMEOUT = 'TIMEOUT',
+  NOT_INITIALIZED = "VAULT_NOT_INITIALIZED",
+  ALREADY_INITIALIZED = "VAULT_ALREADY_INITIALIZED",
+  LOCKED = "VAULT_LOCKED",
+  KEY_NOT_FOUND = "KEY_NOT_FOUND",
+  INVALID_KEY_TYPE = "INVALID_KEY_TYPE",
+  OPERATION_FAILED = "OPERATION_FAILED",
+  INVALID_PASSPHRASE = "INVALID_PASSPHRASE",
+  WASM_NOT_LOADED = "WASM_NOT_LOADED",
+  TIMEOUT = "TIMEOUT",
 }
 
 /**
@@ -129,10 +131,10 @@ export class VaultError extends Error {
   constructor(
     public code: VaultErrorCode,
     message: string,
-    public details?: any
+    public details?: any,
   ) {
     super(message);
-    this.name = 'VaultError';
+    this.name = "VaultError";
   }
 }
 
@@ -140,14 +142,14 @@ export class VaultError extends Error {
  * Vault event types
  */
 export enum VaultEventType {
-  INITIALIZED = 'vault:initialized',
-  LOCKED = 'vault:locked',
-  UNLOCKED = 'vault:unlocked',
-  KEY_GENERATED = 'vault:key_generated',
-  KEY_DELETED = 'vault:key_deleted',
-  EXPORTED = 'vault:exported',
-  IMPORTED = 'vault:imported',
-  ERROR = 'vault:error',
+  INITIALIZED = "vault:initialized",
+  LOCKED = "vault:locked",
+  UNLOCKED = "vault:unlocked",
+  KEY_GENERATED = "vault:key_generated",
+  KEY_DELETED = "vault:key_deleted",
+  EXPORTED = "vault:exported",
+  IMPORTED = "vault:imported",
+  ERROR = "vault:error",
 }
 
 /**
@@ -177,7 +179,9 @@ export interface VaultStorageConfig {
 /**
  * Enhanced vault configuration with storage options
  */
-export interface VaultConfigWithStorage extends VaultConfig, VaultStorageConfig {}
+export interface VaultConfigWithStorage
+  extends VaultConfig,
+    VaultStorageConfig {}
 
 /**
  * Stored vault state in IndexedDB
@@ -197,7 +201,7 @@ export interface StoredVaultState {
 export interface StoredUCANToken {
   id: string;
   token: string;
-  type: 'origin' | 'attenuated';
+  type: "origin" | "attenuated";
   issuer: string;
   audience: string;
   capabilities?: string;
@@ -208,7 +212,7 @@ export interface StoredUCANToken {
 /**
  * Storage persistence status
  */
-export type StoragePersistenceStatus = 'persisted' | 'prompt' | 'never';
+export type StoragePersistenceStatus = "persisted" | "prompt" | "never";
 
 /**
  * Storage statistics
@@ -237,7 +241,9 @@ export interface VaultIPFSConfig {
 /**
  * Enhanced vault configuration with IPFS support
  */
-export interface VaultConfigWithIPFS extends VaultConfigWithStorage, VaultIPFSConfig {}
+export interface VaultConfigWithIPFS
+  extends VaultConfigWithStorage,
+    VaultIPFSConfig {}
 
 /**
  * IPFS-stored enclave reference

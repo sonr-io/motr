@@ -1,5 +1,9 @@
-import Dexie, { type Table } from 'dexie';
-import type { StoredUCANToken, StoredVaultState, VaultStorageConfig } from './types.js';
+import Dexie, { type Table } from "dexie";
+import type {
+  StoredUCANToken,
+  StoredVaultState,
+  VaultStorageConfig,
+} from "./types.js";
 
 /**
  * Session data stored in IndexedDB
@@ -37,10 +41,10 @@ export class AccountVaultDatabase extends Dexie {
 
     // Define schema version 1
     this.version(1).stores({
-      state: 'id, accountAddress, lastAccessed',
-      tokens: 'id, type, issuer, audience, expiresAt, createdAt',
-      sessions: 'id, accountAddress, expiresAt, createdAt',
-      metadata: 'id, accountAddress, key, updatedAt',
+      state: "id, accountAddress, lastAccessed",
+      tokens: "id, type, issuer, audience, expiresAt, createdAt",
+      sessions: "id, accountAddress, expiresAt, createdAt",
+      metadata: "id, accountAddress, key, updatedAt",
     });
   }
 }
@@ -71,7 +75,7 @@ export class VaultStorageManager {
    */
   async getDatabase(accountAddress: string): Promise<AccountVaultDatabase> {
     if (!accountAddress) {
-      throw new Error('Account address is required');
+      throw new Error("Account address is required");
     }
 
     // Return existing database if available
@@ -112,19 +116,19 @@ export class VaultStorageManager {
   async listPersistedAccounts(): Promise<string[]> {
     const databases = await Dexie.getDatabaseNames();
     return databases
-      .filter((name) => name.startsWith('vault_'))
-      .map((name) => name.replace('vault_', ''));
+      .filter((name) => name.startsWith("vault_"))
+      .map((name) => name.replace("vault_", ""));
   }
 
   /**
    * Request persistent storage from browser
    */
   async requestPersistentStorage(): Promise<boolean> {
-    if ('storage' in navigator && 'persist' in navigator.storage) {
+    if ("storage" in navigator && "persist" in navigator.storage) {
       try {
         return await navigator.storage.persist();
       } catch (error) {
-        console.warn('Failed to request persistent storage:', error);
+        console.warn("Failed to request persistent storage:", error);
         return false;
       }
     }
@@ -135,11 +139,11 @@ export class VaultStorageManager {
    * Check if storage is persisted
    */
   async isStoragePersisted(): Promise<boolean> {
-    if ('storage' in navigator && 'persisted' in navigator.storage) {
+    if ("storage" in navigator && "persisted" in navigator.storage) {
       try {
         return await navigator.storage.persisted();
       } catch (error) {
-        console.warn('Failed to check storage persistence:', error);
+        console.warn("Failed to check storage persistence:", error);
         return false;
       }
     }
@@ -150,11 +154,11 @@ export class VaultStorageManager {
    * Get storage estimate
    */
   async getStorageEstimate(): Promise<StorageEstimate | null> {
-    if ('storage' in navigator && 'estimate' in navigator.storage) {
+    if ("storage" in navigator && "estimate" in navigator.storage) {
       try {
         return await navigator.storage.estimate();
       } catch (error) {
-        console.warn('Failed to get storage estimate:', error);
+        console.warn("Failed to get storage estimate:", error);
         return null;
       }
     }
@@ -170,13 +174,13 @@ export class VaultStorageManager {
     for (const [accountAddress, db] of this.databases.entries()) {
       try {
         // Remove expired tokens
-        await db.tokens.where('expiresAt').below(now).delete();
+        await db.tokens.where("expiresAt").below(now).delete();
 
         // Remove expired sessions
-        await db.sessions.where('expiresAt').below(now).delete();
+        await db.sessions.where("expiresAt").below(now).delete();
 
         // Update last accessed time for state
-        await db.state.where('accountAddress').equals(accountAddress).modify({
+        await db.state.where("accountAddress").equals(accountAddress).modify({
           lastAccessed: now,
         });
       } catch (error) {
@@ -225,23 +229,23 @@ export class VaultStorageManager {
    * Try to persist storage without user prompt
    */
   async tryPersistWithoutPromptingUser(): Promise<string> {
-    if (!('storage' in navigator) || !('persist' in navigator.storage)) {
-      return 'never';
+    if (!("storage" in navigator) || !("persist" in navigator.storage)) {
+      return "never";
     }
 
     // Check if already persisted
     const persisted = await navigator.storage.persisted();
     if (persisted) {
-      return 'persisted';
+      return "persisted";
     }
 
     // Try to persist without prompt
     const result = await navigator.storage.persist();
     if (result) {
-      return 'persisted';
+      return "persisted";
     }
 
-    return 'prompt';
+    return "prompt";
   }
 }
 

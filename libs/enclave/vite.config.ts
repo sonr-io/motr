@@ -10,25 +10,25 @@
  * @see https://vitejs.dev/config/
  */
 
-import { resolve } from 'node:path';
-import { defineConfig } from 'vite';
-import { enclavePlugin } from './src/vite-plugin-enclave';
+import { resolve } from "node:path";
+import { defineConfig } from "vite";
+import { enclavePlugin } from "./src/vite-plugin-enclave";
 
 export default defineConfig({
   // Build configuration for library mode
   build: {
     lib: {
       entry: {
-        index: resolve(__dirname, 'src/index.ts'),
-        client: resolve(__dirname, 'src/client.ts'),
-        'worker-client': resolve(__dirname, 'src/worker-client.ts'),
-        worker: resolve(__dirname, 'src/worker.ts'),
-        loader: resolve(__dirname, 'src/loader.ts'),
-        storage: resolve(__dirname, 'src/storage.ts'),
-        types: resolve(__dirname, 'src/types.ts'),
-        'vite-plugin-enclave': resolve(__dirname, 'src/vite-plugin-enclave.ts'),
+        index: resolve(__dirname, "src/index.ts"),
+        client: resolve(__dirname, "src/client.ts"),
+        "worker-client": resolve(__dirname, "src/worker-client.ts"),
+        worker: resolve(__dirname, "src/worker.ts"),
+        loader: resolve(__dirname, "src/loader.ts"),
+        storage: resolve(__dirname, "src/storage.ts"),
+        types: resolve(__dirname, "src/types.ts"),
+        "vite-plugin-enclave": resolve(__dirname, "src/vite-plugin-enclave.ts"),
       },
-      formats: ['es'],
+      formats: ["es"],
       fileName: (_format, entryName) => `${entryName}.js`,
     },
 
@@ -36,42 +36,42 @@ export default defineConfig({
     rollupOptions: {
       // Externalize dependencies
       external: [
-        'vite',
-        'fs',
-        'path',
-        'url',
-        'node:fs',
-        'node:path',
-        'node:url',
-        '@extism/extism',
-        'dexie',
+        "vite",
+        "fs",
+        "path",
+        "url",
+        "node:fs",
+        "node:path",
+        "node:url",
+        "@extism/extism",
+        "dexie",
         // Optional IPFS dependencies
-        'helia',
-        '@helia/strings',
-        '@helia/unixfs',
-        '@helia/verified-fetch',
-        '@chainsafe/libp2p-noise',
-        '@chainsafe/libp2p-yamux',
-        '@libp2p/webrtc',
-        '@libp2p/websockets',
-        'multiformats',
-        'uint8arrays',
+        "helia",
+        "@helia/strings",
+        "@helia/unixfs",
+        "@helia/verified-fetch",
+        "@chainsafe/libp2p-noise",
+        "@chainsafe/libp2p-yamux",
+        "@libp2p/webrtc",
+        "@libp2p/websockets",
+        "multiformats",
+        "uint8arrays",
       ],
 
       output: {
-        format: 'es',
-        exports: 'named',
+        format: "es",
+        exports: "named",
         sourcemap: true,
       },
     },
 
     // Output directory
-    outDir: 'dist',
+    outDir: "dist",
     emptyOutDir: true,
     sourcemap: true,
 
     // Minification settings
-    minify: 'terser',
+    minify: "terser",
     terserOptions: {
       compress: {
         drop_console: false,
@@ -83,7 +83,7 @@ export default defineConfig({
     },
 
     // Target modern browsers and Node.js
-    target: 'esnext',
+    target: "esnext",
 
     // Chunk size warnings
     chunkSizeWarningLimit: 1000,
@@ -100,14 +100,14 @@ export default defineConfig({
 
     // File system access
     fs: {
-      allow: ['.'],
+      allow: ["."],
     },
 
     // Security headers for WASM and Web Workers
     headers: {
-      'Cross-Origin-Embedder-Policy': 'require-corp',
-      'Cross-Origin-Opener-Policy': 'same-origin',
-      'Cross-Origin-Resource-Policy': 'cross-origin',
+      "Cross-Origin-Embedder-Policy": "require-corp",
+      "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Resource-Policy": "cross-origin",
     },
 
     // HMR configuration
@@ -122,37 +122,37 @@ export default defineConfig({
     https: false,
     cors: true,
     headers: {
-      'Cross-Origin-Embedder-Policy': 'require-corp',
-      'Cross-Origin-Opener-Policy': 'same-origin',
-      'Cross-Origin-Resource-Policy': 'cross-origin',
+      "Cross-Origin-Embedder-Policy": "require-corp",
+      "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Resource-Policy": "cross-origin",
     },
   },
 
   // Dependency optimization
   optimizeDeps: {
     // Exclude packages from pre-bundling
-    exclude: ['@sonr.io/enclave', '@extism/extism'],
+    exclude: ["@sonr.io/enclave", "@extism/extism"],
 
     // Include packages that need pre-bundling
-    include: ['dexie'],
+    include: ["dexie"],
 
     // ESBuild options
     esbuildOptions: {
-      target: 'esnext',
+      target: "esnext",
       supported: {
-        'top-level-await': true,
+        "top-level-await": true,
       },
     },
   },
 
   // Worker configuration for Web Workers
   worker: {
-    format: 'es',
+    format: "es",
     plugins: () => [],
     rollupOptions: {
       output: {
-        format: 'es',
-        entryFileNames: '[name].js',
+        format: "es",
+        entryFileNames: "[name].js",
       },
     },
   },
@@ -161,19 +161,19 @@ export default defineConfig({
   resolve: {
     // Path aliases
     alias: {
-      '@': resolve(__dirname, './src'),
+      "@": resolve(__dirname, "./src"),
     },
 
     // Extensions to resolve
-    extensions: ['.ts', '.js', '.json'],
+    extensions: [".ts", ".js", ".json"],
   },
 
   // Plugin configuration
   plugins: [
     enclavePlugin({
-      wasmPath: 'dist/enclave.wasm',
+      wasmPath: "dist/enclave.wasm",
       enableWorker: true,
-      debug: process.env.NODE_ENV === 'development',
+      debug: process.env.NODE_ENV === "development",
       copyToPublic: true,
       enableExtism: true,
     }),
@@ -182,19 +182,19 @@ export default defineConfig({
   // ESBuild configuration
   esbuild: {
     // Drop console in production
-    drop: process.env.NODE_ENV === 'production' ? ['debugger'] : [],
+    drop: process.env.NODE_ENV === "production" ? ["debugger"] : [],
 
     // Target
-    target: 'esnext',
+    target: "esnext",
 
     // Supported features
     supported: {
-      'top-level-await': true,
+      "top-level-await": true,
     },
   },
 
   // Environment variables
-  envPrefix: 'ENCLAVE_',
+  envPrefix: "ENCLAVE_",
 
   // CSS configuration
   css: {
@@ -208,14 +208,14 @@ export default defineConfig({
   },
 
   // Log level
-  logLevel: 'info',
+  logLevel: "info",
 
   // Clear screen
   clearScreen: true,
 
   // Define global constants
   define: {
-    __VERSION__: JSON.stringify(process.env.npm_package_version || '0.0.1'),
-    __DEV__: JSON.stringify(process.env.NODE_ENV !== 'production'),
+    __VERSION__: JSON.stringify(process.env.npm_package_version || "0.0.1"),
+    __DEV__: JSON.stringify(process.env.NODE_ENV !== "production"),
   },
 });
