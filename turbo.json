@@ -27,7 +27,14 @@
     "@sonr.io/ui#build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", "*.tsbuildinfo"],
-      "inputs": ["src/**", "tsconfig.json", "package.json"],
+      "inputs": [
+        "src/**",
+        "!src/components/icons/**",
+        "scripts/**",
+        "tsconfig.json",
+        "vite.config.ts",
+        "package.json"
+      ],
       "cache": true
     },
     "@sonr.io/enclave#build": {
