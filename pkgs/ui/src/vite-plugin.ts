@@ -1,4 +1,4 @@
-import type { Plugin } from 'vite';
+import type { Plugin } from "vite";
 
 /**
  * Options for the Sonr UI Vite plugin
@@ -18,10 +18,10 @@ export interface SonrUIPluginOptions {
  * Vite plugin for @sonr.io/ui that sets up Tailwind CSS and component aliases
  */
 export function sonrUI(options: SonrUIPluginOptions = {}): Plugin {
-  const { cssPath = '@/styles/globals.css', injectCSS = true } = options;
+  const { cssPath = "@/styles/globals.css", injectCSS = true } = options;
 
   return {
-    name: 'vite-plugin-sonr-ui',
+    name: "vite-plugin-sonr-ui",
     config: () => ({
       css: injectCSS
         ? {
@@ -34,10 +34,13 @@ export function sonrUI(options: SonrUIPluginOptions = {}): Plugin {
         : undefined,
     }),
     transformIndexHtml: {
-      order: 'pre',
+      order: "pre",
       handler(html: string) {
         if (injectCSS) {
-          return html.replace('<head>', `<head>\n    <link rel="stylesheet" href="${cssPath}" />`);
+          return html.replace(
+            "<head>",
+            `<head>\n    <link rel="stylesheet" href="${cssPath}" />`,
+          );
         }
         return html;
       },

@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { cn } from '../../lib/utils';
-import { Alert, AlertDescription } from './alert';
+import * as React from "react";
+import { cn } from "../../lib/utils";
+import { Alert, AlertDescription } from "./alert";
 
 export interface ErrorAlertProps {
   message: string;
@@ -11,7 +11,11 @@ export interface ErrorAlertProps {
 const ErrorAlert = React.forwardRef<HTMLDivElement, ErrorAlertProps>(
   ({ message, className, onDismiss, ...props }, ref) => {
     return (
-      <Alert ref={ref} className={cn('border-destructive', className)} {...props}>
+      <Alert
+        ref={ref}
+        className={cn("border-destructive", className)}
+        {...props}
+      >
         <AlertDescription className="flex items-center justify-between">
           <span>{message}</span>
           {onDismiss && (
@@ -26,9 +30,9 @@ const ErrorAlert = React.forwardRef<HTMLDivElement, ErrorAlertProps>(
         </AlertDescription>
       </Alert>
     );
-  }
+  },
 );
 
-ErrorAlert.displayName = 'ErrorAlert';
+ErrorAlert.displayName = "ErrorAlert";
 
 export { ErrorAlert };

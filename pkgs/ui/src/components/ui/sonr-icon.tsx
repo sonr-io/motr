@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { cn } from '../../lib/utils';
+import * as React from "react";
+import { cn } from "../../lib/utils";
 
 export interface SonrIconProps extends React.SVGProps<SVGSVGElement> {
   size?: number | string;
@@ -15,7 +15,7 @@ export const SonrIcon = React.forwardRef<SVGSVGElement, SonrIconProps>(
         viewBox="0 0 164 164"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className={cn('inline-block', className)}
+        className={cn("inline-block", className)}
         {...props}
       >
         <path
@@ -70,7 +70,7 @@ export const SonrIcon = React.forwardRef<SVGSVGElement, SonrIconProps>(
         </defs>
       </svg>
     );
-  }
+  },
 );
 
-SonrIcon.displayName = 'SonrIcon';
+SonrIcon.displayName = "SonrIcon";
