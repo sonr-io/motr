@@ -1,17 +1,12 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/main/.schema/devbox.schema.json",
-  "packages": [
-    "go@1.24"
-  ],
+  "packages": ["go@1.24"],
   "env": {
     "GOOS": "js",
     "GOARCH": "wasm"
   },
   "shell": {
-    "init_hook": [
-      "go mod download",
-      "bun install"
-    ],
+    "init_hook": ["go mod download", "bun install"],
     "scripts": {
       "bump": ["cz --no-raise 6,21 bump --yes --increment PATCH"],
       "release": [
@@ -20,14 +15,16 @@
       ],
       "publish": "echo 'Skipping publish - unimplemented'",
       "wasm": [
-        "mkdir -p dist", 
+        "mkdir -p dist",
+        "export GOROOT=$(readlink -f $(which go) | sed 's|/bin/go||' | sed 's|/share/go||')/share/go",
+        "go mod tidy",
         "go build -ldflags='-s -w' -trimpath -o dist/vault.wasm .",
         "rm -f dist/wasm_exec.js",
-        "cp wasm_exec.js dist/",
+        "cp \"$GOROOT/lib/wasm/wasm_exec.js\" dist/",
         "chmod 644 dist/wasm_exec.js"
       ],
       "test": "go test ./... || echo 'No Go tests found in vault'",
-      "format": "go fmt ./..."
+      "format": "go fmt ./... || echo 'No Go formatting issues found in vault'"
     }
   }
 }

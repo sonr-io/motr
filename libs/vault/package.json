@@ -38,12 +38,24 @@
   },
   "typesVersions": {
     "*": {
-      "*": ["./dist/index.d.ts"],
-      "loader": ["./dist/loader.d.ts"],
-      "vite-plugin": ["./dist/vite-plugin-vault.d.ts"],
-      "register-sw": ["./dist/register-sw.d.ts"],
-      "sw": ["./dist/sw.d.ts"],
-      "types": ["./dist/types/service-worker.d.ts"]
+      "*": [
+        "./dist/index.d.ts"
+      ],
+      "loader": [
+        "./dist/loader.d.ts"
+      ],
+      "vite-plugin": [
+        "./dist/vite-plugin-vault.d.ts"
+      ],
+      "register-sw": [
+        "./dist/register-sw.d.ts"
+      ],
+      "sw": [
+        "./dist/sw.d.ts"
+      ],
+      "types": [
+        "./dist/types/service-worker.d.ts"
+      ]
     }
   },
   "files": [
@@ -62,10 +74,10 @@
     "test:watch": "vitest",
     "test:go": "go test -v ./... || echo 'No Go tests found in vault'",
     "test:coverage": "vitest run --coverage",
-    "lint": "oxlint && go fmt ./...",
-    "lint:fix": "oxlint --fix && go fmt ./...",
-    "format": "(oxlint --fix || true) && go fmt ./...",
-    "check": "oxlint && tsc --noEmit",
+    "lint": "biome lint . && go fmt ./...",
+    "lint:fix": "biome check --write . && go fmt ./...",
+    "format": "biome format --write . && go fmt ./...",
+    "check": "biome check --write . && tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist *.tsbuildinfo",
     "clean:all": "rm -rf dist node_modules *.tsbuildinfo",

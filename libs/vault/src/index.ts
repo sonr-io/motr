@@ -18,76 +18,73 @@
 
 // Core vault loader
 export {
+  isServiceWorkerRegistered,
+  isServiceWorkerSupported,
   loadVault,
   type VaultConfig,
-  isServiceWorkerSupported,
-  isServiceWorkerRegistered
-} from './loader.js'
-
-// Vite plugin for Service Worker integration
-export {
-  vaultPlugin,
-  type VaultPluginOptions
-} from './vite-plugin-vault.js'
-
+} from './loader.js';
 // Service Worker registration helper
 export {
-  registerSW,
-  isControlled,
   getRegistration,
-  unregisterAll,
+  isControlled,
   type RegisterSWOptions,
-  type ServiceWorkerController
-} from './register-sw.js'
-
+  registerSW,
+  type ServiceWorkerController,
+  unregisterAll,
+} from './register-sw.js';
 // TypeScript types for Service Worker APIs
 export type {
-  ServiceWorkerGlobalScope,
-  CacheStorage,
   Cache,
   CacheQueryOptions,
-  Clients,
-  Client,
-  WindowClient,
-  ExtendableEvent,
-  FetchEvent,
-  ExtendableMessageEvent,
-  SyncEvent,
-  PushEvent,
-  NotificationEvent,
-  VaultServiceWorkerMessage,
-  VaultMessageType,
-  VaultCacheMessage,
-  VaultVersionResponse,
+  CacheStorage,
   CacheStrategy,
   CacheStrategyConfig,
-  RouteMatchCallback,
+  Client,
+  Clients,
+  ExtendableEvent,
+  ExtendableMessageEvent,
+  FetchEvent,
+  NotificationEvent,
+  PushEvent,
+  RouteDefinition,
   RouteHandler,
-  RouteDefinition
-} from './types/service-worker.js'
+  RouteMatchCallback,
+  ServiceWorkerGlobalScope,
+  SyncEvent,
+  VaultCacheMessage,
+  VaultMessageType,
+  VaultServiceWorkerMessage,
+  VaultVersionResponse,
+  WindowClient,
+} from './types/service-worker.js';
+// Vite plugin for Service Worker integration
+export {
+  type VaultPluginOptions,
+  vaultPlugin,
+} from './vite-plugin-vault.js';
 
 /**
  * Package version
  */
-export const VERSION = '0.0.1'
+export const VERSION = '0.0.1';
 
 /**
  * Default ServiceWorker path for the vault module
  */
-export const VAULT_SW_PATH = '/sw.js'
+export const VAULT_SW_PATH = '/sw.js';
 
 /**
  * Check if the current environment supports WASM
  */
 export function isWasmSupported(): boolean {
-  return typeof WebAssembly !== 'undefined'
+  return typeof WebAssembly !== 'undefined';
 }
 
 /**
  * Check if the current environment is secure (HTTPS or localhost)
  */
 export function isSecureContext(): boolean {
-  return typeof window !== 'undefined' && window.isSecureContext
+  return typeof window !== 'undefined' && window.isSecureContext;
 }
 
 /**
@@ -104,12 +101,12 @@ export function getVaultInfo() {
       'PWA Support',
       'Background Sync',
       'Push Notifications',
-      'Offline-First Architecture'
+      'Offline-First Architecture',
     ],
     requirements: {
       serviceWorker: typeof window !== 'undefined' && 'serviceWorker' in navigator,
       wasm: isWasmSupported(),
-      secureContext: isSecureContext()
-    }
-  }
+      secureContext: isSecureContext(),
+    },
+  };
 }

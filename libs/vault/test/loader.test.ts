@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
-import { loadVault, isServiceWorkerSupported, isServiceWorkerRegistered } from '../src/loader.js';
+import { describe, expect, it, vi } from 'vitest';
+import { isServiceWorkerRegistered, isServiceWorkerSupported, loadVault } from '../src/loader.js';
 
 describe('Vault Loader', () => {
   it('should check if ServiceWorker is supported', () => {

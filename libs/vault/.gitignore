@@ -1,6 +1,7 @@
 # Build outputs
 dist/
 *.tsbuildinfo
+wasm_exec.js
 
 # Dependencies
 node_modules/

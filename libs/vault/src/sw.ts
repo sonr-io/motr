@@ -36,9 +36,7 @@ interface PaymentRequestEvent extends ExtendableEvent {
   changeShippingAddress(
     shippingAddress: PaymentAddress
   ): Promise<PaymentRequestDetailsUpdate | null>;
-  changeShippingOption(
-    shippingOption: string
-  ): Promise<PaymentRequestDetailsUpdate | null>;
+  changeShippingOption(shippingOption: string): Promise<PaymentRequestDetailsUpdate | null>;
 }
 
 interface PaymentMethodData {
@@ -99,10 +97,7 @@ interface PaymentHandlerResponse {
 const SW_VERSION = '1.0.0';
 const CACHE_VERSION = `motor-vault-v${SW_VERSION}`;
 const CACHE_NAME = `${CACHE_VERSION}-${Date.now()}`;
-const PRECACHE_ASSETS = [
-  '/vault.wasm',
-  '/wasm_exec.js',
-];
+const PRECACHE_ASSETS = ['/vault.wasm', '/wasm_exec.js'];
 
 // Vault WASM state
 let vaultInitialized = false;
@@ -123,13 +118,8 @@ const STRATEGY_PATTERNS = {
     /\.(png|jpg|jpeg|svg|gif|webp)$/,
     /\.(woff|woff2|ttf|eot)$/,
   ],
-  [CACHE_STRATEGIES.NETWORK_FIRST]: [
-    /\/api\//,
-    /\/vault\//,
-  ],
-  [CACHE_STRATEGIES.STALE_WHILE_REVALIDATE]: [
-    /\.(js|css)$/,
-  ],
+  [CACHE_STRATEGIES.NETWORK_FIRST]: [/\/api\//, /\/vault\//],
+  [CACHE_STRATEGIES.STALE_WHILE_REVALIDATE]: [/\.(js|css)$/],
 };
 
 /**
@@ -176,11 +166,11 @@ self.addEventListener('activate', (event: ExtendableEvent) => {
         // Clean up old caches
         const cacheKeys = await caches.keys();
         const oldCaches = cacheKeys.filter(
-          key => key.startsWith('motor-vault-') && key !== CACHE_NAME
+          (key) => key.startsWith('motor-vault-') && key !== CACHE_NAME
         );
 
         await Promise.all(
-          oldCaches.map(key => {
+          oldCaches.map((key) => {
             console.log(`[Motor Vault SW] Deleting old cache: ${key}`);
             return caches.delete(key);
           })
@@ -212,9 +202,11 @@ self.addEventListener('fetch', (event: FetchEvent) => {
   }
 
   // Route payment API requests to vault WASM HTTP server
-  if (url.pathname.startsWith('/api/payment/') ||
-      url.pathname.startsWith('/payment/') ||
-      url.pathname.startsWith('/.well-known/')) {
+  if (
+    url.pathname.startsWith('/api/payment/') ||
+    url.pathname.startsWith('/payment/') ||
+    url.pathname.startsWith('/.well-known/')
+  ) {
     event.respondWith(handleVaultRequest(request));
     return;
   }
@@ -227,9 +219,7 @@ self.addEventListener('fetch', (event: FetchEvent) => {
   // Determine caching strategy based on URL patterns
   const strategy = getCachingStrategy(url.pathname);
 
-  event.respondWith(
-    handleFetchWithStrategy(request, strategy)
-  );
+  event.respondWith(handleFetchWithStrategy(request, strategy));
 });
 
 /**
@@ -290,7 +280,7 @@ self.addEventListener('push', (event: PushEvent) => {
     vibrate: [200, 100, 200],
     data: {
       dateOfArrival: Date.now(),
-      primaryKey: 1
+      primaryKey: 1,
     },
     actions: [
       {
@@ -301,12 +291,10 @@ self.addEventListener('push', (event: PushEvent) => {
         action: 'close',
         title: 'Dismiss',
       },
-    ]
+    ],
   };
 
-  event.waitUntil(
-    self.registration.showNotification('Motor Vault', options)
-  );
+  event.waitUntil(self.registration.showNotification('Motor Vault', options));
 });
 
 /**
@@ -319,9 +307,7 @@ self.addEventListener('notificationclick', (event: NotificationEvent) => {
   event.notification.close();
 
   if (event.action === 'explore') {
-    event.waitUntil(
-      self.clients.openWindow('/')
-    );
+    event.waitUntil(self.clients.openWindow('/'));
   }
 });
 
@@ -332,7 +318,7 @@ self.addEventListener('notificationclick', (event: NotificationEvent) => {
  */
 function getCachingStrategy(pathname: string): string {
   for (const [strategy, patterns] of Object.entries(STRATEGY_PATTERNS)) {
-    if (patterns.some(pattern => pattern.test(pathname))) {
+    if (patterns.some((pattern) => pattern.test(pathname))) {
       return strategy;
     }
   }
@@ -344,10 +330,7 @@ function getCachingStrategy(pathname: string): string {
 /**
  * Handles fetch requests with the specified caching strategy
  */
-async function handleFetchWithStrategy(
-  request: Request,
-  strategy: string
-): Promise<Response> {
+async function handleFetchWithStrategy(request: Request, strategy: string): Promise<Response> {
   switch (strategy) {
     case CACHE_STRATEGIES.CACHE_FIRST:
       return cacheFirst(request);
@@ -388,7 +371,7 @@ async function cacheFirst(request: Request): Promise<Response> {
     console.error('[Motor Vault SW] Cache-first fetch failed:', error);
     return new Response('Network error', {
       status: 408,
-      statusText: 'Request Timeout'
+      statusText: 'Request Timeout',
     });
   }
 }
@@ -419,7 +402,7 @@ async function networkFirst(request: Request): Promise<Response> {
 
     return new Response('Offline', {
       status: 503,
-      statusText: 'Service Unavailable'
+      statusText: 'Service Unavailable',
     });
   }
 }
@@ -431,19 +414,24 @@ async function networkFirst(request: Request): Promise<Response> {
 async function staleWhileRevalidate(request: Request): Promise<Response> {
   const cachedResponse = await caches.match(request);
 
-  const fetchPromise = fetch(request).then(async (networkResponse) => {
-    if (networkResponse.ok) {
-      const cache = await caches.open(CACHE_NAME);
-      cache.put(request, networkResponse.clone());
-    }
-    return networkResponse;
-  }).catch(error => {
-    console.warn('[Motor Vault SW] Background fetch failed:', error);
-    return cachedResponse || new Response('Network error', {
-      status: 503,
-      statusText: 'Service Unavailable'
+  const fetchPromise = fetch(request)
+    .then(async (networkResponse) => {
+      if (networkResponse.ok) {
+        const cache = await caches.open(CACHE_NAME);
+        cache.put(request, networkResponse.clone());
+      }
+      return networkResponse;
+    })
+    .catch((error) => {
+      console.warn('[Motor Vault SW] Background fetch failed:', error);
+      return (
+        cachedResponse ||
+        new Response('Network error', {
+          status: 503,
+          statusText: 'Service Unavailable',
+        })
+      );
     });
-  });
 
   return cachedResponse || fetchPromise;
 }
@@ -457,7 +445,7 @@ async function clearCache(cacheName?: string): Promise<void> {
     console.log(`[Motor Vault SW] Cleared cache: ${cacheName}`);
   } else {
     const cacheKeys = await caches.keys();
-    await Promise.all(cacheKeys.map(key => caches.delete(key)));
+    await Promise.all(cacheKeys.map((key) => caches.delete(key)));
     console.log('[Motor Vault SW] Cleared all caches');
   }
 }
@@ -510,9 +498,7 @@ self.addEventListener('paymentrequest', (event: Event) => {
  * Handles the payment request by opening a payment window
  * and coordinating with the vault for transaction signing
  */
-async function handlePaymentRequest(
-  event: PaymentRequestEvent
-): Promise<PaymentHandlerResponse> {
+async function handlePaymentRequest(event: PaymentRequestEvent): Promise<PaymentHandlerResponse> {
   try {
     // Open payment UI window for user confirmation
     const paymentUrl = new URL('/payment', self.location.origin);
@@ -557,13 +543,17 @@ function waitForPaymentConfirmation(paymentRequestId: string): Promise<any> {
 
     // Listen for payment confirmation message
     const messageHandler = (event: ExtendableMessageEvent) => {
-      if (event.data.type === 'PAYMENT_CONFIRMED' &&
-          event.data.paymentRequestId === paymentRequestId) {
+      if (
+        event.data.type === 'PAYMENT_CONFIRMED' &&
+        event.data.paymentRequestId === paymentRequestId
+      ) {
         clearTimeout(timeout);
         self.removeEventListener('message', messageHandler as any);
         resolve(event.data.paymentDetails);
-      } else if (event.data.type === 'PAYMENT_CANCELLED' &&
-                 event.data.paymentRequestId === paymentRequestId) {
+      } else if (
+        event.data.type === 'PAYMENT_CANCELLED' &&
+        event.data.paymentRequestId === paymentRequestId
+      ) {
         clearTimeout(timeout);
         self.removeEventListener('message', messageHandler as any);
         reject(new Error('Payment cancelled by user'));
@@ -678,4 +668,3 @@ async function handleVaultRequest(request: Request): Promise<Response> {
 }
 
 // Export for TypeScript module support
-

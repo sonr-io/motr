@@ -10,9 +10,9 @@
  * @see https://vitejs.dev/config/
  */
 
-import { defineConfig } from 'vite'
-import { resolve } from 'path'
-import { vaultPlugin } from './src/vite-plugin-vault'
+import { resolve } from 'node:path';
+import { defineConfig } from 'vite';
+import { vaultPlugin } from './src/vite-plugin-vault';
 
 export default defineConfig({
   // Build configuration for library mode
@@ -23,21 +23,16 @@ export default defineConfig({
         loader: resolve(__dirname, 'src/loader.ts'),
         'vite-plugin-vault': resolve(__dirname, 'src/vite-plugin-vault.ts'),
         'register-sw': resolve(__dirname, 'src/register-sw.ts'),
-        sw: resolve(__dirname, 'src/sw.ts')
+        sw: resolve(__dirname, 'src/sw.ts'),
       },
       formats: ['es'],
-      fileName: (format, entryName) => `${entryName}.js`
+      fileName: (_format, entryName) => `${entryName}.js`,
     },
 
     // Rollup options for advanced bundling
     rollupOptions: {
       // Externalize dependencies that shouldn't be bundled
-      external: [
-        'vite',
-        'fs',
-        'path',
-        'url'
-      ],
+      external: ['vite', 'fs', 'path', 'url', 'node:fs', 'node:path', 'node:url'],
 
       output: {
         // Preserve module structure for tree-shaking
@@ -55,21 +50,21 @@ export default defineConfig({
         // Asset file naming
         assetFileNames: (assetInfo) => {
           if (assetInfo.name === 'vault.wasm') {
-            return 'vault.wasm'
+            return 'vault.wasm';
           }
           if (assetInfo.name === 'wasm_exec.js') {
-            return 'wasm_exec.js'
+            return 'wasm_exec.js';
           }
-          return '[name][extname]'
-        }
-      }
+          return '[name][extname]';
+        },
+      },
     },
 
     // Build output directory
     outDir: 'dist',
 
-    // Clean output directory before build
-    emptyOutDir: true,
+    // Don't clean output directory - WASM files are built first
+    emptyOutDir: false,
 
     // Source maps for debugging
     sourcemap: true,
@@ -80,11 +75,11 @@ export default defineConfig({
       compress: {
         drop_console: false,
         drop_debugger: true,
-        pure_funcs: ['console.log']
+        pure_funcs: ['console.log'],
       },
       format: {
-        comments: false
-      }
+        comments: false,
+      },
     },
 
     // Target modern browsers
@@ -94,7 +89,7 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000,
 
     // Enable report for bundle analysis
-    reportCompressedSize: true
+    reportCompressedSize: true,
   },
 
   // Development server configuration
@@ -110,20 +105,20 @@ export default defineConfig({
 
     // File system access
     fs: {
-      allow: ['.']
+      allow: ['.'],
     },
 
     // Security headers for WASM and Service Workers
     headers: {
       'Cross-Origin-Embedder-Policy': 'require-corp',
       'Cross-Origin-Opener-Policy': 'same-origin',
-      'Cross-Origin-Resource-Policy': 'cross-origin'
+      'Cross-Origin-Resource-Policy': 'cross-origin',
     },
 
     // Hot module replacement
     hmr: {
-      overlay: true
-    }
+      overlay: true,
+    },
   },
 
   // Preview server configuration (for production builds)
@@ -134,16 +129,14 @@ export default defineConfig({
     headers: {
       'Cross-Origin-Embedder-Policy': 'require-corp',
       'Cross-Origin-Opener-Policy': 'same-origin',
-      'Cross-Origin-Resource-Policy': 'cross-origin'
-    }
+      'Cross-Origin-Resource-Policy': 'cross-origin',
+    },
   },
 
   // Dependency optimization
   optimizeDeps: {
     // Exclude packages from pre-bundling
-    exclude: [
-      '@sonr.io/vault'
-    ],
+    exclude: ['@sonr.io/vault'],
 
     // Include packages that need pre-bundling
     include: [],
@@ -152,9 +145,9 @@ export default defineConfig({
     esbuildOptions: {
       target: 'esnext',
       supported: {
-        'top-level-await': true
-      }
-    }
+        'top-level-await': true,
+      },
+    },
   },
 
   // Worker configuration for Web Workers and Service Workers
@@ -169,9 +162,9 @@ export default defineConfig({
     rollupOptions: {
       output: {
         format: 'es',
-        entryFileNames: '[name].js'
-      }
-    }
+        entryFileNames: '[name].js',
+      },
+    },
   },
 
   // Resolve configuration
@@ -180,11 +173,11 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, './src'),
       '@handlers': resolve(__dirname, './handlers'),
-      '@middleware': resolve(__dirname, './middleware')
+      '@middleware': resolve(__dirname, './middleware'),
     },
 
     // Extensions to resolve
-    extensions: ['.ts', '.js', '.json']
+    extensions: ['.ts', '.js', '.json'],
   },
 
   // Plugin configuration
@@ -198,8 +191,8 @@ export default defineConfig({
       updateCheckInterval: 3600000, // 1 hour
       enableInDev: false, // Enable for local Service Worker testing
       swSrc: 'src/sw.ts',
-      swDest: 'sw.js'
-    })
+      swDest: 'sw.js',
+    }),
   ],
 
   // ESBuild configuration
@@ -216,8 +209,8 @@ export default defineConfig({
 
     // Supported features
     supported: {
-      'top-level-await': true
-    }
+      'top-level-await': true,
+    },
   },
 
   // Environment variables
@@ -225,13 +218,13 @@ export default defineConfig({
 
   // CSS configuration
   css: {
-    devSourcemap: true
+    devSourcemap: true,
   },
 
   // JSON configuration
   json: {
     namedExports: true,
-    stringify: false
+    stringify: false,
   },
 
   // Log level
@@ -243,6 +236,6 @@ export default defineConfig({
   // Define global constants
   define: {
     __VERSION__: JSON.stringify(process.env.npm_package_version || '0.0.1'),
-    __DEV__: JSON.stringify(process.env.NODE_ENV !== 'production')
-  }
-})
+    __DEV__: JSON.stringify(process.env.NODE_ENV !== 'production'),
+  },
+});
