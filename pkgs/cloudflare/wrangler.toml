@@ -15,6 +15,17 @@ script_name = "cloudflare-pkg"
 tag = "v1"
 new_classes = ["CounterDurable"]
 
+# KV Namespaces
+[[kv_namespaces]]
+binding = "CHAIN_REGISTRY"
+id = "placeholder_chain_registry_id"
+preview_id = "placeholder_chain_registry_preview_id"
+
+[[kv_namespaces]]
+binding = "ASSET_REGISTRY"
+id = "placeholder_asset_registry_id"
+preview_id = "placeholder_asset_registry_preview_id"
+
 # Workflows configuration
 [workflows]
 # Workflow bindings will be configured in the consuming application

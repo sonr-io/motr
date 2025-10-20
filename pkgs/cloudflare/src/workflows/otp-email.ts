@@ -151,10 +151,14 @@ export class OTPEmailWorkflow extends WorkflowEntrypoint<Env, OTPEmailParams, OT
     }
 
     const key = `otp:${email}`;
+    const now = Date.now();
+
     const value = JSON.stringify({
       code: otpCode,
       expiresAt,
-      createdAt: Date.now()
+      createdAt: now,
+      lastSentAt: now,
+      validated: false,
     });
 
     // Store with TTL matching expiration
