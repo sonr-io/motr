@@ -332,10 +332,10 @@ export class EnclaveWorkerClient implements VaultPlugin {
       data: Array.from(request.data),
     };
 
-    const response = await this.sendMessage<{ signature: number[]; error?: string }>(
-      'sign_data',
-      payload
-    );
+    const response = await this.sendMessage<{
+      signature: number[];
+      error?: string;
+    }>('sign_data', payload);
 
     return {
       signature: new Uint8Array(response.signature),
@@ -406,7 +406,9 @@ export class EnclaveWorkerClient implements VaultPlugin {
    */
   async switchAccount(newAccountAddress: string): Promise<void> {
     this.ensureInitialized();
-    await this.sendMessage('switch_account', { accountAddress: newAccountAddress });
+    await this.sendMessage('switch_account', {
+      accountAddress: newAccountAddress,
+    });
   }
 
   /**

@@ -226,14 +226,18 @@ class EnclaveWorker {
    */
   private async handleInit(id: string, payload: InitMessagePayload): Promise<void> {
     if (this.isInitialized) {
-      this.sendResponse(id, WorkerMessageType.INIT_SUCCESS, { message: 'Already initialized' });
+      this.sendResponse(id, WorkerMessageType.INIT_SUCCESS, {
+        message: 'Already initialized',
+      });
       return;
     }
 
     // Prevent concurrent initialization
     if (this.initPromise) {
       await this.initPromise;
-      this.sendResponse(id, WorkerMessageType.INIT_SUCCESS, { message: 'Initialization complete' });
+      this.sendResponse(id, WorkerMessageType.INIT_SUCCESS, {
+        message: 'Initialization complete',
+      });
       return;
     }
 
@@ -338,7 +342,9 @@ class EnclaveWorker {
   private async handlePersistState(id: string): Promise<void> {
     this.ensureInitialized();
     await this.vaultClient!.persistState();
-    this.sendResponse(id, WorkerMessageType.SUCCESS, { message: 'State persisted' });
+    this.sendResponse(id, WorkerMessageType.SUCCESS, {
+      message: 'State persisted',
+    });
   }
 
   /**
@@ -356,7 +362,9 @@ class EnclaveWorker {
   private async handleClearState(id: string): Promise<void> {
     this.ensureInitialized();
     await this.vaultClient!.clearPersistedState();
-    this.sendResponse(id, WorkerMessageType.SUCCESS, { message: 'State cleared' });
+    this.sendResponse(id, WorkerMessageType.SUCCESS, {
+      message: 'State cleared',
+    });
   }
 
   /**
@@ -368,7 +376,9 @@ class EnclaveWorker {
   ): Promise<void> {
     this.ensureInitialized();
     await this.vaultClient!.switchAccount(payload.accountAddress);
-    this.sendResponse(id, WorkerMessageType.SUCCESS, { message: 'Account switched' });
+    this.sendResponse(id, WorkerMessageType.SUCCESS, {
+      message: 'Account switched',
+    });
   }
 
   /**
@@ -389,7 +399,9 @@ class EnclaveWorker {
   ): Promise<void> {
     this.ensureInitialized();
     await this.vaultClient!.removeAccount(payload.accountAddress);
-    this.sendResponse(id, WorkerMessageType.SUCCESS, { message: 'Account removed' });
+    this.sendResponse(id, WorkerMessageType.SUCCESS, {
+      message: 'Account removed',
+    });
   }
 
   /**
@@ -407,7 +419,9 @@ class EnclaveWorker {
   private async handleRemoveExpiredTokens(id: string): Promise<void> {
     this.ensureInitialized();
     await this.vaultClient!.removeExpiredTokens();
-    this.sendResponse(id, WorkerMessageType.SUCCESS, { message: 'Expired tokens removed' });
+    this.sendResponse(id, WorkerMessageType.SUCCESS, {
+      message: 'Expired tokens removed',
+    });
   }
 
   /**
@@ -422,7 +436,9 @@ class EnclaveWorker {
     this.isInitialized = false;
     this.initPromise = null;
 
-    this.sendResponse(id, WorkerMessageType.SUCCESS, { message: 'Cleanup complete' });
+    this.sendResponse(id, WorkerMessageType.SUCCESS, {
+      message: 'Cleanup complete',
+    });
   }
 
   /**
