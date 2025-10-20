@@ -392,7 +392,11 @@ describe('formatToken', () => {
         exp: 123,
         att: [
           { with: 'storage://bucket1', can: 'crud/read' },
-          { with: 'storage://bucket2', can: 'crud/write', nb: { maxSize: 1024 } },
+          {
+            with: 'storage://bucket2',
+            can: 'crud/write',
+            nb: { maxSize: 1024 },
+          },
           { with: 'mailto:user@example.com', can: 'msg/send' },
         ],
       },

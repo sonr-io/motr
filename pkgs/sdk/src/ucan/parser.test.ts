@@ -140,7 +140,11 @@ describe('parseToken', () => {
   });
 
   it('should throw on invalid base64url in payload', () => {
-    const header = base64urlEncodeJSON({ alg: 'EdDSA', typ: 'JWT', ucv: '0.10.0' });
+    const header = base64urlEncodeJSON({
+      alg: 'EdDSA',
+      typ: 'JWT',
+      ucv: '0.10.0',
+    });
     expect(() => parseToken(`${header}.invalid+base64.signature`)).toThrow(
       'Failed to decode JWT payload'
     );
@@ -154,7 +158,11 @@ describe('parseToken', () => {
   });
 
   it('should throw on invalid JSON in payload', () => {
-    const header = base64urlEncodeJSON({ alg: 'EdDSA', typ: 'JWT', ucv: '0.10.0' });
+    const header = base64urlEncodeJSON({
+      alg: 'EdDSA',
+      typ: 'JWT',
+      ucv: '0.10.0',
+    });
     const invalidPayload = 'aW52YWxpZC1qc29u'; // "invalid-json"
     expect(() => parseToken(`${header}.${invalidPayload}.signature`)).toThrow(
       'Failed to decode JWT payload'

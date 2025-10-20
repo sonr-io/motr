@@ -217,7 +217,9 @@ export async function registerWithPasskey(
       config.onStatusUpdate?.('Please interact with your authenticator...', 'info');
 
       // Create credential with WebAuthn
-      const credential = await startRegistration({ optionsJSON: registrationOptions });
+      const credential = await startRegistration({
+        optionsJSON: registrationOptions,
+      });
 
       // Call complete callback
       await config.onComplete?.(credential);
@@ -237,7 +239,9 @@ export async function registerWithPasskey(
     await config.onStart?.(registrationOptions);
 
     config.onStatusUpdate?.('Please interact with your authenticator...', 'info');
-    const credential = await startRegistration({ optionsJSON: registrationOptions });
+    const credential = await startRegistration({
+      optionsJSON: registrationOptions,
+    });
     await config.onComplete?.(credential);
 
     const result = await finishRegistrationPasskey(
@@ -294,7 +298,9 @@ export async function loginWithPasskey(
       config.onStatusUpdate?.('Please authenticate with your passkey...', 'info');
 
       // Authenticate with WebAuthn
-      const credential = await startAuthentication({ optionsJSON: authOptions });
+      const credential = await startAuthentication({
+        optionsJSON: authOptions,
+      });
 
       // Call complete callback
       await config.onComplete?.(credential);
