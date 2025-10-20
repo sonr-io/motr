@@ -58,10 +58,7 @@ export type {
   WindowClient,
 } from './types/service-worker.js';
 // Vite plugin for Service Worker integration
-export {
-  type VaultPluginOptions,
-  vaultPlugin,
-} from './vite-plugin-vault.js';
+export { type VaultPluginOptions, vaultPlugin } from './vite-plugin-vault.js';
 
 /**
  * Package version
