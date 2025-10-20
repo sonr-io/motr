@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as DefaultLinkBrokenSvg } from '../../assets/default/link-broken.svg';
+import DefaultLinkBrokenSvg from '../../assets/default/link-broken.svg?react';
 
 export const DefaultLinkBroken = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={DefaultLinkBrokenSvg} {...props} />

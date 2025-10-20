@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as DefaultWarningCircleSvg } from '../../assets/default/warning-circle.svg';
+import DefaultWarningCircleSvg from '../../assets/default/warning-circle.svg?react';
 
 export const DefaultWarningCircle = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={DefaultWarningCircleSvg} {...props} />

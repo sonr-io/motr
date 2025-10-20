@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as DefaultMailStarSvg } from '../../assets/default/mail-star.svg';
+import DefaultMailStarSvg from '../../assets/default/mail-star.svg?react';
 
 export const DefaultMailStar = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={DefaultMailStarSvg} {...props} />

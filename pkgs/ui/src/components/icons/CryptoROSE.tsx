@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as CryptoROSESvg } from '../../assets/crypto/ROSE.svg';
+import CryptoROSESvg from '../../assets/crypto/ROSE.svg?react';
 
 export const CryptoROSE = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={CryptoROSESvg} {...props} />

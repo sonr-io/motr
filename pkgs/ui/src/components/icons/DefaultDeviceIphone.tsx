@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as DefaultDeviceIphoneSvg } from '../../assets/default/device-iphone.svg';
+import DefaultDeviceIphoneSvg from '../../assets/default/device-iphone.svg?react';
 
 export const DefaultDeviceIphone = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={DefaultDeviceIphoneSvg} {...props} />

@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as DefaultErrorNetworkSvg } from '../../assets/default/error-network.svg';
+import DefaultErrorNetworkSvg from '../../assets/default/error-network.svg?react';
 
 export const DefaultErrorNetwork = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={DefaultErrorNetworkSvg} {...props} />

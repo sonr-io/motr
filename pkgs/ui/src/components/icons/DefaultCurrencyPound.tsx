@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as DefaultCurrencyPoundSvg } from '../../assets/default/currency-pound.svg';
+import DefaultCurrencyPoundSvg from '../../assets/default/currency-pound.svg?react';
 
 export const DefaultCurrencyPound = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={DefaultCurrencyPoundSvg} {...props} />

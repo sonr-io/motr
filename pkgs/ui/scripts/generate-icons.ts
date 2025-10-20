@@ -72,7 +72,7 @@ function generateIconComponent(icon: IconMetadata): string {
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as ${icon.componentName}Svg } from '../../${icon.importPath}';
+import ${icon.componentName}Svg from '../../${icon.importPath}?react';
 
 export const ${icon.componentName} = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={${icon.componentName}Svg} {...props} />

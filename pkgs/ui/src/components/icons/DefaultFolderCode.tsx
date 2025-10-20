@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as DefaultFolderCodeSvg } from '../../assets/default/folder-code.svg';
+import DefaultFolderCodeSvg from '../../assets/default/folder-code.svg?react';
 
 export const DefaultFolderCode = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={DefaultFolderCodeSvg} {...props} />

@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as DefaultBtcSvg } from '../../assets/default/btc.svg';
+import DefaultBtcSvg from '../../assets/default/btc.svg?react';
 
 export const DefaultBtc = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={DefaultBtcSvg} {...props} />

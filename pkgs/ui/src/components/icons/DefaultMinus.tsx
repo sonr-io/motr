@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as DefaultMinusSvg } from '../../assets/default/minus.svg';
+import DefaultMinusSvg from '../../assets/default/minus.svg?react';
 
 export const DefaultMinus = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={DefaultMinusSvg} {...props} />

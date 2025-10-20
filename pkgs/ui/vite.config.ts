@@ -10,7 +10,7 @@ export default defineConfig({
       svgrOptions: {
         icon: true,
         typescript: false,
-        exportType: 'named',
+        exportType: 'default',
         ref: true,
         svgo: true,
         svgoConfig: {
@@ -26,7 +26,7 @@ export default defineConfig({
           ],
         },
       },
-      include: '**/*.svg',
+      include: '**/*.svg?react',
     }),
   ],
   esbuild: {

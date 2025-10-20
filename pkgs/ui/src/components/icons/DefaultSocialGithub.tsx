@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as DefaultSocialGithubSvg } from '../../assets/default/social-github.svg';
+import DefaultSocialGithubSvg from '../../assets/default/social-github.svg?react';
 
 export const DefaultSocialGithub = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={DefaultSocialGithubSvg} {...props} />

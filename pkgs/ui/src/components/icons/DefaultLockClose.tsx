@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as DefaultLockCloseSvg } from '../../assets/default/lock-close.svg';
+import DefaultLockCloseSvg from '../../assets/default/lock-close.svg?react';
 
 export const DefaultLockClose = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={DefaultLockCloseSvg} {...props} />

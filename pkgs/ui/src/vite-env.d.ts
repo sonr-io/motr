@@ -1,13 +1,15 @@
 /// <reference types="vite/client" />
 /// <reference types="vite-plugin-svgr/client" />
 
+declare module '*.svg?react' {
+  import type { FunctionComponent, SVGProps } from 'react';
+  const content: FunctionComponent<SVGProps<SVGSVGElement>>;
+  export default content;
+}
+
 declare module '*.svg' {
-  import type React from 'react';
-  export const ReactComponent: React.FunctionComponent<
-    React.SVGProps<SVGSVGElement> & { title?: string }
-  >;
-  const src: string;
-  export default src;
+  const content: string;
+  export default content;
 }
 
 declare module '*.json' {

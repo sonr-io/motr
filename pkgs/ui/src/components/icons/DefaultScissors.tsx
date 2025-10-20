@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as DefaultScissorsSvg } from '../../assets/default/scissors.svg';
+import DefaultScissorsSvg from '../../assets/default/scissors.svg?react';
 
 export const DefaultScissors = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={DefaultScissorsSvg} {...props} />

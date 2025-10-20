@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as DefaultMicrochipSvg } from '../../assets/default/microchip.svg';
+import DefaultMicrochipSvg from '../../assets/default/microchip.svg?react';
 
 export const DefaultMicrochip = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={DefaultMicrochipSvg} {...props} />

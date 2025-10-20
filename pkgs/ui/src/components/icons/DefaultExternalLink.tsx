@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as DefaultExternalLinkSvg } from '../../assets/default/external-link.svg';
+import DefaultExternalLinkSvg from '../../assets/default/external-link.svg?react';
 
 export const DefaultExternalLink = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={DefaultExternalLinkSvg} {...props} />

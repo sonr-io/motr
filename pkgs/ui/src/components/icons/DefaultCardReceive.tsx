@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as DefaultCardReceiveSvg } from '../../assets/default/card-receive.svg';
+import DefaultCardReceiveSvg from '../../assets/default/card-receive.svg?react';
 
 export const DefaultCardReceive = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={DefaultCardReceiveSvg} {...props} />

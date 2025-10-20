@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as DefaultOsmoFillSvg } from '../../assets/default/osmo-fill.svg';
+import DefaultOsmoFillSvg from '../../assets/default/osmo-fill.svg?react';
 
 export const DefaultOsmoFill = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={DefaultOsmoFillSvg} {...props} />

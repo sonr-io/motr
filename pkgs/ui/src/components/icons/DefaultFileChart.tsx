@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as DefaultFileChartSvg } from '../../assets/default/file-chart.svg';
+import DefaultFileChartSvg from '../../assets/default/file-chart.svg?react';
 
 export const DefaultFileChart = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={DefaultFileChartSvg} {...props} />

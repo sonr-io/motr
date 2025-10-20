@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as DefaultUserEditSvg } from '../../assets/default/user-edit.svg';
+import DefaultUserEditSvg from '../../assets/default/user-edit.svg?react';
 
 export const DefaultUserEdit = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={DefaultUserEditSvg} {...props} />

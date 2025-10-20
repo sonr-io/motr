@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as DefaultCompassSvg } from '../../assets/default/compass.svg';
+import DefaultCompassSvg from '../../assets/default/compass.svg?react';
 
 export const DefaultCompass = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={DefaultCompassSvg} {...props} />

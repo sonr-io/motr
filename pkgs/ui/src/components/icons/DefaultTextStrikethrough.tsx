@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as DefaultTextStrikethroughSvg } from '../../assets/default/text-strikethrough.svg';
+import DefaultTextStrikethroughSvg from '../../assets/default/text-strikethrough.svg?react';
 
 export const DefaultTextStrikethrough = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={DefaultTextStrikethroughSvg} {...props} />

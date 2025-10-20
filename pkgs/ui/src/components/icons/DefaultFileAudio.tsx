@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as DefaultFileAudioSvg } from '../../assets/default/file-audio.svg';
+import DefaultFileAudioSvg from '../../assets/default/file-audio.svg?react';
 
 export const DefaultFileAudio = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={DefaultFileAudioSvg} {...props} />
