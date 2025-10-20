@@ -7,17 +7,21 @@ import type {
   UCANTokenResponse,
   VerifyDataRequest,
   VerifyDataResponse,
-} from '@sonr.io/enclave';
-import { useCallback, useState } from 'react';
-import { useEnclaveContext } from '../providers/EnclaveProvider';
+} from "@sonr.io/enclave";
+import { useCallback, useState } from "react";
+import { useEnclaveContext } from "../providers/EnclaveProvider";
 
 /**
  * Hook result for vault client operations
  */
 export interface UseVaultClientResult {
   isReady: boolean;
-  newOriginToken: (request: NewOriginTokenRequest) => Promise<UCANTokenResponse>;
-  newAttenuatedToken: (request: NewAttenuatedTokenRequest) => Promise<UCANTokenResponse>;
+  newOriginToken: (
+    request: NewOriginTokenRequest,
+  ) => Promise<UCANTokenResponse>;
+  newAttenuatedToken: (
+    request: NewAttenuatedTokenRequest,
+  ) => Promise<UCANTokenResponse>;
   signData: (request: SignDataRequest) => Promise<SignDataResponse>;
   verifyData: (request: VerifyDataRequest) => Promise<VerifyDataResponse>;
   getIssuerDID: () => Promise<GetIssuerDIDResponse>;
@@ -53,7 +57,7 @@ export function useEnclaveClient(): UseVaultClientResult {
 
   const ensureClient = useCallback(() => {
     if (!client || !isReady) {
-      throw new Error('Enclave client not initialized');
+      throw new Error("Enclave client not initialized");
     }
     return client;
   }, [client, isReady]);
@@ -73,7 +77,7 @@ export function useEnclaveClient(): UseVaultClientResult {
         setIsLoading(false);
       }
     },
-    [ensureClient]
+    [ensureClient],
   );
 
   const newAttenuatedToken = useCallback(
@@ -91,7 +95,7 @@ export function useEnclaveClient(): UseVaultClientResult {
         setIsLoading(false);
       }
     },
-    [ensureClient]
+    [ensureClient],
   );
 
   const signData = useCallback(
@@ -109,7 +113,7 @@ export function useEnclaveClient(): UseVaultClientResult {
         setIsLoading(false);
       }
     },
-    [ensureClient]
+    [ensureClient],
   );
 
   const verifyData = useCallback(
@@ -127,7 +131,7 @@ export function useEnclaveClient(): UseVaultClientResult {
         setIsLoading(false);
       }
     },
-    [ensureClient]
+    [ensureClient],
   );
 
   const getIssuerDID = useCallback(async (): Promise<GetIssuerDIDResponse> => {

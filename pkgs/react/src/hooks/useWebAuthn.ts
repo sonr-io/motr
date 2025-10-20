@@ -1,5 +1,8 @@
-import { useCallback, useState } from 'react';
-import type { WebAuthnAuthenticationOptions, WebAuthnRegistrationOptions } from '../types';
+import { useCallback, useState } from "react";
+import type {
+  WebAuthnAuthenticationOptions,
+  WebAuthnRegistrationOptions,
+} from "../types";
 
 /**
  * WebAuthn credential data
@@ -13,7 +16,7 @@ export interface WebAuthnCredential {
     authenticatorData?: ArrayBuffer;
     signature?: ArrayBuffer;
   };
-  type: 'public-key';
+  type: "public-key";
 }
 
 /**
@@ -49,14 +52,16 @@ export function useWebAuthn() {
   const [error, setError] = useState<Error | null>(null);
 
   const register = useCallback(
-    async (options: WebAuthnRegistrationOptions): Promise<WebAuthnCredential> => {
+    async (
+      options: WebAuthnRegistrationOptions,
+    ): Promise<WebAuthnCredential> => {
       setIsLoading(true);
       setError(null);
 
       try {
         // Check if WebAuthn is supported
         if (!window.PublicKeyCredential) {
-          throw new Error('WebAuthn is not supported in this browser');
+          throw new Error("WebAuthn is not supported in this browser");
         }
 
         // TODO: Get challenge from server
@@ -67,7 +72,7 @@ export function useWebAuthn() {
           publicKey: {
             challenge,
             rp: {
-              name: 'Sonr',
+              name: "Sonr",
               id: window.location.hostname,
             },
             user: {
@@ -76,34 +81,36 @@ export function useWebAuthn() {
               displayName: options.displayName || options.username,
             },
             pubKeyCredParams: [
-              { alg: -7, type: 'public-key' }, // ES256
-              { alg: -257, type: 'public-key' }, // RS256
+              { alg: -7, type: "public-key" }, // ES256
+              { alg: -257, type: "public-key" }, // RS256
             ],
             authenticatorSelection: {
-              authenticatorAttachment: 'platform',
+              authenticatorAttachment: "platform",
               requireResidentKey: true,
-              residentKey: 'required',
-              userVerification: 'required',
+              residentKey: "required",
+              userVerification: "required",
             },
             timeout: options.timeout || 60000,
-            attestation: 'direct',
+            attestation: "direct",
           },
         })) as PublicKeyCredential;
 
         if (!credential) {
-          throw new Error('Failed to create credential');
+          throw new Error("Failed to create credential");
         }
 
         return {
           id: credential.id,
           rawId: credential.rawId,
           response: {
-            clientDataJSON: (credential.response as AuthenticatorAttestationResponse)
-              .clientDataJSON,
-            attestationObject: (credential.response as AuthenticatorAttestationResponse)
-              .attestationObject,
+            clientDataJSON: (
+              credential.response as AuthenticatorAttestationResponse
+            ).clientDataJSON,
+            attestationObject: (
+              credential.response as AuthenticatorAttestationResponse
+            ).attestationObject,
           },
-          type: credential.type as 'public-key',
+          type: credential.type as "public-key",
         };
       } catch (err) {
         const error = err as Error;
@@ -113,18 +120,20 @@ export function useWebAuthn() {
         setIsLoading(false);
       }
     },
-    []
+    [],
   );
 
   const authenticate = useCallback(
-    async (options?: WebAuthnAuthenticationOptions): Promise<WebAuthnCredential> => {
+    async (
+      options?: WebAuthnAuthenticationOptions,
+    ): Promise<WebAuthnCredential> => {
       setIsLoading(true);
       setError(null);
 
       try {
         // Check if WebAuthn is supported
         if (!window.PublicKeyCredential) {
-          throw new Error('WebAuthn is not supported in this browser');
+          throw new Error("WebAuthn is not supported in this browser");
         }
 
         // TODO: Get challenge from server
@@ -136,24 +145,28 @@ export function useWebAuthn() {
             challenge,
             rpId: window.location.hostname,
             timeout: options?.timeout || 60000,
-            userVerification: 'required',
+            userVerification: "required",
           },
         })) as PublicKeyCredential;
 
         if (!credential) {
-          throw new Error('Failed to get credential');
+          throw new Error("Failed to get credential");
         }
 
         return {
           id: credential.id,
           rawId: credential.rawId,
           response: {
-            clientDataJSON: (credential.response as AuthenticatorAssertionResponse).clientDataJSON,
-            authenticatorData: (credential.response as AuthenticatorAssertionResponse)
-              .authenticatorData,
-            signature: (credential.response as AuthenticatorAssertionResponse).signature,
+            clientDataJSON: (
+              credential.response as AuthenticatorAssertionResponse
+            ).clientDataJSON,
+            authenticatorData: (
+              credential.response as AuthenticatorAssertionResponse
+            ).authenticatorData,
+            signature: (credential.response as AuthenticatorAssertionResponse)
+              .signature,
           },
-          type: credential.type as 'public-key',
+          type: credential.type as "public-key",
         };
       } catch (err) {
         const error = err as Error;
@@ -163,7 +176,7 @@ export function useWebAuthn() {
         setIsLoading(false);
       }
     },
-    []
+    [],
   );
 
   return {

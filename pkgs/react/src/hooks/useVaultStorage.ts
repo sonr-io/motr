@@ -1,7 +1,7 @@
-import type { StoredUCANToken, StoredVaultState } from '@sonr.io/enclave';
-import { useCallback, useEffect, useState } from 'react';
-import { useEnclaveContext } from '../providers/EnclaveProvider';
-import type { UseEnclaveStorageResult, UseUCANTokensResult } from '../types';
+import type { StoredUCANToken, StoredVaultState } from "@sonr.io/enclave";
+import { useCallback, useEffect, useState } from "react";
+import { useEnclaveContext } from "../providers/EnclaveProvider";
+import type { UseEnclaveStorageResult, UseUCANTokensResult } from "../types";
 
 /**
  * Hook for managing enclave storage state
@@ -48,7 +48,7 @@ export function useEnclaveStorage(): UseEnclaveStorageResult {
 
   const persist = useCallback(async () => {
     if (!client || !isReady) {
-      throw new Error('Enclave client not initialized');
+      throw new Error("Enclave client not initialized");
     }
 
     setIsLoading(true);
@@ -67,7 +67,7 @@ export function useEnclaveStorage(): UseEnclaveStorageResult {
 
   const clear = useCallback(async () => {
     if (!client || !isReady) {
-      throw new Error('Enclave client not initialized');
+      throw new Error("Enclave client not initialized");
     }
 
     setIsLoading(true);
@@ -149,7 +149,7 @@ export function useUCANTokens(): UseUCANTokensResult {
 
   const removeExpired = useCallback(async () => {
     if (!client || !isReady) {
-      throw new Error('Enclave client not initialized');
+      throw new Error("Enclave client not initialized");
     }
 
     setIsLoading(true);

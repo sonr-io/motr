@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useEnclaveContext } from '../providers/EnclaveProvider';
-import type { UseAccountSwitchResult } from '../types';
+import { useCallback, useEffect, useState } from "react";
+import { useEnclaveContext } from "../providers/EnclaveProvider";
+import type { UseAccountSwitchResult } from "../types";
 
 /**
  * Hook for switching between multiple accounts
@@ -37,7 +37,7 @@ export function useAccountSwitch(): UseAccountSwitchResult {
       const persistedAccounts = await client.listPersistedAccounts();
       setAccounts(persistedAccounts);
     } catch (error) {
-      console.error('Failed to load accounts:', error);
+      console.error("Failed to load accounts:", error);
     } finally {
       setIsLoading(false);
     }
@@ -46,7 +46,7 @@ export function useAccountSwitch(): UseAccountSwitchResult {
   const switchAccount = useCallback(
     async (address: string) => {
       if (!client || !isReady) {
-        throw new Error('Enclave client not initialized');
+        throw new Error("Enclave client not initialized");
       }
 
       setIsLoading(true);
@@ -54,19 +54,19 @@ export function useAccountSwitch(): UseAccountSwitchResult {
         await client.switchAccount(address);
         await loadAccounts();
       } catch (error) {
-        console.error('Failed to switch account:', error);
+        console.error("Failed to switch account:", error);
         throw error;
       } finally {
         setIsLoading(false);
       }
     },
-    [client, isReady, loadAccounts]
+    [client, isReady, loadAccounts],
   );
 
   const removeAccount = useCallback(
     async (address: string) => {
       if (!client || !isReady) {
-        throw new Error('Enclave client not initialized');
+        throw new Error("Enclave client not initialized");
       }
 
       setIsLoading(true);
@@ -74,13 +74,13 @@ export function useAccountSwitch(): UseAccountSwitchResult {
         await client.removeAccount(address);
         await loadAccounts();
       } catch (error) {
-        console.error('Failed to remove account:', error);
+        console.error("Failed to remove account:", error);
         throw error;
       } finally {
         setIsLoading(false);
       }
     },
-    [client, isReady, loadAccounts]
+    [client, isReady, loadAccounts],
   );
 
   // Load accounts on mount

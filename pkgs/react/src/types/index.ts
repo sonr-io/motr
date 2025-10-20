@@ -7,8 +7,8 @@ import type {
   StoredVaultState,
   VaultClient,
   VaultConfigWithStorage,
-} from '@sonr.io/enclave';
-import type { ReactNode } from 'react';
+} from "@sonr.io/enclave";
+import type { ReactNode } from "react";
 
 /**
  * Enclave state
@@ -146,7 +146,7 @@ export interface SignDataResponse {
  */
 export interface BroadcastTxRequest {
   txBytes: Uint8Array;
-  mode?: 'sync' | 'async' | 'block';
+  mode?: "sync" | "async" | "block";
 }
 
 /**

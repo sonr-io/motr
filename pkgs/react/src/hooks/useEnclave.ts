@@ -1,5 +1,5 @@
-import { useEnclaveContext } from '../providers/EnclaveProvider';
-import type { EnclaveState } from '../types';
+import { useEnclaveContext } from "../providers/EnclaveProvider";
+import type { EnclaveState } from "../types";
 
 /**
  * Hook result for enclave operations

@@ -1,6 +1,16 @@
-import { createVaultClient, type VaultClient, VaultError } from '@sonr.io/enclave';
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import type { EnclaveProviderProps, EnclaveState } from '../types';
+import {
+  createVaultClient,
+  type VaultClient,
+  VaultError,
+} from "@sonr.io/enclave";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import type { EnclaveProviderProps, EnclaveState } from "../types";
 
 /**
  * Enclave context value
@@ -14,7 +24,9 @@ interface EnclaveContextValue extends EnclaveState {
 /**
  * Enclave context
  */
-const EnclaveContext = createContext<EnclaveContextValue | undefined>(undefined);
+const EnclaveContext = createContext<EnclaveContextValue | undefined>(
+  undefined,
+);
 
 /**
  * Enclave provider component
@@ -25,7 +37,9 @@ export function EnclaveProvider({
   config,
   client: externalClient,
 }: EnclaveProviderProps) {
-  const [client, setClient] = useState<VaultClient | null>(externalClient || null);
+  const [client, setClient] = useState<VaultClient | null>(
+    externalClient || null,
+  );
   const [state, setState] = useState<EnclaveState>({
     isReady: false,
     isInitialized: false,
@@ -60,7 +74,8 @@ export function EnclaveProvider({
           error: null,
         });
       } catch (error) {
-        const vaultError = error instanceof VaultError ? error : new Error(String(error));
+        const vaultError =
+          error instanceof VaultError ? error : new Error(String(error));
         setState((prev) => ({
           ...prev,
           isReady: false,
@@ -69,7 +84,7 @@ export function EnclaveProvider({
         throw error;
       }
     },
-    [client, config]
+    [client, config],
   );
 
   /**
@@ -93,10 +108,16 @@ export function EnclaveProvider({
   useEffect(() => {
     if (config?.autoInitialize && !state.isInitialized && !externalClient) {
       initialize(config.wasmPath).catch((error) => {
-        console.error('Failed to auto-initialize enclave:', error);
+        console.error("Failed to auto-initialize enclave:", error);
       });
     }
-  }, [config?.autoInitialize, config?.wasmPath, state.isInitialized, externalClient, initialize]);
+  }, [
+    config?.autoInitialize,
+    config?.wasmPath,
+    state.isInitialized,
+    externalClient,
+    initialize,
+  ]);
 
   /**
    * Cleanup on unmount
@@ -105,7 +126,7 @@ export function EnclaveProvider({
     return () => {
       if (!externalClient && client) {
         cleanup().catch((error) => {
-          console.error('Failed to cleanup enclave:', error);
+          console.error("Failed to cleanup enclave:", error);
         });
       }
     };
@@ -118,7 +139,9 @@ export function EnclaveProvider({
     cleanup,
   };
 
-  return <EnclaveContext.Provider value={value}>{children}</EnclaveContext.Provider>;
+  return (
+    <EnclaveContext.Provider value={value}>{children}</EnclaveContext.Provider>
+  );
 }
 
 /**
@@ -127,7 +150,7 @@ export function EnclaveProvider({
 export function useEnclaveContext(): EnclaveContextValue {
   const context = useContext(EnclaveContext);
   if (!context) {
-    throw new Error('useEnclaveContext must be used within an EnclaveProvider');
+    throw new Error("useEnclaveContext must be used within an EnclaveProvider");
   }
   return context;
 }

@@ -1,12 +1,12 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState } from "react";
 import type {
   BroadcastTxRequest,
   BroadcastTxResponse,
   SignDataRequest,
   SignDataResponse,
   UseMutationResult,
-} from '../types';
-import { useEnclaveClient } from './useVaultClient';
+} from "../types";
+import { useEnclaveClient } from "./useVaultClient";
 
 /**
  * Hook for signing data with the enclave
@@ -32,7 +32,10 @@ import { useEnclaveClient } from './useVaultClient';
  * }
  * ```
  */
-export function useSignData(): UseMutationResult<SignDataResponse, SignDataRequest> {
+export function useSignData(): UseMutationResult<
+  SignDataResponse,
+  SignDataRequest
+> {
   const { signData: vaultSignData } = useEnclaveClient();
   const [data, setData] = useState<SignDataResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -64,7 +67,7 @@ export function useSignData(): UseMutationResult<SignDataResponse, SignDataReque
         setIsPending(false);
       }
     },
-    [vaultSignData]
+    [vaultSignData],
   );
 
   const reset = useCallback(() => {
@@ -111,7 +114,10 @@ export function useSignData(): UseMutationResult<SignDataResponse, SignDataReque
  * }
  * ```
  */
-export function useBroadcastTx(): UseMutationResult<BroadcastTxResponse, BroadcastTxRequest> {
+export function useBroadcastTx(): UseMutationResult<
+  BroadcastTxResponse,
+  BroadcastTxRequest
+> {
   const [data, setData] = useState<BroadcastTxResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isPending, setIsPending] = useState(false);
@@ -119,34 +125,37 @@ export function useBroadcastTx(): UseMutationResult<BroadcastTxResponse, Broadca
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const mutate = useCallback(async (_request: BroadcastTxRequest): Promise<BroadcastTxResponse> => {
-    setIsLoading(true);
-    setIsPending(true);
-    setIsError(false);
-    setError(null);
-    setIsSuccess(false);
+  const mutate = useCallback(
+    async (_request: BroadcastTxRequest): Promise<BroadcastTxResponse> => {
+      setIsLoading(true);
+      setIsPending(true);
+      setIsError(false);
+      setError(null);
+      setIsSuccess(false);
 
-    try {
-      // TODO: Implement actual transaction broadcasting using SDK
-      // This is a placeholder implementation
-      const response: BroadcastTxResponse = {
-        txHash: 'placeholder_hash',
-        code: 0,
-      };
+      try {
+        // TODO: Implement actual transaction broadcasting using SDK
+        // This is a placeholder implementation
+        const response: BroadcastTxResponse = {
+          txHash: "placeholder_hash",
+          code: 0,
+        };
 
-      setData(response);
-      setIsSuccess(true);
-      return response;
-    } catch (err) {
-      const error = err as Error;
-      setError(error);
-      setIsError(true);
-      throw error;
-    } finally {
-      setIsLoading(false);
-      setIsPending(false);
-    }
-  }, []);
+        setData(response);
+        setIsSuccess(true);
+        return response;
+      } catch (err) {
+        const error = err as Error;
+        setError(error);
+        setIsError(true);
+        throw error;
+      } finally {
+        setIsLoading(false);
+        setIsPending(false);
+      }
+    },
+    [],
+  );
 
   const reset = useCallback(() => {
     setData(null);

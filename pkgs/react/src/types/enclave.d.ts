@@ -2,7 +2,7 @@
  * Temporary type declarations for @sonr.io/enclave
  * These will be replaced when the enclave package properly exports its types
  */
-declare module '@sonr.io/enclave' {
+declare module "@sonr.io/enclave" {
   // Re-export all types from enclave source
   export {
     EnclaveData,
@@ -31,20 +31,20 @@ declare module '@sonr.io/enclave' {
     VaultConfigWithIPFS,
     IPFSEnclaveReference,
     VaultStateWithIPFS,
-  } from '../../../libs/enclave/src/types';
+  } from "../../../libs/enclave/src/types";
 
   export {
     VaultStorageManager,
     AccountVaultDatabase,
     type StoredSession,
     type StoredMetadata,
-  } from '../../../libs/enclave/src/storage';
+  } from "../../../libs/enclave/src/storage";
 
   export {
     VaultClient,
     createVaultClient,
     getDefaultVaultClient,
-  } from '../../../libs/enclave/src/client';
+  } from "../../../libs/enclave/src/client";
 
   export {
     loadVaultWASM,
@@ -54,7 +54,7 @@ declare module '@sonr.io/enclave' {
     getWASMInfo,
     wasmCache,
     type WASMLoadOptions,
-  } from '../../../libs/enclave/src/loader';
+  } from "../../../libs/enclave/src/loader";
 
   export {
     EnclaveWorkerClient,
@@ -62,12 +62,12 @@ declare module '@sonr.io/enclave' {
     getDefaultWorkerClient,
     isWorkerSupported,
     type WorkerClientConfig,
-  } from '../../../libs/enclave/src/worker-client';
+  } from "../../../libs/enclave/src/worker-client";
 
   export {
     WorkerMessageType,
     type WorkerMessage,
     type WorkerResponse,
     type InitMessagePayload,
-  } from '../../../libs/enclave/src/worker';
+  } from "../../../libs/enclave/src/worker";
 }
