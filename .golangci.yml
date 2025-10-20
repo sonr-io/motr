@@ -1,0 +1,167 @@
+version: "2"
+
+run:
+  # Timeout for analysis
+  timeout: 5m
+
+  # Use all available CPU cores for maximum speed
+  concurrency: 0
+
+  # Build tags for WASM compilation
+  build-tags:
+    - wasm
+
+  # Skip directories
+  skip-dirs:
+    - vendor
+    - third_party
+    - node_modules
+    - .git
+    - dist
+
+  # Skip generated files
+  skip-files:
+    - ".*\\.pb\\.go$"
+    - ".*\\.gen\\.go$"
+
+linters:
+  # Enable fast linters by default
+  default: fast
+
+  # Explicitly enable the fastest and most valuable linters
+  enable:
+    - errcheck      # Check for unchecked errors
+    - govet         # Vet examines Go source code (enabled by default)
+    - ineffassign   # Detect ineffectual assignments (enabled by default)
+    - staticcheck   # Comprehensive static analysis (includes gosimple, stylecheck) (enabled by default)
+    - unused        # Check for unused constants, variables, functions (enabled by default)
+    - revive        # Fast, configurable, extensible linter (better than golint)
+    - gosec         # Security-focused linter
+    - misspell      # Finds commonly misspelled English words
+    - goconst       # Find repeated strings that could be constants
+    - gocyclo       # Check cyclomatic complexity
+    - bodyclose     # Check HTTP response body is closed
+    - noctx         # Find sending HTTP requests without context.Context
+    - errorlint     # Find code that can cause problems with error wrapping
+    - gocritic      # Comprehensive linter with many checks
+
+  # Disable slow or overly strict linters
+  disable:
+    - dupl          # Very slow on large codebases
+    - funlen        # Can be too strict
+    - gocognit      # Can be too strict
+    - mnd           # Magic number detection can be noisy
+    - lll           # Line length can be handled by formatter
+
+  # Settings for individual linters
+  settings:
+    govet:
+      enable-all: true
+      disable:
+        - fieldalignment  # Can be noisy
+
+    revive:
+      # Revive provides many rules - enable the most valuable ones
+      rules:
+        - name: blank-imports
+        - name: context-as-argument
+        - name: context-keys-type
+        - name: dot-imports
+        - name: error-return
+        - name: error-strings
+        - name: error-naming
+        - name: exported
+        - name: if-return
+        - name: increment-decrement
+        - name: var-naming
+        - name: var-declaration
+        - name: package-comments
+        - name: range
+        - name: receiver-naming
+        - name: time-naming
+        - name: unexported-return
+        - name: indent-error-flow
+        - name: errorf
+        - name: empty-block
+        - name: superfluous-else
+        - name: unused-parameter
+        - name: unreachable-code
+        - name: redefines-builtin-id
+
+    staticcheck:
+      checks: ["all"]
+
+    gosec:
+      # Security checks - all enabled by default
+      excludes: []
+
+    gocyclo:
+      # Maximum cyclomatic complexity
+      min-complexity: 15
+
+    goconst:
+      # Minimum occurrences to flag as constant
+      min-occurrences: 3
+
+    misspell:
+      locale: US
+
+# Formatters configuration (golangci-lint v2 format)
+formatters:
+  # Enable gofumpt as the primary formatter
+  enable:
+    - gofumpt
+    - goimports
+
+  # Formatter settings
+  settings:
+    gofumpt:
+      # Use stricter formatting rules
+      extra-rules: true
+
+    goimports:
+      # Organize imports in standard format
+      local-prefixes: github.com/sonr-io/motr
+
+issues:
+  # Maximum issues count per linter
+  max-issues-per-linter: 50
+
+  # Maximum count of issues with the same text
+  max-same-issues: 3
+
+  # Don't hide new issues in existing code
+  new: false
+
+  # Exclude common false positives
+  exclude-rules:
+    # Exclude some linters from running on tests files
+    - path: _test\.go
+      linters:
+        - gocyclo
+        - errcheck
+        - dupl
+        - gosec
+        - goconst
+
+    # Exclude known issues in generated code
+    - path: '(.+)\.pb\.go'
+      linters:
+        - all
+
+    # Exclude shadow checking on error variables (common pattern)
+    - linters:
+        - govet
+      text: 'shadow: declaration of "(err|ctx)"'
+
+output:
+  # Output format
+  formats:
+    text:
+      path: stdout
+      color: true
+      print-issued-lines: true
+      print-linter-name: true
+
+  # Sort results by file path
+  sort-results: true
