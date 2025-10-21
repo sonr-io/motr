@@ -1,190 +1,894 @@
 ---
-title: Getting Started with ReactJS
-description: A quick start guide for building applications with Sonr using JavaScript and TypeScript
-sidebarTitle: React Quickstart
-icon: "react"
+title: "Cloudflare Integration"
+description: "Complete guide to integrating Sonr identity and workflows with Cloudflare Workers, Durable Objects, and deployment strategies"
+sidebarTitle: "Cloudflare"
+icon: "cloud"
 ---
 
-This guide will show you how to set up a Node.js project with TypeScript and use the Sonr SDK to interact with the Sonr network.
+<Info>
+  Cloudflare Workers provide a globally distributed platform for running serverless code. Learn how to integrate Sonr identity management with Durable Objects and Workflows for persistent, scalable applications.
+</Info>
+
+## Overview
+
+This guide covers integrating Sonr with Cloudflare Workers using the `@pkgs/cloudflare` package, which provides:
+
+- **CounterDurable**: Simple counter example demonstrating persistent state
+- **SonrIdentityDurable**: Persistent identity management wrapping `@libs/enclave`
+- **OTPEmailWorkflow**: Email-based OTP workflow orchestration
+- **ExampleWorkflow & AsyncTaskWorkflow**: General workflow examples
+
+<CardGroup cols={2}>
+  <Card title="Durable Objects" icon="database">
+    Persistent, globally distributed state with WebSocket support
+  </Card>
+  <Card title="Workflows" icon="arrows-repeat">
+    Reliable, orchestrated async task processing and email delivery
+  </Card>
+  <Card title="Workers" icon="microchip">
+    Serverless functions deployed globally with low latency
+  </Card>
+  <Card title="Identity" icon="lock">
+    Secure cryptographic operations and identity management
+  </Card>
+</CardGroup>
+
+## Architecture
+
+<Mermaid chart={`
+graph TB
+    subgraph Frontend["@apps/frontend"]
+        ReactComponents["React Components<br/>- IdentityManager.tsx<br/>- Other UI components"]
+        Worker["Cloudflare Worker (worker.ts)<br/>- Serves static assets<br/>- Routes API requests to Durable Objects"]
+        ReactComponents -->|HTTP Requests| Worker
+    end
+
+    subgraph Cloudflare["@pkgs/cloudflare"]
+        Counter["CounterDurable<br/>- Simple example"]
+        Identity["SonrIdentityDurable<br/>- Identity management<br/>- Wraps @libs/enclave<br/>- Persistent state<br/>- WebSocket support"]
+    end
+
+    subgraph Enclave["@libs/enclave"]
+        EnclaveClient["EnclaveWorkerClient<br/>- Web Worker<br/>- WASM Runtime<br/>- IndexedDB Storage"]
+    end
+
+    Worker --> Counter
+    Worker --> Identity
+    Identity --> EnclaveClient
+
+    style Frontend fill:#e3f2fd
+    style Cloudflare fill:#fff3e0
+    style Enclave fill:#f3e5f5
+`} />
 
 ## Prerequisites
 
-- A local Sonr network running. See the [Validator Setup Guide](/quickstart/validators) for instructions
-- Node.js version 16 or higher
-- npm or yarn
+<Check>
+- Cloudflare account with Workers enabled
+- Node.js 16+ or Bun runtime
+- Understanding of async/await and TypeScript
+- Optional: `@libs/enclave` for identity features
+</Check>
 
-## 1. Project Setup
+## Installation and Setup
 
-<Steps>
-<Step>
-### Initialize a New Project
+### 1. Initialize Project
 
-Create a new directory for your project and initialize it with npm:
-
-```bash
-mkdir sonr-ts-quickstart
-cd sonr-ts-quickstart
-npm init -y
-```
-
-</Step>
-
-<Step>
-### Install Dependencies
-
-Install the Sonr SDK and TypeScript:
+Create a new Cloudflare Workers project:
 
 ```bash
-npm install @sonr/sdk typescript ts-node @types/node
+npm create cloudflare@latest my-sonr-worker -- --type="hello-world" --ts
+cd my-sonr-worker
 ```
 
-</Step>
+### 2. Install Dependencies
 
-<Step>
-### Configure TypeScript
+```bash
+npm install @pkgs/cloudflare @libs/enclave
+```
 
-Create a `tsconfig.json` file in your project root with the following configuration:
+<Tip>
+  The `@libs/enclave` package is optional. Core features like CounterDurable work without it. Add it only when you need identity management.
+</Tip>
+
+### 3. Configure wrangler.toml
+
+Update your `wrangler.toml` file with Durable Objects and Workflows bindings:
+
+```toml
+name = "sonr-worker"
+type = "service"
+main = "src/worker.ts"
+compatibility_date = "2024-01-01"
+
+# Durable Objects bindings
+[[durable_objects.bindings]]
+name = "COUNTER"
+class_name = "CounterDurable"
+
+[[durable_objects.bindings]]
+name = "SONR_IDENTITY"
+class_name = "SonrIdentityDurable"
+
+# Durable Object migrations
+[[migrations]]
+tag = "v1"
+new_classes = ["CounterDurable"]
+
+[[migrations]]
+tag = "v2"
+new_classes = ["SonrIdentityDurable"]
+
+# Workflows
+[[workflows]]
+binding = "OTP_EMAIL_WORKFLOW"
+name = "otp-email-workflow"
+class_name = "OTPEmailWorkflow"
+
+[[workflows]]
+binding = "EXAMPLE_WORKFLOW"
+name = "example-workflow"
+class_name = "ExampleWorkflow"
+
+[[workflows]]
+binding = "ASYNC_TASK_WORKFLOW"
+name = "async-task-workflow"
+class_name = "AsyncTaskWorkflow"
+
+# Environment variables
+[env.production]
+name = "sonr-worker-prod"
+
+[[env.production.durable_objects.bindings]]
+name = "COUNTER"
+class_name = "CounterDurable"
+script_name = "sonr-worker-prod"
+
+[[env.production.durable_objects.bindings]]
+name = "SONR_IDENTITY"
+class_name = "SonrIdentityDurable"
+script_name = "sonr-worker-prod"
+```
+
+### 4. Configure package.json
+
+Ensure your `package.json` includes the necessary dependencies:
 
 ```json
 {
-  "compilerOptions": {
-    "target": "es2020",
-    "module": "commonjs",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true
+  "name": "sonr-worker",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:production": "wrangler deploy --env production"
+  },
+  "dependencies": {
+    "@pkgs/cloudflare": "workspace:*",
+    "@libs/enclave": "workspace:*"
+  },
+  "devDependencies": {
+    "wrangler": "latest",
+    "typescript": "latest"
   }
 }
 ```
 
-</Step>
-</Steps>
+## Worker Setup
 
-## 2. Creating a Wallet
+### Export Durable Objects and Workflows
 
-Now, let's create a new TypeScript file and add the logic to create a new Sonr wallet.
-
-<Steps>
-<Step>
-### Create the Main File
-
-Create a new file named `index.ts`.
-
-</Step>
-
-<Step>
-### Implement Wallet Creation
-
-Add the following code to `index.ts` to create a new wallet and log its address and mnemonic:
+In your `src/worker.ts`, export the classes and define environment bindings:
 
 ```typescript
-import { Sonr } from "@sonr/sdk";
+// Export Durable Objects and Workflows from @pkgs/cloudflare
+export {
+  CounterDurable,
+  SonrIdentityDurable,
+  ExampleWorkflow,
+  AsyncTaskWorkflow,
+  OTPEmailWorkflow
+} from '@pkgs/cloudflare';
 
-async function main() {
-  console.log("Creating a new Sonr wallet...");
-
-  const sonr = new Sonr({ httpUrl: "http://localhost:1317" });
-  const wallet = await sonr.createWallet();
-
-  console.log(`Wallet created!`);
-  console.log(`Address: ${wallet.address}`);
-  console.log(`Mnemonic: ${wallet.mnemonic}`);
+// Define environment bindings
+export interface Env {
+  COUNTER: DurableObjectNamespace;
+  SONR_IDENTITY: DurableObjectNamespace;
+  OTP_EMAIL_WORKFLOW: Workflow;
+  EXAMPLE_WORKFLOW: Workflow;
+  ASYNC_TASK_WORKFLOW: Workflow;
 }
 
-main().catch(console.error);
+// Fetch handler
+export default {
+  async fetch(request: Request, env: Env): Promise<Response> {
+    const url = new URL(request.url);
+
+    // Route requests to appropriate handlers
+    if (url.pathname.startsWith('/api/counter')) {
+      return handleCounterAPI(request, env);
+    } else if (url.pathname.startsWith('/api/identity')) {
+      return handleIdentityAPI(request, env);
+    } else if (url.pathname.startsWith('/api/workflows')) {
+      return handleWorkflowAPI(request, env);
+    }
+
+    return new Response('Not Found', { status: 404 });
+  }
+};
 ```
 
-<Note type="warning">
-  **Important**: In a real application, you must store the mnemonic securely.
-  Never expose it in client-side code.
-</Note>
-</Step>
+## Durable Objects Guide
 
-<Step>
-### Run the Script
+### CounterDurable
 
-Execute the script using `ts-node`:
-
-```bash
-npx ts-node index.ts
-```
-
-You should see the new wallet's address and mnemonic printed to the console.
-
-</Step>
-</Steps>
-
-## 3. Querying the Blockchain
-
-Let's query the blockchain to get the balance of our new wallet.
-
-<Steps>
-<Step>
-### Get Account Balance
-
-Modify your `index.ts` file to query the account balance after creating the wallet. You will need to fund this account from the localnet faucet for it to have a balance.
+A simple persistent counter demonstrating basic Durable Object usage:
 
 ```typescript
-// ... after creating the wallet
+// Using CounterDurable
+const counterNamespace = env.COUNTER;
+const counterInstance = counterNamespace.get(counterNamespace.idFromName('default'));
 
-console.log("Querying account balance...");
-
-// The localnet validator has funds, so we'll use its address for the query
-const validatorAddress = "snr1..._validator_address_..."; // Replace with the actual validator address from your localnet
-const balance = await sonr.getAccountBalance(validatorAddress);
-
-console.log(`Balance for ${validatorAddress}:`, balance);
+// Increment counter
+const incrementResponse = await counterInstance.fetch(
+  new Request('https://counter/increment', { method: 'POST' })
+);
 ```
 
-</Step>
+### SonrIdentityDurable
 
-<Step>
-### Run the Script Again
+Advanced identity management with Sonr enclave integration. Features include:
 
-Run the script to see the account balance:
+- **Persistent State**: State survives worker restarts and is globally distributed
+- **Identity Initialization**: Initialize with account addresses
+- **Cryptographic Operations**: Sign and verify data
+- **Token Management**: Create and manage UCAN tokens
+- **Real-time Updates**: WebSocket support for live status updates
 
-```bash
-npx ts-node index.ts
-```
+#### Architecture Features
 
-</Step>
-</Steps>
-
-## 4. Sending a Transaction
-
-Finally, let's send a transaction from one account to another.
-
-<Steps>
-<Step>
-### Implement Transaction Sending
-
-For this step, you will need two wallets. You can create a second one using the same `createWallet` method. Ensure both wallets have funds from the localnet faucet.
+**Type-Only Imports**: The package uses TypeScript type-only imports to avoid unnecessary bundling:
 
 ```typescript
-// ... inside your main function
+import type { EnclaveWorkerClient } from '@libs/enclave';
+```
 
-const wallet1 = await sonr.createWallet(); // Fund this from the faucet
-const wallet2 = await sonr.createWallet();
+**Dynamic Module Loading**: Enclave loads at runtime only when needed:
 
-console.log(`Sending 1 SNR from ${wallet1.address} to ${wallet2.address}`);
+```typescript
+private async loadEnclaveModule(): Promise<typeof import('@libs/enclave') | null> {
+  try {
+    const module = await import('@libs/enclave');
+    return module;
+  } catch (error) {
+    console.warn('⚠️  @libs/enclave not available');
+    return null;
+  }
+}
+```
 
-const result = await wallet1.send({
-  to: wallet2.address,
-  amount: "1000000usnr", // 1 SNR
+**Availability Checking**: Check if identity features are available:
+
+```typescript
+const available = await SonrIdentityDurable.isEnclaveAvailable();
+if (available) {
+  // Use identity features
+} else {
+  // Show upgrade prompt
+}
+```
+
+**Singleton Pattern**: One enclave instance per identity prevents duplicates and reduces overhead:
+
+```typescript
+private static readonly enclaveInstances = new Map<string, EnclaveWorkerClient>();
+```
+
+## API Endpoints
+
+### Counter API
+
+Simple operations on persistent counters:
+
+```
+GET  /api/counter/value      - Get current value
+POST /api/counter/increment  - Increment counter
+POST /api/counter/decrement  - Decrement counter
+POST /api/counter/reset      - Reset to 0
+```
+
+Example usage:
+
+```typescript
+// Get current value
+const valueResponse = await fetch('/api/counter/value');
+const { value } = await valueResponse.json();
+console.log('Counter:', value);
+
+// Increment
+const incrementResponse = await fetch('/api/counter/increment', {
+  method: 'POST'
+});
+const { value: newValue } = await incrementResponse.json();
+console.log('New value:', newValue);
+```
+
+### Identity API
+
+All identity endpoints follow the pattern: `/api/identity/{accountAddress}/{action}`
+
+```
+POST /api/identity/{accountAddress}/initialize  - Initialize identity
+GET  /api/identity/{accountAddress}/status      - Get initialization status
+GET  /api/identity/{accountAddress}/did         - Get DID
+POST /api/identity/{accountAddress}/sign        - Sign data
+POST /api/identity/{accountAddress}/verify      - Verify signature
+POST /api/identity/{accountAddress}/tokens/origin      - Create origin token
+POST /api/identity/{accountAddress}/tokens/attenuated  - Create attenuated token
+GET  /api/identity/{accountAddress}/tokens/list        - List tokens
+```
+
+Example usage:
+
+```typescript
+// Initialize identity
+const initResponse = await fetch('/api/identity/sonr1abc123/initialize', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    wasmPath: '/enclave.wasm',
+    accountAddress: 'sonr1abc123'
+  })
 });
 
-console.log(`Transaction successful! TxHash: ${result.txhash}`);
+// Sign data
+const signResponse = await fetch('/api/identity/sonr1abc123/sign', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    data: Array.from(new TextEncoder().encode('message to sign'))
+  })
+});
+
+const { signature } = await signResponse.json();
+
+// Verify signature
+const verifyResponse = await fetch('/api/identity/sonr1abc123/verify', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    data: Array.from(new TextEncoder().encode('message to sign')),
+    signature: signature
+  })
+});
+
+const { valid } = await verifyResponse.json();
+console.log('Signature valid:', valid);
+
+// Create origin token
+const tokenResponse = await fetch('/api/identity/sonr1abc123/tokens/origin', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    audience: 'did:sonr:audience123'
+  })
+});
+
+const { token } = await tokenResponse.json();
+
+// Create attenuated token
+const attenuatedResponse = await fetch('/api/identity/sonr1abc123/tokens/attenuated', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    parentToken: token,
+    attenuations: [
+      { can: 'sign', with: 'vault://identity' }
+    ]
+  })
+});
+
+const { attenuatedToken } = await attenuatedResponse.json();
+
+// List tokens
+const listResponse = await fetch('/api/identity/sonr1abc123/tokens/list');
+const { tokens } = await listResponse.json();
 ```
 
-</Step>
-</Steps>
+### Workflow API
+
+Trigger and manage workflows:
+
+```
+POST /api/workflows/otp-email/start  - Start OTP email workflow
+POST /api/workflows/example/start     - Start ExampleWorkflow
+POST /api/workflows/task/start        - Start AsyncTaskWorkflow
+```
+
+Example usage:
+
+```typescript
+// Start OTP email workflow
+const workflowResponse = await fetch('/api/workflows/otp-email/start', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    email: 'user@example.com',
+    accountAddress: 'sonr1abc123'
+  })
+});
+
+const { workflowId } = await workflowResponse.json();
+console.log('Workflow started:', workflowId);
+```
+
+## Environment Variables
+
+Configure these environment variables in your Cloudflare dashboard or `.env` file:
+
+```bash
+# Cloudflare Account
+CLOUDFLARE_ACCOUNT_ID=your-account-id
+CLOUDFLARE_API_TOKEN=your-api-token
+
+# Environment
+ENVIRONMENT=development|staging|production
+
+# Enclave
+ENCLAVE_WASM_PATH=/enclave.wasm
+ENCLAVE_AUTO_INITIALIZE=true
+
+# Email (for OTP Workflow)
+SENDGRID_API_KEY=your-sendgrid-key
+OTP_EMAIL_FROM=noreply@example.com
+OTP_EMAIL_SUBJECT=Your Sonr Identity Verification Code
+
+# Worker
+WORKER_NAME=sonr-worker
+WORKER_ENVIRONMENT=production
+```
+
+## Usage Examples
+
+### Basic Counter Operations
+
+```typescript
+async function handleCounterAPI(request: Request, env: Env): Promise<Response> {
+  const url = new URL(request.url);
+  const counterNamespace = env.COUNTER;
+
+  // Get or create counter instance
+  const counterId = url.searchParams.get('id') || 'default';
+  const stub = counterNamespace.get(counterNamespace.idFromName(counterId));
+
+  if (url.pathname === '/api/counter/value' && request.method === 'GET') {
+    const response = await stub.fetch(request);
+    return response;
+  } else if (url.pathname === '/api/counter/increment' && request.method === 'POST') {
+    const response = await stub.fetch(request);
+    return response;
+  }
+
+  return new Response('Invalid request', { status: 400 });
+}
+```
+
+### Identity Manager Component
+
+Use the IdentityManager React component in your frontend:
+
+```typescript
+import { IdentityManager } from './components/IdentityManager';
+
+function App() {
+  return (
+    <div>
+      <h1>Sonr Identity Management</h1>
+      <IdentityManager />
+    </div>
+  );
+}
+
+export default App;
+```
+
+### Direct API Integration
+
+```typescript
+class SonrIdentityClient {
+  private accountAddress: string;
+  private baseUrl: string;
+
+  constructor(accountAddress: string, baseUrl = '') {
+    this.accountAddress = accountAddress;
+    this.baseUrl = baseUrl;
+  }
+
+  async initialize(wasmPath: string): Promise<void> {
+    const response = await fetch(
+      `${this.baseUrl}/api/identity/${this.accountAddress}/initialize`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wasmPath, accountAddress: this.accountAddress })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to initialize: ${response.statusText}`);
+    }
+  }
+
+  async getStatus(): Promise<{ initialized: boolean }> {
+    const response = await fetch(
+      `${this.baseUrl}/api/identity/${this.accountAddress}/status`
+    );
+    return response.json();
+  }
+
+  async sign(data: Uint8Array): Promise<Uint8Array> {
+    const response = await fetch(
+      `${this.baseUrl}/api/identity/${this.accountAddress}/sign`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: Array.from(data) })
+      }
+    );
+
+    const { signature } = await response.json();
+    return new Uint8Array(signature);
+  }
+
+  async getDID(): Promise<string> {
+    const response = await fetch(
+      `${this.baseUrl}/api/identity/${this.accountAddress}/did`
+    );
+    const { did } = await response.json();
+    return did;
+  }
+}
+
+// Usage
+const client = new SonrIdentityClient('sonr1test123');
+await client.initialize('/enclave.wasm');
+const did = await client.getDID();
+console.log('DID:', did);
+```
+
+## Local Development
+
+### Start Development Server
+
+```bash
+bun run dev
+# or
+npm run dev
+```
+
+The dev server runs on `http://localhost:8787` by default.
+
+### Access Features
+
+Navigate to different routes:
+
+```
+http://localhost:8787/api/counter/value           - Get counter
+http://localhost:8787/api/identity/test/status    - Check identity status
+http://localhost:8787/                             - Main worker
+```
+
+### View Logs
+
+```bash
+wrangler tail
+```
+
+Logs show initialization and operation details:
+
+```
+[Worker Init] Loading Cloudflare features from @pkgs/cloudflare...
+[Worker Init] ✓ Loaded Durable Objects: CounterDurable, SonrIdentityDurable
+[SonrIdentityDurable] Attempting to load @libs/enclave...
+[SonrIdentityDurable] ✓ @libs/enclave loaded successfully
+[SonrIdentityDurable] Creating NEW enclave instance for: sonr1abc...
+[SonrIdentityDurable] Reusing existing enclave instance for: sonr1abc...
+```
+
+### Debug Identity Features
+
+1. Initialize an identity:
+```bash
+curl -X POST http://localhost:8787/api/identity/sonr1test/initialize \
+  -H "Content-Type: application/json" \
+  -d '{"wasmPath": "/enclave.wasm", "accountAddress": "sonr1test"}'
+```
+
+2. Check status:
+```bash
+curl http://localhost:8787/api/identity/sonr1test/status
+```
+
+3. Sign data:
+```bash
+curl -X POST http://localhost:8787/api/identity/sonr1test/sign \
+  -H "Content-Type: application/json" \
+  -d '{"data": [72, 101, 108, 108, 111]}'
+```
+
+## Deployment
+
+### Staging Deployment
+
+```bash
+bun run deploy:staging
+# or
+npm run deploy:staging
+```
+
+### Production Deployment
+
+```bash
+bun run deploy:production
+# or
+npm run deploy:production
+```
+
+<Warning>
+  Before deploying to production:
+  - Test all workflows thoroughly in staging
+  - Verify environment variables are set
+  - Check Durable Object migrations are correct
+  - Enable backup and recovery procedures
+</Warning>
+
+### Cloudflare Dashboard Deployment
+
+1. Go to Cloudflare Workers dashboard
+2. Select your project
+3. Click "Deploy"
+4. Monitor in real-time with "Tail" feature
+
+## Key Features
+
+### Persistent State
+
+Each identity gets its own Durable Object instance:
+
+- State persists across requests and worker restarts
+- Globally distributed via Cloudflare's network
+- Automatic failover and replication
+- Strongly consistent reads and writes
+
+### Real-time Updates
+
+- WebSocket support for live updates
+- Broadcast events to all connected clients
+- Session management with automatic cleanup
+- Low-latency global delivery
+
+### Optional Enclave Integration
+
+- Works with or without `@libs/enclave`
+- Graceful degradation if enclave unavailable
+- Type-safe optional dependencies
+- Clear error messages
+
+### Resource Management
+
+- Singleton pattern per identity prevents duplicates
+- Automatic cleanup of expired tokens
+- Efficient memory usage via caching
+- Configurable retention policies
+
+### Type Safety
+
+- Full TypeScript support
+- Type-only imports reduce bundle size
+- Compile-time checking of APIs
+- IntelliSense for all methods
+
+## Optional Dependencies Pattern
+
+The `@pkgs/cloudflare` package uses optional peer dependencies to maximize flexibility:
+
+### Day 1: Core Features Only
+
+```bash
+bun add @pkgs/cloudflare
+```
+
+```typescript
+export { CounterDurable, ExampleWorkflow } from '@pkgs/cloudflare';
+```
+
+Result: Works perfectly without `@libs/enclave`
+
+### Day N: Add Identity Features
+
+```bash
+bun add @libs/enclave
+```
+
+```typescript
+export { SonrIdentityDurable } from '@pkgs/cloudflare';
+```
+
+Result: Seamless upgrade with no breaking changes
+
+### Runtime Availability Checks
+
+```typescript
+const enclaveAvailable = await SonrIdentityDurable.isEnclaveAvailable();
+
+if (enclaveAvailable) {
+  // Use advanced identity features
+} else {
+  // Fallback to basic features
+  console.log('Identity features unavailable. Install @libs/enclave to enable.');
+}
+```
+
+## Troubleshooting
+
+### "Enclave not initialized"
+
+Make sure you've called the initialize endpoint before using identity features:
+
+```typescript
+await fetch(`/api/identity/${accountAddress}/initialize`, {
+  method: 'POST',
+  body: JSON.stringify({
+    wasmPath: '/enclave.wasm',
+    accountAddress
+  })
+});
+```
+
+### "@libs/enclave not available"
+
+Ensure the package is installed:
+
+<CodeGroup>
+```bash npm
+npm install @libs/enclave
+```
+
+```bash bun
+bun add @libs/enclave
+```
+</CodeGroup>
+
+Check your `package.json`:
+
+```json
+{
+  "dependencies": {
+    "@libs/enclave": "workspace:*"
+  }
+}
+```
+
+### Durable Object Not Found
+
+Verify your `wrangler.toml` has correct bindings and migrations:
+
+```toml
+[[durable_objects.bindings]]
+name = "SONR_IDENTITY"
+class_name = "SonrIdentityDurable"
+
+[[migrations]]
+tag = "v2"
+new_classes = ["SonrIdentityDurable"]
+```
+
+### WASM File Not Found
+
+Ensure the enclave.wasm file is accessible:
+
+```bash
+# Copy vault files to public directory
+bun run copy:vault
+```
+
+Verify the public directory serves files correctly in your worker.
+
+### Performance Issues
+
+**Bundle Size**:
+- Without enclave: ~10KB (Counter + Workflows)
+- With enclave: ~10KB + enclave size
+- Type-only imports add 0 bytes
+
+**Runtime Performance**:
+- First enclave load: ~50ms (cached after)
+- Singleton pattern eliminates duplicates
+- No penalty when enclave unavailable
+
+**Memory**:
+- Minimal singleton map overhead
+- One instance per identity
+- Automatic cleanup available
+
+## Best Practices
+
+<Tip>
+  **Singleton Pattern**: Reuse identity instances by ID to reduce overhead and ensure consistency.
+
+  **Error Handling**: Always check enclave availability before using identity features.
+
+  **Environment Variables**: Use Cloudflare secrets for sensitive config, never commit to version control.
+
+  **Logging**: Enable debug logging in development to troubleshoot issues.
+
+  **Testing**: Test both with and without enclave to ensure graceful degradation.
+
+  **Cleanup**: Implement token expiration and automatic cleanup for long-running applications.
+</Tip>
+
+## Performance Characteristics
+
+### Bundle Impact
+- Type-only imports: 0 bytes
+- Dynamic loading: Only bundled when used
+- Singleton caching: Efficient resource usage
+
+### Runtime Overhead
+- Initial import: ~50ms
+- Cached after first load
+- No impact if enclave unavailable
+
+### Memory Usage
+- Per-identity singleton: ~1-5MB
+- Token storage: ~100KB typical
+- Automatic cleanup supported
+
+## Migration Path
+
+### Phase 1: Basic Counter
+```typescript
+export { CounterDurable } from '@pkgs/cloudflare';
+```
+
+### Phase 2: Add Workflows
+```typescript
+export { ExampleWorkflow, AsyncTaskWorkflow } from '@pkgs/cloudflare';
+```
+
+### Phase 3: Optional Identity
+```typescript
+// Install @libs/enclave when needed
+export { SonrIdentityDurable } from '@pkgs/cloudflare';
+```
+
+### Phase 4: Full Adoption
+```typescript
+const features = {
+  counter: true,
+  workflows: true,
+  identity: await SonrIdentityDurable.isEnclaveAvailable()
+};
+
+// Use conditionally based on features object
+```
+
+## Related Resources
+
+- [Cloudflare Workers Documentation](https://developers.cloudflare.com/workers/)
+- [Durable Objects Guide](https://developers.cloudflare.com/workers/runtime-apis/durable-objects/)
+- [Workflows Documentation](https://developers.cloudflare.com/workflows/)
+- [@pkgs/cloudflare Package](https://github.com/sonr-io/motr/tree/main/pkgs/cloudflare)
+- [@libs/enclave Package](https://github.com/sonr-io/motr/tree/main/libs/enclave)
 
 ## Next Steps
 
-This quickstart has shown you the basics of interacting with the Sonr network using our TypeScript SDK. You can now explore more advanced topics:
-
-- **Service Registration**: Register your application as a trusted service
-- **UCAN Authorization**: Implement capability-based permissions
-- **Smart Contract Interaction**: Call and query smart contracts on the Sonr network
-
+1. Set up your first Cloudflare Worker with the quickstart above
+2. Test counter operations in local development
+3. Explore identity features with the IdentityManager component
+4. Configure workflows for async tasks
+5. Deploy to staging environment
+6. Monitor with Cloudflare's tail feature
+7. Deploy to production when ready

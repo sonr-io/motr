@@ -1,14 +1,14 @@
 #!/usr/bin/env bun
 
 import { readdirSync, statSync, writeFileSync, mkdirSync, existsSync, rmSync } from 'fs';
-import { join, relative, parse, dirname } from 'path';
+import { join, relative, parse } from 'path';
 
 interface IconMetadata {
   name: string;
   componentName: string;
-  library: string; // The icon library (folder name)
   type: 'svg' | 'lottie';
   importPath: string;
+  originalPath: string; // Keep track of where it came from (for debugging)
 }
 
 function toPascalCase(str: string): string {
@@ -18,7 +18,7 @@ function toPascalCase(str: string): string {
     .replace(/[^a-zA-Z0-9]/g, '');
 }
 
-function findAssetsInLibrary(dir: string, baseDir: string, library: string): IconMetadata[] {
+function findAllAssets(dir: string, baseDir: string, currentPath: string = ''): IconMetadata[] {
   const assets: IconMetadata[] = [];
 
   try {
@@ -29,23 +29,32 @@ function findAssetsInLibrary(dir: string, baseDir: string, library: string): Ico
       const stat = statSync(fullPath);
 
       if (stat.isDirectory()) {
-        // Recursively search subdirectories within the same library
-        assets.push(...findAssetsInLibrary(fullPath, baseDir, library));
+        // Recursively search subdirectories
+        const subPath = currentPath ? `${currentPath}/${entry}` : entry;
+        assets.push(...findAllAssets(fullPath, baseDir, subPath));
       } else if (stat.isFile()) {
         const ext = parse(entry).ext.toLowerCase();
-        const name = parse(entry).name;
+        const baseName = parse(entry).name;
 
         if (ext === '.svg' || ext === '.json') {
           const type = ext === '.svg' ? 'svg' : 'lottie';
-          const componentName = toPascalCase(name);
+
+          // Create unique component name by combining path and filename
+          // e.g., "lucide/arrow-right.svg" -> "LucideArrowRight"
+          const nameWithPath = currentPath
+            ? `${currentPath.replace(/\//g, '-')}-${baseName}`
+            : baseName;
+
+          const componentName = toPascalCase(nameWithPath);
           const importPath = relative(baseDir, fullPath).replace(/\\/g, '/');
+          const originalPath = currentPath ? `${currentPath}/${entry}` : entry;
 
           assets.push({
-            name,
+            name: baseName,
             componentName,
-            library,
             type,
             importPath,
+            originalPath,
           });
         }
       }
@@ -57,67 +66,13 @@ function findAssetsInLibrary(dir: string, baseDir: string, library: string): Ico
   return assets;
 }
 
-function findAllLibraries(assetsDir: string, baseDir: string): Map<string, IconMetadata[]> {
-  const libraries = new Map<string, IconMetadata[]>();
-
-  try {
-    const entries = readdirSync(assetsDir);
-
-    // First, collect root-level icons as "default" library
-    const rootIcons: IconMetadata[] = [];
-    for (const entry of entries) {
-      const fullPath = join(assetsDir, entry);
-      const stat = statSync(fullPath);
-
-      if (stat.isFile()) {
-        const ext = parse(entry).ext.toLowerCase();
-        const name = parse(entry).name;
-
-        if (ext === '.svg' || ext === '.json') {
-          const type = ext === '.svg' ? 'svg' : 'lottie';
-          const componentName = toPascalCase(name);
-          const importPath = relative(baseDir, fullPath).replace(/\\/g, '/');
-
-          rootIcons.push({
-            name,
-            componentName,
-            library: 'default',
-            type,
-            importPath,
-          });
-        }
-      }
-    }
-
-    if (rootIcons.length > 0) {
-      libraries.set('default', rootIcons);
-    }
-
-    // Then, collect icons from each subdirectory as separate libraries
-    for (const entry of entries) {
-      const fullPath = join(assetsDir, entry);
-      const stat = statSync(fullPath);
-
-      if (stat.isDirectory()) {
-        const libraryIcons = findAssetsInLibrary(fullPath, baseDir, entry);
-        if (libraryIcons.length > 0) {
-          libraries.set(entry, libraryIcons);
-        }
-      }
-    }
-  } catch (error) {
-    console.warn(`Warning: Could not read assets directory:`, error);
-  }
-
-  return libraries;
-}
-
 function generateIconComponent(icon: IconMetadata): string {
   if (icon.type === 'svg') {
-    return `import { forwardRef } from 'react';
+    return `// Auto-generated from ${icon.originalPath}
+import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { SvgIcon } from '../ui/svg-icon';
-import { ReactComponent as ${icon.componentName}Svg } from '../../../${icon.importPath}';
+import ${icon.componentName}Svg from '../../${icon.importPath}?react';
 
 export const ${icon.componentName} = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <SvgIcon ref={ref} icon={${icon.componentName}Svg} {...props} />
@@ -126,10 +81,11 @@ export const ${icon.componentName} = forwardRef<SVGSVGElement, Omit<LucideProps,
 ${icon.componentName}.displayName = '${icon.componentName}';
 `;
   } else {
-    return `import { forwardRef } from 'react';
+    return `// Auto-generated from ${icon.originalPath}
+import { forwardRef } from 'react';
 import type { LucideProps } from 'lucide-react';
 import { LottieIcon } from '../ui/lottie-icon';
-import animationData from '../../../${icon.importPath}';
+import animationData from '../../${icon.importPath}';
 
 export const ${icon.componentName} = forwardRef<SVGSVGElement, Omit<LucideProps, 'ref'>>((props, ref) => (
   <LottieIcon ref={ref as any} animationData={animationData} {...props} />
@@ -140,47 +96,28 @@ ${icon.componentName}.displayName = '${icon.componentName}';
   }
 }
 
-function generateLibraryIndexFile(library: string, icons: IconMetadata[]): string {
+function generateIconsIndexFile(icons: IconMetadata[]): string {
   const lines: string[] = [
-    `// Auto-generated ${library} icon library exports`,
+    '// Auto-generated icon exports',
     '// Do not edit this file manually',
+    '// Generated from src/assets',
     '',
   ];
 
+  // Export base icon components
+  lines.push("export { LottieIcon } from '../ui/lottie-icon';");
+  lines.push("export type { LottieIconProps } from '../ui/lottie-icon';");
+  lines.push("export { SvgIcon } from '../ui/svg-icon';");
+  lines.push("export type { SvgIconProps } from '../ui/svg-icon';");
+  lines.push("export type { LucideIcon } from '../ui/icon-types';");
+  lines.push('');
+
+  // Export all icons
   for (const icon of icons) {
     lines.push(`export { ${icon.componentName} } from './${icon.componentName}';`);
   }
 
   return lines.join('\n');
-}
-
-function generateIconExports(libraries: Map<string, IconMetadata[]>): string[] {
-  const lines: string[] = [];
-
-  if (libraries.size === 0) {
-    return ['// No generated icons found'];
-  }
-
-  lines.push('// Auto-generated icon library exports');
-  lines.push('// Generated from src/assets');
-  lines.push('');
-
-  // Export base icon components
-  lines.push("export { LottieIcon } from './ui/lottie-icon';");
-  lines.push("export type { LottieIconProps } from './ui/lottie-icon';");
-  lines.push("export { SvgIcon } from './ui/svg-icon';");
-  lines.push("export type { SvgIconProps } from './ui/svg-icon';");
-  lines.push("export type { LucideIcon } from './ui/icon-types';");
-  lines.push('');
-
-  // Export each library's icons
-  for (const [library, icons] of libraries) {
-    const libraryExportName = library === 'default' ? 'Default' : toPascalCase(library);
-    lines.push(`// ${libraryExportName} icon library`);
-    lines.push(`export * as ${libraryExportName}Icons from './icons/${library}';`);
-  }
-
-  return lines;
 }
 
 async function main() {
@@ -189,101 +126,48 @@ async function main() {
   const componentsDir = join(srcDir, 'components');
   const iconsDir = join(componentsDir, 'icons');
 
-  console.log('🔍 Scanning for icon libraries...');
+  console.log('🔍 Scanning for icons in assets directory...');
 
-  // Find all icon libraries
-  const libraries = findAllLibraries(assetsDir, srcDir);
+  // Find all icons recursively
+  const icons = findAllAssets(assetsDir, srcDir);
 
-  let totalIcons = 0;
-  let totalSvg = 0;
-  let totalLottie = 0;
+  const totalSvg = icons.filter(i => i.type === 'svg').length;
+  const totalLottie = icons.filter(i => i.type === 'lottie').length;
 
-  for (const [library, icons] of libraries) {
-    totalIcons += icons.length;
-    totalSvg += icons.filter(i => i.type === 'svg').length;
-    totalLottie += icons.filter(i => i.type === 'lottie').length;
-  }
-
-  console.log(`📦 Found ${totalIcons} icons across ${libraries.size} libraries:`);
+  console.log(`📦 Found ${icons.length} icons:`);
   console.log(`   - SVG: ${totalSvg}`);
   console.log(`   - Lottie: ${totalLottie}`);
-  console.log(`📚 Libraries: ${Array.from(libraries.keys()).join(', ')}`);
 
-  // Clean and recreate icons directory
+  if (icons.length === 0) {
+    console.log('⚠️  No icons found in assets directory');
+    return;
+  }
+
+  // Clean and recreate icons directory (flat structure)
   if (existsSync(iconsDir)) {
+    console.log('🧹 Cleaning existing icons directory...');
     rmSync(iconsDir, { recursive: true });
   }
   mkdirSync(iconsDir, { recursive: true });
 
-  // Generate icon components for each library
+  // Generate icon components (all in root /icons/ directory)
   console.log('✨ Generating icon components...');
-  for (const [library, icons] of libraries) {
-    const libraryDir = join(iconsDir, library);
-    mkdirSync(libraryDir, { recursive: true });
-
-    console.log(`   📁 ${library}: ${icons.length} icons`);
-
-    // Generate individual icon components
-    for (const icon of icons) {
-      const componentPath = join(libraryDir, `${icon.componentName}.tsx`);
-      const componentCode = generateIconComponent(icon);
-      writeFileSync(componentPath, componentCode, 'utf-8');
-    }
-
-    // Generate library index file
-    const libraryIndexPath = join(libraryDir, 'index.ts');
-    const libraryIndexCode = generateLibraryIndexFile(library, icons);
-    writeFileSync(libraryIndexPath, libraryIndexCode, 'utf-8');
+  for (const icon of icons) {
+    const componentPath = join(iconsDir, `${icon.componentName}.tsx`);
+    const componentCode = generateIconComponent(icon);
+    writeFileSync(componentPath, componentCode, 'utf-8');
   }
 
-  // Update components/index.ts with icon exports
-  console.log('📝 Updating components/index.ts...');
-  const componentIndexPath = join(componentsDir, 'index.ts');
-  const iconExports = generateIconExports(libraries);
-
-  // Read existing index.ts content and inject icon exports
-  let existingContent = '';
-  if (existsSync(componentIndexPath)) {
-    existingContent = await Bun.file(componentIndexPath).text();
-  }
-
-  // Remove old icon exports if they exist
-  const iconExportStart = '// Auto-generated icon library exports';
-  const iconExportEnd = lines => {
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i].includes('export * as') && lines[i].includes('Icons from')) {
-        // Find the end of icon exports
-        let j = i;
-        while (j < lines.length && (lines[j].includes('export * as') || lines[j].trim() === '' || lines[j].includes('// ') || lines[j].includes('export {'))) {
-          j++;
-        }
-        return j;
-      }
-    }
-    return -1;
-  };
-
-  const existingLines = existingContent.split('\n');
-  let newLines = [...existingLines];
-
-  // Find and remove old icon exports
-  const startIdx = existingLines.findIndex(line => line.includes(iconExportStart));
-  if (startIdx !== -1) {
-    const endIdx = iconExportEnd(existingLines.slice(startIdx));
-    if (endIdx !== -1) {
-      newLines.splice(startIdx, endIdx);
-    }
-  }
-
-  // Add new icon exports at the end
-  const finalContent = [...newLines, '', ...iconExports].join('\n');
-
-  await Bun.write(componentIndexPath, finalContent);
+  // Generate icons index file
+  console.log('📝 Generating icons/index.ts...');
+  const iconsIndexPath = join(iconsDir, 'index.ts');
+  const iconsIndexCode = generateIconsIndexFile(icons);
+  writeFileSync(iconsIndexPath, iconsIndexCode, 'utf-8');
 
   console.log('✅ Icon generation complete!');
-  console.log(`   Generated ${totalIcons} icon components in src/components/icons/`);
-  console.log(`   Created ${libraries.size} icon libraries`);
-  console.log(`   Updated src/components/index.ts with exports`);
+  console.log(`   Generated ${icons.length} icon components in src/components/icons/`);
+  console.log(`   All icons are in a flat directory structure`);
+  console.log(`   Import icons from: "@sonr.io/ui/components/icons"`);
 }
 
 main().catch(console.error);

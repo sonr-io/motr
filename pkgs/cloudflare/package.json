@@ -1,0 +1,43 @@
+{
+  "name": "@pkgs/cloudflare",
+  "version": "0.1.0",
+  "description": "Cloudflare Workers utilities with Durable Objects and Workflows",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./durable": "./src/durable/index.ts",
+    "./workflows": "./src/workflows/index.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "lint": "bunx oxlint@latest .",
+    "format": "bunx oxfmt@latest .",
+    "check": "bunx oxlint@latest . && bunx oxfmt@latest --check ."
+  },
+  "keywords": [
+    "cloudflare",
+    "workers",
+    "durable-objects",
+    "workflows",
+    "edge"
+  ],
+  "devDependencies": {
+    "@cloudflare/workers-types": "latest",
+    "@types/bun": "latest",
+    "typescript": "latest"
+  },
+  "peerDependencies": {
+    "@cloudflare/workers-types": ">=4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@sonr.io/enclave": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@react-email/render": "^1.4.0"
+  }
+}

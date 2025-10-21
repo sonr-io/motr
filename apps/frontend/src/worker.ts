@@ -10,6 +10,12 @@
  * - And all other Cloudflare features
  */
 
+// Export Durable Objects and Workflows from @pkgs/cloudflare
+console.log('[Worker Init] Loading Cloudflare features from @pkgs/cloudflare...');
+export { CounterDurable, SonrIdentityDurable, OTPEmailWorkflow } from '@pkgs/cloudflare';
+console.log('[Worker Init] ✓ Loaded Durable Objects: CounterDurable, SonrIdentityDurable');
+console.log('[Worker Init] ✓ Loaded Workflows: OTPEmailWorkflow');
+
 export interface Env {
   // Assets binding for serving static files
   ASSETS: Fetcher;
@@ -17,10 +23,25 @@ export interface Env {
   // Environment variables
   ENVIRONMENT: string;
 
+  // Durable Objects from @pkgs/cloudflare
+  COUNTER: DurableObjectNamespace;
+  SONR_IDENTITY: DurableObjectNamespace;
+
+  // Workflows from @pkgs/cloudflare
+  OTP_EMAIL_WORKFLOW: Workflow;
+
+  // KV namespaces
+  OTP_STORE: KVNamespace;
+  CHAIN_REGISTRY: KVNamespace;
+  ASSET_REGISTRY: KVNamespace;
+
+  // Environment variables
+  EMAIL_FROM?: string;
+  RESEND_API_KEY?: string;
+
   // Add your Cloudflare bindings here:
   // MY_KV: KVNamespace;
   // MY_BUCKET: R2Bucket;
-  // MY_DURABLE_OBJECT: DurableObjectNamespace;
   // AI: Ai;
 }
 
@@ -31,6 +52,7 @@ export default {
     _ctx: ExecutionContext,
   ): Promise<Response> {
     const url = new URL(request.url);
+    console.log(`[Worker] Request received: ${request.method} ${url.pathname}`);
 
     // Payment method manifest endpoint
     if (url.pathname === "/pay" || url.pathname === "/pay/") {
@@ -115,11 +137,266 @@ async function handleApiRequest(
     });
   }
 
-  // Example: Access Cloudflare features
-  // if (url.pathname === '/api/kv-example' && env.MY_KV) {
-  //   const value = await env.MY_KV.get('key');
-  //   return Response.json({ value });
-  // }
+  // Chain Registry API endpoints
+  if (url.pathname === "/api/chains") {
+    // List all available chains from CHAIN_REGISTRY
+    const chains = await env.CHAIN_REGISTRY.list();
+    return Response.json({
+      chains: chains.keys.map(k => k.name),
+      count: chains.keys.length,
+    });
+  }
+
+  if (url.pathname.startsWith("/api/chains/")) {
+    const chainId = url.pathname.split("/api/chains/")[1];
+
+    if (!chainId) {
+      return Response.json({ error: "Chain ID required" }, { status: 400 });
+    }
+
+    // Get chain info
+    const chainInfo = await env.CHAIN_REGISTRY.get(chainId, "json");
+    const assetList = await env.ASSET_REGISTRY.get(chainId, "json");
+
+    if (!chainInfo && !assetList) {
+      return Response.json({ error: "Chain not found" }, { status: 404 });
+    }
+
+    return Response.json({
+      chain: chainInfo,
+      assets: assetList,
+    });
+  }
+
+  // Counter Durable Object endpoints
+  if (url.pathname.startsWith('/api/counter/')) {
+    console.log('[Durable Object] Accessing CounterDurable from @pkgs/cloudflare');
+    const id = env.COUNTER.idFromName('global-counter');
+    const stub = env.COUNTER.get(id);
+    console.log('[Durable Object] CounterDurable instance created with ID:', id.toString());
+    // Forward the request to the Durable Object
+    const counterPath = url.pathname.replace('/api/counter', '');
+    const counterUrl = new URL(request.url);
+    counterUrl.pathname = counterPath;
+    return stub.fetch(counterUrl.toString(), request);
+  }
+
+  // Sonr Identity Durable Object endpoints
+  if (url.pathname.startsWith('/api/identity/')) {
+    console.log('[Durable Object] Accessing SonrIdentityDurable from @pkgs/cloudflare (wrapping @libs/enclave)');
+
+    // Extract identity ID from path (e.g., /api/identity/sonr1abc.../initialize)
+    const pathParts = url.pathname.split('/');
+    const identityId = pathParts[3]; // /api/identity/{id}/{action}
+
+    if (!identityId) {
+      return Response.json({ error: 'Identity ID required' }, { status: 400 });
+    }
+
+    const id = env.SONR_IDENTITY.idFromName(identityId);
+    const stub = env.SONR_IDENTITY.get(id);
+    console.log('[Durable Object] SonrIdentityDurable instance created with ID:', id.toString(), 'for identity:', identityId);
+
+    // Forward the request to the Durable Object, removing the identity ID from path
+    const identityPath = '/' + pathParts.slice(4).join('/');
+    const identityUrl = new URL(request.url);
+    identityUrl.pathname = identityPath;
+    return stub.fetch(identityUrl.toString(), request);
+  }
+
+  // Get OTP Status
+  if (url.pathname === '/api/auth/otp-status' && request.method === 'POST') {
+    const body = await request.json() as { email: string };
+
+    try {
+      const key = `otp:${body.email}`;
+      const storedData = await env.OTP_STORE.get(key);
+
+      if (!storedData) {
+        return Response.json({
+          validated: false,
+          canSend: true,
+          remainingSeconds: 0,
+        });
+      }
+
+      const data = JSON.parse(storedData);
+      const now = Date.now();
+
+      // Calculate rate limit
+      const timeSinceLastSent = now - (data.lastSentAt || 0);
+      const rateLimitMs = 60 * 1000; // 1 minute
+      const canSend = timeSinceLastSent >= rateLimitMs;
+      const remainingSeconds = canSend ? 0 : Math.ceil((rateLimitMs - timeSinceLastSent) / 1000);
+
+      return Response.json({
+        validated: data.validated || false,
+        canSend,
+        remainingSeconds,
+        expiresAt: data.expiresAt,
+      });
+    } catch (error) {
+      console.error('[OTP] Status check error:', error);
+      return Response.json(
+        {
+          success: false,
+          error: error instanceof Error ? error.message : 'Status check failed',
+        },
+        { status: 500 }
+      );
+    }
+  }
+
+  // Send OTP Email Workflow
+  if (url.pathname === '/api/auth/send-otp' && request.method === 'POST') {
+    console.log('[Workflow] Starting OTPEmailWorkflow from @pkgs/cloudflare');
+    const body = await request.json() as {
+      email: string;
+      username?: string;
+      purpose?: 'registration' | 'login' | 'password-reset';
+      expiresInMinutes?: number;
+    };
+
+    try {
+      // Check rate limiting
+      const key = `otp:${body.email}`;
+      const storedData = await env.OTP_STORE.get(key);
+
+      if (storedData) {
+        const data = JSON.parse(storedData);
+        const now = Date.now();
+        const timeSinceLastSent = now - (data.lastSentAt || 0);
+        const rateLimitMs = 60 * 1000; // 1 minute
+
+        // Check if already validated
+        if (data.validated) {
+          return Response.json(
+            {
+              success: false,
+              error: 'Email already verified',
+            },
+            { status: 400 }
+          );
+        }
+
+        // Check rate limit
+        if (timeSinceLastSent < rateLimitMs) {
+          const remainingSeconds = Math.ceil((rateLimitMs - timeSinceLastSent) / 1000);
+          return Response.json(
+            {
+              success: false,
+              error: `Please wait ${remainingSeconds} seconds before requesting another code`,
+              remainingSeconds,
+            },
+            { status: 429 }
+          );
+        }
+      }
+
+      const instance = await env.OTP_EMAIL_WORKFLOW.create({
+        params: {
+          email: body.email,
+          username: body.username,
+          purpose: body.purpose || 'registration',
+          expiresInMinutes: body.expiresInMinutes || 10,
+        },
+      });
+
+      console.log('[Workflow] OTPEmailWorkflow instance created with ID:', instance.id);
+
+      return Response.json({
+        success: true,
+        instanceId: instance.id,
+        message: 'OTP email sent successfully',
+      });
+    } catch (error) {
+      console.error('[Workflow] Failed to create OTPEmailWorkflow:', error);
+      return Response.json(
+        {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to send OTP email',
+        },
+        { status: 500 }
+      );
+    }
+  }
+
+  // Validate OTP Code
+  if (url.pathname === '/api/auth/verify-otp' && request.method === 'POST') {
+    const body = await request.json() as { email: string; code: string };
+
+    try {
+      const key = `otp:${body.email}`;
+      const storedData = await env.OTP_STORE.get(key);
+
+      if (!storedData) {
+        return Response.json(
+          {
+            success: false,
+            error: 'OTP code expired or not found',
+          },
+          { status: 400 }
+        );
+      }
+
+      const data = JSON.parse(storedData);
+
+      // Check if already validated
+      if (data.validated) {
+        return Response.json({
+          success: true,
+          message: 'Email already verified',
+          alreadyValidated: true,
+        });
+      }
+
+      // Check if OTP is expired
+      if (Date.now() > data.expiresAt) {
+        await env.OTP_STORE.delete(key);
+        return Response.json(
+          {
+            success: false,
+            error: 'OTP code expired',
+          },
+          { status: 400 }
+        );
+      }
+
+      // Verify the code
+      if (body.code !== data.code) {
+        return Response.json(
+          {
+            success: false,
+            error: 'Invalid OTP code',
+          },
+          { status: 400 }
+        );
+      }
+
+      // Valid OTP - mark as validated (keep in KV for status checking)
+      data.validated = true;
+      data.validatedAt = Date.now();
+
+      // Store validated status for 24 hours
+      await env.OTP_STORE.put(key, JSON.stringify(data), {
+        expirationTtl: 24 * 60 * 60,
+      });
+
+      return Response.json({
+        success: true,
+        message: 'OTP verified successfully',
+      });
+    } catch (error) {
+      console.error('[OTP] Verification error:', error);
+      return Response.json(
+        {
+          success: false,
+          error: error instanceof Error ? error.message : 'Verification failed',
+        },
+        { status: 500 }
+      );
+    }
+  }
 
   return new Response("Not Found", { status: 404 });
 }
