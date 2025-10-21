@@ -62,6 +62,18 @@ binding = "OTP_STORE"
 id = "0943b06e4f5b46799d4c16b794d62279"
 preview_id = "cf5b397898a34b01a62fd92aa82f18a6"
 
+# KV namespace for Chain Registry
+[[kv_namespaces]]
+binding = "CHAIN_REGISTRY"
+id = "6cd19a6b02294ad6b6b3e8d1341ccfa2"
+preview_id = "360aa630a9184acf8e1e70d77c230849"
+
+# KV namespace for Asset Registry
+[[kv_namespaces]]
+binding = "ASSET_REGISTRY"
+id = "cd3daa64727b409c81c41472cd688ab2"
+preview_id = "cd3daa64727b409c81c41472cd688ab2"
+
 # Environment variables for email sending
 [vars]
 EMAIL_FROM = "Sonr Identity <noreply@sonr.id>"

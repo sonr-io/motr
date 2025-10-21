@@ -16,7 +16,9 @@
     "deploy": "wrangler deploy",
     "deploy:staging": "wrangler deploy --env staging",
     "deploy:production": "wrangler deploy --env production",
-    "logs": "wrangler tail --format pretty"
+    "logs": "wrangler tail --format pretty",
+    "kv:create": "bun scripts/create-kv.ts",
+    "kv:populate": "bun scripts/populate-kv.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

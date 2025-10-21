@@ -30,8 +30,10 @@ export interface Env {
   // Workflows from @pkgs/cloudflare
   OTP_EMAIL_WORKFLOW: Workflow;
 
-  // KV namespace for OTP storage
+  // KV namespaces
   OTP_STORE: KVNamespace;
+  CHAIN_REGISTRY: KVNamespace;
+  ASSET_REGISTRY: KVNamespace;
 
   // Environment variables
   EMAIL_FROM?: string;
