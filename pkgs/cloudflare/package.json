@@ -13,7 +13,9 @@
   "scripts": {
     "test": "bun test",
     "typecheck": "tsc --noEmit",
-    "format": "prettier --write \"src/**/*.ts\""
+    "lint": "bunx oxlint@latest .",
+    "format": "bunx oxfmt@latest .",
+    "check": "bunx oxlint@latest . && bunx oxfmt@latest --check ."
   },
   "keywords": [
     "cloudflare",
