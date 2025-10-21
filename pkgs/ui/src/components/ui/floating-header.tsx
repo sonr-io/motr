@@ -10,8 +10,8 @@ export function FloatingHeader() {
 
   const links = [
     {
-      label: "Docs",
-      href: "https://sonr.dev",
+      label: "Demo",
+      href: "/demo",
     },
     {
       label: "About",

@@ -1,6 +1,10 @@
 // Export utility functions
 export { cn } from '../lib/utils';
 
+// Export chain selector component
+export { ChainSelector, useChains } from './chain-selector';
+export type { ChainOption, ChainSelectorProps } from './chain-selector';
+
 // Export icon components and types
 // Export Animate-ui components
 export { HoleBackground } from './backgrounds/hole';
