@@ -137,6 +137,37 @@ async function handleApiRequest(
     });
   }
 
+  // Chain Registry API endpoints
+  if (url.pathname === "/api/chains") {
+    // List all available chains from CHAIN_REGISTRY
+    const chains = await env.CHAIN_REGISTRY.list();
+    return Response.json({
+      chains: chains.keys.map(k => k.name),
+      count: chains.keys.length,
+    });
+  }
+
+  if (url.pathname.startsWith("/api/chains/")) {
+    const chainId = url.pathname.split("/api/chains/")[1];
+
+    if (!chainId) {
+      return Response.json({ error: "Chain ID required" }, { status: 400 });
+    }
+
+    // Get chain info
+    const chainInfo = await env.CHAIN_REGISTRY.get(chainId, "json");
+    const assetList = await env.ASSET_REGISTRY.get(chainId, "json");
+
+    if (!chainInfo && !assetList) {
+      return Response.json({ error: "Chain not found" }, { status: 404 });
+    }
+
+    return Response.json({
+      chain: chainInfo,
+      assets: assetList,
+    });
+  }
+
   // Counter Durable Object endpoints
   if (url.pathname.startsWith('/api/counter/')) {
     console.log('[Durable Object] Accessing CounterDurable from @pkgs/cloudflare');
