@@ -132,7 +132,7 @@ function Demo() {
                       <Separator />
                       <div className="rounded-lg bg-muted/50 p-4 space-y-3">
                         <div className="flex items-center gap-2">
-                          {selectedChainData.icon && (
+                          {selectedChainData.icon && typeof selectedChainData.icon === 'function' && (
                             <selectedChainData.icon className="h-6 w-6" />
                           )}
                           <div className="text-sm font-medium">
