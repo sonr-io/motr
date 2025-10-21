@@ -13,7 +13,9 @@
   "scripts": {
     "test": "bun test",
     "typecheck": "tsc --noEmit",
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "kv:create": "bun scripts/create-kv.ts",
+    "kv:populate": "bun scripts/populate-kv.ts"
   },
   "keywords": [
     "cloudflare",
