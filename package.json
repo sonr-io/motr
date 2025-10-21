@@ -36,8 +36,8 @@
     "clean": "turbo run clean && rm -rf node_modules bun.lock",
     "generate": "bun --filter '@sonr.io/sdk' run gen",
     "deploy": "turbo run @sonr.io/frontend#deploy",
-    "kv:create": "bun --filter '@pkgs/cloudflare' run kv:create",
-    "kv:populate": "bun --filter '@pkgs/cloudflare' run kv:populate"
+    "kv:create": "bun --filter '@sonr.io/frontend' run kv:create",
+    "kv:populate": "bun --filter '@sonr.io/frontend' run kv:populate"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.6",
