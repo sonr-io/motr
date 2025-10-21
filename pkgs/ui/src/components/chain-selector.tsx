@@ -44,10 +44,11 @@ export function ChainSelector({
           <SelectLabel>Cosmos Chains</SelectLabel>
           {chains.map((chain) => {
             const ChainIcon = chain.icon;
+            const isValidIcon = ChainIcon && typeof ChainIcon === 'function';
             return (
               <SelectItem key={chain.id} value={chain.id}>
                 <div className="flex items-center gap-2">
-                  {ChainIcon ? (
+                  {isValidIcon ? (
                     <ChainIcon className="h-4 w-4" />
                   ) : chain.logo ? (
                     <img
@@ -86,11 +87,16 @@ export function useChains() {
         const data = await response.json();
 
         // Transform chain IDs to display names with icons
-        const chainOptions: ChainOption[] = data.chains.map((id: string) => ({
-          id,
-          name: formatChainName(id),
-          icon: getChainIcon(id),
-        }));
+        const chainOptions: ChainOption[] = data.chains.map((id: string) => {
+          const icon = getChainIcon(id);
+          return {
+            id,
+            name: formatChainName(id),
+            icon,
+            // Only include logo if we don't have an icon component
+            logo: !icon ? undefined : undefined,
+          };
+        });
 
         setChains(chainOptions);
         setError(null);
