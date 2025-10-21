@@ -1,11 +1,6 @@
 import {
   Badge,
   Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
   ChainSelector,
   GlassCard,
   GlassCardContent,
