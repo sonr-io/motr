@@ -1,0 +1,44 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "sonr-search"
+main = "src/worker.ts"
+compatibility_date = "2025-01-11"
+compatibility_flags = ["nodejs_compat"]
+
+# Assets configuration for serving static files
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+html_handling = "auto-trailing-slash"
+not_found_handling = "single-page-application"
+
+# Production environment
+[env.production]
+name = "sonr-search"
+workers_dev = false
+
+[env.production.vars]
+ENVIRONMENT = "production"
+
+# Staging environment
+[env.staging]
+name = "sonr-search-staging"
+workers_dev = true
+
+[env.staging.vars]
+ENVIRONMENT = "staging"
+
+# Development configuration
+[dev]
+port = 6168
+local_protocol = "http"
+ip = "0.0.0.0"
+
+# Build configuration
+[build]
+command = "bunx --bun vite build"
+cwd = "."
+
+# Observability
+[observability]
+enabled = true
+head_sampling_rate = 1.0
