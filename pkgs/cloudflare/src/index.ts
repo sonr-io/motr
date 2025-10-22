@@ -1,14 +1,14 @@
 /**
  * @pkgs/cloudflare - Cloudflare Workers utilities
  *
- * Main exports for Durable Objects and Workflows
+ * Main exports for Durable Objects
+ *
+ * Note: Workflows have been moved to consuming applications (e.g., @apps/frontend)
+ * Note: SonrIdentityDurable has been moved to @sonr.io/enclave/cloudflare
  */
 
 // Export all Durable Objects
 export * from "./durable";
-
-// Export all Workflows
-export * from "./workflows";
 
 // Re-export common Cloudflare Workers types for convenience
 export type {

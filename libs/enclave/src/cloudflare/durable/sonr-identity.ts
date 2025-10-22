@@ -172,7 +172,9 @@ export class SonrIdentityDurable extends DurableObject {
         }
 
         this.enclave = new EnclaveModule.EnclaveWorkerClient({
-          enablePersistence: true,
+          vaultConfig: {
+            enablePersistence: true,
+          },
           debug: true,
           requestTimeout: 30000,
         });

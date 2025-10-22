@@ -1,5 +1,5 @@
 #:schema node_modules/wrangler/config-schema.json
-name = "sonr-id"
+name = "motr-auth"
 main = "src/worker.ts"
 compatibility_date = "2025-01-11"
 compatibility_flags = ["nodejs_compat"]
@@ -13,7 +13,7 @@ not_found_handling = "single-page-application"
 
 # Production environment
 [env.production]
-name = "sonr-id"
+name = "sonr-auth"
 workers_dev = false
 routes = [
   { pattern = "sonr.id/*", custom_domain = true },
@@ -25,7 +25,7 @@ ENVIRONMENT = "production"
 
 # Staging environment
 [env.staging]
-name = "sonr-id-staging"
+name = "sonr-auth-staging"
 workers_dev = true
 
 [env.staging.vars]
@@ -39,7 +39,7 @@ ip = "0.0.0.0"
 
 # Build configuration
 [build]
-command = "bunx --bun vite build && tsc"
+command = "bunx --bun vite build"
 cwd = "."
 
 # Service binding to the Enclave Worker
@@ -47,7 +47,6 @@ cwd = "."
 [[services]]
 binding = "ENCLAVE"
 service = "sonr-enclave"
-environment = "production"  # Use "staging" for staging environment
 
 # Local workflows (defined in src/workflows/)
 [[workflows]]
