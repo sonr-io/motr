@@ -29,7 +29,7 @@ ENVIRONMENT = "staging"
 
 # Development configuration
 [dev]
-port = 6168
+port = 9165
 local_protocol = "http"
 ip = "0.0.0.0"
 
