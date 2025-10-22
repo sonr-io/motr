@@ -8,8 +8,12 @@
     "path": "docs"
   },
   {
-    "scope": "workspace",
+    "scope": "repo",
     "path": "turbo.json"
+  },
+  {
+    "scope": "repo",
+    "path": "cnfg"
   },
   {
     "scope": "ci",
@@ -48,7 +52,7 @@
     "path": "apps/profile"
   },
   {
-    "scope": "auth",
+    "scope": "search",
     "path": "apps/search"
   }
 ]
