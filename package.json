@@ -27,19 +27,22 @@
   "scripts": {
     "build": "turbo run build",
     "test": "turbo run test",
-    "dev": "turbo run @sonr.io/auth#dev",
+    "dev:auth": "bun run --filter @sonr.io/auth dev",
+    "dev:console": "bun run --filter @sonr.io/console dev",
+    "dev:profile": "bun run --filter @sonr.io/profile dev",
+    "dev:search": "bun run --filter @sonr.io/search dev",
     "lint": "turbo run lint",
     "format": "turbo run format",
     "check": "turbo run check",
     "typecheck": "turbo run typecheck",
     "clean": "turbo run clean && rm -rf node_modules bun.lock",
-    "generate": "bun --filter '@sonr.io/sdk' run gen",
+    "generate": "bun run --filter @sonr.io/sdk gen",
     "deploy": "turbo run deploy",
     "deploy:auth": "turbo run @sonr.io/auth#deploy",
     "deploy:console": "turbo run @sonr.io/console#deploy",
     "deploy:profile": "turbo run @sonr.io/profile#deploy",
     "deploy:search": "turbo run @sonr.io/search#deploy",
-    "kv:populate": "bun --filter '@sonr.io/auth' run kv:populate"
+    "kv:populate": "bun run --filter @sonr.io/auth kv:populate"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.6",

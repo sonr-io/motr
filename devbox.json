@@ -6,9 +6,13 @@
     "gum@latest",
     "gofumpt@latest",
     "golangci-lint@latest",
-    "commitizen@latest"
+    "commitizen@latest",
+    "mprocs@latest"
   ],
-  "env": {},
+  "env": {
+    "BROWSER": "firefox-developer-edition",
+    "BROWSER_ARGS": "--new-window --devtools --profile /tmp/vite-ff-dev-profile --no-remote"
+  },
   "shell": {
     "init_hook": [
       "bun install"
@@ -16,7 +20,7 @@
     "scripts": {
       "install": "bun install",
       "build": "bun run build",
-      "dev": "bun run dev",
+      "dev": "mprocs",
       "test": "bun run test",
       "deploy": "bun run deploy"
     }
