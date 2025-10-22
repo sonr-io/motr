@@ -41,7 +41,7 @@ export type ChainRegistryChainInfo = {
   pre_fork_chain_name?: string;
   pretty_name?: string;
   website?: string;
-  status?: "live" | "upcoming" | "killed";
+  status: "live" | "upcoming" | "killed";
   network_type?: "mainnet" | "testnet" | "devnet";
   /**
    * The default prefix for the human-readable part of addresses that identifies the coin type. Must be registered with SLIP-0173. E.g., 'cosmos'
