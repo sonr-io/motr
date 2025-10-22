@@ -10,7 +10,7 @@
     "GUM_SPIN_SPINNER": "pulse"
   },
   "shell": {
-    "init_hook": ["go mod download", "bun install"],
+    "init_hook": ["go mod download"],
     "scripts": {
       "bump": ["cz --no-raise 6,21 bump --yes --increment PATCH"],
       "release": [
