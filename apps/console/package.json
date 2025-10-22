@@ -1,0 +1,41 @@
+{
+  "name": "@sonr.io/console",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "bunx --bun vite build",
+    "typecheck": "tsc",
+    "preview": "wrangler dev --remote",
+    "test": "vitest run --passWithNoTests",
+    "format": "bunx oxfmt@latest .",
+    "lint": "bunx oxlint@latest .",
+    "check": "bunx oxlint@latest . && bunx oxfmt@latest --check .",
+    "deploy": "wrangler deploy",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:production": "wrangler deploy --env production",
+    "logs": "wrangler tail --format pretty"
+  },
+  "dependencies": {
+    "@sonr.io/ui": "workspace:*",
+    "@tanstack/react-query": "^5.90.3",
+    "@tanstack/react-query-devtools": "^5.90.2",
+    "@tanstack/react-router": "^1.132.47",
+    "@tanstack/react-router-devtools": "^1.132.51",
+    "@tanstack/router-plugin": "^1.132.56",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20251011.0",
+    "cnfg": "workspace:*",
+    "@types/node": "^24.7.2",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@vitejs/plugin-react": "^5.0.4",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.9",
+    "vitest": "^3.2.4",
+    "wrangler": "^4.43.0"
+  }
+}
