@@ -1,5 +1,5 @@
 #:schema node_modules/wrangler/config-schema.json
-name = "sonr-console"
+name = "motr-console"
 main = "src/worker.ts"
 compatibility_date = "2025-01-11"
 compatibility_flags = ["nodejs_compat"]
@@ -13,7 +13,7 @@ not_found_handling = "single-page-application"
 
 # Production environment
 [env.production]
-name = "sonr-console"
+name = "motr-console"
 workers_dev = false
 
 [env.production.vars]
@@ -21,7 +21,7 @@ ENVIRONMENT = "production"
 
 # Staging environment
 [env.staging]
-name = "sonr-console-staging"
+name = "motr-console-staging"
 workers_dev = true
 
 [env.staging.vars]
