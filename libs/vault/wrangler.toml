@@ -22,7 +22,7 @@ ip = "0.0.0.0"
 
 # Build configuration
 [build]
-command = "bun run build:cloudflare"
+command = "bun run build"
 cwd = "."
 
 # Environment variables
@@ -53,19 +53,6 @@ ENVIRONMENT = "staging"
 enabled = true
 head_sampling_rate = 1.0
 
-# Limits and resources - increase for WASM workloads
+# Limits and resources
 [limits]
 cpu_ms = 100  # Increased CPU time for WASM execution
-
-# WASM module configuration
-# Note: Cloudflare Workers support WASM modules natively
-[rules]
-# Allow WASM files to be bundled
-[[rules]]
-type = "CompiledWasm"
-globs = ["**/*.wasm"]
-
-# Text encoding for Go WASM runtime
-[[rules]]
-type = "Text"
-globs = ["**/wasm_exec.js"]
