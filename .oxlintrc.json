@@ -15,13 +15,8 @@
         "**/routeTree.gen.ts",
         "**/*.wasm",
         "**/wasm_exec.js",
-        "**/pkgs/react/src/hooks/index.ts",
-        "**/pkgs/react/src/context/index.ts",
-        "**/pkgs/react/src/components/index.ts",
-        "**/pkgs/browser/src/webauthn/index.ts",
-        "**/pkgs/browser/src/storage/index.ts",
-        "**/pkgs/browser/src/crypto/index.ts",
-        "**/pkgs/browser/src/worker/index.ts"
+        "**/dist/**",
+        "**/build/**"
       ],
       "categories": {
         "correctness": "off",
@@ -29,7 +24,7 @@
       }
     },
     {
-      "files": ["packages/**/*.ts", "packages/**/*.tsx", "pkgs/**/*.ts", "pkgs/**/*.tsx"],
+      "files": ["packages/**/*.ts", "packages/**/*.tsx", "pkgs/**/*.ts", "pkgs/**/*.tsx", "libs/**/*.ts", "libs/**/*.tsx"],
       "rules": {
         "typescript/no-explicit-any": "off",
         "no-unused-vars": "warn",

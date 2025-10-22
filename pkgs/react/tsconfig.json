@@ -1,8 +1,8 @@
 {
+  "extends": "../../cnfg/typescript/react-library.json",
   "compilerOptions": {
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "target": "ESNext",
-    "module": "ESNext",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
@@ -11,26 +11,13 @@
       "@/types/*": ["./src/types/*"],
       "@/utils/*": ["./src/utils/*"]
     },
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "moduleResolution": "bundler",
-    "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "jsx": "react-jsx",
-    "resolveJsonModule": true,
-
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "composite": true
+    "sourceMap": true
   },
   "include": ["src"],
   "exclude": ["dist", "node_modules", "**/*.test.ts", "**/*.test.tsx", "**/__tests__/**"],

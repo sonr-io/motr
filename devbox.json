@@ -1,9 +1,18 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/main/.schema/devbox.schema.json",
-  "packages": ["go@1.24", "bun@1.3.0", "gum@latest", "gofumpt@latest", "golangci-lint@latest"],
+  "packages": [
+    "go@1.24",
+    "bun@1.3.0",
+    "gum@latest",
+    "gofumpt@latest",
+    "golangci-lint@latest",
+    "commitizen@latest"
+  ],
   "env": {},
   "shell": {
-    "init_hook": ["bun install"],
+    "init_hook": [
+      "bun install"
+    ],
     "scripts": {
       "install": "bun install",
       "build": "bun run build",

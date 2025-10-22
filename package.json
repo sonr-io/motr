@@ -20,13 +20,14 @@
   "workspaces": [
     "apps/*",
     "libs/*",
-    "pkgs/*"
+    "pkgs/*",
+    "cnfg"
   ],
   "packageManager": "bun@1.3.0",
   "scripts": {
     "build": "turbo run build",
     "test": "turbo run test",
-    "dev": "turbo run @sonr.io/frontend#dev",
+    "dev": "turbo run @sonr.io/auth#dev",
     "lint": "bunx oxlint@latest .",
     "format": "bunx oxfmt@latest .",
     "format:check": "bunx oxfmt@latest --check .",
@@ -35,8 +36,8 @@
     "typecheck": "turbo run typecheck",
     "clean": "turbo run clean && rm -rf node_modules bun.lock",
     "generate": "bun --filter '@sonr.io/sdk' run gen",
-    "deploy": "turbo run @sonr.io/frontend#deploy",
-    "kv:populate": "bun --filter '@sonr.io/frontend' run kv:populate"
+    "deploy": "turbo run @sonr.io/auth#deploy",
+    "kv:populate": "bun --filter '@sonr.io/auth' run kv:populate"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.6",

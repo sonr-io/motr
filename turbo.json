@@ -78,7 +78,7 @@
       "inputs": ["src/**", "tsconfig.json", "package.json"],
       "cache": true
     },
-    "@sonr.io/frontend#build": {
+    "@sonr.io/auth#build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"],
       "env": ["NODE_ENV", "VITE_*"],
@@ -93,7 +93,7 @@
       ],
       "cache": true
     },
-    "@sonr.io/frontend#dev": {
+    "@sonr.io/auth#dev": {
       "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
@@ -130,15 +130,15 @@
     "clean": {
       "cache": false
     },
-    "@sonr.io/frontend#deploy": {
-      "dependsOn": ["@sonr.io/frontend#build"],
+    "@sonr.io/auth#deploy": {
+      "dependsOn": ["@sonr.io/auth#build"],
       "outputs": [],
       "cache": false,
       "env": ["NODE_ENV", "CLOUDFLARE_*", "WRANGLER_*", "VITE_*"],
       "inputs": ["dist/**", "wrangler.toml"]
     },
     "deploy": {
-      "dependsOn": ["@sonr.io/frontend#deploy"],
+      "dependsOn": ["@sonr.io/auth#deploy"],
       "outputs": [],
       "cache": false,
       "env": ["NODE_ENV", "CLOUDFLARE_*", "WRANGLER_*"]
