@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Shared configuration files for Sonr monorepo",
   "type": "module",
+  "packageManager": "bun@1.3.0",
   "exports": {
     "./typescript/base": "./typescript/base.json",
     "./typescript/react-app": "./typescript/react-app.json",
