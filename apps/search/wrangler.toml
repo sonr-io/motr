@@ -1,5 +1,5 @@
 #:schema node_modules/wrangler/config-schema.json
-name = "sonr-search"
+name = "motr-search"
 main = "src/worker.ts"
 compatibility_date = "2025-01-11"
 compatibility_flags = ["nodejs_compat"]
@@ -13,7 +13,7 @@ not_found_handling = "single-page-application"
 
 # Production environment
 [env.production]
-name = "sonr-search"
+name = "motr-search"
 workers_dev = false
 
 [env.production.vars]
@@ -21,7 +21,7 @@ ENVIRONMENT = "production"
 
 # Staging environment
 [env.staging]
-name = "sonr-search-staging"
+name = "motr-search-staging"
 workers_dev = true
 
 [env.staging.vars]
