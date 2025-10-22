@@ -11,7 +11,7 @@
 export type ChainRegistryChainInfo = {
   [k: string]: unknown | undefined;
 } & {
-  $schema?: string;
+  $schema: string;
   chain_name: string;
   /**
    * The 'type' of chain as the corresponding CAIP-2 Namespace value. E.G., 'cosmos' or 'eip155'. Namespaces cna be found here: https://github.com/ChainAgnostic/namespaces/tree/main.
@@ -41,7 +41,7 @@ export type ChainRegistryChainInfo = {
   pre_fork_chain_name?: string;
   pretty_name?: string;
   website?: string;
-  status?: "live" | "upcoming" | "killed";
+  status: "live" | "upcoming" | "killed";
   network_type?: "mainnet" | "testnet" | "devnet";
   /**
    * The default prefix for the human-readable part of addresses that identifies the coin type. Must be registered with SLIP-0173. E.g., 'cosmos'

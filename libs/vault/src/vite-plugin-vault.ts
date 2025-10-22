@@ -106,7 +106,7 @@ export function vaultPlugin(options: VaultPluginOptions = {}): Plugin {
     scope = "/",
     updateCheckInterval = 3600000,
     enableInDev = false,
-    swSrc = "src/sw.ts",
+    swSrc: _swSrc = "src/sw.ts",
     swDest = "sw.js",
   } = options;
 

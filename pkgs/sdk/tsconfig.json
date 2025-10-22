@@ -1,25 +1,19 @@
 {
+  "extends": "../../cnfg/typescript/library.json",
   "compilerOptions": {
     "lib": ["ESNext", "DOM"],
-    "target": "ESNext",
-    "module": "ESNext",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "@sonr.io/sdk/*": ["./src/*"]
     },
-    "outDir": "./dist",
-    "rootDir": "./src",
-    // `node16` is too strict and causes type errors for imported pkgs.
-    // We use `tsc-alias` to help add the file extensions instead.
-    "moduleResolution": "bundler",
-    "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-
+    "noEmit": false,
+    "emitDeclarationOnly": false,
+    "allowImportingTsExtensions": false,
     // Relaxed type checking to allow build with existing issues
-    "strict": false,
     "noImplicitAny": false,
     "noFallthroughCasesInSwitch": false,
     "strictNullChecks": false,
@@ -29,11 +23,7 @@
     "allowUnreachableCode": true,
     "allowUnusedLabels": true,
     "noUncheckedIndexedAccess": false,
-
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "composite": true
+    "sourceMap": true
   },
   "include": ["src"],
   "exclude": ["dist", "node_modules", "**/*.test.ts", "**/__tests__/**"],

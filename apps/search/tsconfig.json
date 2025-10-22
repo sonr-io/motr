@@ -1,0 +1,3 @@
+{
+  "extends": "../../cnfg/typescript/react-app.json"
+}

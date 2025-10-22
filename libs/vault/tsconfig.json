@@ -1,24 +1,19 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../cnfg/typescript/worker.json",
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "lib": ["ESNext", "DOM", "WebWorker"],
-    "allowJs": true,
+    "types": ["@cloudflare/workers-types", "vite/client"],
+    "strict": true,
+    "sourceMap": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "composite": true,
-    "resolveJsonModule": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@cloudflare/*": ["./src/cloudflare/*"],
+      "@handlers/*": ["./handlers/*"],
+      "@middleware/*": ["./middleware/*"]
+    }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "src/sw.ts"]
+  "include": ["src/**/*", "src/cloudflare/types.d.ts"],
+  "exclude": ["node_modules", "dist", "src/sw.ts", "src/sw.js"]
 }

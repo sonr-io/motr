@@ -138,7 +138,9 @@ export interface ClientQueryOptions {
   type?: ClientType;
 }
 
-type ClientType<T extends ClientQueryOptions> = T extends { type: "window" }
+type ResolvedClientType<T extends ClientQueryOptions> = T extends {
+  type: "window";
+}
   ? WindowClient
   : T extends { type: "worker" | "sharedworker" }
     ? Client

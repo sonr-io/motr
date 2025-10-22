@@ -310,7 +310,7 @@ export function registerSW(
 
         const channel = new MessageChannel();
 
-        channel.port1.onmessage = (event) => {
+        channel.port1.onmessage = (event: MessageEvent) => {
           resolve(event.data.version || null);
         };
 

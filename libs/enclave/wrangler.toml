@@ -1,5 +1,5 @@
 #:schema node_modules/wrangler/config-schema.json
-name = "sonr-enclave"
+name = "motr-enclave"
 main = "src/cloudflare/worker.ts"
 compatibility_date = "2025-01-21"
 compatibility_flags = ["nodejs_compat"]
@@ -31,7 +31,7 @@ ENVIRONMENT = "development"
 
 # Production environment
 [env.production]
-name = "sonr-enclave"
+name = "motr-enclave"
 workers_dev = false
 routes = [
   { pattern = "enclave.sonr.id/*", custom_domain = true }
@@ -42,7 +42,7 @@ ENVIRONMENT = "production"
 
 # Staging environment
 [env.staging]
-name = "sonr-enclave-staging"
+name = "motr-enclave-staging"
 workers_dev = true
 
 [env.staging.vars]
@@ -56,9 +56,3 @@ head_sampling_rate = 1.0
 # Limits and resources
 [limits]
 cpu_ms = 50  # CPU time limit per request (milliseconds)
-
-# Security headers (optional but recommended)
-# These are set by the worker, but can be enforced at the edge
-[env.production.routes]
-# pattern = "enclave.sonr.id/*"
-# custom_domain = true

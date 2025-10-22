@@ -13,7 +13,7 @@ not_found_handling = "single-page-application"
 
 # Production environment
 [env.production]
-name = "sonr-auth"
+name = "motr-auth"
 workers_dev = false
 routes = [
   { pattern = "sonr.id/*", custom_domain = true },
@@ -25,7 +25,7 @@ ENVIRONMENT = "production"
 
 # Staging environment
 [env.staging]
-name = "sonr-auth-staging"
+name = "motr-auth-staging"
 workers_dev = true
 
 [env.staging.vars]
@@ -46,7 +46,7 @@ cwd = "."
 # The Enclave Worker hosts the SonrIdentityDurable Durable Object
 [[services]]
 binding = "ENCLAVE"
-service = "sonr-enclave"
+service = "motr-enclave"
 
 # Local workflows (defined in src/workflows/)
 [[workflows]]

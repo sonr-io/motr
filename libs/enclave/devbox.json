@@ -10,17 +10,25 @@
     "GUM_SPIN_SPINNER": "pulse"
   },
   "shell": {
-    "init_hook": ["go mod download", "bun install"],
+    "init_hook": ["go mod download"],
     "scripts": {
       "bump": ["cz --no-raise 6,21 bump --yes --increment PATCH"],
       "release": [
         "devbox run wasm",
         "wrangler r2 object put cdn/enclave.wasm -f dist/enclave.wasm --remote"
       ],
-      "publish": "echo 'Skipping publish - unimplemented'",
-      "wasm": "mkdir -p dist && go build -ldflags='-s -w' -o dist/enclave.wasm .",
-      "test": "go test ./... || echo 'No Go tests found in enclave'",
-      "format": "go fmt ./... || echo 'No Go formatting issues found in enclave'"
+      "publish": "gum style --foreground 214 '⚠️  Skipping publish - unimplemented'",
+      "wasm": [
+        "mkdir -p dist",
+        "export GOROOT=$(readlink -f $(which go) | sed 's|/bin/go||' | sed 's|/share/go||')/share/go",
+        "go mod tidy",
+        "go build -ldflags='-s -w' -trimpath -o dist/enclave.wasm .",
+        "rm -f dist/wasm_exec.js",
+        "cp \"$GOROOT/lib/wasm/wasm_exec.js\" dist/",
+        "chmod 644 dist/wasm_exec.js"
+      ],
+      "test": "go test ./... || gum style --foreground 245 '📝 No Go tests found in enclave'",
+      "format": "go fmt ./... || gum style --foreground 46 '✓ No Go formatting issues found in enclave'"
     }
   }
 }

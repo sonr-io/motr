@@ -49,6 +49,70 @@
         }
       }
     },
+    "commitizen@latest": {
+      "last_modified": "2025-10-09T02:37:25Z",
+      "resolved": "github:NixOS/nixpkgs/2dad7af78a183b6c486702c18af8a9544f298377#commitizen",
+      "source": "devbox-search",
+      "version": "4.9.1",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/ivdxi9mpqd3aw449yyax7apssn56i94y-python3.13-commitizen-4.9.1",
+              "default": true
+            },
+            {
+              "name": "dist",
+              "path": "/nix/store/s36b6yspw3rfa7bn9yq376xg6z8xzv7w-python3.13-commitizen-4.9.1-dist"
+            }
+          ],
+          "store_path": "/nix/store/ivdxi9mpqd3aw449yyax7apssn56i94y-python3.13-commitizen-4.9.1"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/f9rnyjpcr6a2xj6jidm3nr3iz1056bqh-python3.13-commitizen-4.9.1",
+              "default": true
+            },
+            {
+              "name": "dist",
+              "path": "/nix/store/hm83l86pl2r65xr81r7wysc767y57xyh-python3.13-commitizen-4.9.1-dist"
+            }
+          ],
+          "store_path": "/nix/store/f9rnyjpcr6a2xj6jidm3nr3iz1056bqh-python3.13-commitizen-4.9.1"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/g303macaymz0wcdss75nwwf3zvc3lal9-python3.13-commitizen-4.9.1",
+              "default": true
+            },
+            {
+              "name": "dist",
+              "path": "/nix/store/5knr65x49nvpph61xn7wq6jsx11sh3zl-python3.13-commitizen-4.9.1-dist"
+            }
+          ],
+          "store_path": "/nix/store/g303macaymz0wcdss75nwwf3zvc3lal9-python3.13-commitizen-4.9.1"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/7mjmaii2p7iwb2ps6xfyaphw9093vsjr-python3.13-commitizen-4.9.1",
+              "default": true
+            },
+            {
+              "name": "dist",
+              "path": "/nix/store/m77w6q19lp5zghcszy70mv1fd9r1br4z-python3.13-commitizen-4.9.1-dist"
+            }
+          ],
+          "store_path": "/nix/store/7mjmaii2p7iwb2ps6xfyaphw9093vsjr-python3.13-commitizen-4.9.1"
+        }
+      }
+    },
     "github:NixOS/nixpkgs/nixpkgs-unstable": {
       "last_modified": "2025-10-09T02:37:25Z",
       "resolved": "github:NixOS/nixpkgs/2dad7af78a183b6c486702c18af8a9544f298377?lastModified=1759977445&narHash=sha256-LYr4IDfuihCkFAkSYz5%2F%2FgT2r1ewcWBYgd5AxPzPLIo%3D"
@@ -242,6 +306,54 @@
             }
           ],
           "store_path": "/nix/store/jbjrj4hbf2bgdvr6vl4dalwn31s669p4-gum-0.17.0"
+        }
+      }
+    },
+    "mprocs@latest": {
+      "last_modified": "2025-10-07T08:41:47Z",
+      "resolved": "github:NixOS/nixpkgs/bce5fe2bb998488d8e7e7856315f90496723793c#mprocs",
+      "source": "devbox-search",
+      "version": "0.7.3",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/1x5bv3bsskiv1mjfwmc61cnp9qqsd2k9-mprocs-0.7.3",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/1x5bv3bsskiv1mjfwmc61cnp9qqsd2k9-mprocs-0.7.3"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/54ar637i8r968z027n15dsd0d7hzkv5g-mprocs-0.7.3",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/54ar637i8r968z027n15dsd0d7hzkv5g-mprocs-0.7.3"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/9sj709yq8l8zwjpsdyaamrvsaa4miqsq-mprocs-0.7.3",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/9sj709yq8l8zwjpsdyaamrvsaa4miqsq-mprocs-0.7.3"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/7paf3cs2bd6pq9dmhxvmmkklgy0anirp-mprocs-0.7.3",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/7paf3cs2bd6pq9dmhxvmmkklgy0anirp-mprocs-0.7.3"
         }
       }
     }

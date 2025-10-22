@@ -8,8 +8,12 @@
     "path": "docs"
   },
   {
-    "scope": "workspace",
+    "scope": "repo",
     "path": "turbo.json"
+  },
+  {
+    "scope": "repo",
+    "path": "cnfg"
   },
   {
     "scope": "ci",
@@ -17,44 +21,38 @@
   },
   {
     "scope": "ui",
-    "package": "@sonr.io/ui",
     "path": "pkgs/ui"
   },
   {
     "scope": "enclave",
-    "package": "@sonr.io/enclave",
     "path": "libs/enclave"
   },
   {
     "scope": "sdk",
-    "package": "@sonr.io/sdk",
     "path": "pkgs/sdk"
   },
   {
     "scope": "vault",
-    "package": "@sonr.io/vault",
-    "path": "libs/vault",
-    "uses": [
-      "sdk"
-    ]
+    "path": "libs/vault"
   },
   {
     "scope": "react",
-    "package": "@sonr.io/react",
-    "path": "pkgs/react",
-    "uses": [
-      "enclave",
-      "sdk"
-    ]
+    "path": "pkgs/react"
   },
   {
-    "scope": "frontend",
-    "package": "@sonr.io/frontend",
-    "path": "apps/frontend",
-    "uses": [
-      "react",
-      "ui",
-      "vault"
-    ]
+    "scope": "auth",
+    "path": "apps/auth"
+  },
+  {
+    "scope": "console",
+    "path": "apps/auth"
+  },
+  {
+    "scope": "profile",
+    "path": "apps/profile"
+  },
+  {
+    "scope": "search",
+    "path": "apps/search"
   }
 ]

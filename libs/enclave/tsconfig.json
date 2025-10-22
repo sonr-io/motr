@@ -1,23 +1,13 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../cnfg/typescript/worker.json",
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
     "lib": ["ESNext", "DOM", "WebWorker"],
     "types": ["vite/client", "@cloudflare/workers-types"],
     "allowJs": true,
+    "strict": true,
+    "sourceMap": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "composite": true,
-    "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]

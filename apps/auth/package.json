@@ -2,6 +2,7 @@
   "name": "@sonr.io/auth",
   "version": "0.0.1",
   "type": "module",
+  "packageManager": "bun@1.3.0",
   "scripts": {
     "predev": "bun run copy:vault",
     "dev": "wrangler dev",
@@ -18,7 +19,9 @@
     "deploy:staging": "wrangler deploy --env staging",
     "deploy:production": "wrangler deploy --env production",
     "logs": "wrangler tail --format pretty",
-    "kv:populate": "bun scripts/populate-kv.ts"
+    "kv:populate": "bun scripts/populate-kv.ts",
+    "clean": "rm -rf dist *.tsbuildinfo .vite node_modules/.vite",
+    "clean:all": "rm -rf dist node_modules *.tsbuildinfo .vite"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
