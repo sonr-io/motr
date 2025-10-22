@@ -1,0 +1,71 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "motr-vault"
+main = "src/cloudflare/worker.ts"
+compatibility_date = "2025-01-21"
+compatibility_flags = ["nodejs_compat"]
+
+# Durable Object binding for vault management
+[[durable_objects.bindings]]
+name = "VAULT"
+class_name = "VaultDurable"
+
+# Durable Object migration - required for deployment
+[[migrations]]
+tag = "v1"
+new_classes = ["VaultDurable"]
+
+# Development configuration
+[dev]
+port = 8788
+local_protocol = "http"
+ip = "0.0.0.0"
+
+# Build configuration
+[build]
+command = "bun run build:cloudflare"
+cwd = "."
+
+# Environment variables
+[vars]
+ENVIRONMENT = "development"
+
+# Production environment
+[env.production]
+name = "motr-vault"
+workers_dev = false
+routes = [
+  { pattern = "vault.sonr.id/*", custom_domain = true }
+]
+
+[env.production.vars]
+ENVIRONMENT = "production"
+
+# Staging environment
+[env.staging]
+name = "motr-vault-staging"
+workers_dev = true
+
+[env.staging.vars]
+ENVIRONMENT = "staging"
+
+# Observability configuration
+[observability]
+enabled = true
+head_sampling_rate = 1.0
+
+# Limits and resources - increase for WASM workloads
+[limits]
+cpu_ms = 100  # Increased CPU time for WASM execution
+
+# WASM module configuration
+# Note: Cloudflare Workers support WASM modules natively
+[rules]
+# Allow WASM files to be bundled
+[[rules]]
+type = "CompiledWasm"
+globs = ["**/*.wasm"]
+
+# Text encoding for Go WASM runtime
+[[rules]]
+type = "Text"
+globs = ["**/wasm_exec.js"]

@@ -7,17 +7,17 @@ let vaultReady = false;
 const CACHE_STRATEGIES = {
   NETWORK_FIRST: "network-first",
   CACHE_FIRST: "cache-first",
-  STALE_WHILE_REVALIDATE: "stale-while-revalidate"
+  STALE_WHILE_REVALIDATE: "stale-while-revalidate",
 };
 const STRATEGY_PATTERNS = {
   [CACHE_STRATEGIES.CACHE_FIRST]: [
     /\.wasm$/,
     /wasm_exec\.js$/,
     /\.(png|jpg|jpeg|svg|gif|webp)$/,
-    /\.(woff|woff2|ttf|eot)$/
+    /\.(woff|woff2|ttf|eot)$/,
   ],
   [CACHE_STRATEGIES.NETWORK_FIRST]: [/\/api\//, /\/vault\//],
-  [CACHE_STRATEGIES.STALE_WHILE_REVALIDATE]: [/\.(js|css)$/]
+  [CACHE_STRATEGIES.STALE_WHILE_REVALIDATE]: [/\.(js|css)$/],
 };
 self.addEventListener("install", (event) => {
   console.log(`[Motor Vault SW] Installing version ${SW_VERSION}`);
@@ -34,7 +34,7 @@ self.addEventListener("install", (event) => {
         console.error("[Motor Vault SW] Installation failed:", error);
         throw error;
       }
-    })()
+    })(),
   );
 });
 self.addEventListener("activate", (event) => {
@@ -44,13 +44,13 @@ self.addEventListener("activate", (event) => {
       try {
         const cacheKeys = await caches.keys();
         const oldCaches = cacheKeys.filter(
-          (key) => key.startsWith("motor-vault-") && key !== CACHE_NAME
+          (key) => key.startsWith("motor-vault-") && key !== CACHE_NAME,
         );
         await Promise.all(
           oldCaches.map((key) => {
             console.log(`[Motor Vault SW] Deleting old cache: ${key}`);
             return caches.delete(key);
-          })
+          }),
         );
         await self.clients.claim();
         console.log("[Motor Vault SW] Activation complete");
@@ -58,7 +58,7 @@ self.addEventListener("activate", (event) => {
         console.error("[Motor Vault SW] Activation failed:", error);
         throw error;
       }
-    })()
+    })(),
   );
 });
 self.addEventListener("fetch", (event) => {
@@ -67,7 +67,11 @@ self.addEventListener("fetch", (event) => {
   if (!url.protocol.startsWith("http")) {
     return;
   }
-  if (url.pathname.startsWith("/api/payment/") || url.pathname.startsWith("/payment/") || url.pathname.startsWith("/.well-known/")) {
+  if (
+    url.pathname.startsWith("/api/payment/") ||
+    url.pathname.startsWith("/payment/") ||
+    url.pathname.startsWith("/.well-known/")
+  ) {
     event.respondWith(handleVaultRequest(request));
     return;
   }
@@ -114,18 +118,18 @@ self.addEventListener("push", (event) => {
     vibrate: [200, 100, 200],
     data: {
       dateOfArrival: Date.now(),
-      primaryKey: 1
+      primaryKey: 1,
     },
     actions: [
       {
         action: "explore",
-        title: "View Details"
+        title: "View Details",
       },
       {
         action: "close",
-        title: "Dismiss"
-      }
-    ]
+        title: "Dismiss",
+      },
+    ],
   };
   event.waitUntil(self.registration.showNotification("Motor Vault", options));
 });
@@ -172,7 +176,7 @@ async function cacheFirst(request) {
     console.error("[Motor Vault SW] Cache-first fetch failed:", error);
     return new Response("Network error", {
       status: 408,
-      statusText: "Request Timeout"
+      statusText: "Request Timeout",
     });
   }
 }
@@ -187,7 +191,7 @@ async function networkFirst(request) {
   } catch (error) {
     console.warn(
       "[Motor Vault SW] Network request failed, trying cache:",
-      error
+      error,
     );
     const cachedResponse = await caches.match(request);
     if (cachedResponse) {
@@ -195,25 +199,30 @@ async function networkFirst(request) {
     }
     return new Response("Offline", {
       status: 503,
-      statusText: "Service Unavailable"
+      statusText: "Service Unavailable",
     });
   }
 }
 async function staleWhileRevalidate(request) {
   const cachedResponse = await caches.match(request);
-  const fetchPromise = fetch(request).then(async (networkResponse) => {
-    if (networkResponse.ok) {
-      const cache = await caches.open(CACHE_NAME);
-      cache.put(request, networkResponse.clone());
-    }
-    return networkResponse;
-  }).catch((error) => {
-    console.warn("[Motor Vault SW] Background fetch failed:", error);
-    return cachedResponse || new Response("Network error", {
-      status: 503,
-      statusText: "Service Unavailable"
+  const fetchPromise = fetch(request)
+    .then(async (networkResponse) => {
+      if (networkResponse.ok) {
+        const cache = await caches.open(CACHE_NAME);
+        cache.put(request, networkResponse.clone());
+      }
+      return networkResponse;
+    })
+    .catch((error) => {
+      console.warn("[Motor Vault SW] Background fetch failed:", error);
+      return (
+        cachedResponse ||
+        new Response("Network error", {
+          status: 503,
+          statusText: "Service Unavailable",
+        })
+      );
     });
-  });
   return cachedResponse || fetchPromise;
 }
 async function clearCache(cacheName) {
@@ -247,7 +256,7 @@ self.addEventListener("paymentrequest", (event) => {
     paymentRequestOrigin: paymentEvent.paymentRequestOrigin,
     paymentRequestId: paymentEvent.paymentRequestId,
     total: paymentEvent.total,
-    methodData: paymentEvent.methodData
+    methodData: paymentEvent.methodData,
   });
   paymentEvent.respondWith(handlePaymentRequest(paymentEvent));
 });
@@ -260,19 +269,19 @@ async function handlePaymentRequest(event) {
     paymentUrl.searchParams.set("merchantOrigin", event.topOrigin);
     console.log(
       "[Motor Vault SW] Opening payment window:",
-      paymentUrl.toString()
+      paymentUrl.toString(),
     );
     const paymentWindow = await event.openWindow(paymentUrl.toString());
     if (!paymentWindow) {
       throw new Error("Failed to open payment window");
     }
     const paymentResult = await waitForPaymentConfirmation(
-      event.paymentRequestId
+      event.paymentRequestId,
     );
     console.log("[Motor Vault SW] Payment result:", paymentResult);
     return {
       methodName: event.methodData[0].supportedMethods,
-      details: paymentResult
+      details: paymentResult,
     };
   } catch (error) {
     console.error("[Motor Vault SW] Payment request failed:", error);
@@ -285,11 +294,17 @@ function waitForPaymentConfirmation(paymentRequestId) {
       reject(new Error("Payment confirmation timeout"));
     }, 3e5);
     const messageHandler = (event) => {
-      if (event.data.type === "PAYMENT_CONFIRMED" && event.data.paymentRequestId === paymentRequestId) {
+      if (
+        event.data.type === "PAYMENT_CONFIRMED" &&
+        event.data.paymentRequestId === paymentRequestId
+      ) {
         clearTimeout(timeout);
         self.removeEventListener("message", messageHandler);
         resolve(event.data.paymentDetails);
-      } else if (event.data.type === "PAYMENT_CANCELLED" && event.data.paymentRequestId === paymentRequestId) {
+      } else if (
+        event.data.type === "PAYMENT_CANCELLED" &&
+        event.data.paymentRequestId === paymentRequestId
+      ) {
         clearTimeout(timeout);
         self.removeEventListener("message", messageHandler);
         reject(new Error("Payment cancelled by user"));
@@ -323,7 +338,7 @@ async function initializeVault() {
     vaultInitialized = true;
     vaultReady = true;
     console.log(
-      "[Motor Vault SW] Vault WASM HTTP server initialized successfully"
+      "[Motor Vault SW] Vault WASM HTTP server initialized successfully",
     );
   } catch (error) {
     console.error("[Motor Vault SW] Failed to initialize vault:", error);
@@ -342,12 +357,12 @@ async function handleVaultRequest(request) {
       return new Response(
         JSON.stringify({
           error: "Vault not available",
-          message: "Payment service is currently unavailable"
+          message: "Payment service is currently unavailable",
         }),
         {
           status: 503,
-          headers: { "Content-Type": "application/json" }
-        }
+          headers: { "Content-Type": "application/json" },
+        },
       );
     }
   }
@@ -361,12 +376,12 @@ async function handleVaultRequest(request) {
     return new Response(
       JSON.stringify({
         error: "Request failed",
-        message: error instanceof Error ? error.message : "Unknown error"
+        message: error instanceof Error ? error.message : "Unknown error",
       }),
       {
         status: 500,
-        headers: { "Content-Type": "application/json" }
-      }
+        headers: { "Content-Type": "application/json" },
+      },
     );
   }
 }

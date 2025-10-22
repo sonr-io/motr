@@ -1,0 +1,28 @@
+{
+  "$schema": "https://oxc.rs/schemas/oxlint/v1.json",
+  "plugins": [],
+  "rules": {
+    "typescript/no-explicit-any": "warn",
+    "typescript/no-unused-vars": "warn",
+    "import/no-default-export": "off",
+    "unicorn/filename-case": "off"
+  },
+  "env": {
+    "browser": true,
+    "es2024": true,
+    "worker": true
+  },
+  "globals": {
+    "Go": "readonly",
+    "globalThis": "readonly"
+  },
+  "ignorePatterns": [
+    "node_modules",
+    "dist",
+    "*.tsbuildinfo",
+    "wasm_exec.js",
+    "handlers/**/*.go",
+    "middleware/**/*.go",
+    "main.go"
+  ]
+}

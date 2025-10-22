@@ -2,13 +2,20 @@
   "extends": "../../cnfg/typescript/library.json",
   "compilerOptions": {
     "lib": ["ESNext", "DOM", "WebWorker"],
+    "types": ["@cloudflare/workers-types", "vite/client"],
     "allowJs": true,
     "strict": true,
     "sourceMap": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@cloudflare/*": ["./src/cloudflare/*"],
+      "@handlers/*": ["./handlers/*"],
+      "@middleware/*": ["./middleware/*"]
+    }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "src/sw.ts"]
+  "include": ["src/**/*", "src/cloudflare/types.d.ts"],
+  "exclude": ["node_modules", "dist", "src/sw.ts", "src/sw.js"]
 }
