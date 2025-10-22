@@ -192,59 +192,29 @@
     "clean": {
       "cache": false
     },
-    "@sonr.io/vault#deploy": {
-      "dependsOn": ["@sonr.io/vault#build"],
-      "outputs": [],
-      "cache": false,
-      "inputs": ["dist/**", "wrangler.toml"],
-      "passThroughEnv": ["BUN_*", "CLOUDFLARE_*", "WRANGLER_*"]
-    },
-    "@sonr.io/enclave#deploy": {
-      "dependsOn": ["@sonr.io/enclave#build"],
-      "outputs": [],
-      "cache": false,
-      "inputs": ["dist/**", "wrangler.toml"],
-      "passThroughEnv": ["BUN_*", "CLOUDFLARE_*", "WRANGLER_*"]
-    },
     "@sonr.io/auth#deploy": {
-      "dependsOn": [
-        "@sonr.io/auth#build",
-        "@sonr.io/vault#deploy",
-        "@sonr.io/enclave#deploy"
-      ],
+      "dependsOn": ["@sonr.io/auth#build"],
       "outputs": [],
       "cache": false,
       "inputs": ["dist/**", "wrangler.toml"],
       "passThroughEnv": ["BUN_*", "CLOUDFLARE_*", "WRANGLER_*", "VITE_*"]
     },
     "@sonr.io/console#deploy": {
-      "dependsOn": [
-        "@sonr.io/console#build",
-        "@sonr.io/vault#deploy",
-        "@sonr.io/enclave#deploy"
-      ],
+      "dependsOn": ["@sonr.io/console#build"],
       "outputs": [],
       "cache": false,
       "inputs": ["dist/**", "wrangler.toml"],
       "passThroughEnv": ["BUN_*", "CLOUDFLARE_*", "WRANGLER_*", "VITE_*"]
     },
     "@sonr.io/profile#deploy": {
-      "dependsOn": [
-        "@sonr.io/profile#build",
-        "@sonr.io/vault#deploy",
-        "@sonr.io/enclave#deploy"
-      ],
+      "dependsOn": ["@sonr.io/profile#build"],
       "outputs": [],
       "cache": false,
       "inputs": ["dist/**", "wrangler.toml"],
       "passThroughEnv": ["BUN_*", "CLOUDFLARE_*", "WRANGLER_*", "VITE_*"]
     },
     "@sonr.io/search#deploy": {
-      "dependsOn": [
-        "@sonr.io/search#build",
-        "@sonr.io/vault#deploy",
-        "@sonr.io/enclave#deploy"
-      ],
+      "dependsOn": ["@sonr.io/search#build"],
       "outputs": [],
       "cache": false,
       "inputs": ["dist/**", "wrangler.toml"],
@@ -252,8 +222,6 @@
     },
     "deploy": {
       "dependsOn": [
-        "@sonr.io/vault#deploy",
-        "@sonr.io/enclave#deploy",
         "@sonr.io/auth#deploy",
         "@sonr.io/console#deploy",
         "@sonr.io/profile#deploy",
