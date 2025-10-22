@@ -1,12 +1,32 @@
 {
   "$schema": "https://turborepo.com/schema.v2.json",
-  "globalDependencies": ["**/.env.*local", "tsconfig.json"],
-  "globalEnv": ["NODE_ENV", "VERCEL_ENV", "VERCEL_URL", "NEXT_PUBLIC_*"],
+  "globalDependencies": [
+    "**/.env.*local",
+    "tsconfig.json"
+  ],
+  "globalEnv": [
+    "NODE_ENV",
+    "VERCEL_ENV",
+    "VERCEL_URL",
+    "NEXT_PUBLIC_*"
+  ],
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "out/**", "build/**", "lib/**"],
-      "env": ["NODE_ENV", "NEXT_PUBLIC_*", "VITE_*"],
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "out/**",
+        "build/**",
+        "lib/**"
+      ],
+      "env": [
+        "NODE_ENV",
+        "NEXT_PUBLIC_*",
+        "VITE_*"
+      ],
       "inputs": [
         "src/**",
         "app/**",
@@ -27,13 +47,27 @@
     },
     "@sonr.io/sdk#build": {
       "dependsOn": [],
-      "outputs": ["dist/**", "*.tsbuildinfo"],
-      "inputs": ["src/**", "tsconfig.json", "package.json", "scripts/**"],
+      "outputs": [
+        "dist/**",
+        "*.tsbuildinfo"
+      ],
+      "inputs": [
+        "src/**",
+        "tsconfig.json",
+        "package.json",
+        "scripts/**"
+      ],
       "cache": true
     },
     "@sonr.io/enclave#build": {
-      "dependsOn": ["@sonr.io/sdk#build"],
-      "outputs": ["dist/**", "*.tsbuildinfo", "dist/enclave.wasm"],
+      "dependsOn": [
+        "@sonr.io/sdk#build"
+      ],
+      "outputs": [
+        "dist/**",
+        "*.tsbuildinfo",
+        "dist/enclave.wasm"
+      ],
       "inputs": [
         "src/**/*.ts",
         "main.go",
@@ -47,8 +81,16 @@
       "cache": true
     },
     "@sonr.io/vault#build": {
-      "dependsOn": ["@sonr.io/enclave#build"],
-      "outputs": ["dist/**", "*.tsbuildinfo", "dist/vault.wasm", "dist/wasm_exec.js", "dist/sw.js"],
+      "dependsOn": [
+        "@sonr.io/sdk#build"
+      ],
+      "outputs": [
+        "dist/**",
+        "*.tsbuildinfo",
+        "dist/vault.wasm",
+        "dist/wasm_exec.js",
+        "dist/sw.js"
+      ],
       "inputs": [
         "src/**/*.ts",
         "main.go",
@@ -64,8 +106,13 @@
       "cache": true
     },
     "@sonr.io/ui#build": {
-      "dependsOn": ["@sonr.io/vault#build"],
-      "outputs": ["dist/**", "*.tsbuildinfo"],
+      "dependsOn": [
+        "@sonr.io/sdk#build"
+      ],
+      "outputs": [
+        "dist/**",
+        "*.tsbuildinfo"
+      ],
       "inputs": [
         "src/**",
         "!src/components/icons/**",
@@ -77,15 +124,32 @@
       "cache": true
     },
     "@sonr.io/react#build": {
-      "dependsOn": ["@sonr.io/ui#build"],
-      "outputs": ["dist/**", "*.tsbuildinfo"],
-      "inputs": ["src/**", "tsconfig.json", "package.json"],
+      "dependsOn": [
+        "@sonr.io/ui#build"
+      ],
+      "outputs": [
+        "dist/**",
+        "*.tsbuildinfo"
+      ],
+      "inputs": [
+        "src/**",
+        "tsconfig.json",
+        "package.json"
+      ],
       "cache": true
     },
     "@sonr.io/auth#build": {
-      "dependsOn": ["@sonr.io/react#build", "@sonr.io/vault#build"],
-      "outputs": ["dist/**"],
-      "env": ["NODE_ENV", "VITE_*"],
+      "dependsOn": [
+        "@sonr.io/react#build",
+        "@sonr.io/vault#build"
+      ],
+      "outputs": [
+        "dist/**"
+      ],
+      "env": [
+        "NODE_ENV",
+        "VITE_*"
+      ],
       "inputs": [
         "src/**",
         "public/**",
@@ -98,9 +162,17 @@
       "cache": true
     },
     "@sonr.io/console#build": {
-      "dependsOn": ["@sonr.io/react#build"],
-      "outputs": ["dist/**"],
-      "env": ["NODE_ENV", "VITE_*"],
+      "dependsOn": [
+        "@sonr.io/react#build",
+        "@sonr.io/enclave#build"
+      ],
+      "outputs": [
+        "dist/**"
+      ],
+      "env": [
+        "NODE_ENV",
+        "VITE_*"
+      ],
       "inputs": [
         "src/**",
         "public/**",
@@ -113,9 +185,17 @@
       "cache": true
     },
     "@sonr.io/profile#build": {
-      "dependsOn": ["@sonr.io/react#build"],
-      "outputs": ["dist/**"],
-      "env": ["NODE_ENV", "VITE_*"],
+      "dependsOn": [
+        "@sonr.io/react#build",
+        "@sonr.io/enclave#build"
+      ],
+      "outputs": [
+        "dist/**"
+      ],
+      "env": [
+        "NODE_ENV",
+        "VITE_*"
+      ],
       "inputs": [
         "src/**",
         "public/**",
@@ -128,9 +208,17 @@
       "cache": true
     },
     "@sonr.io/search#build": {
-      "dependsOn": ["@sonr.io/react#build"],
-      "outputs": ["dist/**"],
-      "env": ["NODE_ENV", "VITE_*"],
+      "dependsOn": [
+        "@sonr.io/react#build",
+        "@sonr.io/enclave#build"
+      ],
+      "outputs": [
+        "dist/**"
+      ],
+      "env": [
+        "NODE_ENV",
+        "VITE_*"
+      ],
       "inputs": [
         "src/**",
         "public/**",
@@ -143,36 +231,77 @@
       "cache": true
     },
     "dev": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build"
+      ],
       "cache": false,
       "persistent": true
     },
     "format": {
       "outputs": [],
-      "inputs": ["src/**", "app/**", "*.config.{js,ts,mjs,cjs}", "*.json", "**/*.go"],
+      "inputs": [
+        "src/**",
+        "app/**",
+        "*.config.{js,ts,mjs,cjs}",
+        "*.json",
+        "**/*.go"
+      ],
       "cache": false
     },
     "lint": {
       "dependsOn": [],
       "outputs": [],
-      "inputs": ["src/**", "app/**", "*.config.{js,ts,mjs,cjs}", "*.json", ".oxlintrc.json", "**/*.go", ".golangci.yml"],
+      "inputs": [
+        "src/**",
+        "app/**",
+        "*.config.{js,ts,mjs,cjs}",
+        "*.json",
+        ".oxlintrc.json",
+        "**/*.go",
+        ".golangci.yml"
+      ],
       "cache": false
     },
     "test": {
-      "dependsOn": ["^build"],
-      "outputs": ["coverage/**"],
-      "inputs": ["src/**", "test/**", "**/*.test.{ts,tsx,js,jsx}", "**/*.spec.{ts,tsx,js,jsx}"],
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "coverage/**"
+      ],
+      "inputs": [
+        "src/**",
+        "test/**",
+        "**/*.test.{ts,tsx,js,jsx}",
+        "**/*.spec.{ts,tsx,js,jsx}"
+      ],
       "cache": true,
-      "env": ["NODE_ENV", "CI"]
+      "env": [
+        "NODE_ENV",
+        "CI"
+      ]
     },
     "typecheck": {
-      "dependsOn": ["^build"],
-      "outputs": ["*.tsbuildinfo"],
-      "inputs": ["src/**", "app/**", "*.ts", "*.tsx", "tsconfig.json"],
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "*.tsbuildinfo"
+      ],
+      "inputs": [
+        "src/**",
+        "app/**",
+        "*.ts",
+        "*.tsx",
+        "tsconfig.json"
+      ],
       "cache": true
     },
     "check": {
-      "dependsOn": ["typecheck", "lint"],
+      "dependsOn": [
+        "typecheck",
+        "lint"
+      ],
       "outputs": [],
       "cache": false
     },
@@ -180,46 +309,112 @@
       "cache": false
     },
     "@sonr.io/vault#deploy": {
-      "dependsOn": ["@sonr.io/vault#build"],
+      "dependsOn": [
+        "@sonr.io/vault#build"
+      ],
       "outputs": [],
       "cache": false,
-      "env": ["NODE_ENV", "CLOUDFLARE_*", "WRANGLER_*"],
-      "inputs": ["dist/**", "wrangler.toml"]
+      "env": [
+        "NODE_ENV",
+        "CLOUDFLARE_*",
+        "WRANGLER_*"
+      ],
+      "inputs": [
+        "dist/**",
+        "wrangler.toml"
+      ]
     },
     "@sonr.io/enclave#deploy": {
-      "dependsOn": ["@sonr.io/enclave#build"],
+      "dependsOn": [
+        "@sonr.io/enclave#build"
+      ],
       "outputs": [],
       "cache": false,
-      "env": ["NODE_ENV", "CLOUDFLARE_*", "WRANGLER_*"],
-      "inputs": ["dist/**", "wrangler.toml"]
+      "env": [
+        "NODE_ENV",
+        "CLOUDFLARE_*",
+        "WRANGLER_*"
+      ],
+      "inputs": [
+        "dist/**",
+        "wrangler.toml"
+      ]
     },
     "@sonr.io/auth#deploy": {
-      "dependsOn": ["@sonr.io/auth#build", "@sonr.io/vault#deploy", "@sonr.io/enclave#deploy"],
+      "dependsOn": [
+        "@sonr.io/auth#build",
+        "@sonr.io/vault#deploy",
+        "@sonr.io/enclave#deploy"
+      ],
       "outputs": [],
       "cache": false,
-      "env": ["NODE_ENV", "CLOUDFLARE_*", "WRANGLER_*", "VITE_*"],
-      "inputs": ["dist/**", "wrangler.toml"]
+      "env": [
+        "NODE_ENV",
+        "CLOUDFLARE_*",
+        "WRANGLER_*",
+        "VITE_*"
+      ],
+      "inputs": [
+        "dist/**",
+        "wrangler.toml"
+      ]
     },
     "@sonr.io/console#deploy": {
-      "dependsOn": ["@sonr.io/console#build", "@sonr.io/vault#deploy", "@sonr.io/enclave#deploy"],
+      "dependsOn": [
+        "@sonr.io/console#build",
+        "@sonr.io/vault#deploy",
+        "@sonr.io/enclave#deploy"
+      ],
       "outputs": [],
       "cache": false,
-      "env": ["NODE_ENV", "CLOUDFLARE_*", "WRANGLER_*", "VITE_*"],
-      "inputs": ["dist/**", "wrangler.toml"]
+      "env": [
+        "NODE_ENV",
+        "CLOUDFLARE_*",
+        "WRANGLER_*",
+        "VITE_*"
+      ],
+      "inputs": [
+        "dist/**",
+        "wrangler.toml"
+      ]
     },
     "@sonr.io/profile#deploy": {
-      "dependsOn": ["@sonr.io/profile#build", "@sonr.io/vault#deploy", "@sonr.io/enclave#deploy"],
+      "dependsOn": [
+        "@sonr.io/profile#build",
+        "@sonr.io/vault#deploy",
+        "@sonr.io/enclave#deploy"
+      ],
       "outputs": [],
       "cache": false,
-      "env": ["NODE_ENV", "CLOUDFLARE_*", "WRANGLER_*", "VITE_*"],
-      "inputs": ["dist/**", "wrangler.toml"]
+      "env": [
+        "NODE_ENV",
+        "CLOUDFLARE_*",
+        "WRANGLER_*",
+        "VITE_*"
+      ],
+      "inputs": [
+        "dist/**",
+        "wrangler.toml"
+      ]
     },
     "@sonr.io/search#deploy": {
-      "dependsOn": ["@sonr.io/search#build", "@sonr.io/vault#deploy", "@sonr.io/enclave#deploy"],
+      "dependsOn": [
+        "@sonr.io/search#build",
+        "@sonr.io/vault#deploy",
+        "@sonr.io/enclave#deploy"
+      ],
       "outputs": [],
       "cache": false,
-      "env": ["NODE_ENV", "CLOUDFLARE_*", "WRANGLER_*", "VITE_*"],
-      "inputs": ["dist/**", "wrangler.toml"]
+      "env": [
+        "NODE_ENV",
+        "CLOUDFLARE_*",
+        "WRANGLER_*",
+        "VITE_*"
+      ],
+      "inputs": [
+        "dist/**",
+        "wrangler.toml"
+      ]
     },
     "deploy": {
       "dependsOn": [
@@ -232,7 +427,11 @@
       ],
       "outputs": [],
       "cache": false,
-      "env": ["NODE_ENV", "CLOUDFLARE_*", "WRANGLER_*"]
+      "env": [
+        "NODE_ENV",
+        "CLOUDFLARE_*",
+        "WRANGLER_*"
+      ]
     }
   }
 }
