@@ -25,33 +25,29 @@
       ],
       "cache": true
     },
-    "@sonr.io/ui#build": {
-      "dependsOn": ["^build"],
+    "@sonr.io/sdk#build": {
+      "dependsOn": [],
       "outputs": ["dist/**", "*.tsbuildinfo"],
+      "inputs": ["src/**", "tsconfig.json", "package.json", "scripts/**"],
+      "cache": true
+    },
+    "@sonr.io/enclave#build": {
+      "dependsOn": ["@sonr.io/sdk#build"],
+      "outputs": ["dist/**", "*.tsbuildinfo", "dist/enclave.wasm"],
       "inputs": [
-        "src/**",
-        "!src/components/icons/**",
-        "scripts/**",
+        "src/**/*.ts",
+        "main.go",
+        "**/*.go",
+        "go.mod",
+        "go.sum",
         "tsconfig.json",
         "vite.config.ts",
         "package.json"
       ],
       "cache": true
     },
-    "@sonr.io/sdk#build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", "*.tsbuildinfo"],
-      "inputs": ["src/**", "tsconfig.json", "package.json", "scripts/**"],
-      "cache": true
-    },
-    "@sonr.io/react#build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", "*.tsbuildinfo"],
-      "inputs": ["src/**", "tsconfig.json", "package.json"],
-      "cache": true
-    },
     "@sonr.io/vault#build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["@sonr.io/enclave#build"],
       "outputs": ["dist/**", "*.tsbuildinfo", "dist/vault.wasm", "dist/wasm_exec.js", "dist/sw.js"],
       "inputs": [
         "src/**/*.ts",
@@ -67,23 +63,27 @@
       ],
       "cache": true
     },
-    "@sonr.io/enclave#build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", "*.tsbuildinfo", "dist/enclave.wasm"],
+    "@sonr.io/ui#build": {
+      "dependsOn": ["@sonr.io/vault#build"],
+      "outputs": ["dist/**", "*.tsbuildinfo"],
       "inputs": [
-        "src/**/*.ts",
-        "main.go",
-        "**/*.go",
-        "go.mod",
-        "go.sum",
+        "src/**",
+        "!src/components/icons/**",
+        "scripts/**",
         "tsconfig.json",
         "vite.config.ts",
         "package.json"
       ],
       "cache": true
     },
+    "@sonr.io/react#build": {
+      "dependsOn": ["@sonr.io/ui#build"],
+      "outputs": ["dist/**", "*.tsbuildinfo"],
+      "inputs": ["src/**", "tsconfig.json", "package.json"],
+      "cache": true
+    },
     "@sonr.io/auth#build": {
-      "dependsOn": ["^build", "@sonr.io/vault#build"],
+      "dependsOn": ["@sonr.io/react#build", "@sonr.io/vault#build"],
       "outputs": ["dist/**"],
       "env": ["NODE_ENV", "VITE_*"],
       "inputs": [
@@ -98,7 +98,7 @@
       "cache": true
     },
     "@sonr.io/console#build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["@sonr.io/react#build"],
       "outputs": ["dist/**"],
       "env": ["NODE_ENV", "VITE_*"],
       "inputs": [
@@ -113,7 +113,7 @@
       "cache": true
     },
     "@sonr.io/profile#build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["@sonr.io/react#build"],
       "outputs": ["dist/**"],
       "env": ["NODE_ENV", "VITE_*"],
       "inputs": [
@@ -128,7 +128,7 @@
       "cache": true
     },
     "@sonr.io/search#build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["@sonr.io/react#build"],
       "outputs": ["dist/**"],
       "env": ["NODE_ENV", "VITE_*"],
       "inputs": [
