@@ -9,7 +9,10 @@
 // These will be bundled by Wrangler
 // @ts-expect-error - WASM module is built during compilation
 import wasmModule from "../../../dist/vault.wasm";
-import wasmExecScript from "../../../wasm_exec.js?raw";
+// Import wasm_exec.js from @sonr.io/sdk
+import { getWasmExecScript } from "@sonr.io/sdk/wasm";
+
+const wasmExecScript = getWasmExecScript();
 
 export interface VaultState {
   initialized: boolean;

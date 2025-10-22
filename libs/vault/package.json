@@ -64,10 +64,10 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "devbox run wasm && vite build && bunx tsc && tsc-alias",
+    "build": "devbox run wasm && vite build && bunx tsc && tsc-alias && cp wasm_exec.js dist/wasm_exec.js",
     "build:watch": "vite build --watch",
     "build:wasm": "devbox run wasm",
-    "build:cloudflare": "devbox run wasm && vite build --config vite.config.cloudflare.ts && bunx tsc",
+    "build:cloudflare": "devbox run wasm && vite build --config vite.config.cloudflare.ts && bunx tsc && cp wasm_exec.js dist/wasm_exec.js",
     "dev": "vite",
     "dev:cloudflare": "wrangler dev",
     "preview": "vite preview",
@@ -84,8 +84,8 @@
     "format": "bunx oxfmt@latest . && ../../.devbox/nix/profile/default/bin/gofumpt -w .",
     "check": "bunx oxlint@latest . && bunx oxfmt@latest --check . && tsc --noEmit",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist *.tsbuildinfo",
-    "clean:all": "rm -rf dist node_modules *.tsbuildinfo",
+    "clean": "rm -rf dist *.tsbuildinfo .vite node_modules/.vite wasm_exec.js",
+    "clean:all": "rm -rf dist node_modules *.tsbuildinfo .vite wasm_exec.js",
     "prepublishOnly": "bun run clean && bun run build && bun run test",
     "bump": "devbox run bump",
     "release": "devbox run release",
@@ -127,5 +127,10 @@
   ],
   "author": "diDAO",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "@emnapi/core": "^1.6.0",
+    "@sonr.io/sdk": "workspace:*",
+    "@tybys/wasm-util": "^0.10.1"
+  }
 }

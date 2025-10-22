@@ -1,9 +1,7 @@
 {
-  "extends": "../../cnfg/typescript/library.json",
+  "extends": "../../cnfg/typescript/worker.json",
   "compilerOptions": {
-    "lib": ["ESNext", "DOM", "WebWorker"],
     "types": ["@cloudflare/workers-types", "vite/client"],
-    "allowJs": true,
     "strict": true,
     "sourceMap": true,
     "outDir": "./dist",
