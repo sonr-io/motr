@@ -14,7 +14,9 @@
     "deploy": "wrangler deploy",
     "deploy:staging": "wrangler deploy --env staging",
     "deploy:production": "wrangler deploy --env production",
-    "logs": "wrangler tail --format pretty"
+    "logs": "wrangler tail --format pretty",
+    "clean": "rm -rf dist *.tsbuildinfo .vite node_modules/.vite",
+    "clean:all": "rm -rf dist node_modules *.tsbuildinfo .vite"
   },
   "dependencies": {
     "@sonr.io/ui": "workspace:*",
