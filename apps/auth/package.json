@@ -2,6 +2,7 @@
   "name": "@sonr.io/auth",
   "version": "0.0.1",
   "type": "module",
+  "packageManager": "bun@1.3.0",
   "scripts": {
     "predev": "bun run copy:vault",
     "dev": "wrangler dev",
