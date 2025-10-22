@@ -10,6 +10,9 @@
       "@sonr.io/sdk/*": ["./src/*"]
     },
     "isolatedModules": true,
+    "noEmit": false,
+    "emitDeclarationOnly": false,
+    "allowImportingTsExtensions": false,
     // Relaxed type checking to allow build with existing issues
     "noImplicitAny": false,
     "noFallthroughCasesInSwitch": false,
