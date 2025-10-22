@@ -1,11 +1,12 @@
 # @sonr.io/enclave
 
-WebAssembly-based cryptographic vault with Web Worker support for secure, isolated execution of cryptographic operations in the browser.
+WebAssembly-based cryptographic vault with Web Worker support for secure, isolated execution of cryptographic operations across multiple platforms.
 
 ## Overview
 
-Enclave provides a secure vault system that runs entirely in the browser using WebAssembly and Web Workers:
+Enclave provides a secure vault system that runs in multiple environments:
 
+### Browser/Node.js
 - **Web Worker Isolation**: Cryptographic operations run in a background worker thread
 - **IndexedDB Persistence**: Automatic vault state persistence with account management
 - **IPFS Backup**: Secure encrypted backup and restore of vault data
@@ -13,10 +14,33 @@ Enclave provides a secure vault system that runs entirely in the browser using W
 - **UCAN Tokens**: User-Controlled Authorization Network token management
 - **Zero Trust Architecture**: All crypto operations isolated in WASM sandbox
 
+### Cloudflare Workers ✨ NEW
+- **Durable Objects**: Persistent identity management with global distribution
+- **Service Bindings**: Standalone worker deployment for enclave services
+- **WebSocket Support**: Real-time updates for identity operations
+- **Automatic Cleanup**: Scheduled maintenance and token expiration handling
+
+See [CLOUDFLARE.md](./CLOUDFLARE.md) for Cloudflare Workers integration guide.
+
 ## Installation
 
+### Browser/Node.js
 ```bash
 pnpm add @sonr.io/enclave
+```
+
+### Cloudflare Workers
+```bash
+pnpm add @sonr.io/enclave
+```
+
+Add to `tsconfig.json`:
+```json
+{
+  "compilerOptions": {
+    "types": ["@cloudflare/workers-types"]
+  }
+}
 ```
 
 ## Quick Start

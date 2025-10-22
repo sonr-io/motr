@@ -41,6 +41,18 @@
       "types": "./dist/vite-plugin-enclave.d.ts",
       "import": "./dist/vite-plugin-enclave.js"
     },
+    "./cloudflare": {
+      "types": "./dist/cloudflare/index.d.ts",
+      "import": "./dist/cloudflare/index.js"
+    },
+    "./cloudflare/durable": {
+      "types": "./dist/cloudflare/durable/index.d.ts",
+      "import": "./dist/cloudflare/durable/index.js"
+    },
+    "./cloudflare/worker": {
+      "types": "./dist/cloudflare/worker.d.ts",
+      "import": "./dist/cloudflare/worker.js"
+    },
     "./enclave.wasm": "./dist/enclave.wasm",
     "./package.json": "./package.json"
   },
@@ -69,6 +81,15 @@
       ],
       "vite-plugin": [
         "./dist/vite-plugin-enclave.d.ts"
+      ],
+      "cloudflare": [
+        "./dist/cloudflare/index.d.ts"
+      ],
+      "cloudflare/durable": [
+        "./dist/cloudflare/durable/index.d.ts"
+      ],
+      "cloudflare/worker": [
+        "./dist/cloudflare/worker.d.ts"
       ]
     }
   },
@@ -82,6 +103,10 @@
     "build:watch": "vite build --watch",
     "build:wasm": "devbox run wasm",
     "dev": "vite",
+    "dev:worker": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:production": "wrangler deploy --env production",
     "preview": "vite preview",
     "watch": "tsc --watch",
     "test": "vitest run",
@@ -116,6 +141,7 @@
     "uint8arrays": "^5.1.0"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250110.0",
     "wrangler": "^4.9.0",
     "fake-indexeddb": "^6.0.0",
     "tsc-alias": "^1.8.16",

@@ -27,6 +27,10 @@ export default defineConfig({
         storage: resolve(__dirname, "src/storage.ts"),
         types: resolve(__dirname, "src/types.ts"),
         "vite-plugin-enclave": resolve(__dirname, "src/vite-plugin-enclave.ts"),
+        "cloudflare/index": resolve(__dirname, "src/cloudflare/index.ts"),
+        "cloudflare/worker": resolve(__dirname, "src/cloudflare/worker.ts"),
+        "cloudflare/durable/index": resolve(__dirname, "src/cloudflare/durable/index.ts"),
+        "cloudflare/durable/sonr-identity": resolve(__dirname, "src/cloudflare/durable/sonr-identity.ts"),
       },
       formats: ["es"],
       fileName: (_format, entryName) => `${entryName}.js`,
@@ -45,6 +49,9 @@ export default defineConfig({
         "node:url",
         "@extism/extism",
         "dexie",
+        // Cloudflare Workers modules
+        "cloudflare:workers",
+        "@cloudflare/workers-types",
         // Optional IPFS dependencies
         "helia",
         "@helia/strings",

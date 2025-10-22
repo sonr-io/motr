@@ -1,0 +1,64 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "sonr-enclave"
+main = "src/cloudflare/worker.ts"
+compatibility_date = "2025-01-21"
+compatibility_flags = ["nodejs_compat"]
+
+# Durable Object binding for identity management
+[[durable_objects.bindings]]
+name = "SONR_IDENTITY"
+class_name = "SonrIdentityDurable"
+
+# Durable Object migration - required for deployment
+[[migrations]]
+tag = "v1"
+new_classes = ["SonrIdentityDurable"]
+
+# Development configuration
+[dev]
+port = 8787
+local_protocol = "http"
+ip = "0.0.0.0"
+
+# Build configuration
+[build]
+command = "bun run build"
+cwd = "."
+
+# Environment variables
+[vars]
+ENVIRONMENT = "development"
+
+# Production environment
+[env.production]
+name = "sonr-enclave"
+workers_dev = false
+routes = [
+  { pattern = "enclave.sonr.id/*", custom_domain = true }
+]
+
+[env.production.vars]
+ENVIRONMENT = "production"
+
+# Staging environment
+[env.staging]
+name = "sonr-enclave-staging"
+workers_dev = true
+
+[env.staging.vars]
+ENVIRONMENT = "staging"
+
+# Observability configuration
+[observability]
+enabled = true
+head_sampling_rate = 1.0
+
+# Limits and resources
+[limits]
+cpu_ms = 50  # CPU time limit per request (milliseconds)
+
+# Security headers (optional but recommended)
+# These are set by the worker, but can be enforced at the edge
+[env.production.routes]
+# pattern = "enclave.sonr.id/*"
+# custom_domain = true
