@@ -27,7 +27,7 @@
     "build": "bun run generate:icons && tsc && tsc-alias",
     "build:ui": "tsc --noEmit",
     "dev": "tsc --noEmit --watch",
-    "clean": "rm -rf dist .tsbuildinfo src/components/icons",
+    "clean": "rm -rf dist *.tsbuildinfo .vite node_modules/.vite src/components/icons",
     "test": "echo 'No tests defined for @sonr.io/ui'",
     "lint": "bunx oxlint@latest .",
     "format": "bunx oxfmt@latest .",
