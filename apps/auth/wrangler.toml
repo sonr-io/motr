@@ -1,0 +1,82 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "motr-auth"
+main = "src/worker.ts"
+compatibility_date = "2025-01-11"
+compatibility_flags = ["nodejs_compat"]
+
+# Assets configuration for serving static files
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+html_handling = "auto-trailing-slash"
+not_found_handling = "single-page-application"
+
+# Production environment
+[env.production]
+name = "sonr-auth"
+workers_dev = false
+routes = [
+  { pattern = "sonr.id/*", custom_domain = true },
+  { pattern = "*.sonr.id/*", custom_domain = true },
+]
+
+[env.production.vars]
+ENVIRONMENT = "production"
+
+# Staging environment
+[env.staging]
+name = "sonr-auth-staging"
+workers_dev = true
+
+[env.staging.vars]
+ENVIRONMENT = "staging"
+
+# Development configuration
+[dev]
+port = 6165
+local_protocol = "http"
+ip = "0.0.0.0"
+
+# Build configuration
+[build]
+command = "bunx --bun vite build"
+cwd = "."
+
+# Service binding to the Enclave Worker
+# The Enclave Worker hosts the SonrIdentityDurable Durable Object
+[[services]]
+binding = "ENCLAVE"
+service = "sonr-enclave"
+
+# Local workflows (defined in src/workflows/)
+[[workflows]]
+binding = "OTP_EMAIL_WORKFLOW"
+name = "otp-email-workflow"
+class_name = "OTPEmailWorkflow"
+
+# KV namespace for OTP storage
+[[kv_namespaces]]
+binding = "OTP_STORE"
+id = "0943b06e4f5b46799d4c16b794d62279"
+preview_id = "cf5b397898a34b01a62fd92aa82f18a6"
+
+# KV namespace for Chain Registry
+[[kv_namespaces]]
+binding = "CHAIN_REGISTRY"
+id = "6cd19a6b02294ad6b6b3e8d1341ccfa2"
+preview_id = "360aa630a9184acf8e1e70d77c230849"
+
+# KV namespace for Asset Registry
+[[kv_namespaces]]
+binding = "ASSET_REGISTRY"
+id = "cd3daa64727b409c81c41472cd688ab2"
+preview_id = "cd3daa64727b409c81c41472cd688ab2"
+
+# Environment variables for email sending
+[vars]
+EMAIL_FROM = "Sonr Identity <noreply@sonr.id>"
+
+# Observability
+[observability]
+enabled = true
+head_sampling_rate = 1.0
