@@ -10,10 +10,13 @@
  * - And all other Cloudflare features
  */
 
-// Export Durable Objects and Workflows from @pkgs/cloudflare
-console.log('[Worker Init] Loading Cloudflare features from @pkgs/cloudflare...');
-export { CounterDurable, SonrIdentityDurable, OTPEmailWorkflow } from '@pkgs/cloudflare';
-console.log('[Worker Init] ✓ Loaded Durable Objects: CounterDurable, SonrIdentityDurable');
+// Export Durable Objects from @pkgs/cloudflare
+console.log('[Worker Init] Loading Cloudflare features...');
+export { CounterDurable } from '@pkgs/cloudflare';
+console.log('[Worker Init] ✓ Loaded Durable Objects: CounterDurable');
+
+// Export local workflows
+export { OTPEmailWorkflow } from './workflows';
 console.log('[Worker Init] ✓ Loaded Workflows: OTPEmailWorkflow');
 
 export interface Env {
@@ -23,11 +26,13 @@ export interface Env {
   // Environment variables
   ENVIRONMENT: string;
 
+  // Service bindings
+  ENCLAVE: Fetcher; // Sonr Enclave Worker (SonrIdentityDurable)
+
   // Durable Objects from @pkgs/cloudflare
   COUNTER: DurableObjectNamespace;
-  SONR_IDENTITY: DurableObjectNamespace;
 
-  // Workflows from @pkgs/cloudflare
+  // Local workflows
   OTP_EMAIL_WORKFLOW: Workflow;
 
   // KV namespaces
@@ -181,9 +186,9 @@ async function handleApiRequest(
     return stub.fetch(counterUrl.toString(), request);
   }
 
-  // Sonr Identity Durable Object endpoints
+  // Sonr Identity endpoints - forward to Enclave service
   if (url.pathname.startsWith('/api/identity/')) {
-    console.log('[Durable Object] Accessing SonrIdentityDurable from @pkgs/cloudflare (wrapping @libs/enclave)');
+    console.log('[Service Binding] Forwarding to Enclave Worker');
 
     // Extract identity ID from path (e.g., /api/identity/sonr1abc.../initialize)
     const pathParts = url.pathname.split('/');
@@ -193,15 +198,17 @@ async function handleApiRequest(
       return Response.json({ error: 'Identity ID required' }, { status: 400 });
     }
 
-    const id = env.SONR_IDENTITY.idFromName(identityId);
-    const stub = env.SONR_IDENTITY.get(id);
-    console.log('[Durable Object] SonrIdentityDurable instance created with ID:', id.toString(), 'for identity:', identityId);
+    // Forward to enclave service: /identity/{id}/{action}
+    const enclavePath = `/identity/${pathParts.slice(3).join('/')}`;
+    const enclaveUrl = new URL(request.url);
+    enclaveUrl.pathname = enclavePath;
 
-    // Forward the request to the Durable Object, removing the identity ID from path
-    const identityPath = '/' + pathParts.slice(4).join('/');
-    const identityUrl = new URL(request.url);
-    identityUrl.pathname = identityPath;
-    return stub.fetch(identityUrl.toString(), request);
+    console.log('[Service Binding] Forwarding to:', enclavePath);
+    return env.ENCLAVE.fetch(enclaveUrl.toString(), {
+      method: request.method,
+      headers: request.headers,
+      body: request.body,
+    });
   }
 
   // Get OTP Status
@@ -249,7 +256,7 @@ async function handleApiRequest(
 
   // Send OTP Email Workflow
   if (url.pathname === '/api/auth/send-otp' && request.method === 'POST') {
-    console.log('[Workflow] Starting OTPEmailWorkflow from @pkgs/cloudflare');
+    console.log('[Workflow] Starting OTPEmailWorkflow');
     const body = await request.json() as {
       email: string;
       username?: string;

@@ -42,15 +42,14 @@ ip = "0.0.0.0"
 command = "bunx --bun vite build && tsc"
 cwd = "."
 
-[[durable_objects.bindings]]
-name = "SONR_IDENTITY"
-class_name = "SonrIdentityDurable"
+# Service binding to the Enclave Worker
+# The Enclave Worker hosts the SonrIdentityDurable Durable Object
+[[services]]
+binding = "ENCLAVE"
+service = "sonr-enclave"
+environment = "production"  # Use "staging" for staging environment
 
-[[migrations]]
-tag = "v2"
-new_classes = ["SonrIdentityDurable"]
-
-# Workflows from @pkgs/cloudflare
+# Local workflows (defined in src/workflows/)
 [[workflows]]
 binding = "OTP_EMAIL_WORKFLOW"
 name = "otp-email-workflow"
