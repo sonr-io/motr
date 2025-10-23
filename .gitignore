@@ -52,6 +52,7 @@ dist/
 dist-ssr/
 build/
 out/
+public/
 .next/
 .nuxt/
 .cache/
@@ -245,6 +246,3 @@ mprocs*
 .opencode
 .mcp.json
 PLAN.md
-PLAN.md
-PLAN.md
-apps/search/vite.config.ts
