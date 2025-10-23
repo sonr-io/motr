@@ -8,16 +8,20 @@ import { type UserConfig, defineConfig } from 'vite';
  *
  * @param options - Configuration options
  * @param options.root - Project root directory (default: process.cwd())
+ * @param options.port - Dev server port (default: 3000)
  * @param options.plugins - Additional Vite plugins to include
  * @param options.alias - Additional path aliases
  * @param options.optimizeDeps - Dependency optimization overrides
+ * @param options.server - Server configuration overrides
  * @returns Vite UserConfig
  */
 export function createReactAppConfig(options: {
   root?: string;
+  port?: number;
   plugins?: UserConfig['plugins'];
   alias?: Record<string, string>;
   optimizeDeps?: UserConfig['optimizeDeps'];
+  server?: UserConfig['server'];
 } = {}): UserConfig {
   const root = options.root || process.cwd();
 
@@ -32,6 +36,11 @@ export function createReactAppConfig(options: {
         '@': resolve(root, './src'),
         ...options.alias,
       },
+    },
+    server: {
+      port: options.port || 3000,
+      strictPort: true,
+      ...options.server,
     },
     optimizeDeps: {
       ...options.optimizeDeps,

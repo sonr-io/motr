@@ -154,20 +154,34 @@
       "cache": true,
       "passThroughEnv": ["BUN_*", "VITE_*"]
     },
-    "//#worker:build": {
+    "//#bundle:assets": {
       "dependsOn": [
         "@sonr.io/auth#build",
         "@sonr.io/console#build",
         "@sonr.io/profile#build",
-        "@sonr.io/search#build"
+        "@sonr.io/search#build",
+        "@sonr.io/vault#build",
+        "@sonr.io/enclave#build"
       ],
-      "outputs": ["tsconfig.tsbuildinfo"],
+      "outputs": ["public/**"],
       "inputs": [
-        "$TURBO_DEFAULT$",
         "apps/auth/dist/**",
         "apps/console/dist/**",
         "apps/profile/dist/**",
         "apps/search/dist/**",
+        "libs/vault/dist/**",
+        "libs/enclave/dist/**"
+      ],
+      "cache": true,
+      "persistent": false,
+      "passThroughEnv": ["BUN_*"]
+    },
+    "//#worker:build": {
+      "dependsOn": ["//#bundle:assets"],
+      "outputs": ["tsconfig.tsbuildinfo"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "public/**",
         "wrangler.toml",
         "src/**"
       ],
@@ -228,18 +242,9 @@
       "inputs": [
         "src/**",
         "wrangler.toml",
-        "apps/auth/dist/**",
-        "apps/console/dist/**",
-        "apps/profile/dist/**",
-        "apps/search/dist/**"
+        "public/**"
       ],
-      "passThroughEnv": ["BUN_*", "CLOUDFLARE_*", "WRANGLER_*"]
-    },
-    "deploy": {
-      "dependsOn": ["//#worker:deploy"],
-      "outputs": [],
-      "cache": false,
-      "passThroughEnv": ["BUN_*", "CLOUDFLARE_*", "WRANGLER_*"]
+      "passThroughEnv": ["BUN_*", "CLOUDFLARE_*", "WRANGLER_*", "CLOUDFLARE_ACCOUNT_ID", "CLOUDFLARE_API_TOKEN"]
     }
   }
 }
