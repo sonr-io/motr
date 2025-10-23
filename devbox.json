@@ -15,9 +15,8 @@
     "BUN_RUNTIME_TRANSPILER_CACHE_PATH": "$HOME/.cache/bun/transpiler",
     "TURBO_CACHE_DIR": ".turbo",
     "TURBO_FORCE": "false",
-    "CI": "false",
-    "NODE_ENV": "development",
-    "FORCE_COLOR": "1"
+    "CI": "$CI",
+    "NODE_ENV": "$NODE_ENV"
   },
   "shell": {
     "init_hook": [
