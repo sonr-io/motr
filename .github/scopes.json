@@ -24,7 +24,7 @@
     "path": "pkgs/config"
   },
   {
-    "scope": "ci",
+    "scope": "config",
     "path": ".github"
   },
   {
