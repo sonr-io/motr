@@ -4,6 +4,17 @@ main = "src/worker.ts"
 compatibility_date = "2025-01-11"
 compatibility_flags = ["nodejs_compat"]
 
+# Assets configuration - Wrangler will bundle these into the worker
+# The public directory structure:
+# public/
+#   auth/ (apps/auth/dist)
+#   console/ (apps/console/dist)
+#   profile/ (apps/profile/dist)
+#   search/ (apps/search/dist)
+#   wasm/ (WASM binaries)
+[assets]
+directory = "./public"
+
 # Production environment
 [env.production]
 name = "motr-orchestrator"

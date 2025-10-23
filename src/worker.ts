@@ -6,7 +6,7 @@
  *
  * Architecture:
  * - Uses Hono for clean routing and middleware
- * - Serves static Vite builds from apps/*/dist directories
+ * - Serves static Vite builds bundled as worker assets
  * - Routes based on subdomain (console.sonr.id, profile.sonr.id, etc.)
  * - Routes based on path (/console, /profile, /search)
  * - Routes based on session state for authenticated users
@@ -66,11 +66,10 @@ app.get('/health', (c) => {
 app.route('/api', createApiRoutes());
 
 // Static asset serving for each app
-// These will serve the Vite-built static files from apps/*/dist
-app.use('/auth/*', serveStatic({ root: '../apps/auth/dist', rewriteRequestPath: (path) => path.replace(/^\/auth/, '') }));
-app.use('/console/*', serveStatic({ root: '../apps/console/dist', rewriteRequestPath: (path) => path.replace(/^\/console/, '') }));
-app.use('/profile/*', serveStatic({ root: '../apps/profile/dist', rewriteRequestPath: (path) => path.replace(/^\/profile/, '') }));
-app.use('/search/*', serveStatic({ root: '../apps/search/dist', rewriteRequestPath: (path) => path.replace(/^\/search/, '') }));
+app.use('/auth/*', serveStatic({ root: './auth', rewriteRequestPath: (path) => path.replace(/^\/auth/, '') }));
+app.use('/console/*', serveStatic({ root: './console', rewriteRequestPath: (path) => path.replace(/^\/console/, '') }));
+app.use('/profile/*', serveStatic({ root: './profile', rewriteRequestPath: (path) => path.replace(/^\/profile/, '') }));
+app.use('/search/*', serveStatic({ root: './search', rewriteRequestPath: (path) => path.replace(/^\/search/, '') }));
 
 // Root route - smart routing based on session and subdomain
 app.get('/', async (c) => {
@@ -78,20 +77,11 @@ app.get('/', async (c) => {
   const url = new URL(c.req.url);
   const targetApp = determineTargetApp(url, session);
 
-  // Redirect to appropriate app path
-  return c.redirect(`/${targetApp}`);
+  return c.redirect(`/${targetApp}/`);
 });
 
 // Catch-all for SPA routing - serve index.html from appropriate app
-app.get('*', async (c) => {
-  const session = await getSession(c.req.raw, c.env);
-  const url = new URL(c.req.url);
-  const targetApp = determineTargetApp(url, session);
-
-  // Serve the index.html from the appropriate app for SPA routing
-  const indexPath = `../apps/${targetApp}/dist/index.html`;
-  return c.html(await getIndexHtml(indexPath, c.env));
-});
+app.get('*', serveStatic({ root: './' }));
 
 /**
  * Create API routes
@@ -228,28 +218,6 @@ function createNewSession(): SessionData {
     createdAt: Date.now(),
     lastActivityAt: Date.now(),
   };
-}
-
-/**
- * Get index.html content from app
- * In production, this would read from KV or R2
- * For now, return a placeholder that will be replaced with actual builds
- */
-async function getIndexHtml(path: string, env: Bindings): Promise<string> {
-  // TODO: Implement actual file reading from KV/R2 or bundled assets
-  // For now, return a basic HTML structure
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sonr</title>
-</head>
-<body>
-  <div id="root"></div>
-  <script type="module" src="/assets/index.js"></script>
-</body>
-</html>`;
 }
 
 export default app;
