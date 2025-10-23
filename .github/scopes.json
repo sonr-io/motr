@@ -4,12 +4,20 @@
     "path": "bun.lock"
   },
   {
-    "scope": "mdx",
+    "scope": "techdocs",
     "path": "docs"
   },
   {
-    "scope": "repo",
+    "scope": "config",
+    "path": "package.json"
+  },
+  {
+    "scope": "config",
     "path": "turbo.json"
+  },
+  {
+    "scope": "config",
+    "path": "bunfig.toml"
   },
   {
     "scope": "config",
