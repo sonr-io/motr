@@ -12,8 +12,8 @@
     "path": "turbo.json"
   },
   {
-    "scope": "repo",
-    "path": "cnfg"
+    "scope": "config",
+    "path": "pkgs/config"
   },
   {
     "scope": "ci",
