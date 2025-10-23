@@ -28,6 +28,10 @@
     "path": ".github"
   },
   {
+    "scope": "actions",
+    "path": ".github/workflows"
+  },
+  {
     "scope": "ui",
     "path": "pkgs/ui"
   },
