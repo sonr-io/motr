@@ -5,29 +5,35 @@
 logLevel = "warn"
 
 [install]
-# Link workspace packages together
+# Link workspace packages together for monorepo
 linkWorkspacePackages = true
 
 # Auto-install peer dependencies
 peer = true
 
-# Use exact versions for better reproducibility
+# Use exact versions for better reproducibility in production
 exact = false
 
-# Hoisted linker for better performance
+# Hoisted linker for maximum performance and smaller node_modules
 linker = "hoisted"
 
-# Frozen lockfile in CI
-# frozenLockfile = true  # Uncomment in CI
+# Production optimization: dedupe packages
+dedupe = true
+
+# Frozen lockfile in CI (uncomment for CI environments)
+# frozenLockfile = true
+
+# Concurrent downloads for faster installs
+concurrent = 100
 
 [install.cache]
-# Cache directory
+# Cache directory for faster subsequent installs
 dir = "~/.cache/bun/install"
 
-# Don't disable cache
+# Enable cache for performance
 disable = false
 
-# Don't always fetch latest (use cache when available)
+# Use cached manifests when available
 disableManifest = false
 
 [install.scopes]
@@ -35,15 +41,22 @@ disableManifest = false
 "@sonr.io" = { workspace = true }
 "@radix-ui" = { registry = "https://registry.npmjs.org/" }
 "@tanstack" = { registry = "https://registry.npmjs.org/" }
+"@cloudflare" = { registry = "https://registry.npmjs.org/" }
+"@biomejs" = { registry = "https://registry.npmjs.org/" }
 
 [test]
-# Use happy-dom for faster tests
+# Use happy-dom for faster DOM testing
 preload = ["happy-dom"]
 coverage = true
+# Run tests in parallel for speed
+smol = false
 
 [run]
-# Enable bun shell for scripts (faster than sh)
+# Use Bun's native shell for faster script execution
 shell = "bun"
 
-# Don't silence output
+# Show script output
 silent = false
+
+# Bun-native script features
+bun = true
