@@ -8,18 +8,6 @@
     "path": "docs"
   },
   {
-    "scope": "actions",
-    "path": ".github/workflows"
-  },
-  {
-    "scope": "config",
-    "path": ".github"
-  },
-  {
-    "scope": "config",
-    "path": "pkgs/config"
-  },
-  {
     "scope": "config",
     "path": "package.json"
   },
@@ -32,28 +20,36 @@
     "path": "bunfig.toml"
   },
   {
-    "scope": "browser",
-    "path": "pkgs/browser"
+    "scope": "config",
+    "path": "pkgs/config"
+  },
+  {
+    "scope": "config",
+    "path": ".github"
+  },
+  {
+    "scope": "actions",
+    "path": ".github/workflows"
   },
   {
     "scope": "ui",
     "path": "pkgs/ui"
   },
   {
-    "scope": "sdk",
-    "path": "pkgs/sdk"
-  },
-  {
-    "scope": "react",
-    "path": "pkgs/react"
-  },
-  {
     "scope": "enclave",
     "path": "libs/enclave"
   },
   {
+    "scope": "sdk",
+    "path": "pkgs/sdk"
+  },
+  {
     "scope": "vault",
     "path": "libs/vault"
+  },
+  {
+    "scope": "react",
+    "path": "pkgs/react"
   },
   {
     "scope": "auth",
@@ -61,7 +57,7 @@
   },
   {
     "scope": "console",
-    "path": "apps/console"
+    "path": "apps/auth"
   },
   {
     "scope": "profile",
