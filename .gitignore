@@ -194,6 +194,7 @@ $RECYCLE.BIN/
 .netlify/
 .cloudflare/
 .wrangler/
+.dev.vars
 
 # ============================================
 # Build Tools & Caching
