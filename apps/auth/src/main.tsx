@@ -53,6 +53,7 @@ if ("serviceWorker" in navigator) {
 const providersContext = getProvidersContext();
 const router = createRouter({
   routeTree,
+  basepath: "/auth",
   context: {
     ...providersContext,
   },
