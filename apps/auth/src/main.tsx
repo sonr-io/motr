@@ -7,7 +7,7 @@ import { AppProviders, getProvidersContext } from "./lib/providers.tsx";
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
 
-import "./styles.css";
+import "@sonr.io/ui/styles/globals.css";
 import reportWebVitals from "./reportWebVitals.ts";
 
 // Register Service Worker for Payment Handler API and Vault
