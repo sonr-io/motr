@@ -4,6 +4,9 @@
   "description": "Shared configuration files for Sonr monorepo",
   "type": "module",
   "packageManager": "bun@1.3.0",
+  "scripts": {
+    "build": "bun scripts/bundle-assets.js"
+  },
   "exports": {
     "./typescript/base": "./typescript/base.json",
     "./typescript/react-app": "./typescript/react-app.json",
@@ -21,7 +24,9 @@
     "vite",
     "tailwind",
     "lint",
-    ".oxlintrc.json"
+    ".oxlintrc.json",
+    "public",
+    "scripts"
   ],
   "devDependencies": {
     "@cloudflare/workers-types": "latest",

@@ -154,7 +154,7 @@
       "cache": true,
       "passThroughEnv": ["BUN_*", "VITE_*"]
     },
-    "//#bundle:assets": {
+    "@sonr.io/config#build": {
       "dependsOn": [
         "@sonr.io/auth#build",
         "@sonr.io/console#build",
@@ -163,21 +163,23 @@
         "@sonr.io/vault#build",
         "@sonr.io/enclave#build"
       ],
-      "outputs": ["public/**"],
+      "outputs": ["../../public/**"],
       "inputs": [
-        "apps/auth/dist/**",
-        "apps/console/dist/**",
-        "apps/profile/dist/**",
-        "apps/search/dist/**",
-        "libs/vault/dist/**",
-        "libs/enclave/dist/**"
+        "../../apps/auth/dist/**",
+        "../../apps/console/dist/**",
+        "../../apps/profile/dist/**",
+        "../../apps/search/dist/**",
+        "../../libs/vault/dist/**",
+        "../../libs/enclave/dist/**",
+        "scripts/**",
+        "public/**"
       ],
       "cache": true,
       "persistent": false,
       "passThroughEnv": ["BUN_*"]
     },
     "//#worker:build": {
-      "dependsOn": ["//#bundle:assets"],
+      "dependsOn": ["@sonr.io/config#build"],
       "outputs": ["tsconfig.tsbuildinfo"],
       "inputs": [
         "$TURBO_DEFAULT$",
