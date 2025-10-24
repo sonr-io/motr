@@ -1,0 +1,12 @@
+- NEVER create random summary documents
+- Always use !`devbox run dev` as a background process
+- ALWAYS update configuration by modifying the @pkgs/config/ package and importing into our workspace
+- ALWAYS ensure deployment is optimized for Cloudflare Workers Environment
+- ALWAYS ensure we are using the correct syntax for SDK and API dependencies by using the mcp::context7 server
+- ALAWAYS ensure we are following current best reccomended coding practices by using the mcp::exa server
+- ALWAYS design our architecture to maximize client-side functionality by keeping Network level business logic in WASM, Frontend UI in Vite, styling with Tailwind CSS 4, components with shadcn
+- ALWAYS produce design components in @pkgs/ui/ in order to reduced code duplication and to have styling consistency
+- ALWAYS produce shared react functionality inside @pkgs/react in order to maximize code re-use across @apps/
+- ALWAYS keep cloudflare worker specific logic inside @src/ 
+- ALWAYS keep our @devbox.lock
+- React components must always be created inside @pkgs/ui/
