@@ -183,7 +183,7 @@ console.log("📥 Fetching repos...");
 /** @type {Map<string, string>} */
 const repoPaths = new Map();
 /** @type {Set<string>} */
-const skippedRepos = new Set();
+const downloadedRepos = new Set();
 {
   let successCount = 0;
   let failCount = 0;
@@ -202,8 +202,7 @@ const skippedRepos = new Set();
 
     if (lastRef === ref && existsSync(cacheDir)) {
       console.log(`  ⏭️  ${repo} (cached)`);
-      repoPaths.set(repo, cacheDir);
-      skippedRepos.add(repo);
+      // Don't add to repoPaths - we skip generation for cached repos
       skippedCount++;
       continue;
     }
@@ -214,6 +213,7 @@ const skippedRepos = new Set();
     const result = downloadProtoFiles(repo, protoPath, cacheDir);
     if (result.success && result.path) {
       repoPaths.set(repo, result.path);
+      downloadedRepos.add(repo);
       // Update manifest with the ref
       manifest[repoId] = ref;
       successCount++;
@@ -234,7 +234,7 @@ const skippedRepos = new Set();
 
 // Only clean if ALL repos need processing (fresh build)
 // Otherwise, buf will overwrite only the changed files
-if (repoPaths.size === REPOS.length) {
+if (downloadedRepos.size === REPOS.length) {
   console.log("🧹 Cleaning directories...");
   {
     // Clean directories for regenerated repos
@@ -257,14 +257,14 @@ if (repoPaths.size === REPOS.length) {
       rmSync(dirPath, { recursive: true, force: true });
     }
   }
-} else if (repoPaths.size > 0) {
+} else if (downloadedRepos.size > 0) {
   console.log("ℹ️ Incremental update, keeping existing files");
 } else {
-  console.log("ℹ️ No repos need processing");
+  console.log("ℹ️ All repos cached, skipping generation");
 }
 
-// Only generate types if there are repos that need processing
-if (repoPaths.size > 0) {
+// Only generate types if there are repos that were actually downloaded
+if (downloadedRepos.size > 0) {
   console.log("⚙️ Generating types...");
   {
     let processedCount = 0;
@@ -272,13 +272,8 @@ if (repoPaths.size > 0) {
     for (const { repo } of REPOS) {
       const repoDir = repoPaths.get(repo);
 
-      // Skip if repo wasn't retrieved successfully
+      // Skip if repo wasn't downloaded (cached or failed)
       if (!repoDir || !existsSync(repoDir)) {
-        if (skippedRepos.has(repo)) {
-          console.log(`  ⏭️ ${repo} (unchanged)`);
-        } else {
-          console.log(`⚠️ ${repo} (failed)`);
-        }
         continue;
       }
 
@@ -307,6 +302,10 @@ if (repoPaths.size > 0) {
         {
           stdio: "pipe",
           encoding: "utf8",
+          env: {
+            ...process.env,
+            NODE_OPTIONS: `--require ${join(__dirname, "setup-localstorage.cjs")}`,
+          },
         },
       );
 
@@ -330,11 +329,11 @@ if (repoPaths.size > 0) {
     }
   }
 } else {
-  console.log("ℹ️ No repos need processing, skipping generation");
+  console.log("ℹ️ No repos downloaded, skipping generation");
 }
 
-// Only generate index and save manifest if there were changes
-if (repoPaths.size > 0) {
+// Only generate index and save manifest if there were downloads
+if (downloadedRepos.size > 0) {
   console.log("📝 Generating index...");
   {
     const LAST_SEGMENT_REGEX = /[^/]+$/;
