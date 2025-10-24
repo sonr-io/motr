@@ -4,10 +4,10 @@
   "type": "module",
   "packageManager": "bun@1.3.0",
   "scripts": {
-    "dev": "bunx --bun vite dev",
-    "build": "bunx --bun vite build",
+    "dev": "bunx vite dev",
+    "build": "bunx vite build",
     "typecheck": "tsc",
-    "preview": "bunx --bun vite preview",
+    "preview": "bunx vite preview",
     "test": "vitest run --passWithNoTests",
     "format": "bunx oxfmt@latest .",
     "lint": "bunx oxlint@latest .",

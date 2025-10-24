@@ -114,6 +114,31 @@ cp node_modules/@pkgs/config/.oxlintrc.json .
 bunx oxlint --config=./node_modules/@pkgs/config/.oxlintrc.json .
 ```
 
+### Public Assets
+
+Shared public assets (favicons, icons, manifests) are available in `@pkgs/config/public/`.
+
+#### Usage in Vite Config
+
+```typescript
+// vite.config.ts
+import { defineConfig } from 'vite'
+import { resolve } from 'path'
+
+export default defineConfig({
+  publicDir: resolve(__dirname, '../../pkgs/config/public'),
+  // ... other config
+})
+```
+
+This provides all apps with consistent:
+- Favicons (ICO, SVG, PNG)
+- PWA icons and manifests
+- Apple touch icons
+- robots.txt
+
+See [`public/README.md`](./public/README.md) for details.
+
 ## Available Configurations
 
 ### TypeScript
@@ -136,6 +161,10 @@ bunx oxlint --config=./node_modules/@pkgs/config/.oxlintrc.json .
 ### Linting
 
 - `@pkgs/config/oxlint` - oxlint configuration
+
+### Public Assets
+
+- `@pkgs/config/public/` - Shared public assets (favicons, icons, manifests, robots.txt)
 
 ## Benefits
 

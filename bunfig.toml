@@ -28,7 +28,7 @@ concurrent = 100
 
 [install.cache]
 # Cache directory for faster subsequent installs
-dir = "~/.cache/bun/install"
+dir = "$HOME/.cache/bun/install"
 
 # Enable cache for performance
 disable = false
@@ -50,13 +50,3 @@ preload = ["happy-dom"]
 coverage = true
 # Run tests in parallel for speed
 smol = false
-
-[run]
-# Use Bun's native shell for faster script execution
-shell = "bun"
-
-# Show script output
-silent = false
-
-# Bun-native script features
-bun = true

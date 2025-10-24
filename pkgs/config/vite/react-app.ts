@@ -18,6 +18,7 @@ import { type UserConfig, defineConfig } from 'vite';
 export function createReactAppConfig(options: {
   root?: string;
   port?: number;
+  base?: string;
   plugins?: UserConfig['plugins'];
   alias?: Record<string, string>;
   optimizeDeps?: UserConfig['optimizeDeps'];
@@ -26,6 +27,7 @@ export function createReactAppConfig(options: {
   const root = options.root || process.cwd();
 
   return defineConfig({
+    base: options.base || '/',
     plugins: [
       tanstackRouter({ autoCodeSplitting: true }),
       viteReact(),
@@ -48,6 +50,22 @@ export function createReactAppConfig(options: {
     build: {
       outDir: 'dist',
       emptyOutDir: true,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            // Split React into separate vendor chunk
+            'vendor-react': ['react', 'react-dom'],
+            // Split TanStack Router into separate chunk
+            'vendor-router': ['@tanstack/react-router'],
+            // Split TanStack Query into separate chunk
+            'vendor-query': ['@tanstack/react-query'],
+            // Split UI library into separate chunk
+            'vendor-ui': ['@sonr.io/ui', 'sonner', 'motion'],
+          },
+        },
+      },
+      // Enable better chunk size warnings
+      chunkSizeWarningLimit: 1000,
     },
   });
 }
