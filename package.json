@@ -40,7 +40,7 @@
     "build:libs": "turbo build --filter='./libs/*'",
     "build:pkgs": "turbo build --filter='./pkgs/*'",
     "build:force": "turbo run //#worker:build --force",
-    "bundle:assets": "bash scripts/bundle-assets.sh",
+    "bundle:assets": "bun pkgs/config/scripts/bundle-assets.js",
     "test": "turbo test",
     "test:all": "bun --filter '*' test",
     "test:watch": "turbo test -- --watch",
