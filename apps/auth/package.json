@@ -4,13 +4,8 @@
   "type": "module",
   "packageManager": "bun@1.3.0",
   "scripts": {
-    "predev": "bun run copy:vault",
-    "dev": "bunx --bun vite dev",
-    "prebuild": "bun run copy:vault",
     "build": "bunx --bun vite build",
     "typecheck": "tsc",
-    "copy:vault": "cp ../../libs/vault/dist/sw.js public/sw.js && cp ../../libs/vault/dist/vault.wasm public/vault.wasm && cp ../../libs/vault/dist/wasm_exec.js public/wasm_exec.js",
-    "preview": "bunx --bun vite preview",
     "test": "vitest run --passWithNoTests",
     "format": "bunx oxfmt@latest .",
     "lint": "bunx oxlint@latest .",

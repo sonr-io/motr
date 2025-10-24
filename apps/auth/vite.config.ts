@@ -74,18 +74,6 @@ export default defineConfig({
     viteReact(),
     tailwindcss(),
   ],
-  server: {
-    port: 3000,
-    strictPort: true,
-    fs: {
-      allow: [
-        // Allow serving files from the app directory
-        resolve(__dirname, "."),
-        // Allow serving files from the monorepo root
-        resolve(__dirname, "../.."),
-      ],
-    },
-  },
   resolve: {
     alias: {
       "@": resolve(__dirname, "./src"),
