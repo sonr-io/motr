@@ -1,5 +1,5 @@
 {
-  "extends": "../../cnfg/typescript/react-library.json",
+  "extends": "../../pkgs/config/typescript/react-library.json",
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",

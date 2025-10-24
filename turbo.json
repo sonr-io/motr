@@ -2,6 +2,7 @@
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
   "envMode": "loose",
+  "daemon": true,
   "globalDependencies": [
     "**/.env.*local",
     ".env",
@@ -36,9 +37,12 @@
         "$TURBO_DEFAULT$",
         "!**/*.md",
         "!**/*.test.{ts,tsx,js,jsx}",
-        "!**/*.spec.{ts,tsx,js,jsx}"
+        "!**/*.spec.{ts,tsx,js,jsx}",
+        "!**/__tests__/**",
+        "!**/coverage/**"
       ],
       "cache": true,
+      "persistent": false,
       "passThroughEnv": ["BUN_*"]
     },
     "dev": {
@@ -51,10 +55,12 @@
       "outputs": ["dist/**", "*.tsbuildinfo"],
       "inputs": [
         "$TURBO_DEFAULT$",
-        "scripts/**"
+        "scripts/**",
+        "!scripts/**/*.test.ts"
       ],
       "cache": true,
-      "passThroughEnv": ["BUN_*"]
+      "persistent": false,
+      "passThroughEnv": ["BUN_*", "GITHUB_TOKEN"]
     },
     "@sonr.io/enclave#build": {
       "dependsOn": ["@sonr.io/sdk#build"],
@@ -86,13 +92,15 @@
     },
     "@sonr.io/ui#build": {
       "dependsOn": ["@sonr.io/sdk#build"],
-      "outputs": ["dist/**", "*.tsbuildinfo"],
+      "outputs": ["dist/**", "*.tsbuildinfo", "src/components/icons/**"],
       "inputs": [
         "$TURBO_DEFAULT$",
-        "!src/components/icons/**",
+        "assets/**/*.svg",
+        "assets/**/*.json",
         "scripts/**"
       ],
       "cache": true,
+      "persistent": false,
       "passThroughEnv": ["BUN_*"]
     },
     "@sonr.io/react#build": {
@@ -146,6 +154,43 @@
       "cache": true,
       "passThroughEnv": ["BUN_*", "VITE_*"]
     },
+    "@sonr.io/config#build": {
+      "dependsOn": [
+        "@sonr.io/auth#build",
+        "@sonr.io/console#build",
+        "@sonr.io/profile#build",
+        "@sonr.io/search#build",
+        "@sonr.io/vault#build",
+        "@sonr.io/enclave#build"
+      ],
+      "outputs": ["../../public/**"],
+      "inputs": [
+        "../../apps/auth/dist/**",
+        "../../apps/console/dist/**",
+        "../../apps/profile/dist/**",
+        "../../apps/search/dist/**",
+        "../../libs/vault/dist/**",
+        "../../libs/enclave/dist/**",
+        "scripts/**",
+        "public/**"
+      ],
+      "cache": true,
+      "persistent": false,
+      "passThroughEnv": ["BUN_*"]
+    },
+    "//#worker:build": {
+      "dependsOn": ["@sonr.io/config#build"],
+      "outputs": ["tsconfig.tsbuildinfo"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "public/**",
+        "wrangler.toml",
+        "src/**"
+      ],
+      "cache": true,
+      "persistent": false,
+      "passThroughEnv": ["BUN_*"]
+    },
     "format": {
       "outputs": [],
       "inputs": ["$TURBO_DEFAULT$", "**/*.go"],
@@ -192,44 +237,16 @@
     "clean": {
       "cache": false
     },
-    "@sonr.io/auth#deploy": {
-      "dependsOn": ["@sonr.io/auth#build"],
+    "//#worker:deploy": {
+      "dependsOn": ["//#worker:build"],
       "outputs": [],
       "cache": false,
-      "inputs": ["dist/**", "wrangler.toml"],
-      "passThroughEnv": ["BUN_*", "CLOUDFLARE_*", "WRANGLER_*", "VITE_*"]
-    },
-    "@sonr.io/console#deploy": {
-      "dependsOn": ["@sonr.io/console#build"],
-      "outputs": [],
-      "cache": false,
-      "inputs": ["dist/**", "wrangler.toml"],
-      "passThroughEnv": ["BUN_*", "CLOUDFLARE_*", "WRANGLER_*", "VITE_*"]
-    },
-    "@sonr.io/profile#deploy": {
-      "dependsOn": ["@sonr.io/profile#build"],
-      "outputs": [],
-      "cache": false,
-      "inputs": ["dist/**", "wrangler.toml"],
-      "passThroughEnv": ["BUN_*", "CLOUDFLARE_*", "WRANGLER_*", "VITE_*"]
-    },
-    "@sonr.io/search#deploy": {
-      "dependsOn": ["@sonr.io/search#build"],
-      "outputs": [],
-      "cache": false,
-      "inputs": ["dist/**", "wrangler.toml"],
-      "passThroughEnv": ["BUN_*", "CLOUDFLARE_*", "WRANGLER_*", "VITE_*"]
-    },
-    "deploy": {
-      "dependsOn": [
-        "@sonr.io/auth#deploy",
-        "@sonr.io/console#deploy",
-        "@sonr.io/profile#deploy",
-        "@sonr.io/search#deploy"
+      "inputs": [
+        "src/**",
+        "wrangler.toml",
+        "public/**"
       ],
-      "outputs": [],
-      "cache": false,
-      "passThroughEnv": ["BUN_*", "CLOUDFLARE_*", "WRANGLER_*"]
+      "passThroughEnv": ["BUN_*", "CLOUDFLARE_*", "WRANGLER_*", "CLOUDFLARE_ACCOUNT_ID", "CLOUDFLARE_API_TOKEN"]
     }
   }
 }

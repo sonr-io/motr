@@ -4,40 +4,56 @@
     "path": "bun.lock"
   },
   {
-    "scope": "mdx",
+    "scope": "techdocs",
     "path": "docs"
   },
   {
-    "scope": "repo",
+    "scope": "actions",
+    "path": ".github/workflows"
+  },
+  {
+    "scope": "config",
+    "path": ".github"
+  },
+  {
+    "scope": "config",
+    "path": "pkgs/config"
+  },
+  {
+    "scope": "config",
+    "path": "package.json"
+  },
+  {
+    "scope": "config",
     "path": "turbo.json"
   },
   {
-    "scope": "repo",
-    "path": "cnfg"
+    "scope": "config",
+    "path": "bunfig.toml"
   },
   {
-    "scope": "ci",
-    "path": ".github"
+    "scope": "browser",
+    "path": "pkgs/browser"
   },
   {
     "scope": "ui",
     "path": "pkgs/ui"
   },
   {
-    "scope": "enclave",
-    "path": "libs/enclave"
-  },
-  {
     "scope": "sdk",
     "path": "pkgs/sdk"
   },
   {
-    "scope": "vault",
-    "path": "libs/vault"
-  },
-  {
     "scope": "react",
     "path": "pkgs/react"
+  },
+  {
+    "scope": "enclave",
+    "path": "libs/enclave"
+  },
+  {
+    "scope": "vault",
+    "path": "libs/vault"
   },
   {
     "scope": "auth",
@@ -45,7 +61,7 @@
   },
   {
     "scope": "console",
-    "path": "apps/auth"
+    "path": "apps/console"
   },
   {
     "scope": "profile",
@@ -54,5 +70,13 @@
   {
     "scope": "search",
     "path": "apps/search"
+  },
+  {
+    "scope": "worker",
+    "path": "src"
+  },
+  {
+    "scope": "worker",
+    "path": "wrangler.toml"
   }
 ]

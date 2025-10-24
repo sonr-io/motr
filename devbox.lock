@@ -308,54 +308,6 @@
           "store_path": "/nix/store/jbjrj4hbf2bgdvr6vl4dalwn31s669p4-gum-0.17.0"
         }
       }
-    },
-    "mprocs@latest": {
-      "last_modified": "2025-10-07T08:41:47Z",
-      "resolved": "github:NixOS/nixpkgs/bce5fe2bb998488d8e7e7856315f90496723793c#mprocs",
-      "source": "devbox-search",
-      "version": "0.7.3",
-      "systems": {
-        "aarch64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/1x5bv3bsskiv1mjfwmc61cnp9qqsd2k9-mprocs-0.7.3",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/1x5bv3bsskiv1mjfwmc61cnp9qqsd2k9-mprocs-0.7.3"
-        },
-        "aarch64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/54ar637i8r968z027n15dsd0d7hzkv5g-mprocs-0.7.3",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/54ar637i8r968z027n15dsd0d7hzkv5g-mprocs-0.7.3"
-        },
-        "x86_64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/9sj709yq8l8zwjpsdyaamrvsaa4miqsq-mprocs-0.7.3",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/9sj709yq8l8zwjpsdyaamrvsaa4miqsq-mprocs-0.7.3"
-        },
-        "x86_64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/7paf3cs2bd6pq9dmhxvmmkklgy0anirp-mprocs-0.7.3",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/7paf3cs2bd6pq9dmhxvmmkklgy0anirp-mprocs-0.7.3"
-        }
-      }
     }
   }
 }

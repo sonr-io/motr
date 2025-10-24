@@ -1,62 +1,63 @@
-# Motor (motr)
+# Motr
 
-> Multi-purpose WebAssembly service providing secure cryptographic vault operations and payment processing for the Sonr ecosystem.
+> Multi-purpose WebAssembly monorepo powering secure cryptographic operations and decentralized identity for the Sonr ecosystem.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Version](https://img.shields.io/badge/Go-1.24.4+-00ADD8?logo=go)](https://go.dev/)
 [![TinyGo](https://img.shields.io/badge/TinyGo-0.39+-00ADD8?logo=go)](https://tinygo.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![Bun](https://img.shields.io/badge/Bun-1.3+-000000?logo=bun)](https://bun.sh/)
 
 ## Overview
 
-Motor (motr) is a comprehensive WebAssembly-based service that provides:
+Motr is a comprehensive WebAssembly-based monorepo that provides secure cryptographic operations, decentralized identity management, and a suite of web applications for the Sonr ecosystem. The architecture leverages Cloudflare Workers for edge computing and Go-compiled WASM for cryptographic operations.
 
-1. **Worker**: WASM-based cryptographic vault operations (formerly "vault")
-2. **Vault**: Extism plugin for secure key management and multi-party computation
-3. **TypeScript SDK**: Browser and Node.js client libraries
-4. **Frontend App**: TanStack-based web application
+### Key Features
 
-The name "Motor" reflects its role as the execution engine powering secure operations in the Sonr ecosystem.
+- **🚀 Hono-based Worker** - Edge-deployed orchestrator serving multiple frontends with SSR
+- **🔐 Cryptographic Vault** - WASM-based secure key management with MPC and threshold cryptography
+- **🎭 DID Management** - Decentralized identity with WebAuthn integration via Enclave
+- **⚡ Vite Frontends** - Modern React apps for auth, console, profile, and search
+- **📦 Shared Packages** - Reusable TypeScript libraries and UI components
 
 ## Repository Structure
 
 ```
-sonr-io/motr/
-├── cmd/                    # Go commands
-│   ├── worker/            # WASM worker (HTTP server, payment gateway)
-│   └── vault/             # WASM vault (Extism plugin, crypto operations)
+motr/
+├── apps/                    # Vite-based frontend applications
+│   ├── auth/               # Authentication & registration app
+│   ├── console/            # Developer console & admin interface
+│   ├── profile/            # User profile management
+│   └── search/             # Sonr network search
 │
-├── crypto/                # Cryptographic library (Go)
-│   ├── core/             # Core primitives
-│   ├── signatures/       # BLS, BBS+, Schnorr
-│   ├── sharing/          # Shamir, Feldman VSS
-│   ├── mpc/              # Multi-party computation
-│   ├── tecdsa/           # Threshold ECDSA
-│   └── zkp/              # Zero-knowledge proofs
+├── libs/                   # Go/WASM cryptographic libraries
+│   ├── enclave/           # DID & WebAuthn Durable Object worker
+│   └── vault/             # Cryptographic vault operations
 │
-├── packages/             # TypeScript packages
-│   ├── es/              # @sonr.io/sdk - Core SDK
-│   ├── ui/              # @sonr.io/ui - UI components
-│   └── do/              # @sonr.io/do - Durable Objects
+├── pkgs/                   # TypeScript packages
+│   ├── config/            # Shared build & lint configs
+│   ├── react/             # React hooks & providers
+│   ├── sdk/               # Core TypeScript SDK
+│   └── ui/                # Shared UI components (shadcn)
 │
-├── apps/                # Applications
-│   └── frontend/        # TanStack React frontend
+├── src/                    # Cloudflare Worker (Hono-based)
+│   └── worker.ts          # Main orchestrator serving all frontends
 │
-├── docs/                # Documentation
-├── Makefile            # Build automation
-├── package.json        # Root package config
-├── turbo.json          # Turborepo config
-└── .goreleaser.yml     # Release automation
+├── docs/                   # Documentation & MDX content
+├── wrangler.toml          # Worker deployment configuration
+├── tsconfig.json          # Worker TypeScript config
+├── package.json           # Root workspace configuration
+└── turbo.json             # Turborepo build pipeline
 ```
 
 ## Quick Start
 
 ### Prerequisites
 
+- **Bun** 1.3+ ([install](https://bun.sh/))
 - **Go** 1.24.4+ ([install](https://go.dev/dl/))
 - **TinyGo** 0.39+ ([install](https://tinygo.org/getting-started/install/))
-- **Node.js** 20+ ([install](https://nodejs.org/))
-- **pnpm** 10+ ([install](https://pnpm.io/installation))
+- **Wrangler** CLI (included in dependencies)
 
 ### Installation
 
@@ -65,262 +66,445 @@ sonr-io/motr/
 git clone https://github.com/sonr-io/motr.git
 cd motr
 
-# Install dependencies
-pnpm install
+# Install all dependencies (uses Bun workspaces)
+bun install
 
-# Build all components
-make build        # Build Go/WASM components
-pnpm build       # Build TypeScript packages
+# Build all packages and libraries
+turbo build
 ```
 
 ### Development
 
 ```bash
-# Start frontend development server
-make dev
+# Start main worker (serves all frontends via Hono)
+bun run dev
 
-# Build worker WASM
-make build-worker
+# Start specific frontend app
+bun run dev:auth       # Authentication app
+bun run dev:console    # Console app
+bun run dev:profile    # Profile app
+bun run dev:search     # Search app
 
-# Build vault WASM
-make build-vault
+# Start enclave worker (Durable Object)
+cd libs/enclave && wrangler dev
+
+# Start vault worker
+cd libs/vault && wrangler dev
 
 # Run tests
-make test        # Go tests
-pnpm test       # TypeScript tests
+turbo test            # All tests
+bun run test:all     # All package tests
 
-# Format and lint
-make fmt         # Format Go code
-pnpm format     # Format and lint TypeScript with oxlint
+# Linting and formatting
+turbo lint           # Lint all packages
+turbo format         # Format all packages
+turbo check          # Type check all packages
 ```
 
-## Components
+## Architecture
 
-### 1. Worker (WASM)
+### 1. Cloudflare Worker (Hono)
 
-HTTP server and payment gateway running as WebAssembly:
+The main orchestrator at `src/worker.ts` using [Hono framework](https://hono.dev/):
 
-- **Technology**: Go → WASM via TinyGo
-- **Runtime**: Browser service worker or Node.js
-- **Features**:
-  - W3C Payment Handler API
-  - OIDC authorization server
-  - HTTP request handling
-  - Secure payment processing
+**Features:**
+- 🎯 Smart routing based on subdomain, path, and session state
+- 📦 Static asset serving for all Vite-built frontends
+- 🔐 Session management with KV storage
+- 🔌 Service bindings to Enclave and Vault workers
+- 🚀 Built-in middleware (logger, etag, CORS)
 
-```bash
-# Build worker
-make build-worker
-
-# Output: dist/worker/worker.optimized.wasm
-```
-
-### 2. Vault (WASM)
-
-Cryptographic vault operations with Extism plugin:
-
-- **Technology**: Go → WASM via TinyGo + Extism
-- **Runtime**: Extism (cross-platform)
-- **Features**:
-  - MPC enclave management
-  - Multi-chain transaction signing
-  - WebAuthn integration
-  - IPFS import/export
-
-```bash
-# Build vault
-make build-vault
-
-# Output: dist/vault/vault.plugin.wasm
-```
-
-**Key Exports**:
-- `generate`: Create new MPC enclave
-- `sign`: Sign transactions/messages
-- `verify`: Verify signatures
-- `export`/`import`: IPFS vault management
-- `sign_cosmos_transaction`: Cosmos SDK signing
-- `sign_evm_transaction`: Ethereum/EVM signing
-
-### 3. Crypto Library
-
-Comprehensive cryptographic primitives in Go:
-
-- **Curves**: Ed25519, Secp256k1, P-256, BLS12-381, Pallas/Vesta
-- **Signatures**: BLS, BBS+, Schnorr, ECDSA, EdDSA
-- **Secret Sharing**: Shamir, Feldman VSS, Pedersen VSS
-- **MPC**: Threshold ECDSA, Threshold Ed25519 (FROST)
-- **Advanced**: Accumulators, Bulletproofs, Paillier, VRF, ZKP
-
-```bash
-# Test crypto library
-make test-crypto
-```
-
-### 4. TypeScript SDK
-
-Browser and Node.js integration:
-
-```bash
-# Install
-pnpm add @sonr.io/sdk
-
-# Build SDK
-pnpm --filter '@sonr.io/sdk' build
-```
-
-**Usage**:
+**Routing Strategy:**
 ```typescript
-import { createVaultClient } from '@sonr.io/sdk';
+// Subdomain routing
+console.sonr.id/*  → Console app
+profile.sonr.id/*  → Profile app
+search.sonr.id/*   → Search app
 
-// Initialize vault client
-const client = await createVaultClient({
-  rpcUrl: 'http://localhost:26657',
-  restUrl: 'http://localhost:1317',
-});
+// Path-based routing
+/console/*         → Console app
+/profile/*         → Profile app
+/search/*          → Search app
 
-// Generate vault
-const vault = await client.generate({ id: 'my-vault' });
+// Session-based (authenticated users)
+/                  → Default app from user preferences
 
-// Sign message
-const signature = await client.sign({
-  message: new Uint8Array([1, 2, 3]),
-  enclave: vault.data,
-});
+// Default (unauthenticated)
+/                  → Auth app
 ```
 
-### 5. Frontend App
-
-Modern web application with TanStack:
-
+**Development:**
 ```bash
-# Start dev server
-make dev
-
-# Build for production
-cd apps/frontend && pnpm build
-
-# Deploy to Cloudflare
-make dev-deploy
+bun run dev          # Start worker at http://localhost:5165
+bun run preview      # Test with remote bindings
+bun run logs         # Tail production logs
 ```
 
-**Tech Stack**:
+### 2. Frontend Applications
+
+Modern React apps built with Vite and TanStack:
+
+#### Auth App (`apps/auth/`)
+- User registration and authentication
+- WebAuthn credential management
+- OAuth/OIDC flows
+- OTP verification
+
+#### Console App (`apps/console/`)
+- Developer dashboard
+- API key management
+- Service configuration
+- Analytics and monitoring
+
+#### Profile App (`apps/profile/`)
+- User profile management
+- DID document viewer
+- Credential management
+- Settings and preferences
+
+#### Search App (`apps/search/`)
+- Sonr network search
+- User discovery
+- Service discovery
+- Explorer interface
+
+**Tech Stack:**
 - React 19
-- TanStack Router, Query, DB, Form
-- Vite
-- Tailwind CSS
-- Cloudflare Workers
+- TanStack Router, Query, Form
+- Vite 5
+- Tailwind CSS 4
+- TypeScript 5.9+
+
+**Development:**
+```bash
+cd apps/auth
+bun run dev          # Start dev server on port 3000
+
+bun run build        # Build for production
+bun run preview      # Preview production build
+```
+
+### 3. Cryptographic Libraries (Go/WASM)
+
+#### Enclave (`libs/enclave/`)
+
+Durable Object worker for decentralized identity:
+
+**Features:**
+- DID document management (did:snr method)
+- WebAuthn credential storage and verification
+- Cryptographic key operations
+- Identity recovery flows
+
+**Technology:**
+- Go → WASM via TinyGo
+- Cloudflare Durable Objects
+- Persistent state storage
+
+**Build:**
+```bash
+cd libs/enclave
+bun run build        # Compile Go to WASM
+wrangler deploy      # Deploy Durable Object
+```
+
+#### Vault (`libs/vault/`)
+
+Service worker for cryptographic operations:
+
+**Features:**
+- Multi-party computation (MPC)
+- Threshold signature schemes
+- Multi-chain transaction signing
+- Secure key derivation
+- IPFS import/export
+
+**Supported Chains:**
+- Cosmos SDK chains
+- Ethereum/EVM chains
+- Solana
+- Bitcoin
+
+**Technology:**
+- Go → WASM via TinyGo
+- Service Worker runtime
+- Extism plugin system
+
+**Build:**
+```bash
+cd libs/vault
+bun run build        # Compile Go to WASM
+```
+
+### 4. TypeScript Packages
+
+#### SDK (`pkgs/sdk/`)
+
+Core TypeScript SDK for Sonr integration:
+
+```typescript
+import { SonrClient, createVault } from '@sonr.io/sdk';
+
+// Initialize client
+const client = new SonrClient({
+  rpcUrl: 'https://rpc.sonr.id',
+  restUrl: 'https://api.sonr.id',
+});
+
+// Create vault
+const vault = await createVault({
+  name: 'my-vault',
+  password: 'secure-password',
+});
+
+// Sign transaction
+const signature = await vault.sign({
+  chain: 'cosmos',
+  transaction: tx,
+});
+```
+
+**Features:**
+- Chain-agnostic transaction signing
+- DID management utilities
+- WebAuthn helpers
+- IPFS integration
+
+#### UI Components (`pkgs/ui/`)
+
+Shared UI component library built on shadcn/ui:
+
+```typescript
+import { Button, Card, Input } from '@sonr.io/ui';
+
+export function MyComponent() {
+  return (
+    <Card>
+      <Input placeholder="Enter value" />
+      <Button>Submit</Button>
+    </Card>
+  );
+}
+```
+
+**Features:**
+- 50+ accessible components
+- Tailwind CSS styling
+- Dark mode support
+- TypeScript strict mode
+
+#### React (`pkgs/react/`)
+
+React-specific hooks and providers:
+
+```typescript
+import { useSonr, SonrProvider } from '@sonr.io/react';
+
+function App() {
+  return (
+    <SonrProvider config={config}>
+      <MyApp />
+    </SonrProvider>
+  );
+}
+
+function MyApp() {
+  const { account, connect, disconnect } = useSonr();
+  // ...
+}
+```
+
+#### Config (`pkgs/config/`)
+
+Shared build configurations:
+
+```typescript
+// vite.config.ts
+import { createReactAppConfig } from '@sonr.io/config/vite/react-app';
+
+export default createReactAppConfig();
+```
+
+```json
+// tsconfig.json
+{
+  "extends": "../../pkgs/config/typescript/react-app.json"
+}
+```
 
 ## Build System
 
-### Makefile Targets
+### Turborepo Pipeline
 
 ```bash
-make help              # Show all targets
-make build             # Build all Go/WASM components
-make build-worker      # Build worker WASM
-make build-vault       # Build vault WASM
-make test              # Run all Go tests
-make test-crypto       # Run crypto tests
-make fmt               # Format Go code
-make lint              # Lint Go code
-make clean             # Clean build artifacts
-make dev               # Start frontend dev server
-make version           # Display version info
+turbo build          # Build all packages (respects dependencies)
+turbo test           # Run all tests in parallel
+turbo lint           # Lint all packages
+turbo dev            # Start all dev servers
 ```
 
-### pnpm Scripts
+**Build Order:**
+1. `@sonr.io/sdk` - Core SDK (no dependencies)
+2. `@sonr.io/ui` - UI components (depends on sdk)
+3. `@sonr.io/react` - React hooks (depends on ui)
+4. `libs/vault` & `libs/enclave` - WASM builds (parallel)
+5. Frontend apps - Vite builds (depends on react)
+6. Worker - TypeScript compilation (depends on all apps)
+
+### Scripts Reference
+
+#### Root Scripts
 
 ```bash
-pnpm build             # Build all TypeScript packages
-pnpm test              # Run all tests
-pnpm lint              # Lint with oxlint
-pnpm format            # Format and lint with oxlint
-pnpm typecheck         # Type check all packages
-pnpm gen:protobufs     # Generate protobuf types
-```
+# Development
+bun run dev                    # Start main worker
+bun run dev:worker             # Start main worker (alias)
+bun run dev:auth               # Start auth app
+bun run dev:console            # Start console app
+bun run dev:profile            # Start profile app
+bun run dev:search             # Start search app
+bun run dev:all                # Start all in parallel
 
-## Testing
+# Building
+bun run build                  # Build all packages
+bun run build:apps             # Build only frontend apps
+bun run build:libs             # Build only WASM libraries
+bun run build:pkgs             # Build only TS packages
+bun run build:force            # Force rebuild ignoring cache
 
-### Go Tests
+# Testing
+bun run test                   # Run all tests
+bun run test:all               # Run tests in all packages
+bun run test:watch             # Run tests in watch mode
 
-```bash
-# All tests
-make test
+# Quality
+bun run lint                   # Lint all packages
+bun run lint:fix               # Lint and auto-fix
+bun run format                 # Format all files
+bun run check                  # Run type checks
+bun run typecheck              # Run type checks (alias)
 
-# Specific components
-make test-worker
-make test-vault
-make test-crypto
+# Deployment
+bun run deploy                 # Deploy main worker
+bun run deploy:staging         # Deploy to staging
+bun run deploy:production      # Deploy to production
+bun run preview                # Test with remote bindings
+bun run logs                   # Tail production logs
 
-# With coverage
-make test-coverage
-
-# Benchmarks
-make bench
-```
-
-### TypeScript Tests
-
-```bash
-# All packages
-pnpm test
-
-# Specific package
-pnpm --filter '@sonr.io/sdk' test
-
-# With UI
-pnpm test --ui
+# Maintenance
+bun run clean                  # Clean build artifacts
+bun run clean:cache            # Clean turbo cache
+bun run clean:turbo            # Clean turbo daemon
 ```
 
 ## Deployment
 
-### Release with GoReleaser
+### Single Worker Deployment
+
+All frontend apps are served by a single Cloudflare Worker:
 
 ```bash
-# Test configuration
-goreleaser check
+# Deploy to production
+bun run deploy
 
-# Create snapshot (no git tag required)
-goreleaser release --snapshot --clean
+# Deploy to staging
+bun run deploy:staging
 
-# Create production release
-git tag v0.1.0
-git push origin v0.1.0
-goreleaser release --clean
+# Test before deploying
+bun run preview
 ```
 
-**Artifacts**:
-- `motr_worker_*.tar.gz` - Worker WASM
-- `motr_vault_*.tar.gz` - Vault WASM
-- `motr_*.tar.gz` - Combined archive
-- `motr_checksums.txt` - SHA256 checksums
+**Deployment Process:**
+1. Build all frontend apps (`turbo build`)
+2. Compile worker TypeScript
+3. Wrangler bundles static assets
+4. Deploy to Cloudflare edge network
 
-### NPM Packages
+### Environment Configuration
+
+```toml
+# wrangler.toml
+name = "motr-orchestrator"
+main = "src/worker.ts"
+compatibility_date = "2025-01-11"
+
+[env.production]
+routes = [
+  { pattern = "sonr.id/*", custom_domain = true },
+  { pattern = "*.sonr.id/*", custom_domain = true }
+]
+
+[env.staging]
+name = "motr-orchestrator-staging"
+workers_dev = true
+```
+
+### Durable Objects
+
+Enclave and Vault workers are deployed separately:
 
 ```bash
-# Publish to npm
-cd packages/es
-pnpm publish
+# Deploy enclave (Durable Object)
+cd libs/enclave && wrangler deploy
 
-cd ../ui
-pnpm publish
+# Deploy vault
+cd libs/vault && wrangler deploy
+```
+
+## Testing
+
+### Unit Tests
+
+```bash
+# All tests
+turbo test
+
+# Specific package
+bun --filter '@sonr.io/sdk' test
+
+# Watch mode
+turbo test -- --watch
+
+# Coverage
+turbo test -- --coverage
+```
+
+### Integration Tests
+
+```bash
+# End-to-end tests
+bun run test:e2e
+
+# Worker tests
+wrangler dev --test
 ```
 
 ## Documentation
 
-- **[MIGRATION.md](./MIGRATION.md)** - Architecture and component details
+- **[WORKER_ARCHITECTURE.md](./docs/WORKER_ARCHITECTURE.md)** - Worker design and routing
+- **[WORKER_README.md](./docs/WORKER_README.md)** - Worker development guide
 - **[API Documentation](./docs/)** - API reference
-- **[Crypto Library](./crypto/README.md)** - Cryptographic primitives
+- **[Migration Guide](./MIGRATION.md)** - Architecture evolution
+
+## Contributing
+
+We welcome contributions! Please follow these guidelines:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run tests and linting (`turbo check && turbo test`)
+5. Commit your changes (conventional commits preferred)
+6. Push to your branch
+7. Open a Pull Request
+
+### Code Style
+
+- **TypeScript**: Oxlint + Biome formatting
+- **Go**: `gofmt` + `golangci-lint`
+- **Commits**: Conventional commits (`feat:`, `fix:`, `docs:`, etc.)
 
 ## Security
-
-### Cryptographic Operations
-
-- All cryptographic operations run in sandboxed WASM
-- Keys never leave the secure enclave
-- Multi-party computation for threshold operations
-- Zero-knowledge proofs for privacy
 
 ### Reporting Security Issues
 
@@ -328,15 +512,21 @@ pnpm publish
 
 Email: security@sonr.io
 
-## Contributing
+### Security Features
 
-Contributions are welcome! Please read our contributing guidelines before submitting PRs.
+- All cryptographic operations run in sandboxed WASM
+- Keys never leave the secure enclave
+- Multi-party computation for threshold operations
+- Zero-knowledge proofs for privacy-preserving operations
+- WebAuthn integration for passwordless authentication
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests and linting
-5. Submit a pull request
+## Performance
+
+- **Edge Computing**: Cloudflare Workers in 300+ cities worldwide
+- **Cold Start**: < 5ms worker execution time
+- **Build Size**: Optimized WASM bundles (< 500KB)
+- **Caching**: Aggressive caching for static assets
+- **Code Splitting**: Route-based splitting for frontends
 
 ## License
 
@@ -344,17 +534,24 @@ MIT License - see [LICENSE](./LICENSE) for details
 
 ## Links
 
-- **GitHub**: [sonr-io/motr](https://github.com/sonr-io/motr)
-- **Documentation**: [docs.sonr.io](https://docs.sonr.io)
 - **Website**: [sonr.io](https://sonr.io)
+- **Documentation**: [docs.sonr.io](https://docs.sonr.io)
+- **GitHub**: [github.com/sonr-io/motr](https://github.com/sonr-io/motr)
+- **Discord**: [discord.gg/sonr](https://discord.gg/sonr)
+- **Twitter**: [@sonr_io](https://twitter.com/sonr_io)
 
 ## Acknowledgments
 
-Built with:
+Built with outstanding open-source technologies:
+
+- [Hono](https://hono.dev/) - Ultrafast web framework
 - [TinyGo](https://tinygo.org/) - Go compiler for WebAssembly
-- [Extism](https://extism.org/) - WebAssembly plugin system
-- [TanStack](https://tanstack.com/) - Modern web framework
-- [Cosmos SDK](https://cosmos.network/) - Blockchain framework
+- [Extism](https://extism.org/) - Universal plugin system
+- [TanStack](https://tanstack.com/) - Modern React utilities
+- [Cloudflare Workers](https://workers.cloudflare.com/) - Edge computing platform
+- [Vite](https://vitejs.dev/) - Next generation frontend tooling
+- [Bun](https://bun.sh/) - Fast all-in-one JavaScript runtime
+- [shadcn/ui](https://ui.shadcn.com/) - Accessible component library
 
 ---
 

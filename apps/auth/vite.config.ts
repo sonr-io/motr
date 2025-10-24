@@ -56,6 +56,7 @@ function paymentMethodPlugin(): Plugin {
 }
 
 export default defineConfig({
+  base: '/auth/',
   plugins: [
     nobleHashesPlugin() as any,
     paymentMethodPlugin() as any,
@@ -65,7 +66,7 @@ export default defineConfig({
     vaultPlugin({
       copyToPublic: true,
       registerServiceWorker: false, // Disable auto-registration, we'll do it manually
-      scope: "/",
+      scope: "/auth/",
       updateCheckInterval: 3600000,
       debug: true,
     }),

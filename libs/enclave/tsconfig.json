@@ -1,5 +1,5 @@
 {
-  "extends": "../../cnfg/typescript/worker.json",
+  "extends": "../../pkgs/config/typescript/worker.json",
   "compilerOptions": {
     "lib": ["ESNext", "DOM", "WebWorker"],
     "types": ["vite/client", "@cloudflare/workers-types"],

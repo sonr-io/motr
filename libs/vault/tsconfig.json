@@ -1,5 +1,5 @@
 {
-  "extends": "../../cnfg/typescript/worker.json",
+  "extends": "../../pkgs/config/typescript/worker.json",
   "compilerOptions": {
     "types": ["@cloudflare/workers-types", "vite/client"],
     "strict": true,

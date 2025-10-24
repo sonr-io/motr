@@ -6,8 +6,7 @@
     "gum@latest",
     "gofumpt@latest",
     "golangci-lint@latest",
-    "commitizen@latest",
-    "mprocs@latest"
+    "commitizen@latest"
   ],
   "env": {
     "BROWSER": "firefox-developer-edition",
@@ -27,7 +26,7 @@
       "install": "bun install",
       "build": "bun run build",
       "build:clean": "bun run clean && bun run build",
-      "dev": "mprocs",
+      "dev": "bun run dev",
       "test": "bun run test",
       "test:coverage": "bun run test -- --coverage",
       "lint": "bun run lint",

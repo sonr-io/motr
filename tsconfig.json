@@ -1,63 +1,23 @@
 {
   "compilerOptions": {
-    /* Language and Environment */
-    "target": "ESNext",
-    "lib": ["ESNext"],
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-
-    /* Type Checking */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
-    "allowUnusedLabels": false,
-    "allowUnreachableCode": false,
-
-    /* Modules */
+    "target": "ES2021",
+    "module": "ESNext",
+    "lib": ["ES2021", "DOM"],
+    "moduleResolution": "bundler",
+    "types": ["@cloudflare/workers-types"],
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-
-    /* Emit */
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "removeComments": true,
-    "newLine": "lf",
-
-    /* Projects */
-    "composite": true,
-    "incremental": true,
-    "tsBuildInfoFile": ".tsbuildinfo",
-
-    /* Completeness */
+    "strict": true,
     "skipLibCheck": true,
-
-    /* Output */
-    "outDir": "dist",
-    "rootDir": "."
+    "isolatedModules": true,
+    "noEmit": true,
+    "incremental": true,
+    "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx"
   },
-  "references": [
-    { "path": "./apps/frontend" },
-    { "path": "./cmd/enclave" },
-    { "path": "./packages/es" },
-    { "path": "./packages/ui" }
-  ],
-  "exclude": [
-    "node_modules",
-    "**/node_modules",
-    "dist",
-    "**/dist",
-    "build",
-    "**/build",
-    "coverage",
-    "**/coverage",
-    ".turbo",
-    "**/.turbo"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", ".wrangler", "apps", "libs", "pkgs", "docs"]
 }
