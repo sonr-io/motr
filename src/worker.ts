@@ -13,7 +13,6 @@
  */
 
 import { Hono, Context } from 'hono';
-import { serveStatic } from 'hono/cloudflare-workers';
 import { logger } from 'hono/logger';
 import { etag } from 'hono/etag';
 import { cors } from 'hono/cors';
@@ -67,16 +66,6 @@ const SESSION_CONFIG = {
  */
 type TargetApp = 'auth' | 'console' | 'profile' | 'search';
 
-/**
- * Static asset configuration
- */
-const STATIC_ASSET_CONFIG = {
-  auth: { root: './auth', path: '/auth' },
-  console: { root: './console', path: '/console' },
-  profile: { root: './profile', path: '/profile' },
-  search: { root: './search', path: '/search' },
-} as const;
-
 const app = new Hono<{ Bindings: Bindings }>();
 
 // Global middleware
@@ -122,15 +111,104 @@ app.get('/health', (c) => {
 // API Routes
 app.route('/api', createApiRoutes());
 
-// Static asset serving for each app using configuration
-Object.entries(STATIC_ASSET_CONFIG).forEach(([appName, config]) => {
-  app.use(
-    `${config.path}/*`,
-    serveStatic({
-      root: config.root,
-      rewriteRequestPath: (path) => path.replace(new RegExp(`^${config.path}`), ''),
-    })
-  );
+// Shared vendor chunks - served with aggressive caching
+app.get('/shared/*', async (c) => {
+  // These chunks are content-hashed, so they can be cached forever
+  c.header('Cache-Control', 'public, max-age=31536000, immutable');
+  // Request will be served by Wrangler's [assets] from public/shared/
+  return c.notFound();
+});
+
+// Asset routing middleware - redirects /assets/* to correct app
+app.get('/assets/*', async (c) => {
+  const referer = c.req.header('referer');
+  let targetApp: TargetApp = 'auth';
+
+  // Determine which app the asset belongs to based on referer
+  if (referer) {
+    const refererUrl = new URL(referer);
+    const path = refererUrl.pathname;
+
+    if (path.startsWith('/console')) targetApp = 'console';
+    else if (path.startsWith('/profile')) targetApp = 'profile';
+    else if (path.startsWith('/search')) targetApp = 'search';
+    else if (path.startsWith('/auth')) targetApp = 'auth';
+  }
+
+  // Redirect to the correct app's assets
+  const assetPath = c.req.path.replace('/assets', '');
+  return c.redirect(`/${targetApp}/assets${assetPath}`);
+});
+
+// Service worker routing - redirects common files to correct app
+app.get('/sw.js', async (c) => {
+  const referer = c.req.header('referer');
+  let targetApp: TargetApp = 'auth';
+
+  // Determine which app the file belongs to based on referer
+  if (referer) {
+    const refererUrl = new URL(referer);
+    const path = refererUrl.pathname;
+
+    if (path.startsWith('/console')) targetApp = 'console';
+    else if (path.startsWith('/profile')) targetApp = 'profile';
+    else if (path.startsWith('/search')) targetApp = 'search';
+    else if (path.startsWith('/auth')) targetApp = 'auth';
+  }
+
+  // Redirect to the correct app's file
+  return c.redirect(`/${targetApp}/sw.js`);
+});
+
+app.get('/wasm_exec.js', async (c) => {
+  const referer = c.req.header('referer');
+  let targetApp: TargetApp = 'auth';
+
+  if (referer) {
+    const refererUrl = new URL(referer);
+    const path = refererUrl.pathname;
+
+    if (path.startsWith('/console')) targetApp = 'console';
+    else if (path.startsWith('/profile')) targetApp = 'profile';
+    else if (path.startsWith('/search')) targetApp = 'search';
+    else if (path.startsWith('/auth')) targetApp = 'auth';
+  }
+
+  return c.redirect(`/${targetApp}/wasm_exec.js`);
+});
+
+app.get('/vault.wasm', async (c) => {
+  const referer = c.req.header('referer');
+  let targetApp: TargetApp = 'auth';
+
+  if (referer) {
+    const refererUrl = new URL(referer);
+    const path = refererUrl.pathname;
+
+    if (path.startsWith('/console')) targetApp = 'console';
+    else if (path.startsWith('/profile')) targetApp = 'profile';
+    else if (path.startsWith('/search')) targetApp = 'search';
+    else if (path.startsWith('/auth')) targetApp = 'auth';
+  }
+
+  return c.redirect(`/${targetApp}/vault.wasm`);
+});
+
+app.get('/enclave.wasm', async (c) => {
+  const referer = c.req.header('referer');
+  let targetApp: TargetApp = 'auth';
+
+  if (referer) {
+    const refererUrl = new URL(referer);
+    const path = refererUrl.pathname;
+
+    if (path.startsWith('/console')) targetApp = 'console';
+    else if (path.startsWith('/profile')) targetApp = 'profile';
+    else if (path.startsWith('/search')) targetApp = 'search';
+    else if (path.startsWith('/auth')) targetApp = 'auth';
+  }
+
+  return c.redirect(`/${targetApp}/enclave.wasm`);
 });
 
 // Root route - smart routing based on session and subdomain
@@ -151,22 +229,6 @@ app.get('/', async (c) => {
   }
 
   return c.redirect(`/${targetApp}/`);
-});
-
-// Catch-all for SPA routing - serve index.html from appropriate app
-app.get('*', serveStatic({ root: './' }));
-
-// 404 handler - if static files are not found
-app.notFound((c) => {
-  return c.json(
-    {
-      error: 'Not Found',
-      message: 'The requested resource was not found',
-      path: c.req.path,
-      timestamp: new Date().toISOString(),
-    },
-    404
-  );
 });
 
 /**
