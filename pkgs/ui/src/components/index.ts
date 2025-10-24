@@ -1,6 +1,10 @@
 // Export utility functions
 export { cn } from '../lib/utils';
 
+// Export router components and utilities
+export { renderAppRouter, Route } from './router';
+export type { AppRouterOptions } from './router';
+
 // Export chain selector component
 export { ChainSelector, useChains } from './chain-selector';
 export type { ChainOption, ChainSelectorProps } from './chain-selector';
