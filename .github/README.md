@@ -1,8 +1,28 @@
-# Development
+# Motr
+
+> Multi-purpose WebAssembly monorepo powering secure cryptographic operations and decentralized identity for the Sonr ecosystem.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Go Version](https://img.shields.io/badge/Go-1.24.4+-00ADD8?logo=go)](https://go.dev/)
+[![TinyGo](https://img.shields.io/badge/TinyGo-0.39+-00ADD8?logo=go)](https://tinygo.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![Bun](https://img.shields.io/badge/Bun-1.3+-000000?logo=bun)](https://bun.sh/)
+
+## Overview
+
+Motr is a comprehensive WebAssembly-based monorepo that provides secure cryptographic operations, decentralized identity management, and a suite of web applications for the Sonr ecosystem. The architecture leverages Cloudflare Workers for edge computing and Go-compiled WASM for cryptographic operations.
+
+### Key Features
+
+- **🚀 Hono-based Worker** - Edge-deployed orchestrator serving multiple frontends with SSR
+- **🔐 Cryptographic Vault** - WASM-based secure key management with MPC and threshold cryptography
+- **🎭 DID Management** - Decentralized identity with WebAuthn integration via Enclave
+- **⚡ Vite Frontends** - Modern React apps for auth, console, profile, and search
+- **📦 Shared Packages** - Reusable TypeScript libraries and UI components
 
 ## Repository Structure
 
-```text
+```
 motr/
 ├── apps/                    # Vite-based frontend applications
 │   ├── auth/               # Authentication & registration app
@@ -377,4 +397,162 @@ bun run clean:cache            # Clean turbo cache
 bun run clean:turbo            # Clean turbo daemon
 ```
 
+## Deployment
 
+### Single Worker Deployment
+
+All frontend apps are served by a single Cloudflare Worker:
+
+```bash
+# Deploy to production
+bun run deploy
+
+# Deploy to staging
+bun run deploy:staging
+
+# Test before deploying
+bun run preview
+```
+
+**Deployment Process:**
+1. Build all frontend apps (`turbo build`)
+2. Compile worker TypeScript
+3. Wrangler bundles static assets
+4. Deploy to Cloudflare edge network
+
+### Environment Configuration
+
+```toml
+# wrangler.toml
+name = "motr-orchestrator"
+main = "src/worker.ts"
+compatibility_date = "2025-01-11"
+
+[env.production]
+routes = [
+  { pattern = "sonr.id/*", custom_domain = true },
+  { pattern = "*.sonr.id/*", custom_domain = true }
+]
+
+[env.staging]
+name = "motr-orchestrator-staging"
+workers_dev = true
+```
+
+### Durable Objects
+
+Enclave and Vault workers are deployed separately:
+
+```bash
+# Deploy enclave (Durable Object)
+cd libs/enclave && wrangler deploy
+
+# Deploy vault
+cd libs/vault && wrangler deploy
+```
+
+## Testing
+
+### Unit Tests
+
+```bash
+# All tests
+turbo test
+
+# Specific package
+bun --filter '@sonr.io/sdk' test
+
+# Watch mode
+turbo test -- --watch
+
+# Coverage
+turbo test -- --coverage
+```
+
+### Integration Tests
+
+```bash
+# End-to-end tests
+bun run test:e2e
+
+# Worker tests
+wrangler dev --test
+```
+
+## Documentation
+
+- **[WORKER_ARCHITECTURE.md](./docs/WORKER_ARCHITECTURE.md)** - Worker design and routing
+- **[WORKER_README.md](./docs/WORKER_README.md)** - Worker development guide
+- **[API Documentation](./docs/)** - API reference
+- **[Migration Guide](./MIGRATION.md)** - Architecture evolution
+
+## Contributing
+
+We welcome contributions! Please follow these guidelines:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run tests and linting (`turbo check && turbo test`)
+5. Commit your changes (conventional commits preferred)
+6. Push to your branch
+7. Open a Pull Request
+
+### Code Style
+
+- **TypeScript**: Oxlint + Biome formatting
+- **Go**: `gofmt` + `golangci-lint`
+- **Commits**: Conventional commits (`feat:`, `fix:`, `docs:`, etc.)
+
+## Security
+
+### Reporting Security Issues
+
+**DO NOT** open public issues for security vulnerabilities.
+
+Email: security@sonr.io
+
+### Security Features
+
+- All cryptographic operations run in sandboxed WASM
+- Keys never leave the secure enclave
+- Multi-party computation for threshold operations
+- Zero-knowledge proofs for privacy-preserving operations
+- WebAuthn integration for passwordless authentication
+
+## Performance
+
+- **Edge Computing**: Cloudflare Workers in 300+ cities worldwide
+- **Cold Start**: < 5ms worker execution time
+- **Build Size**: Optimized WASM bundles (< 500KB)
+- **Caching**: Aggressive caching for static assets
+- **Code Splitting**: Route-based splitting for frontends
+
+## License
+
+MIT License - see [LICENSE](./LICENSE) for details
+
+## Links
+
+- **Website**: [sonr.io](https://sonr.io)
+- **Documentation**: [docs.sonr.io](https://docs.sonr.io)
+- **GitHub**: [github.com/sonr-io/motr](https://github.com/sonr-io/motr)
+- **Discord**: [discord.gg/sonr](https://discord.gg/sonr)
+- **Twitter**: [@sonr_io](https://twitter.com/sonr_io)
+
+## Acknowledgments
+
+Built with outstanding open-source technologies:
+
+- [Hono](https://hono.dev/) - Ultrafast web framework
+- [TinyGo](https://tinygo.org/) - Go compiler for WebAssembly
+- [Extism](https://extism.org/) - Universal plugin system
+- [TanStack](https://tanstack.com/) - Modern React utilities
+- [Cloudflare Workers](https://workers.cloudflare.com/) - Edge computing platform
+- [Vite](https://vitejs.dev/) - Next generation frontend tooling
+- [Bun](https://bun.sh/) - Fast all-in-one JavaScript runtime
+- [shadcn/ui](https://ui.shadcn.com/) - Accessible component library
+
+---
+
+**Made with ❤️ by the Sonr Team**
