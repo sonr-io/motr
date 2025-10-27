@@ -1,12 +1,10 @@
 import { DurableObject } from 'cloudflare:workers';
 
 /**
- * Type-only imports from @sonr.io/enclave
- * Using type-only imports ensures we don't bundle the enclave at compile time
- * The actual module is loaded dynamically at runtime
+ * Type-only imports from enclave types
+ * Using relative imports to avoid circular dependency during build
  */
 import type {
-  EnclaveWorkerClient,
   GetIssuerDIDResponse,
   NewAttenuatedTokenRequest,
   NewOriginTokenRequest,
@@ -16,7 +14,8 @@ import type {
   UCANTokenResponse,
   VerifyDataRequest,
   VerifyDataResponse,
-} from '@sonr.io/enclave';
+} from '../../types.js';
+import type { EnclaveWorkerClient } from '../../worker-client.js';
 
 /**
  * SonrIdentityDurable - Durable Object wrapping @sonr.io/enclave

@@ -12,7 +12,6 @@
 
 import { resolve } from "node:path";
 import { defineConfig } from "vite";
-import { enclavePlugin } from "./src/vite-plugin-enclave";
 
 export default defineConfig({
   // Build configuration for library mode
@@ -49,6 +48,8 @@ export default defineConfig({
         "node:url",
         "@extism/extism",
         "dexie",
+        // Self-reference for cloudflare durable objects
+        "@sonr.io/enclave",
         // Cloudflare Workers modules
         "cloudflare:workers",
         "@cloudflare/workers-types",
@@ -69,6 +70,7 @@ export default defineConfig({
         format: "es",
         exports: "named",
         sourcemap: true,
+        preserveModules: false,
       },
     },
 
@@ -176,15 +178,7 @@ export default defineConfig({
   },
 
   // Plugin configuration
-  plugins: [
-    enclavePlugin({
-      wasmPath: "dist/enclave.wasm",
-      enableWorker: true,
-      debug: process.env.NODE_ENV === "development",
-      copyToPublic: true,
-      enableExtism: true,
-    }),
-  ],
+  plugins: [],
 
   // ESBuild configuration
   esbuild: {
