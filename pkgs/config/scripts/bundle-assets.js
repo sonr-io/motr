@@ -12,7 +12,13 @@
 import { $ } from "bun";
 import { existsSync } from "node:fs";
 import { readdir } from "node:fs/promises";
-import { join } from "node:path";
+import { join, resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+// Change to monorepo root directory
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const monoRepoRoot = resolve(__dirname, "../../..");
+process.chdir(monoRepoRoot);
 
 // Helper to get file size in human-readable format
 async function getDirectorySize(path) {

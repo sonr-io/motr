@@ -64,10 +64,10 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "devbox run wasm && vite build && bunx tsc && tsc-alias && cp wasm_exec.js dist/wasm_exec.js",
+    "build": "devbox run wasm && vite build && bunx tsc && tsc-alias",
     "build:watch": "vite build --watch",
     "build:wasm": "devbox run wasm",
-    "build:cloudflare": "devbox run wasm && vite build --config vite.config.cloudflare.ts && bunx tsc && cp wasm_exec.js dist/wasm_exec.js",
+    "build:cloudflare": "devbox run wasm && vite build --config vite.config.cloudflare.ts && bunx tsc && tsc-alias",
     "dev": "vite",
     "dev:cloudflare": "wrangler dev",
     "preview": "vite preview",
