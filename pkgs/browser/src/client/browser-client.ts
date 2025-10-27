@@ -30,8 +30,8 @@
 
 import { getWorkerRegistry, WorkerRegistry, WorkerType } from "../core/worker-registry.js";
 import type { EnclaveWorkerClient } from "@sonr.io/enclave/worker-client";
-import type { VaultClient } from "@sonr.io/vault";
-import type { SonrClient } from "@sonr.io/sdk/client";
+import type { ServiceWorkerController } from "@sonr.io/vault";
+import { RpcClient } from "@sonr.io/sdk/client";
 
 /**
  * Browser client configuration
@@ -143,8 +143,8 @@ export class SonrBrowser extends EventTarget {
 
   // Client instances
   private _enclave?: EnclaveWorkerClient;
-  private _vault?: VaultClient;
-  private _rpc?: SonrClient;
+  private _vault?: ServiceWorkerController;
+  private _rpc?: RpcClient;
 
   // Worker IDs
   private enclaveWorkerId?: string;
@@ -268,9 +268,9 @@ export class SonrBrowser extends EventTarget {
 
     try {
       // Initialize RPC client
-      // Note: This would use the SDK's SonrClient
-      // this._rpc = new SonrClient({ endpoint: this.config.rpcUrl });
-      // await this._rpc.connect();
+      // Note: RpcClient doesn't have a constructor or connect method in current implementation
+      // It provides static methods for querying and broadcasting
+      // this._rpc = new RpcClient();
 
       this.setState(BrowserClientState.CONNECTED);
 
@@ -331,9 +331,9 @@ export class SonrBrowser extends EventTarget {
   }
 
   /**
-   * Get vault client (lazy initialization)
+   * Get vault service worker controller (lazy initialization)
    */
-  get vault(): VaultClient {
+  get vault(): ServiceWorkerController {
     if (!this._vault) {
       throw new Error("Vault worker not initialized. Call initialize() first.");
     }
@@ -343,7 +343,7 @@ export class SonrBrowser extends EventTarget {
   /**
    * Get RPC client
    */
-  get rpc(): SonrClient {
+  get rpc(): RpcClient {
     if (!this._rpc) {
       throw new Error("RPC client not connected. Call connect() first.");
     }

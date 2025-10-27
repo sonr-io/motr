@@ -3,6 +3,7 @@
     /* Language and Environment */
     "target": "ES2022",
     "lib": ["ES2022", "DOM", "DOM.Iterable", "WebWorker"],
+    "types": ["vite/client"],
     "moduleDetection": "force",
 
     /* Modules */
@@ -63,10 +64,10 @@
   ],
   "references": [
     {
-      "path": "../enclave"
+      "path": "../../libs/enclave"
     },
     {
-      "path": "../vault"
+      "path": "../../libs/vault"
     },
     {
       "path": "../sdk"
