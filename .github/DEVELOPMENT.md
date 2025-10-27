@@ -20,14 +20,15 @@ motr/
 │   ├── sdk/               # Core TypeScript SDK
 │   └── ui/                # Shared UI components (shadcn)
 │
-├── src/                    # Cloudflare Worker (Hono-based)
-│   └── worker.ts          # Main orchestrator serving all frontends
+├── x/                      # Build infrastructure
+│   └── worker/            # Cloudflare Worker (Hono-based)
+│       ├── src/worker.ts  # Main orchestrator serving all frontends
+│       ├── wrangler.toml  # Worker deployment configuration
+│       └── package.json   # Worker package
 │
 ├── docs/                   # Documentation & MDX content
-├── wrangler.toml          # Worker deployment configuration
-├── tsconfig.json          # Worker TypeScript config
-├── package.json           # Root workspace configuration
-└── turbo.json             # Turborepo build pipeline
+├── index.ts               # Bun build orchestrator (replaces Turborepo)
+└── package.json           # Root workspace configuration
 ```
 
 ## Quick Start
@@ -35,8 +36,8 @@ motr/
 ### Prerequisites
 
 - **Bun** 1.3+ ([install](https://bun.sh/))
-- **Go** 1.24.4+ ([install](https://go.dev/dl/))
-- **TinyGo** 0.39+ ([install](https://tinygo.org/getting-started/install/))
+- **Devbox** (for WASM builds - [install](https://www.jetpack.io/devbox/docs/installing_devbox/))
+  - Manages Go 1.24.7+, TinyGo 0.39+, and other build tools
 - **Wrangler** CLI (included in dependencies)
 
 ### Installation
@@ -49,43 +50,40 @@ cd motr
 # Install all dependencies (uses Bun workspaces)
 bun install
 
-# Build all packages and libraries
-turbo build
+# Build all packages and libraries (uses custom Bun orchestrator)
+bun run build
 ```
 
 ### Development
 
 ```bash
-# Start main worker (serves all frontends via Hono)
+# Start main worker (builds everything then serves via Hono)
 bun run dev
 
-# Start specific frontend app
-bun run dev:auth       # Authentication app
-bun run dev:console    # Console app
-bun run dev:profile    # Profile app
-bun run dev:search     # Search app
+# Start individual frontend app with HMR
+cd apps/auth && bunx vite       # Port 5173
+cd apps/console && bunx vite    # Port 5174
+cd apps/profile && bunx vite    # Port 5175
+cd apps/search && bunx vite     # Port 5176
 
-# Start enclave worker (Durable Object)
+# Start enclave worker (Durable Object) separately
 cd libs/enclave && wrangler dev
 
-# Start vault worker
-cd libs/vault && wrangler dev
-
-# Run tests
-turbo test            # All tests
-bun run test:all     # All package tests
+# Run tests (orchestrator handles all workspaces)
+bun run test
 
 # Linting and formatting
-turbo lint           # Lint all packages
-turbo format         # Format all packages
-turbo check          # Type check all packages
+bun run lint         # Lint all packages
+bun run format       # Format all packages
+bun run check        # Type check + lint all packages
+bun run typecheck    # Type check only
 ```
 
 ## Architecture
 
 ### 1. Cloudflare Worker (Hono)
 
-The main orchestrator at `src/worker.ts` using [Hono framework](https://hono.dev/):
+The main orchestrator at `x/worker/src/worker.ts` using [Hono framework](https://hono.dev/):
 
 **Features:**
 - 🎯 Smart routing based on subdomain, path, and session state
@@ -223,32 +221,29 @@ bun run build        # Compile Go to WASM
 Core TypeScript SDK for Sonr integration:
 
 ```typescript
-import { SonrClient, createVault } from '@sonr.io/sdk';
+import { RpcClient } from '@sonr.io/sdk/client';
+import { registerWithPasskey } from '@sonr.io/sdk/client';
 
-// Initialize client
-const client = new SonrClient({
-  rpcUrl: 'https://rpc.sonr.id',
-  restUrl: 'https://api.sonr.id',
+// Initialize RPC client (static methods)
+const accountData = await RpcClient.query({
+  endpoint: 'https://rpc.sonr.id',
+  service: SomeQueryService,
+  request: { address: 'snr1...' },
 });
 
-// Create vault
-const vault = await createVault({
-  name: 'my-vault',
-  password: 'secure-password',
-});
-
-// Sign transaction
-const signature = await vault.sign({
-  chain: 'cosmos',
-  transaction: tx,
+// Register with WebAuthn passkey
+const result = await registerWithPasskey({
+  username: 'alice',
+  displayName: 'Alice Smith',
 });
 ```
 
 **Features:**
-- Chain-agnostic transaction signing
-- DID management utilities
-- WebAuthn helpers
-- IPFS integration
+- RPC client for Cosmos SDK queries
+- WebAuthn passkey registration and login
+- Protobuf message builders
+- Chain registry and asset metadata
+- WASM exec utilities
 
 #### UI Components (`pkgs/ui/`)
 
@@ -314,22 +309,39 @@ export default createReactAppConfig();
 
 ## Build System
 
-### Turborepo Pipeline
+### Bun Orchestrator
+
+This monorepo uses a **custom Bun-based orchestrator** (`index.ts`) instead of Turborepo. The orchestrator automatically manages the dependency graph and builds workspaces in topological order.
 
 ```bash
-turbo build          # Build all packages (respects dependencies)
-turbo test           # Run all tests in parallel
-turbo lint           # Lint all packages
-turbo dev            # Start all dev servers
+bun run build        # Build all packages (respects dependencies)
+bun run test         # Run all tests
+bun run lint         # Lint all packages
+bun run format       # Format all code
+bun run check        # Type check + lint
 ```
 
-**Build Order:**
+**Build Order** (automatic):
 1. `@sonr.io/sdk` - Core SDK (no dependencies)
-2. `@sonr.io/ui` - UI components (depends on sdk)
-3. `@sonr.io/react` - React hooks (depends on ui)
-4. `libs/vault` & `libs/enclave` - WASM builds (parallel)
-5. Frontend apps - Vite builds (depends on react)
-6. Worker - TypeScript compilation (depends on all apps)
+2. `@sonr.io/vault`, `@sonr.io/enclave`, `@sonr.io/ui` - WASM + UI (depend on sdk)
+3. `@sonr.io/browser`, `@sonr.io/react` - Browser + React (depend on ui/enclave/vault)
+4. Frontend apps - Vite builds (depend on react)
+5. `@sonr.io/config` - Asset aggregation (depends on all apps)
+6. `@sonr.io/worker` - Worker (TypeScript via Wrangler, not orchestrator)
+
+**Filtering workspaces:**
+```bash
+# Build specific packages
+WORKSPACES=@sonr.io/sdk,@sonr.io/ui bun run build
+
+# Test specific packages
+WORKSPACES=@sonr.io/sdk MODE=test bun run index.ts
+
+# Verbose output
+VERBOSE=1 bun run build
+```
+
+**Architecture**: ESM-only, zero CommonJS. All packages use modern web APIs.
 
 ### Scripts Reference
 
@@ -337,44 +349,37 @@ turbo dev            # Start all dev servers
 
 ```bash
 # Development
-bun run dev                    # Start main worker
-bun run dev:worker             # Start main worker (alias)
-bun run dev:auth               # Start auth app
-bun run dev:console            # Start console app
-bun run dev:profile            # Start profile app
-bun run dev:search             # Start search app
-bun run dev:all                # Start all in parallel
+bun run dev                    # Build all + start main worker (http://localhost:5165)
 
 # Building
-bun run build                  # Build all packages
-bun run build:apps             # Build only frontend apps
-bun run build:libs             # Build only WASM libraries
-bun run build:pkgs             # Build only TS packages
-bun run build:force            # Force rebuild ignoring cache
+bun run build                  # Build all packages (default MODE)
+bun run build:verbose          # Build with detailed output
+bun run build:force            # Clean then rebuild everything
 
 # Testing
-bun run test                   # Run all tests
-bun run test:all               # Run tests in all packages
-bun run test:watch             # Run tests in watch mode
+bun run test                   # Run all tests (MODE=test)
 
 # Quality
-bun run lint                   # Lint all packages
-bun run lint:fix               # Lint and auto-fix
-bun run format                 # Format all files
-bun run check                  # Run type checks
-bun run typecheck              # Run type checks (alias)
+bun run lint                   # Lint all packages (Oxlint for TS, golangci-lint for Go)
+bun run format                 # Format all files (Oxfmt for TS, gofumpt for Go)
+bun run check                  # Type check + lint all packages
+bun run typecheck              # Type check only
 
-# Deployment
-bun run deploy                 # Deploy main worker
+# Deployment (worker at x/worker/)
+bun run deploy                 # Build all + deploy main worker to production
 bun run deploy:staging         # Deploy to staging
-bun run deploy:production      # Deploy to production
 bun run preview                # Test with remote bindings
 bun run logs                   # Tail production logs
 
 # Maintenance
-bun run clean                  # Clean build artifacts
-bun run clean:cache            # Clean turbo cache
-bun run clean:turbo            # Clean turbo daemon
+bun run clean                  # Clean all build artifacts (MODE=clean)
+
+# Advanced (using orchestrator directly)
+MODE=dev bun run index.ts      # Start all dev servers
+MODE=clean bun run index.ts    # Clean all artifacts
+./index.ts --help              # Show orchestrator help
 ```
+
+**Note**: Always use `bun run <script>`, NEVER `bun <script>` (calls bundler instead of orchestrator).
 
 

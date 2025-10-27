@@ -7,6 +7,6 @@
 - ALWAYS design our architecture to maximize client-side functionality by keeping Network level business logic in WASM, Frontend UI in Vite, styling with Tailwind CSS 4, components with shadcn
 - ALWAYS produce design components in @pkgs/ui/ in order to reduced code duplication and to have styling consistency
 - ALWAYS produce shared react functionality inside @pkgs/react in order to maximize code re-use across @apps/
-- ALWAYS keep cloudflare worker specific logic inside @src/ 
+- ALWAYS keep cloudflare worker specific logic inside x/worker/ 
 - ALWAYS keep our @devbox.lock
 - React components must always be created inside @pkgs/ui/

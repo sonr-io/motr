@@ -24,8 +24,6 @@
 
 # Devbox
 
-# Turborepo
-
 # Wrangler
 
 # Oxlint
