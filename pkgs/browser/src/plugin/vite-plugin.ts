@@ -17,8 +17,7 @@
  */
 
 import { existsSync, readFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { resolve } from "node:path";
 import type { Plugin, ResolvedConfig } from "vite";
 
 export interface SonrBrowserPluginOptions {
@@ -101,7 +100,6 @@ export function sonrBrowserPlugin(options: SonrBrowserPluginOptions = {}): Plugi
     enclaveWasmPath = "dist/enclave.wasm",
     enableVault = true,
     vaultWasmPath = "dist/vault.wasm",
-    customWorkersPath,
     debug = false,
     copyToPublic = true,
     enableSharedWorkers = false,
@@ -159,7 +157,7 @@ export function sonrBrowserPlugin(options: SonrBrowserPluginOptions = {}): Plugi
           rollupOptions: {
             output: {
               // Separate WASM files
-              assetFileNames: (assetInfo) => {
+              assetFileNames: (assetInfo: any) => {
                 if (assetInfo.name?.endsWith(".wasm")) {
                   return "wasm/[name].[ext]";
                 }
@@ -194,7 +192,7 @@ export function sonrBrowserPlugin(options: SonrBrowserPluginOptions = {}): Plugi
       };
     },
 
-    configResolved(resolvedConfig) {
+    configResolved(resolvedConfig: ResolvedConfig) {
       config = resolvedConfig;
 
       if (debug) {
@@ -212,7 +210,7 @@ export function sonrBrowserPlugin(options: SonrBrowserPluginOptions = {}): Plugi
       }
 
       // Locate and load WASM assets
-      this.loadWasmAssets();
+      (this as any).loadWasmAssets();
     },
 
     async loadWasmAssets() {
@@ -221,7 +219,7 @@ export function sonrBrowserPlugin(options: SonrBrowserPluginOptions = {}): Plugi
       // Load enclave WASM
       if (enableEnclave) {
         try {
-          const enclavePath = this.resolvePackageAsset("@sonr.io/enclave", enclaveWasmPath);
+          const enclavePath = (this as any).resolvePackageAsset("@sonr.io/enclave", enclaveWasmPath);
           if (existsSync(enclavePath)) {
             wasmAssets.push({
               name: "enclave.wasm",
@@ -244,7 +242,7 @@ export function sonrBrowserPlugin(options: SonrBrowserPluginOptions = {}): Plugi
       // Load vault WASM
       if (enableVault) {
         try {
-          const vaultPath = this.resolvePackageAsset("@sonr.io/vault", vaultWasmPath);
+          const vaultPath = (this as any).resolvePackageAsset("@sonr.io/vault", vaultWasmPath);
           if (existsSync(vaultPath)) {
             wasmAssets.push({
               name: "vault.wasm",
@@ -267,7 +265,7 @@ export function sonrBrowserPlugin(options: SonrBrowserPluginOptions = {}): Plugi
       // Emit WASM assets
       if (copyToPublic) {
         for (const asset of wasmAssets) {
-          this.emitFile({
+          (this as any).emitFile({
             type: "asset",
             fileName: `wasm/${asset.name}`,
             source: asset.content,
@@ -366,7 +364,7 @@ export function sonrBrowserPlugin(options: SonrBrowserPluginOptions = {}): Plugi
       return null;
     },
 
-    async generateBundle(_options, bundle) {
+    async generateBundle(_options: any, bundle: any) {
       if (debug) {
         console.log("[SonrBrowserPlugin] Generating bundle");
       }
@@ -389,8 +387,8 @@ export function sonrBrowserPlugin(options: SonrBrowserPluginOptions = {}): Plugi
 
       // Generate service worker manifest if enabled
       if (enableServiceWorker) {
-        const manifestContent = this.generateServiceWorkerManifest(bundle);
-        this.emitFile({
+        const manifestContent = (this as any).generateServiceWorkerManifest(bundle);
+        (this as any).emitFile({
           type: "asset",
           fileName: "sw-manifest.json",
           source: manifestContent,
@@ -398,7 +396,7 @@ export function sonrBrowserPlugin(options: SonrBrowserPluginOptions = {}): Plugi
       }
     },
 
-    generateServiceWorkerManifest(bundle: any): string {
+    generateServiceWorkerManifest(_bundle: any): string {
       const manifest = {
         version: Date.now(),
         assets: {
@@ -414,7 +412,7 @@ export function sonrBrowserPlugin(options: SonrBrowserPluginOptions = {}): Plugi
       return JSON.stringify(manifest, null, 2);
     },
 
-    transformIndexHtml(html) {
+    transformIndexHtml(html: string) {
       const scripts: string[] = [];
 
       // Inject worker support detection
@@ -471,9 +469,9 @@ export function sonrBrowserPlugin(options: SonrBrowserPluginOptions = {}): Plugi
       return html.replace("</head>", `${scripts.join("\n")}\n</head>`);
     },
 
-    configureServer(server) {
+    configureServer(server: any) {
       // Add middleware to serve WASM with correct MIME type
-      server.middlewares.use((req, res, next) => {
+      server.middlewares.use((req: any, res: any, next: any) => {
         if (req.url?.endsWith(".wasm")) {
           res.setHeader("Content-Type", "application/wasm");
         }
@@ -484,7 +482,7 @@ export function sonrBrowserPlugin(options: SonrBrowserPluginOptions = {}): Plugi
         console.log("[SonrBrowserPlugin] Dev server configured");
       }
     },
-  };
+  } as any;
 }
 
 /**

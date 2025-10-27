@@ -147,7 +147,7 @@ export class SonrWalletElement extends HTMLElement {
       });
     });
 
-    this.browser.on("auth:logout", (event) => {
+    this.browser.on("auth:logout", (_event) => {
       this.handleDisconnection();
     });
 
@@ -520,7 +520,7 @@ export class SonrWalletElement extends HTMLElement {
   /**
    * Update theme
    */
-  private updateTheme(theme: string) {
+  private updateTheme(_theme: string) {
     this.render();
   }
 
@@ -566,9 +566,9 @@ export class SonrWalletElement extends HTMLElement {
   }
 
   /**
-   * Public API: Check if connected
+   * Public API: Check if wallet is connected
    */
-  isConnected(): boolean {
+  isWalletConnected(): boolean {
     return this.connected;
   }
 }

@@ -421,7 +421,7 @@ export class SonrBrowser extends EventTarget {
       devnet: "http://localhost:26657",
     };
 
-    return urls[network] || urls.testnet;
+    return (urls[network] || urls.testnet) as string;
   }
 
   /**
