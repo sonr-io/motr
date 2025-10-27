@@ -98,7 +98,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "devbox run wasm && vite build && bunx tsc && tsc-alias && cp dist/wasm_exec.js dist/wasm_exec.js 2>/dev/null || true",
+    "build": "devbox run wasm && vite build && rm -f *.tsbuildinfo && bunx tsc && tsc-alias && cp dist/wasm_exec.js dist/wasm_exec.js 2>/dev/null || true",
     "build:watch": "vite build --watch",
     "build:wasm": "devbox run wasm",
     "dev": "vite",
