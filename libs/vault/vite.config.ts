@@ -52,9 +52,6 @@ export default defineConfig({
         // Export all named exports
         exports: "named",
 
-        // Source maps for debugging
-        sourcemap: true,
-
         // Asset file naming
         assetFileNames: (assetInfo) => {
           if (assetInfo.name === "vault.wasm") {
