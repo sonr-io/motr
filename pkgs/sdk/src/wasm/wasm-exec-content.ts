@@ -1,7 +1,6 @@
 /**
  * Auto-generated file - DO NOT EDIT
  * Generated from: /home/prad/.go/current/lib/wasm/wasm_exec.js
- * Generated at: 2025-10-27T03:23:19.972Z
  * Run: bun scripts/gen-wasm-exec.ts
  *
  * This file contains the Go WebAssembly runtime (wasm_exec.js) embedded
