@@ -5,7 +5,7 @@ compatibility_date = "2025-01-11"
 compatibility_flags = ["nodejs_compat"]
 
 # Assets configuration - Wrangler will bundle these into the worker
-# The public directory structure:
+# The public directory structure (in monorepo root):
 # public/
 #   auth/ (apps/auth/dist)
 #   console/ (apps/console/dist)
@@ -13,7 +13,7 @@ compatibility_flags = ["nodejs_compat"]
 #   search/ (apps/search/dist)
 #   wasm/ (WASM binaries)
 [assets]
-directory = "./public"
+directory = "../../public"
 
 # Production environment
 [env.production]

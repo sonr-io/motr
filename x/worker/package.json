@@ -1,0 +1,36 @@
+{
+  "name": "@sonr.io/worker",
+  "version": "0.1.0",
+  "description": "Motr Orchestrator Worker - Cloudflare Worker serving all frontend apps",
+  "type": "module",
+  "private": true,
+  "packageManager": "bun@1.3.0",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "echo 'Worker build handled by Wrangler'",
+    "deploy": "wrangler deploy",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:production": "wrangler deploy --env production",
+    "preview": "wrangler dev --remote",
+    "logs": "wrangler tail --format pretty",
+    "clean": "rm -rf .wrangler",
+    "typecheck": "tsc --noEmit",
+    "lint": "bunx oxlint@latest .",
+    "format": "bunx oxfmt@latest .",
+    "check": "bunx oxlint@latest . && bunx oxfmt@latest --check . && tsc --noEmit"
+  },
+  "dependencies": {
+    "@sonr.io/config": "workspace:*",
+    "hono": "^4.10.2"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20251011.0",
+    "@types/node": "^24.9.1",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.44.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "bun": ">=1.3.0"
+  }
+}
