@@ -133,7 +133,7 @@ const WORKSPACES: WorkspaceConfig[] = [
     path: 'libs/enclave',
     type: 'wasm-lib',
     dependencies: ['@sonr.io/sdk'],
-    buildCommand: 'devbox run wasm && vite build && bunx tsc && bunx tsc-alias',
+    buildCommand: 'devbox run wasm && bunx vite build && rm -f *.tsbuildinfo && bunx tsc && bunx tsc-alias',
     devCommand: 'vite',
     cleanCommand: 'rm -rf dist *.tsbuildinfo .vite node_modules/.vite',
     testCommand: 'go test ./... && vitest run',

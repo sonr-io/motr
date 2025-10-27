@@ -75,7 +75,7 @@ export default defineConfig({
 
     // Output directory
     outDir: "dist",
-    emptyOutDir: true,
+    emptyOutDir: false,
     sourcemap: true,
 
     // Minification settings
