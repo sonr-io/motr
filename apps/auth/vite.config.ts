@@ -1,6 +1,6 @@
 import { resolve } from "node:path";
-import { enclavePlugin } from "../../libs/enclave/dist/vite-plugin-enclave.js";
-import { vaultPlugin } from "../../libs/vault/dist/vite-plugin-vault.js";
+import { enclavePlugin } from "../../libs/enclave/src/vite-plugin-enclave.ts";
+import { vaultPlugin } from "../../libs/vault/src/vite-plugin-vault.ts";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import viteReact from "@vitejs/plugin-react";
