@@ -10,13 +10,13 @@
     "dasel@latest"
   ],
   "env": {
-    "BROWSER":                           "firefox-developer-edition",
-    "BROWSER_ARGS":                      "--new-window --devtools --profile /tmp/vite-ff-dev-profile --no-remote",
+    "BROWSER": "firefox-developer-edition",
+    "BROWSER_ARGS": "--new-window --devtools --profile /tmp/vite-ff-dev-profile --no-remote",
     "BUN_RUNTIME_TRANSPILER_CACHE_PATH": "$HOME/.cache/bun/transpiler",
-    "TURBO_CACHE_DIR":                   ".turbo",
-    "TURBO_FORCE":                       "false",
-    "CI":                                "$CI",
-    "NODE_ENV":                          "$NODE_ENV"
+    "TURBO_CACHE_DIR": ".turbo",
+    "TURBO_FORCE": "false",
+    "CI": "$CI",
+    "NODE_ENV": "$NODE_ENV"
   },
   "shell": {
     "init_hook": [
@@ -24,20 +24,19 @@
       "bun install --silent"
     ],
     "scripts": {
-      "install":       "bun install",
-      "build":         "bun run build",
-      "build:clean":   "bun run clean && bun run build",
-      "dev":           "bun run dev",
-      "test":          "bun run test",
+      "build": "bun run build",
+      "build:clean": "bun run clean && bun run build",
+      "dev": "bun run dev",
+      "test": "bun run test",
       "test:coverage": "bun run test -- --coverage",
-      "lint":          "bun run lint",
-      "typecheck":     "bun run typecheck",
-      "check":         "bun run check",
-      "deploy":        "bun run deploy",
-      "clean":         "bun run clean",
-      "clean:cache":   "bun run clean:turbo && rm -rf node_modules/.cache",
-      "graph":         "bun run turbo:graph",
-      "profile":       "bun run turbo:profile"
+      "lint": "bun run lint",
+      "typecheck": "bun run typecheck",
+      "check": "bun run check",
+      "deploy": "bun run deploy",
+      "clean": "bun run clean",
+      "clean:cache": "bun run clean:turbo && rm -rf node_modules/.cache",
+      "graph": "bun run turbo:graph",
+      "profile": "bun run turbo:profile"
     }
   }
 }
