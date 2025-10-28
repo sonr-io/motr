@@ -1,6 +1,7 @@
 import { resolve } from "node:path";
-import { enclavePlugin } from "../../libs/enclave/dist/vite-plugin-enclave.js";
-import { vaultPlugin } from "../../libs/vault/dist/vite-plugin-vault.js";
+import { createMonoRepoAliases } from "@sonr.io/config/vite/aliases";
+import { enclavePlugin } from "@sonr.io/enclave/vite-plugin-enclave";
+import { vaultPlugin } from "@sonr.io/vault/vite-plugin-vault";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import viteReact from "@vitejs/plugin-react";
@@ -77,6 +78,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": resolve(__dirname, "./src"),
+      ...createMonoRepoAliases(),
     },
     dedupe: ["react", "react-dom", "@noble/hashes", "@noble/secp256k1"],
   },
