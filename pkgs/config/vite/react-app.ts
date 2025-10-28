@@ -62,7 +62,7 @@ export function createReactAppConfig(options: {
             // Split TanStack Query into separate chunk
             'vendor-query': ['@tanstack/react-query'],
             // Split UI library into separate chunk
-            'vendor-ui': ['@sonr.io/ui', 'sonner', 'motion'],
+            'vendor-ui': ['@sonr.io/ui', 'sonner'],
           },
         },
       },
