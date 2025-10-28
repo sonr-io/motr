@@ -36,7 +36,6 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@sonr.io/config": "workspace:*",
     "@types/node": "^24.7.2",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
