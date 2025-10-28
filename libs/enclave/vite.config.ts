@@ -40,6 +40,7 @@ export default defineConfig({
     rollupOptions: {
       // Externalize dependencies
       external: [
+        "@sonr.io/enclave", // Prevent self-import during build
         "vite",
         "fs",
         "path",

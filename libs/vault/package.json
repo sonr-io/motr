@@ -21,6 +21,10 @@
       "types": "./dist/vite-plugin-vault.d.ts",
       "import": "./dist/vite-plugin-vault.js"
     },
+    "./vite-plugin-vault": {
+      "types": "./dist/vite-plugin-vault.d.ts",
+      "import": "./dist/vite-plugin-vault.js"
+    },
     "./register-sw": {
       "types": "./dist/register-sw.d.ts",
       "import": "./dist/register-sw.js"

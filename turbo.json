@@ -146,7 +146,9 @@
     },
     "@sonr.io/react#build": {
       "dependsOn": [
-        "@sonr.io/ui#build"
+        "@sonr.io/sdk#build",
+        "@sonr.io/ui#build",
+        "@sonr.io/enclave#build"
       ],
       "outputs": [
         "dist/**",
@@ -163,7 +165,8 @@
     "@sonr.io/auth#build": {
       "dependsOn": [
         "@sonr.io/react#build",
-        "@sonr.io/vault#build"
+        "@sonr.io/vault#build",
+        "@sonr.io/enclave#build"
       ],
       "outputs": [
         "dist/**"
