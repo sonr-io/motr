@@ -43,7 +43,7 @@
     "test": "bunx --bun turbo test",
     "test:all": "bun --filter '*' test",
     "test:watch": "bunx --bun turbo test -- --watch",
-    "dev": "bun run clean && bunx --bun turbo run //#worker:build && wrangler dev",
+    "dev": "bunx --bun turbo run //#worker:build && wrangler dev",
     "lint": "bunx --bun turbo lint",
     "lint:fix": "bunx --bun turbo lint --continue -- --fix",
     "format": "bunx --bun turbo format",
