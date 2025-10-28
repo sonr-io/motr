@@ -146,9 +146,7 @@
     },
     "@sonr.io/react#build": {
       "dependsOn": [
-        "@sonr.io/sdk#build",
-        "@sonr.io/ui#build",
-        "@sonr.io/enclave#build"
+        "^build"
       ],
       "outputs": [
         "dist/**",
@@ -158,15 +156,14 @@
         "$TURBO_DEFAULT$"
       ],
       "cache": true,
+      "persistent": false,
       "passThroughEnv": [
         "BUN_*"
       ]
     },
     "@sonr.io/auth#build": {
       "dependsOn": [
-        "@sonr.io/react#build",
-        "@sonr.io/vault#build",
-        "@sonr.io/enclave#build"
+        "^build"
       ],
       "outputs": [
         "dist/**"
@@ -184,8 +181,7 @@
     },
     "@sonr.io/console#build": {
       "dependsOn": [
-        "@sonr.io/react#build",
-        "@sonr.io/enclave#build"
+        "^build"
       ],
       "outputs": [
         "dist/**"
@@ -203,8 +199,7 @@
     },
     "@sonr.io/profile#build": {
       "dependsOn": [
-        "@sonr.io/react#build",
-        "@sonr.io/enclave#build"
+        "^build"
       ],
       "outputs": [
         "dist/**"
@@ -222,8 +217,7 @@
     },
     "@sonr.io/search#build": {
       "dependsOn": [
-        "@sonr.io/react#build",
-        "@sonr.io/enclave#build"
+        "^build"
       ],
       "outputs": [
         "dist/**"
