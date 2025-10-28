@@ -11,7 +11,8 @@ export type { ChainOption, ChainSelectorProps } from './chain-selector';
 
 // Export icon components and types
 // Export Animate-ui components
-export { HoleBackground } from './backgrounds/hole';
+// TODO: Re-enable when motion/framer-motion ESM issues are resolved
+// export { HoleBackground } from './backgrounds/hole';
 export { Alert, AlertDescription, AlertTitle } from './ui/alert';
 
 export { Badge, badgeVariants } from './ui/badge';
@@ -36,15 +37,16 @@ export {
   CardTitle,
 } from './ui/card';
 // Export Chart components
-export {
-  type ChartConfig,
-  ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
-  ChartStyle,
-  ChartTooltip,
-  ChartTooltipContent,
-} from './ui/chart';
+// TODO: Re-enable when recharts ESM issues are resolved or upgrade to 2.16+
+// export {
+//   type ChartConfig,
+//   ChartContainer,
+//   ChartLegend,
+//   ChartLegendContent,
+//   ChartStyle,
+//   ChartTooltip,
+//   ChartTooltipContent,
+// } from './ui/chart';
 export { Checkbox } from './ui/checkbox';
 // Export Collapsible components
 export {
