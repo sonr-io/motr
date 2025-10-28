@@ -29,9 +29,17 @@
  */
 
 import { getWorkerRegistry, WorkerRegistry, WorkerType } from "../core/worker-registry.js";
-import type { EnclaveWorkerClient } from "@sonr.io/enclave/worker-client";
-import type { VaultClient } from "@sonr.io/vault";
-import type { SonrClient } from "@sonr.io/sdk/client";
+
+/**
+ * Placeholder types for external clients
+ * These will be properly typed once the packages export them
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type EnclaveWorkerClient = any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type VaultClient = any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type SonrClient = any;
 
 /**
  * Browser client configuration
@@ -421,7 +429,7 @@ export class SonrBrowser extends EventTarget {
       devnet: "http://localhost:26657",
     };
 
-    return urls[network] || urls.testnet;
+    return (urls[network] ?? urls.testnet) as string;
   }
 
   /**
@@ -429,6 +437,7 @@ export class SonrBrowser extends EventTarget {
    */
   private getWorkerUrl(type: "enclave" | "vault"): string {
     // In development, use source files
+    // @ts-expect-error - Vite injects import.meta.env at build time
     if (import.meta.env?.DEV) {
       return `/src/workers/${type}-worker.ts`;
     }

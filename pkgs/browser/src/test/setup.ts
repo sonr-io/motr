@@ -11,7 +11,7 @@ class MockWorker {
 
   constructor(public url: string | URL, public options?: WorkerOptions) {}
 
-  postMessage(message: any) {
+  postMessage(_message: any) {
     // Mock implementation
   }
 
@@ -19,15 +19,15 @@ class MockWorker {
     // Mock implementation
   }
 
-  addEventListener(type: string, listener: EventListener) {
+  addEventListener(_type: string, _listener: EventListener) {
     // Mock implementation
   }
 
-  removeEventListener(type: string, listener: EventListener) {
+  removeEventListener(_type: string, _listener: EventListener) {
     // Mock implementation
   }
 
-  dispatchEvent(event: Event): boolean {
+  dispatchEvent(_event: Event): boolean {
     return true;
   }
 }
@@ -45,6 +45,8 @@ class MockSharedWorker {
       addEventListener: () => {},
       removeEventListener: () => {},
       dispatchEvent: () => true,
+      onmessage: null,
+      onmessageerror: null,
     } as MessagePort;
   }
 }

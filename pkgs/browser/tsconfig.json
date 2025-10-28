@@ -63,10 +63,10 @@
   ],
   "references": [
     {
-      "path": "../enclave"
+      "path": "../../libs/enclave"
     },
     {
-      "path": "../vault"
+      "path": "../../libs/vault"
     },
     {
       "path": "../sdk"

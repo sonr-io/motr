@@ -286,17 +286,17 @@ export class WorkerRegistry extends EventTarget {
     const target =
       instance.worker instanceof SharedWorker ? instance.worker.port : instance.worker;
 
-    target.addEventListener("message", (event: MessageEvent<WorkerResponse>) => {
+    target.addEventListener("message", ((event: MessageEvent<WorkerResponse>) => {
       this.handleWorkerMessage(instance, event.data);
-    });
+    }) as EventListener);
 
-    target.addEventListener("error", (event: ErrorEvent) => {
+    target.addEventListener("error", ((event: ErrorEvent) => {
       this.handleWorkerError(instance, event);
-    });
+    }) as EventListener);
 
-    target.addEventListener("messageerror", (event: MessageEvent) => {
+    target.addEventListener("messageerror", ((event: MessageEvent) => {
       console.error(`[WorkerRegistry] Message error from ${instance.id}:`, event);
-    });
+    }) as EventListener);
 
     // Start SharedWorker port if needed
     if (instance.worker instanceof SharedWorker) {
@@ -316,13 +316,13 @@ export class WorkerRegistry extends EventTarget {
       const target =
         instance.worker instanceof SharedWorker ? instance.worker.port : instance.worker;
 
-      const handler = (event: MessageEvent<WorkerResponse>) => {
+      const handler = ((event: MessageEvent<WorkerResponse>) => {
         if (event.data.success && (event.data as any).type === "ready") {
           clearTimeout(timeout);
-          target.removeEventListener("message", handler);
+          target.removeEventListener("message", handler as EventListener);
           resolve();
         }
-      };
+      }) as EventListener;
 
       target.addEventListener("message", handler);
     });

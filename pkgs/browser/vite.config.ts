@@ -25,6 +25,13 @@ export default defineConfig({
         "@tanstack/query-core",
         "dexie",
         "vite",
+        // Node.js built-ins (used by vite-plugin)
+        "node:fs",
+        "node:path",
+        "node:url",
+        "fs",
+        "path",
+        "url",
       ],
       output: {
         preserveModules: false,

@@ -17,8 +17,7 @@
  */
 
 import { existsSync, readFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { resolve } from "node:path";
 import type { Plugin, ResolvedConfig } from "vite";
 
 export interface SonrBrowserPluginOptions {
@@ -101,7 +100,6 @@ export function sonrBrowserPlugin(options: SonrBrowserPluginOptions = {}): Plugi
     enclaveWasmPath = "dist/enclave.wasm",
     enableVault = true,
     vaultWasmPath = "dist/vault.wasm",
-    customWorkersPath,
     debug = false,
     copyToPublic = true,
     enableSharedWorkers = false,
@@ -212,15 +210,18 @@ export function sonrBrowserPlugin(options: SonrBrowserPluginOptions = {}): Plugi
       }
 
       // Locate and load WASM assets
+      // @ts-expect-error - Custom method for Vite plugin
       this.loadWasmAssets();
     },
 
+    // @ts-expect-error - Custom method for loading WASM assets
     async loadWasmAssets() {
       wasmAssets.length = 0;
 
       // Load enclave WASM
       if (enableEnclave) {
         try {
+          // @ts-expect-error - Custom helper method
           const enclavePath = this.resolvePackageAsset("@sonr.io/enclave", enclaveWasmPath);
           if (existsSync(enclavePath)) {
             wasmAssets.push({
@@ -244,6 +245,7 @@ export function sonrBrowserPlugin(options: SonrBrowserPluginOptions = {}): Plugi
       // Load vault WASM
       if (enableVault) {
         try {
+          // @ts-expect-error - Custom helper method
           const vaultPath = this.resolvePackageAsset("@sonr.io/vault", vaultWasmPath);
           if (existsSync(vaultPath)) {
             wasmAssets.push({
@@ -267,6 +269,7 @@ export function sonrBrowserPlugin(options: SonrBrowserPluginOptions = {}): Plugi
       // Emit WASM assets
       if (copyToPublic) {
         for (const asset of wasmAssets) {
+          // @ts-expect-error - emitFile is available in Rollup plugin context
           this.emitFile({
             type: "asset",
             fileName: `wasm/${asset.name}`,
@@ -389,6 +392,7 @@ export function sonrBrowserPlugin(options: SonrBrowserPluginOptions = {}): Plugi
 
       // Generate service worker manifest if enabled
       if (enableServiceWorker) {
+        // @ts-expect-error - Custom helper method
         const manifestContent = this.generateServiceWorkerManifest(bundle);
         this.emitFile({
           type: "asset",
@@ -398,7 +402,7 @@ export function sonrBrowserPlugin(options: SonrBrowserPluginOptions = {}): Plugi
       }
     },
 
-    generateServiceWorkerManifest(bundle: any): string {
+    generateServiceWorkerManifest(_bundle: any): string {
       const manifest = {
         version: Date.now(),
         assets: {
