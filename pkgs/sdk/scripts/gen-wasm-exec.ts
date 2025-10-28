@@ -54,7 +54,6 @@ try {
   const tsContent = `/**
  * Auto-generated file - DO NOT EDIT
  * Generated from: ${wasmExecPath}
- * Generated at: ${new Date().toISOString()}
  * Run: bun scripts/gen-wasm-exec.ts
  *
  * This file contains the Go WebAssembly runtime (wasm_exec.js) embedded
