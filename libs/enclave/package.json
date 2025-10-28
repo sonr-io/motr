@@ -41,6 +41,10 @@
       "types": "./dist/vite-plugin-enclave.d.ts",
       "import": "./dist/vite-plugin-enclave.js"
     },
+    "./vite-plugin-enclave": {
+      "types": "./dist/vite-plugin-enclave.d.ts",
+      "import": "./dist/vite-plugin-enclave.js"
+    },
     "./cloudflare": {
       "types": "./dist/cloudflare/index.d.ts",
       "import": "./dist/cloudflare/index.js"

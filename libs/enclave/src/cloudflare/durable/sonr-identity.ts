@@ -1,12 +1,11 @@
 import { DurableObject } from 'cloudflare:workers';
 
 /**
- * Type-only imports from @sonr.io/enclave
- * Using type-only imports ensures we don't bundle the enclave at compile time
- * The actual module is loaded dynamically at runtime
+ * Direct imports from enclave modules
+ * Using relative imports to avoid circular dependencies during build
  */
+import { EnclaveWorkerClient } from '../../worker-client.js';
 import type {
-  EnclaveWorkerClient,
   GetIssuerDIDResponse,
   NewAttenuatedTokenRequest,
   NewOriginTokenRequest,
@@ -16,7 +15,7 @@ import type {
   UCANTokenResponse,
   VerifyDataRequest,
   VerifyDataResponse,
-} from '@sonr.io/enclave';
+} from '../../types';
 
 /**
  * SonrIdentityDurable - Durable Object wrapping @sonr.io/enclave
@@ -49,9 +48,6 @@ export class SonrIdentityDurable extends DurableObject {
 
   // Static map to ensure singleton per identity within this DO instance
   private static readonly enclaveInstances = new Map<string, EnclaveWorkerClient>();
-
-  // Track if enclave module is available
-  private static enclaveModuleAvailable: boolean | null = null;
 
   constructor(ctx: DurableObjectState, env: any) {
     super(ctx, env);
@@ -160,18 +156,10 @@ export class SonrIdentityDurable extends DurableObject {
         console.log('[SonrIdentityDurable] Reusing existing enclave instance for:', accountAddress);
         this.enclave = existingEnclave;
       } else {
-        // Load enclave module dynamically
+        // Create new enclave instance
         console.log('[SonrIdentityDurable] Creating NEW enclave instance for:', accountAddress);
-        const EnclaveModule = await this.loadEnclaveModule();
 
-        if (!EnclaveModule) {
-          throw new Error(
-            '@sonr.io/enclave is not available. ' +
-            'Please install it as a workspace dependency: "@sonr.io/enclave": "workspace:*"'
-          );
-        }
-
-        this.enclave = new EnclaveModule.EnclaveWorkerClient({
+        this.enclave = new EnclaveWorkerClient({
           vaultConfig: {
             enablePersistence: true,
           },
@@ -467,46 +455,6 @@ export class SonrIdentityDurable extends DurableObject {
     }
   }
 
-  /**
-   * Dynamically load the enclave module
-   * This allows @pkgs/cloudflare to work with or without @sonr.io/enclave installed
-   */
-  private async loadEnclaveModule(): Promise<typeof import('@sonr.io/enclave') | null> {
-    // Check cache first
-    if (SonrIdentityDurable.enclaveModuleAvailable === false) {
-      return null;
-    }
-
-    try {
-      console.log('[SonrIdentityDurable] Attempting to load @sonr.io/enclave...');
-      const module = await import('@sonr.io/enclave');
-      SonrIdentityDurable.enclaveModuleAvailable = true;
-      console.log('[SonrIdentityDurable] ✓ @sonr.io/enclave loaded successfully');
-      return module;
-    } catch (error) {
-      console.warn('[SonrIdentityDurable] ⚠️  @sonr.io/enclave not available:', error);
-      SonrIdentityDurable.enclaveModuleAvailable = false;
-      return null;
-    }
-  }
-
-  /**
-   * Check if enclave module is available
-   */
-  static async isEnclaveAvailable(): Promise<boolean> {
-    if (SonrIdentityDurable.enclaveModuleAvailable !== null) {
-      return SonrIdentityDurable.enclaveModuleAvailable;
-    }
-
-    try {
-      await import('@sonr.io/enclave');
-      SonrIdentityDurable.enclaveModuleAvailable = true;
-      return true;
-    } catch {
-      SonrIdentityDurable.enclaveModuleAvailable = false;
-      return false;
-    }
-  }
 
   /**
    * Ensure the enclave is initialized

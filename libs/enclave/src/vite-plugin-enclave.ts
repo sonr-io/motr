@@ -83,7 +83,7 @@ export function enclavePlugin(options: EnclavePluginOptions = {}): Plugin {
       return {
         // Optimize dependencies
         optimizeDeps: {
-          exclude: ["@sonr.io/enclave", "@extism/extism"],
+          exclude: ["@extism/extism"],
           esbuildOptions: {
             target: "esnext",
             supported: {

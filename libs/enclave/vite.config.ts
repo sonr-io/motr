@@ -138,7 +138,7 @@ export default defineConfig({
   // Dependency optimization
   optimizeDeps: {
     // Exclude packages from pre-bundling
-    exclude: ["@sonr.io/enclave", "@extism/extism"],
+    exclude: ["@extism/extism"],
 
     // Include packages that need pre-bundling
     include: ["dexie"],
