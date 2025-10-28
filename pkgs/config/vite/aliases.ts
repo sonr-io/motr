@@ -67,14 +67,9 @@ export function createMonoRepoAliases(
     aliases[`@${pkg}/*`] = resolve(root, `pkgs/${pkg}/src/*`);
   }
 
-  // Add special aliases for commonly used package names
-  aliases['@sonr.io/sdk'] = resolve(root, 'pkgs/sdk/src');
-  aliases['@sonr.io/ui'] = resolve(root, 'pkgs/ui/src');
-  aliases['@sonr.io/react'] = resolve(root, 'pkgs/react/src');
-  aliases['@sonr.io/browser'] = resolve(root, 'pkgs/browser/src');
-  aliases['@sonr.io/config'] = resolve(root, 'pkgs/config');
-  aliases['@sonr.io/enclave'] = resolve(root, 'libs/enclave/src');
-  aliases['@sonr.io/vault'] = resolve(root, 'libs/vault/src');
+  // Note: We do NOT create @sonr.io/* aliases because these are actual
+  // workspace packages with proper package.json exports. The short-form
+  // aliases above (@ui, @enclave, etc.) are for convenience only.
 
   return aliases;
 }
@@ -106,36 +101,24 @@ export default createMonoRepoAliases;
  * - `@sdk` → pkgs/sdk/src
  * - `@ui` → pkgs/ui/src
  *
- * ## Package-scoped aliases (also available)
- * - `@sonr.io/sdk` → pkgs/sdk/src
- * - `@sonr.io/ui` → pkgs/ui/src
- * - `@sonr.io/react` → pkgs/react/src
- * - `@sonr.io/browser` → pkgs/browser/src
- * - `@sonr.io/config` → pkgs/config
- * - `@sonr.io/enclave` → libs/enclave/src
- * - `@sonr.io/vault` → libs/vault/src
+ * **Note**: These are short-form aliases only. For published packages,
+ * always use the full `@sonr.io/package-name` import which resolves via
+ * workspace package.json exports (to built dist files).
  *
  * ## Usage Examples
  *
  * ```ts
- * // Import from SDK
+ * // Short-form aliases (for internal cross-package imports during development)
  * import { RpcClient } from '@sdk/client';
- * import { registerWithPasskey } from '@sonr.io/sdk/client';
- *
- * // Import from UI components
  * import { Button } from '@ui/components/button';
- * import { Card } from '@sonr.io/ui/components/card';
- *
- * // Import from React hooks
  * import { useSonr } from '@react/hooks/use-sonr';
- * import { SonrProvider } from '@sonr.io/react';
- *
- * // Import from Enclave
  * import { createVaultClient } from '@enclave/client';
- * import type { EnclaveWorkerClient } from '@sonr.io/enclave/worker-client';
  *
- * // Import from Vault
- * import { loadVault } from '@vault/loader';
+ * // Full workspace package imports (for consuming built packages)
+ * import { registerWithPasskey } from '@sonr.io/sdk/client';
+ * import { Card } from '@sonr.io/ui';
+ * import { SonrProvider } from '@sonr.io/react';
+ * import type { EnclaveWorkerClient } from '@sonr.io/enclave/worker-client';
  * import { registerSW } from '@sonr.io/vault/register-sw';
  * ```
  */

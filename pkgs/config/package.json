@@ -9,6 +9,7 @@
   },
   "exports": {
     "./typescript/base": "./typescript/base.json",
+    "./typescript/paths": "./typescript/paths.json",
     "./typescript/react-app": "./typescript/react-app.json",
     "./typescript/react-library": "./typescript/react-library.json",
     "./typescript/library": "./typescript/library.json",
@@ -16,6 +17,7 @@
     "./vite/react-app": "./vite/react-app.ts",
     "./vite/library": "./vite/library.ts",
     "./vite/test": "./vite/test.ts",
+    "./vite/aliases": "./vite/aliases.ts",
     "./tailwind": "./tailwind/index.js",
     "./oxlint": "./.oxlintrc.json"
   },

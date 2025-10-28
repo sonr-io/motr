@@ -2,7 +2,7 @@ import { resolve } from 'node:path';
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import viteReact from '@vitejs/plugin-react';
 import { type UserConfig, defineConfig } from 'vite';
-import { createMonoRepoAliases } from './aliases.js';
+import { createMonoRepoAliases } from './aliases.ts';
 
 /**
  * Base Vite configuration for React applications with TanStack Router
