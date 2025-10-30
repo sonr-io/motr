@@ -13,7 +13,7 @@ require (
 	github.com/bits-and-blooms/bitset v1.24.0 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.3.4 // indirect
 	github.com/bwesterb/go-ristretto v1.2.3 // indirect
-	github.com/consensys/gnark-crypto v0.19.0 // indirect
+	github.com/consensys/gnark-crypto v0.19.1 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.0 // indirect
 	github.com/dustinxie/ecc v0.0.0-20210511000915-959544187564 // indirect
 	github.com/gtank/merlin v0.1.1 // indirect
