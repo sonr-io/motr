@@ -50,6 +50,12 @@ interface SessionData {
   preferences?: {
     defaultApp?: 'console' | 'profile' | 'search';
   };
+  auth?: {
+    hasVisitedBefore: boolean;
+    hasAccount: boolean;
+    lastAuthPage?: 'register' | 'login';
+    registrationStartedAt?: number;
+  };
 }
 
 /**
@@ -228,7 +234,42 @@ app.get('/', async (c) => {
     });
   }
 
+  // If routing to auth app, determine specific auth page
+  if (targetApp === 'auth') {
+    const authPage = determineAuthPage(session);
+    return c.redirect(`/auth/${authPage}`);
+  }
+
   return c.redirect(`/${targetApp}/`);
+});
+
+/**
+ * Microfrontend SPA fallback handler
+ * Wrangler's asset handler will try to serve files first.
+ * If a route doesn't match a file, we catch it here and serve the app's index.html
+ * This enables SPA routing for each microfrontend.
+ */
+app.notFound(async (c) => {
+  const path = c.req.path;
+
+  // Determine which app based on path
+  let appName: TargetApp | null = null;
+
+  if (path.startsWith('/auth/')) appName = 'auth';
+  else if (path.startsWith('/console/')) appName = 'console';
+  else if (path.startsWith('/profile/')) appName = 'profile';
+  else if (path.startsWith('/search/')) appName = 'search';
+
+  // If path matches an app directory, serve that app's index.html
+  if (appName) {
+    // Let Wrangler's asset handler serve the index.html
+    // We redirect to the app root which will be served by assets
+    const indexPath = `/${appName}/index.html`;
+    return c.redirect(indexPath);
+  }
+
+  // For other 404s, return standard 404
+  return c.json({ error: 'Not Found', path }, 404);
 });
 
 /**
@@ -298,6 +339,72 @@ function createApiRoutes() {
     return c.json({ success: true });
   });
 
+  // Auth state tracking - track page visits
+  api.post('/session/auth/visit', async (c) => {
+    const { session, sessionId } = await getSession(c);
+    const body = await c.req.json<{ page: 'register' | 'login' }>();
+
+    // Update session auth state
+    session.auth = {
+      ...session.auth,
+      hasVisitedBefore: true,
+      hasAccount: session.auth?.hasAccount ?? false,
+      lastAuthPage: body.page,
+    };
+    session.lastActivityAt = Date.now();
+
+    // Store updated session
+    await c.env.SESSIONS.put(sessionId, JSON.stringify(session), {
+      expirationTtl: SESSION_CONFIG.MAX_AGE,
+    });
+
+    return c.json({ success: true });
+  });
+
+  // Auth state tracking - registration started
+  api.post('/session/auth/registration-started', async (c) => {
+    const { session, sessionId } = await getSession(c);
+
+    // Update session auth state
+    session.auth = {
+      ...session.auth,
+      hasVisitedBefore: true,
+      hasAccount: false,
+      lastAuthPage: 'register',
+      registrationStartedAt: Date.now(),
+    };
+    session.lastActivityAt = Date.now();
+
+    // Store updated session
+    await c.env.SESSIONS.put(sessionId, JSON.stringify(session), {
+      expirationTtl: SESSION_CONFIG.MAX_AGE,
+    });
+
+    return c.json({ success: true });
+  });
+
+  // Auth state tracking - registration completed
+  api.post('/session/auth/registration-completed', async (c) => {
+    const { session, sessionId } = await getSession(c);
+
+    // Update session auth state
+    session.auth = {
+      ...session.auth,
+      hasVisitedBefore: true,
+      hasAccount: true,
+      lastAuthPage: 'register',
+      registrationStartedAt: undefined,
+    };
+    session.lastActivityAt = Date.now();
+
+    // Store updated session
+    await c.env.SESSIONS.put(sessionId, JSON.stringify(session), {
+      expirationTtl: SESSION_CONFIG.MAX_AGE,
+    });
+
+    return c.json({ success: true });
+  });
+
   // Identity API - forward to Enclave worker
   api.all('/identity/*', async (c) => {
     try {
@@ -344,6 +451,32 @@ function determineTargetApp(url: URL, session: SessionData): TargetApp {
 
   // Default: auth app for unauthenticated users
   return 'auth';
+}
+
+/**
+ * Determine which auth page to show based on session state
+ */
+function determineAuthPage(session: SessionData): 'register' | 'login' {
+  // If user has an account but not authenticated, show login
+  if (session.auth?.hasAccount) {
+    return 'login';
+  }
+
+  // If user started registration recently (within 24 hours), continue registration
+  if (session.auth?.registrationStartedAt) {
+    const hoursSinceStart = (Date.now() - session.auth.registrationStartedAt) / (1000 * 60 * 60);
+    if (hoursSinceStart < 24) {
+      return 'register';
+    }
+  }
+
+  // If user has visited before and last visited login, show login
+  if (session.auth?.hasVisitedBefore && session.auth?.lastAuthPage === 'login') {
+    return 'login';
+  }
+
+  // Default: show register for new users
+  return 'register';
 }
 
 /**
@@ -419,6 +552,10 @@ function createNewSession(): SessionData {
     authenticated: false,
     createdAt: Date.now(),
     lastActivityAt: Date.now(),
+    auth: {
+      hasVisitedBefore: false,
+      hasAccount: false,
+    },
   };
 }
 
@@ -429,11 +566,10 @@ function createNewSession(): SessionData {
  * Workers' fetch handler interface. When a request comes in, the Workers
  * runtime calls app.fetch(request, env, ctx).
  *
- * This is compatible with the modern ES Modules Workers format:
- * export default {
- *   async fetch(request: Request, env: Env, ctx: ExecutionContext) {
- *     return new Response('Hello World');
- *   }
- * }
+ * When used with Wrangler's [assets], any unmatched routes will automatically
+ * fall through to the asset handler which serves files from public/.
+ *
+ * For SPA routes (like /auth/register), Wrangler's asset handler will
+ * serve the index.html if the exact path doesn't exist.
  */
 export default app;

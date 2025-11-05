@@ -14,6 +14,9 @@ compatibility_flags = ["nodejs_compat"]
 #   wasm/ (WASM binaries)
 [assets]
 directory = "./public"
+# SPA routing: serve index.html for unmatched routes in each app directory
+html_handling = "auto-trailing-slash"
+not_found_handling = "single-page-application"
 
 # Production environment
 [env.production]
