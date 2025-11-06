@@ -10,6 +10,6 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<App theme="material">
+<App theme="ios" dark={false}>
 	{@render children()}
 </App>

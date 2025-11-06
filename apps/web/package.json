@@ -16,6 +16,7 @@
 	},
 	"dependencies": {
 		"@sonr.io/sdk": "workspace:*",
+		"@sonr.io/ui": "workspace:*",
 		"konsta": "^5.0.4"
 	},
 	"devDependencies": {
