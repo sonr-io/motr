@@ -21,3 +21,18 @@ ui = ["pkgs/ui"]
 vault = ["libs/vault"]
 welcome = ["apps/welcome"]
 worker = ["src", "wrangler.toml"]
+
+[commands]
+build = "devbox run build"
+build-clean = "devbox run build:clean"
+dev = "devbox run dev"
+test = "devbox run test"
+test-coverage = "devbox run test:coverage"
+lint = "devbox run lint"
+typecheck = "devbox run typecheck"
+check = "devbox run check"
+deploy = "devbox run deploy"
+clean = "devbox run clean"
+clean-cache = "devbox run clean:cache"
+graph = "devbox run graph"
+profile = "devbox run profile"
