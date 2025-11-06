@@ -24,15 +24,10 @@ worker = ["src", "wrangler.toml"]
 
 [commands]
 build = "devbox run build"
-build-clean = "devbox run build:clean"
+clean = "devbox run clean"
 dev = "devbox run dev"
 test = "devbox run test"
-test-coverage = "devbox run test:coverage"
 lint = "devbox run lint"
 typecheck = "devbox run typecheck"
 check = "devbox run check"
 deploy = "devbox run deploy"
-clean = "devbox run clean"
-clean-cache = "devbox run clean:cache"
-graph = "devbox run graph"
-profile = "devbox run profile"
