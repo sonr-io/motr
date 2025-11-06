@@ -1,0 +1,60 @@
+{
+	"name": "@sonr.io/ui",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Konsta UI component library for Sonr applications",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		},
+		"./auth": {
+			"types": "./dist/auth/index.d.ts",
+			"import": "./dist/auth/index.js"
+		},
+		"./payment": {
+			"types": "./dist/payment/index.d.ts",
+			"import": "./dist/payment/index.js"
+		},
+		"./search": {
+			"types": "./dist/search/index.d.ts",
+			"import": "./dist/search/index.js"
+		},
+		"./user": {
+			"types": "./dist/user/index.d.ts",
+			"import": "./dist/user/index.js"
+		},
+		"./welcome": {
+			"types": "./dist/welcome/index.d.ts",
+			"import": "./dist/welcome/index.js"
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "vite build",
+		"dev": "vite build --watch",
+		"typecheck": "tsc --noEmit",
+		"lint": "oxlint .",
+		"format": "oxlint --fix .",
+		"clean": "rm -rf dist"
+	},
+	"dependencies": {
+		"konsta": "^5.0.4"
+	},
+	"peerDependencies": {
+		"svelte": "^5.0.0"
+	},
+	"devDependencies": {
+		"@sveltejs/package": "^2.5.4",
+		"@sveltejs/vite-plugin-svelte": "^6.2.1",
+		"svelte": "^5.41.0",
+		"typescript": "^5.9.3",
+		"vite": "^6.0.7",
+		"vite-plugin-dts": "^4.5.4"
+	}
+}
