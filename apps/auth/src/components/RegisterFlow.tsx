@@ -190,6 +190,17 @@ export function RegisterFlow() {
       toast.success("OTP sent to your email! Check your inbox.");
       setValidatedSteps((prev) => ({ ...prev, email: true }));
       setRateLimitSeconds(60); // Set 1 minute cooldown
+
+      // Track registration started
+      try {
+        await fetch("/api/session/auth/registration-started", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
+      } catch (err) {
+        console.error("Failed to track registration start:", err);
+      }
+
       return true;
     } catch (error) {
       toast.error(
@@ -279,11 +290,26 @@ export function RegisterFlow() {
     setCurrentStep(value);
   }, []);
 
-  const onSubmit = React.useCallback((input: FormSchema) => {
+  const onSubmit = React.useCallback(async (input: FormSchema) => {
+    // Track registration completion
+    try {
+      await fetch("/api/session/auth/registration-completed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (err) {
+      console.error("Failed to track registration completion:", err);
+    }
+
     toast.success("Registration complete!", {
       description: `Welcome, ${input.firstName} ${input.lastName}!`,
     });
     console.log("Registration data:", input);
+
+    // Redirect to console after a brief delay
+    setTimeout(() => {
+      window.location.href = "/console/";
+    }, 1500);
   }, []);
 
   return (

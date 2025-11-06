@@ -1,33 +1,50 @@
-import { FloatingHeader } from "@sonr.io/ui/components/ui/floating-header";
-import { HoverButton } from "@sonr.io/ui/components/ui/hover-button";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
-  component: App,
+  beforeLoad: async () => {
+    try {
+      // Fetch session data from worker
+      const response = await fetch("/api/session");
+      const session = await response.json();
+
+      // Determine where to redirect based on session state
+      if (session.authenticated) {
+        // User is already authenticated, redirect to console
+        throw redirect({ to: "/console/" });
+      }
+
+      if (session.auth?.hasAccount) {
+        // User has an account, redirect to login
+        throw redirect({ to: "/login" });
+      }
+
+      // Check if user started registration recently
+      if (session.auth?.registrationStartedAt) {
+        const hoursSinceStart =
+          (Date.now() - session.auth.registrationStartedAt) / (1000 * 60 * 60);
+        if (hoursSinceStart < 24) {
+          // Continue registration
+          throw redirect({ to: "/register" });
+        }
+      }
+
+      // Check if user visited login before
+      if (
+        session.auth?.hasVisitedBefore &&
+        session.auth?.lastAuthPage === "login"
+      ) {
+        throw redirect({ to: "/login" });
+      }
+
+      // Default: redirect to register for new users
+      throw redirect({ to: "/register" });
+    } catch (error) {
+      // If error is a redirect, re-throw it
+      if (error && typeof error === "object" && "to" in error) {
+        throw error;
+      }
+      // Otherwise, default to register
+      throw redirect({ to: "/register" });
+    }
+  },
 });
-
-function App() {
-  return (
-    <div className="relative min-h-svh w-full overflow-hidden">
-      <div className="absolute top-4 left-0 right-0 z-50 px-4 md:px-6">
-        <FloatingHeader />
-      </div>
-
-      <div className="relative z-10 flex h-full w-full flex-col items-center justify-center pt-24 pb-12">
-        <div className="flex w-full max-w-xl flex-col items-center gap-8 p-6 lg:max-w-2xl rounded-full mb-12">
-          <h1 className="text-center font-serif text-4xl font-stretch-semi-condensed text-foreground/85 drop-shadow-lg md:text-5xl lg:text-7xl">
-            Your <span className="italic tracking-tight">Personal</span>{" "}
-            <span className="whitespace-nowrap">Identity Gateway</span>
-          </h1>
-          <p className="text-center backdrop-blur-xs text-base drop-shadow-md text-foreground/70 md:text-lg lg:text-xl max-w-xl">
-            Protect your digital footprint with Sonr - the Next-Generation
-            Blockchain Secured Wallet Identity System.
-          </p>
-          <div className="mt-2 flex flex-col items-center justify-center gap-4 md:flex-row md:gap-6">
-            <HoverButton text="Start your Journey" to="/register" />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
