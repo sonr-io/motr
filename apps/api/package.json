@@ -1,0 +1,29 @@
+{
+  "name": "@sonr.io/api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Sonr API - Hono-based Cloudflare Worker for backend services",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "dev:open": "chromium --new-window http://localhost:5165 & bun run dev",
+    "deploy": "wrangler deploy",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:production": "wrangler deploy --env production",
+    "preview": "wrangler dev --remote",
+    "logs": "wrangler tail --format pretty",
+    "logs:staging": "wrangler tail --env staging --format pretty",
+    "logs:production": "wrangler tail --env production --format pretty",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf .wrangler"
+  },
+  "dependencies": {
+    "hono": "^4.10.2"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20251011.0",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.44.0"
+  }
+}
