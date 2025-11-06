@@ -21,9 +21,11 @@ import { existsSync } from 'node:fs';
 import { mkdir, rm, cp } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
-// Get monorepo root (parent of scripts directory)
-const MONOREPO_ROOT = resolve(import.meta.dirname, '..');
-const PUBLIC_DIR = join(MONOREPO_ROOT, 'public');
+// Get monorepo root (from x/worker/scripts -> monorepo root)
+const MONOREPO_ROOT = resolve(import.meta.dirname, '../../..');
+// Public directory is local to worker for self-containment
+const WORKER_DIR = resolve(import.meta.dirname, '..');
+const PUBLIC_DIR = join(WORKER_DIR, 'public');
 
 // Apps to build and copy
 const APPS = ['auth', 'console', 'profile', 'search'] as const;

@@ -5,7 +5,7 @@ compatibility_date = "2025-01-11"
 compatibility_flags = ["nodejs_compat"]
 
 # Assets configuration - Wrangler will bundle these into the worker
-# The public directory structure:
+# The public directory structure (local to worker for self-containment):
 # public/
 #   auth/ (apps/auth/dist)
 #   console/ (apps/console/dist)

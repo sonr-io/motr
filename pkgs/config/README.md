@@ -114,6 +114,37 @@ cp node_modules/@pkgs/config/.oxlintrc.json .
 bunx oxlint --config=./node_modules/@pkgs/config/.oxlintrc.json .
 ```
 
+### Formatting & Linting (Biome)
+
+Biome provides unified formatting and linting. The configuration is located at `@pkgs/config/biome.json` with a symlink at the monorepo root for compatibility.
+
+```bash
+# Format code
+bunx biome format --write .
+
+# Lint code
+bunx biome lint .
+
+# Check (format + lint)
+bunx biome check --write .
+```
+
+The config is automatically discovered from the root symlink.
+
+### Go Linting (golangci-lint)
+
+Go linting configuration is in `@pkgs/config/golangci/.golangci.yml` with a symlink at the monorepo root.
+
+```bash
+# Run golangci-lint (from any Go package)
+golangci-lint run
+
+# Auto-fix issues
+golangci-lint run --fix
+```
+
+The config is automatically discovered from the root symlink.
+
 ### Public Assets
 
 Shared public assets (favicons, icons, manifests) are available in `@pkgs/config/public/`.
@@ -158,9 +189,11 @@ See [`public/README.md`](./public/README.md) for details.
 
 - `@pkgs/config/tailwind` - Base Tailwind CSS configuration
 
-### Linting
+### Linting & Formatting
 
-- `@pkgs/config/oxlint` - oxlint configuration
+- `@pkgs/config/oxlint` - oxlint configuration (`.oxlintrc.json`)
+- `@pkgs/config/biome` - Biome formatter/linter configuration (`biome.json`)
+- `@pkgs/config/golangci` - golangci-lint configuration for Go (`.golangci.yml`)
 
 ### Public Assets
 

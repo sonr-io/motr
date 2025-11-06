@@ -17,14 +17,18 @@
     "./vite/test": "./vite/test.ts",
     "./vite/aliases": "./vite/aliases.ts",
     "./tailwind": "./tailwind/index.js",
-    "./oxlint": "./.oxlintrc.json"
+    "./oxlint": "./.oxlintrc.json",
+    "./biome": "./biome.json",
+    "./golangci": "./golangci/.golangci.yml"
   },
   "files": [
     "typescript",
     "vite",
     "tailwind",
+    "golangci",
     "lint",
     ".oxlintrc.json",
+    "biome.json",
     "public",
     "scripts"
   ],

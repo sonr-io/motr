@@ -21,3 +21,13 @@ ui = ["pkgs/ui"]
 vault = ["libs/vault"]
 welcome = ["apps/welcome"]
 worker = ["src", "wrangler.toml"]
+
+[commands]
+build = "devbox run build"
+clean = "devbox run clean"
+dev = "devbox run dev"
+test = "devbox run test"
+lint = "devbox run lint"
+typecheck = "devbox run typecheck"
+check = "devbox run check"
+deploy = "devbox run deploy"
