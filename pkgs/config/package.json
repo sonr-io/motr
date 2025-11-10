@@ -8,11 +8,10 @@
   "exports": {
     "./typescript/base": "./typescript/base.json",
     "./typescript/paths": "./typescript/paths.json",
-    "./typescript/react-app": "./typescript/react-app.json",
-    "./typescript/react-library": "./typescript/react-library.json",
+    "./typescript/sveltekit": "./typescript/sveltekit.json",
     "./typescript/library": "./typescript/library.json",
     "./typescript/worker": "./typescript/worker.json",
-    "./vite/react-app": "./vite/react-app.ts",
+    "./svelte/sveltekit-app": "./svelte/sveltekit-app.ts",
     "./vite/library": "./vite/library.ts",
     "./vite/test": "./vite/test.ts",
     "./vite/aliases": "./vite/aliases.ts",
@@ -24,6 +23,7 @@
   "files": [
     "typescript",
     "vite",
+    "svelte",
     "tailwind",
     "golangci",
     "lint",
@@ -34,9 +34,8 @@
   ],
   "devDependencies": {
     "@cloudflare/workers-types": "latest",
-    "@tanstack/router-plugin": "latest",
+    "@sveltejs/kit": "latest",
     "@types/node": "latest",
-    "@vitejs/plugin-react": "latest",
     "typescript": "latest",
     "vite": "latest",
     "vitest": "latest"
