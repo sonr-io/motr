@@ -1,3 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+/* Import Konsta UI theme for Svelte */
+@import 'konsta/svelte/theme.css';
