@@ -23,11 +23,22 @@ const app = new Hono<{ Bindings: Bindings }>();
 // Global middleware
 app.use('*', logger());
 
-// CORS middleware - allow all origins for API access
+// CORS middleware - allow specific origins for API access with credentials
 app.use(
   '*',
   cors({
-    origin: '*',
+    origin: (origin) => {
+      // Allow requests from localhost (development)
+      if (origin?.includes('localhost') || origin?.includes('127.0.0.1')) {
+        return origin;
+      }
+      // Allow requests from Cloudflare Pages preview/production domains
+      if (origin?.endsWith('.pages.dev') || origin?.endsWith('sonr.id')) {
+        return origin;
+      }
+      // Default: return origin (allows all in development)
+      return origin || '*';
+    },
     allowHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     exposeHeaders: ['Content-Length', 'X-Request-Id'],
