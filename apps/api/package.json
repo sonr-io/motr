@@ -8,6 +8,8 @@
   "scripts": {
     "dev": "wrangler dev",
     "dev:open": "chromium --new-window http://localhost:5165 & bun run dev",
+    "dev:seed": "bun run dev & sleep 3 && bun run seed",
+    "seed": "bun run scripts/seed-registries.ts",
     "deploy": "wrangler deploy",
     "deploy:staging": "wrangler deploy --env staging",
     "deploy:production": "wrangler deploy --env production",
@@ -19,7 +21,8 @@
     "clean": "rm -rf .wrangler"
   },
   "dependencies": {
-    "hono": "^4.10.2"
+    "hono": "^4.10.2",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20251011.0",

@@ -4,9 +4,10 @@
  */
 
 import { Hono } from 'hono';
-import type { Bindings, ChainInfo, AssetInfo } from '../types';
+import type { Bindings, Variables, ChainInfo, AssetInfo } from '../types';
+import { validateBody, chainInfoSchema, assetInfoSchema } from '../middleware/validation';
 
-const registry = new Hono<{ Bindings: Bindings }>();
+const registry = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
 // ==========================================
 // Chain Registry
@@ -60,13 +61,9 @@ registry.get('/chains/:chainId', async (c) => {
 /**
  * POST /registry/chains - Add or update chain
  */
-registry.post('/chains', async (c) => {
+registry.post('/chains', validateBody(chainInfoSchema), async (c) => {
   try {
-    const chain = await c.req.json<ChainInfo>();
-
-    if (!chain.chainId || !chain.chainName) {
-      return c.json({ error: 'chainId and chainName are required' }, 400);
-    }
+    const chain = c.get('validatedBody') as ChainInfo;
 
     await c.env.CHAIN_REGISTRY.put(chain.chainId, JSON.stringify(chain));
 
@@ -150,13 +147,9 @@ registry.get('/assets/:assetId', async (c) => {
 /**
  * POST /registry/assets - Add or update asset
  */
-registry.post('/assets', async (c) => {
+registry.post('/assets', validateBody(assetInfoSchema), async (c) => {
   try {
-    const asset = await c.req.json<AssetInfo>();
-
-    if (!asset.assetId || !asset.chainId || !asset.symbol) {
-      return c.json({ error: 'assetId, chainId, and symbol are required' }, 400);
-    }
+    const asset = c.get('validatedBody') as AssetInfo;
 
     await c.env.ASSET_REGISTRY.put(asset.assetId, JSON.stringify(asset));
 

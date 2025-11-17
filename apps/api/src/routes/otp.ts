@@ -4,9 +4,11 @@
  */
 
 import { Hono } from 'hono';
-import type { Bindings, OTPData } from '../types';
+import type { Bindings, Variables, OTPData } from '../types';
+import { validateBody, otpGenerateSchema, otpVerifySchema } from '../middleware/validation';
+import { rateLimitByEmail, RATE_LIMITS } from '../middleware/ratelimit';
 
-const otp = new Hono<{ Bindings: Bindings }>();
+const otp = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
 const OTP_CONFIG = {
   LENGTH: 6,
@@ -29,74 +31,69 @@ function generateOTPCode(): string {
 /**
  * POST /otp/generate - Generate OTP for email verification
  */
-otp.post('/generate', async (c) => {
-  try {
-    const body = await c.req.json<{
-      email: string;
-      purpose?: 'email_verification' | 'login' | 'password_reset';
-    }>();
+otp.post(
+  '/generate',
+  rateLimitByEmail(RATE_LIMITS.OTP_GENERATE),
+  validateBody(otpGenerateSchema),
+  async (c) => {
+    try {
+      const body = c.get('validatedBody') as { email: string; purpose?: 'email_verification' | 'login' | 'password_reset' };
 
-    if (!body.email || !isValidEmail(body.email)) {
-      return c.json({ error: 'Valid email is required' }, 400);
-    }
+      const code = generateOTPCode();
+      const now = Date.now();
+      const expiresAt = now + OTP_CONFIG.EXPIRY_MINUTES * 60 * 1000;
 
-    const code = generateOTPCode();
-    const now = Date.now();
-    const expiresAt = now + OTP_CONFIG.EXPIRY_MINUTES * 60 * 1000;
+      const otpData: OTPData = {
+        code,
+        email: body.email,
+        purpose: body.purpose || 'email_verification',
+        createdAt: now,
+        expiresAt,
+        attempts: 0,
+      };
 
-    const otpData: OTPData = {
-      code,
-      email: body.email.toLowerCase(),
-      purpose: body.purpose || 'email_verification',
-      createdAt: now,
-      expiresAt,
-      attempts: 0,
-    };
+      // Store OTP with email as key
+      const otpKey = `otp:${body.email}`;
+      await c.env.OTP_STORE.put(otpKey, JSON.stringify(otpData), {
+        expirationTtl: OTP_CONFIG.EXPIRY_MINUTES * 60,
+      });
 
-    // Store OTP with email as key
-    const otpKey = `otp:${body.email.toLowerCase()}`;
-    await c.env.OTP_STORE.put(otpKey, JSON.stringify(otpData), {
-      expirationTtl: OTP_CONFIG.EXPIRY_MINUTES * 60,
-    });
+      // In development, return the code for testing
+      if (c.env.ENVIRONMENT === 'development') {
+        return c.json({
+          success: true,
+          message: 'OTP generated successfully',
+          code, // Only in development
+          expiresIn: OTP_CONFIG.EXPIRY_MINUTES * 60,
+        });
+      }
 
-    // In development, return the code for testing
-    if (c.env.ENVIRONMENT === 'development') {
+      // In production, don't return the code (send via email instead)
       return c.json({
         success: true,
-        message: 'OTP generated successfully',
-        code, // Only in development
+        message: 'OTP sent to your email',
         expiresIn: OTP_CONFIG.EXPIRY_MINUTES * 60,
       });
+    } catch (error) {
+      console.error('[OTP Generation Error]', error);
+      return c.json({ error: 'Failed to generate OTP' }, 500);
     }
-
-    // In production, don't return the code (send via email instead)
-    return c.json({
-      success: true,
-      message: 'OTP sent to your email',
-      expiresIn: OTP_CONFIG.EXPIRY_MINUTES * 60,
-    });
-  } catch (error) {
-    console.error('[OTP Generation Error]', error);
-    return c.json({ error: 'Failed to generate OTP' }, 500);
   }
-});
+);
 
 /**
  * POST /otp/verify - Verify OTP
  */
-otp.post('/verify', async (c) => {
-  try {
-    const body = await c.req.json<{
-      email: string;
-      code: string;
-    }>();
+otp.post(
+  '/verify',
+  rateLimitByEmail(RATE_LIMITS.OTP_VERIFY),
+  validateBody(otpVerifySchema),
+  async (c) => {
+    try {
+      const body = c.get('validatedBody') as { email: string; code: string };
 
-    if (!body.email || !body.code) {
-      return c.json({ error: 'Email and code are required' }, 400);
-    }
-
-    const otpKey = `otp:${body.email.toLowerCase()}`;
-    const storedOTP = await c.env.OTP_STORE.get<OTPData>(otpKey, 'json');
+      const otpKey = `otp:${body.email}`;
+      const storedOTP = await c.env.OTP_STORE.get<OTPData>(otpKey, 'json');
 
     if (!storedOTP) {
       return c.json({ error: 'OTP not found or expired' }, 404);
@@ -139,24 +136,17 @@ otp.post('/verify', async (c) => {
     // OTP verified successfully - delete it
     await c.env.OTP_STORE.delete(otpKey);
 
-    return c.json({
-      success: true,
-      message: 'OTP verified successfully',
-      email: storedOTP.email,
-      purpose: storedOTP.purpose,
-    });
-  } catch (error) {
-    console.error('[OTP Verification Error]', error);
-    return c.json({ error: 'Failed to verify OTP' }, 500);
+      return c.json({
+        success: true,
+        message: 'OTP verified successfully',
+        email: storedOTP.email,
+        purpose: storedOTP.purpose,
+      });
+    } catch (error) {
+      console.error('[OTP Verification Error]', error);
+      return c.json({ error: 'Failed to verify OTP' }, 500);
+    }
   }
-});
-
-/**
- * Simple email validation
- */
-function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
+);
 
 export default otp;

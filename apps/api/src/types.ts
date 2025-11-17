@@ -12,6 +12,14 @@ export type Bindings = {
   EMAIL_FROM?: string;
 };
 
+/**
+ * Context variables set by middleware
+ */
+export type Variables = {
+  validatedBody?: unknown;
+  validatedQuery?: unknown;
+};
+
 export interface SessionData {
   userId?: string;
   username?: string;

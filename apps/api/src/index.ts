@@ -13,12 +13,12 @@
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
 import { cors } from 'hono/cors';
-import type { Bindings } from './types';
+import type { Bindings, Variables } from './types';
 import sessionRoutes from './routes/session';
 import registryRoutes from './routes/registry';
 import otpRoutes from './routes/otp';
 
-const app = new Hono<{ Bindings: Bindings }>();
+const app = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
 // Global middleware
 app.use('*', logger());
@@ -71,7 +71,7 @@ app.get('/health', (c) => {
 });
 
 // API Routes
-const api = new Hono<{ Bindings: Bindings }>();
+const api = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
 // Mount route modules
 api.route('/session', sessionRoutes);
