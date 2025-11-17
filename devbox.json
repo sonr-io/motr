@@ -27,6 +27,8 @@
     "scripts": {
       "build": "bun run build",
       "build:clean": "bun run clean && bun run build",
+      "build:libs:enclave": "bun run build:libs:enclave",
+      "build:libs:vault": "bun run build:libs:vault",
       "dev": "bun run dev",
       "test": "bun run test",
       "test:coverage": "bun run test -- --coverage",
