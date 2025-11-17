@@ -7,57 +7,128 @@
 [![TinyGo](https://img.shields.io/badge/TinyGo-0.39+-00ADD8?logo=go)](https://tinygo.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Bun](https://img.shields.io/badge/Bun-1.3+-000000?logo=bun)](https://bun.sh/)
+[![SvelteKit](https://img.shields.io/badge/SvelteKit-5.0+-FF3E00?logo=svelte)](https://kit.svelte.dev/)
 
 ## Overview
 
-Motr is a comprehensive WebAssembly-based monorepo that provides secure cryptographic operations, decentralized identity management, and a suite of web applications for the Sonr ecosystem. The architecture leverages Cloudflare Workers for edge computing and Go-compiled WASM for cryptographic operations.
+Motr is a comprehensive WebAssembly-based monorepo that provides secure cryptographic operations, decentralized identity management, and a full-stack web application for the Sonr ecosystem. The architecture leverages Cloudflare Workers and Pages for edge computing and Go-compiled WASM for cryptographic operations.
+
+The included API and frontend are reference implementations. The core value lies in the **framework-agnostic WASM libraries** (`libs/enclave` and `libs/vault`) which can be integrated into any stack. Use the provided API for rapid deployment, or replace it with your own backend (Express, FastAPI, etc.) while keeping the powerful cryptographic primitives.
 
 ### Key Features
 
-- **🚀 Hono-based Worker** - Edge-deployed orchestrator serving multiple frontends with SSR
-- **🔐 Cryptographic Vault** - WASM-based secure key management with MPC and threshold cryptography
-- **🎭 DID Management** - Decentralized identity with WebAuthn integration via Enclave
-- **⚡ Vite Frontends** - Modern React apps for auth, console, profile, and search
-- **📦 Shared Packages** - Reusable TypeScript libraries and UI components
+- **🚀 Hono-based API Worker** - Edge-deployed RESTful API with Zod validation and rate limiting *(replaceable)*
+- **🎨 SvelteKit Frontend** - Modern web app with Konsta UI (Material Design) and SSR support *(replaceable)*
+- **🔐 Cryptographic Vault** - WASM-based secure key management with MPC and threshold cryptography *(core library)*
+- **🎭 DID Management** - Decentralized identity with WebAuthn integration via Enclave *(core library)*
+- **📦 Shared Packages** - Reusable TypeScript SDK and UI components *(framework-agnostic)*
 
 ## Repository Structure
 
 ```
 motr/
-├── apps/                    # Vite-based frontend applications
-│   ├── auth/               # Authentication & registration app
-│   ├── console/            # Developer console & admin interface
-│   ├── profile/            # User profile management
-│   └── search/             # Sonr network search
+├── apps/                 # Reference Implementations (Replaceable)
+│   ├── api/               # Hono-based Cloudflare Worker API
+│   │   ├── src/
+│   │   │   ├── index.ts  # API entry point
+│   │   │   ├── routes/   # API route handlers
+│   │   │   └── types/    # TypeScript types
+│   │   ├── scripts/
+│   │   │   └── seed-registries.ts  # KV seeding script
+│   │   └── wrangler.toml # API Worker configuration
+│   └── web/              # SvelteKit frontend application
+│       ├── src/
+│       │   ├── routes/   # SvelteKit routes
+│       │   ├── lib/      # Shared utilities
+│       │   └── app.html  # HTML template
+│       └── svelte.config.js  # SvelteKit configuration
 │
-├── libs/                   # Go/WASM cryptographic libraries
-│   ├── enclave/           # DID & WebAuthn Durable Object worker
-│   └── vault/             # Cryptographic vault operations
+├── libs/                 # Core Libraries (Framework-Agnostic)
+│   ├── enclave/         # DID & WebAuthn Durable Object worker
+│   └── vault/           # Cryptographic vault operations
 │
-├── pkgs/                   # TypeScript packages
-│   ├── config/            # Shared build & lint configs
-│   ├── react/             # React hooks & providers
-│   ├── sdk/               # Core TypeScript SDK
-│   └── ui/                # Shared UI components (shadcn)
+├── pkgs/                 # TypeScript Packages (Reusable)
+│   ├── sdk/             # Core TypeScript SDK
+│   └── ui/              # Shared UI components (Konsta UI)
 │
-├── src/                    # Cloudflare Worker (Hono-based)
-│   └── worker.ts          # Main orchestrator serving all frontends
-│
-├── docs/                   # Documentation & MDX content
-├── wrangler.toml          # Worker deployment configuration
-├── tsconfig.json          # Worker TypeScript config
-├── package.json           # Root workspace configuration
-└── turbo.json             # Turborepo build pipeline
+├── package.json         # Root workspace configuration
+└── turbo.json          # Turborepo build pipeline
 ```
+
+## Flexibility & Customization
+
+Motr is designed with **modularity** as a core principle. The architecture separates concerns to allow developers to adopt only what they need:
+
+### What's Replaceable
+
+1. **API Backend (`apps/api/`)**: The Cloudflare Worker API is a reference implementation optimized for edge deployment. You can replace it with:
+   - **Express.js** or **Fastify** on Node.js
+   - **FastAPI** or **Flask** on Python
+   - **Go** with `net/http` or **Fiber**
+   - **Rust** with **Actix** or **Axum**
+   - Any backend framework that can serve HTTP and integrate with the SDK
+
+2. **Frontend (`apps/web/`)**: The SvelteKit frontend is one of many possible UI implementations. Replace it with:
+   - **React** with Next.js or Vite
+   - **Vue** with Nuxt or Vite
+   - **Angular** or **Solid.js**
+   - Native mobile apps (React Native, Flutter)
+   - Desktop apps (Electron, Tauri)
+
+### What's Core (Keep These)
+
+1. **WASM Libraries (`libs/`)**: These are the cryptographic primitives that power Motr:
+   - `libs/enclave` - DID management, WebAuthn, identity
+   - `libs/vault` - Multi-chain signing, MPC, threshold cryptography
+   - Written in Go, compiled to WASM for universal compatibility
+
+2. **SDK (`pkgs/sdk/`)**: Framework-agnostic TypeScript SDK for integrating with the WASM libraries
+
+### Integration Examples
+
+**Using Motr libs with Express.js:**
+```typescript
+import express from 'express';
+import { createVaultClient } from '@sonr.io/vault';
+
+const app = express();
+const vault = await createVaultClient();
+
+app.post('/api/sign', async (req, res) => {
+  const signature = await vault.sign(req.body.transaction);
+  res.json({ signature });
+});
+```
+
+**Using Motr libs with FastAPI:**
+```python
+from fastapi import FastAPI
+# Import WASM module via pyodide or similar
+# Access vault operations through JavaScript bridge
+
+app = FastAPI()
+
+@app.post("/api/sign")
+async def sign_transaction(tx: Transaction):
+    # Use WASM vault for signing
+    signature = vault.sign(tx)
+    return {"signature": signature}
+```
+
+The provided Cloudflare deployment is optimized for **speed** and **global distribution**, but developers can redistribute Motr to fit their infrastructure, compliance requirements, or technology preferences.
 
 ## Quick Start
 
 ### Prerequisites
 
 - **Bun** 1.3+ ([install](https://bun.sh/))
+- **Node.js** 20+ (for Wrangler CLI)
+- **Cloudflare Account** ([sign up](https://dash.cloudflare.com/sign-up))
+- **Wrangler** CLI (included in dependencies)
+
+Optional (for WASM development):
 - **Go** 1.24.4+ ([install](https://go.dev/dl/))
 - **TinyGo** 0.39+ ([install](https://tinygo.org/getting-started/install/))
-- **Wrangler** CLI (included in dependencies)
 
 ### Installation
 
@@ -71,27 +142,121 @@ bun install
 
 # Build all packages and libraries
 turbo build
+
+# Authenticate with Cloudflare (one-time setup)
+bun run api:login
+```
+
+### Initial Setup
+
+#### 1. Create KV Namespaces
+
+Create the required KV namespaces for the API:
+
+```bash
+# Navigate to API directory
+cd apps/api
+
+# Create production namespaces
+npx wrangler kv namespace create SESSIONS
+npx wrangler kv namespace create OTP_STORE
+npx wrangler kv namespace create CHAIN_REGISTRY
+npx wrangler kv namespace create ASSET_REGISTRY
+
+# Copy the generated namespace IDs to wrangler.toml
+```
+
+#### 2. Update API Configuration
+
+Edit `apps/api/wrangler.toml` with your namespace IDs:
+
+```toml
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "your_sessions_id_here"
+
+[[kv_namespaces]]
+binding = "OTP_STORE"
+id = "your_otp_store_id_here"
+
+[[kv_namespaces]]
+binding = "CHAIN_REGISTRY"
+id = "your_chain_registry_id_here"
+
+[[kv_namespaces]]
+binding = "ASSET_REGISTRY"
+id = "your_asset_registry_id_here"
 ```
 
 ### Development
 
-```bash
-# Start main worker (serves all frontends via Hono)
-bun run dev
+#### API Development
 
-# Start specific frontend app
-bun run dev:auth       # Authentication app
-bun run dev:console    # Console app
-bun run dev:profile    # Profile app
-bun run dev:search     # Search app
+```bash
+# Start API dev server (http://localhost:5165)
+bun run api:dev
+
+# Or from monorepo root
+cd apps/api && bun run dev
+```
+
+The API will be available at `http://localhost:5165` with live reload enabled.
+
+#### Web Frontend Development
+
+```bash
+# Start SvelteKit dev server (http://localhost:5173)
+bun run web:dev
+
+# Or from monorepo root
+cd apps/web && bun run dev
+```
+
+The web app will be available at `http://localhost:5173` with HMR (Hot Module Replacement).
+
+#### Full Stack Development
+
+```bash
+# Start both API and Web concurrently
+bun run dev
+```
+
+This runs both the API (port 5165) and Web (port 5173) servers in parallel.
+
+#### Seeding Development Data
+
+After starting the API for the first time, seed the registries with blockchain data:
+
+```bash
+# Seed chain and asset registries
+bun run api:seed
+
+# Or automatically seed after starting dev server (waits 3 seconds)
+cd apps/api && bun run dev:seed
+```
+
+This populates the KV stores with 5 Cosmos chains (Cosmos Hub, Osmosis, Juno, Stargaze, Akash) and their native assets for development.
+
+#### WASM Library Development
+
+```bash
+# Build enclave WASM
+cd libs/enclave && bun run build
+
+# Build vault WASM
+cd libs/vault && bun run build
 
 # Start enclave worker (Durable Object)
 cd libs/enclave && wrangler dev
 
 # Start vault worker
 cd libs/vault && wrangler dev
+```
 
-# Run tests
+#### Testing & Quality
+
+```bash
+# Run all tests
 turbo test            # All tests
 bun run test:all     # All package tests
 
@@ -103,83 +268,90 @@ turbo check          # Type check all packages
 
 ## Architecture
 
-### 1. Cloudflare Worker (Hono)
+### 1. API Worker (Hono)
 
-The main orchestrator at `src/worker.ts` using [Hono framework](https://hono.dev/):
+The API backend at `apps/api/src/index.ts` using [Hono framework](https://hono.dev/):
+
+> **Design Note:** The API deployment to Cloudflare Workers is a design choice for rapid deployment and edge performance. The core functionality (price feeds, session management, and registry data) could be replaced with any API backend of your choice. The `libs/` packages (Enclave and Vault) are framework-agnostic and can be integrated into any architecture that suits your needs.
 
 **Features:**
-- 🎯 Smart routing based on subdomain, path, and session state
-- 📦 Static asset serving for all Vite-built frontends
-- 🔐 Session management with KV storage
+- 🎯 RESTful API with clean route organization
+- 📦 Zod schema validation for all inputs
+- 🔐 Rate limiting (IP-based and email-based)
+- 💾 Cloudflare KV for session and data storage
 - 🔌 Service bindings to Enclave and Vault workers
-- 🚀 Built-in middleware (logger, etag, CORS)
+- 🚀 Built-in middleware (CORS, error handling)
+- 🔄 **Replaceable:** Swap with your own API backend while keeping the WASM libs
 
-**Routing Strategy:**
+**API Routes:**
 ```typescript
-// Subdomain routing
-console.sonr.id/*  → Console app
-profile.sonr.id/*  → Profile app
-search.sonr.id/*   → Search app
+// Authentication endpoints
+POST   /api/auth/login           # User login
+POST   /api/auth/register        # User registration
+POST   /api/auth/verify-otp      # OTP verification
+POST   /api/auth/logout          # User logout
 
-// Path-based routing
-/console/*         → Console app
-/profile/*         → Profile app
-/search/*          → Search app
-
-// Session-based (authenticated users)
-/                  → Default app from user preferences
-
-// Default (unauthenticated)
-/                  → Auth app
+// Registry endpoints
+GET    /api/registry/chains      # List all chains
+POST   /api/registry/chains      # Add new chain
+GET    /api/registry/assets      # List all assets
+POST   /api/registry/assets      # Add new asset
 ```
 
 **Development:**
 ```bash
-bun run dev          # Start worker at http://localhost:5165
+cd apps/api
+bun run dev          # Start API at http://localhost:5165
+bun run seed         # Seed development data
 bun run preview      # Test with remote bindings
 bun run logs         # Tail production logs
 ```
 
-### 2. Frontend Applications
+### 2. Web Frontend (SvelteKit)
 
-Modern React apps built with Vite and TanStack:
+Modern full-stack web app built with SvelteKit and Konsta UI:
 
-#### Auth App (`apps/auth/`)
-- User registration and authentication
-- WebAuthn credential management
-- OAuth/OIDC flows
-- OTP verification
+**Location:** `apps/web/`
 
-#### Console App (`apps/console/`)
-- Developer dashboard
-- API key management
-- Service configuration
-- Analytics and monitoring
-
-#### Profile App (`apps/profile/`)
-- User profile management
-- DID document viewer
-- Credential management
-- Settings and preferences
-
-#### Search App (`apps/search/`)
-- Sonr network search
-- User discovery
-- Service discovery
-- Explorer interface
+**Features:**
+- 🎨 Material Design 3 components (Konsta UI)
+- 🚀 Server-Side Rendering (SSR) with SvelteKit
+- 📱 Responsive design for mobile and desktop
+- ⚡ Optimized for Cloudflare Pages deployment
+- 🎯 Type-safe API integration with SDK
 
 **Tech Stack:**
-- React 19
-- TanStack Router, Query, Form
-- Vite 5
-- Tailwind CSS 4
+- SvelteKit 2.x
+- Konsta UI (Material Design components)
+- Vite 6.x
+- Tailwind CSS 4.x
 - TypeScript 5.9+
+- `@sveltejs/adapter-cloudflare` for deployment
+
+**SvelteKit Configuration:**
+
+The app uses the Cloudflare adapter for optimal edge deployment:
+
+```javascript
+// svelte.config.js
+import adapter from '@sveltejs/adapter-cloudflare';
+
+export default {
+  kit: {
+    adapter: adapter({
+      routes: {
+        include: ['/*'],
+        exclude: ['<all>']
+      }
+    })
+  }
+};
+```
 
 **Development:**
 ```bash
-cd apps/auth
-bun run dev          # Start dev server on port 3000
-
+cd apps/web
+bun run dev          # Start dev server on port 5173
 bun run build        # Build for production
 bun run preview      # Preview production build
 ```
@@ -399,57 +571,264 @@ bun run clean:turbo            # Clean turbo daemon
 
 ## Deployment
 
-### Single Worker Deployment
+### Prerequisites
 
-All frontend apps are served by a single Cloudflare Worker:
+1. **Cloudflare Account:** Ensure you have a Cloudflare account and are authenticated:
+   ```bash
+   npx wrangler login
+   ```
+
+2. **KV Namespaces:** Create production KV namespaces (see Initial Setup section)
+
+3. **Build Assets:** Build all packages before deploying:
+   ```bash
+   turbo build
+   ```
+
+### API Deployment (Cloudflare Workers)
+
+The API is deployed as a Cloudflare Worker:
 
 ```bash
-# Deploy to production
-bun run deploy
+# Deploy API to production
+bun run api:deploy
 
-# Deploy to staging
-bun run deploy:staging
+# Or from API directory
+cd apps/api && npx wrangler deploy
 
-# Test before deploying
-bun run preview
+# Deploy to staging environment
+bun run api:deploy:staging
+cd apps/api && npx wrangler deploy --env staging
+
+# Test with remote bindings before deploying
+cd apps/api && npx wrangler dev --remote
 ```
 
-**Deployment Process:**
-1. Build all frontend apps (`turbo build`)
-2. Compile worker TypeScript
-3. Wrangler bundles static assets
-4. Deploy to Cloudflare edge network
-
-### Environment Configuration
+**API Wrangler Configuration (`apps/api/wrangler.toml`):**
 
 ```toml
-# wrangler.toml
-name = "motr-orchestrator"
-main = "src/worker.ts"
+name = "motr-api"
+main = "src/index.ts"
 compatibility_date = "2025-01-11"
 
+# KV Namespaces
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "your_production_sessions_id"
+
+[[kv_namespaces]]
+binding = "OTP_STORE"
+id = "your_production_otp_store_id"
+
+[[kv_namespaces]]
+binding = "CHAIN_REGISTRY"
+id = "your_production_chain_registry_id"
+
+[[kv_namespaces]]
+binding = "ASSET_REGISTRY"
+id = "your_production_asset_registry_id"
+
+# Production environment
 [env.production]
+name = "motr-api-production"
 routes = [
-  { pattern = "sonr.id/*", custom_domain = true },
-  { pattern = "*.sonr.id/*", custom_domain = true }
+  { pattern = "api.sonr.id/*", custom_domain = true }
 ]
 
+# Staging environment
 [env.staging]
-name = "motr-orchestrator-staging"
-workers_dev = true
+name = "motr-api-staging"
 ```
 
-### Durable Objects
+### Web Deployment (Cloudflare Pages)
+
+The SvelteKit frontend is deployed to Cloudflare Pages:
+
+#### Method 1: Direct Upload (Wrangler CLI)
+
+```bash
+# Build the SvelteKit app
+cd apps/web && bun run build
+
+# Deploy to Cloudflare Pages
+npx wrangler pages deploy .svelte-kit/cloudflare --project-name=motr-web
+
+# Deploy to specific branch (staging)
+npx wrangler pages deploy .svelte-kit/cloudflare --project-name=motr-web --branch=staging
+```
+
+#### Method 2: Git Integration (Recommended)
+
+1. **Connect Repository:**
+   - Go to [Cloudflare Dashboard](https://dash.cloudflare.com/) → Pages
+   - Click "Create a project" → "Connect to Git"
+   - Select your repository
+
+2. **Configure Build Settings:**
+   ```
+   Framework preset: SvelteKit
+   Build command: bun run build
+   Build output directory: .svelte-kit/cloudflare
+   Root directory: apps/web
+   ```
+
+3. **Environment Variables (Optional):**
+   - Set `API_URL` to your API worker URL
+   - Set any other required environment variables
+
+4. **Deploy:**
+   - Push to your main branch for production
+   - Create branches for preview deployments
+
+**SvelteKit Build Configuration:**
+
+The app uses `@sveltejs/adapter-cloudflare` which generates the correct output:
+
+```javascript
+// apps/web/svelte.config.js
+import adapter from '@sveltejs/adapter-cloudflare';
+
+export default {
+  kit: {
+    adapter: adapter()
+  }
+};
+```
+
+**Wrangler Output Structure:**
+```
+.svelte-kit/cloudflare/
+├── _worker.js              # SvelteKit server (Cloudflare Worker)
+├── _routes.json            # Route manifest
+└── [static files]          # Pre-rendered and static assets
+```
+
+### Testing Deployments
+
+```bash
+# Test API with remote bindings
+cd apps/api && npx wrangler dev --remote
+
+# Preview production build locally
+cd apps/web && bun run preview
+
+# View deployment logs
+bun run api:logs              # API worker logs
+npx wrangler pages deployment tail --project-name=motr-web  # Pages logs
+```
+
+### Deployment URLs
+
+After deployment, your services will be available at:
+
+**Production:**
+- API: `https://motr-api.<your-subdomain>.workers.dev` or `https://api.sonr.id`
+- Web: `https://motr-web.pages.dev` or `https://sonr.id`
+
+**Staging:**
+- API: `https://motr-api-staging.<your-subdomain>.workers.dev`
+- Web: `https://<branch>.motr-web.pages.dev`
+
+### Post-Deployment
+
+1. **Seed Production Data:**
+   ```bash
+   # Update API_URL in seed script to production URL
+   API_URL=https://api.sonr.id bun run api:seed
+   ```
+
+2. **Verify Health:**
+   ```bash
+   curl https://api.sonr.id/health
+   curl https://sonr.id
+   ```
+
+3. **Monitor Logs:**
+   ```bash
+   bun run api:logs              # Follow API logs
+   bun run api:logs:production   # Production only
+   ```
+
+### Durable Objects & Additional Workers
 
 Enclave and Vault workers are deployed separately:
 
 ```bash
 # Deploy enclave (Durable Object)
-cd libs/enclave && wrangler deploy
+cd libs/enclave && npx wrangler deploy
 
-# Deploy vault
-cd libs/vault && wrangler deploy
+# Deploy vault worker
+cd libs/vault && npx wrangler deploy
 ```
+
+## Registry Seeding
+
+The API includes a comprehensive seeding system for populating chain and asset registries with development data.
+
+### What Gets Seeded
+
+**Chains:**
+- Cosmos Hub (`cosmoshub-4`)
+- Osmosis (`osmosis-1`)
+- Juno (`juno-1`)
+- Stargaze (`stargaze-1`)
+- Akash (`akashnet-2`)
+
+**Assets:**
+- ATOM (Cosmos Hub native token)
+- OSMO (Osmosis native token)
+- JUNO (Juno native token)
+- STARS (Stargaze native token)
+- AKT (Akash native token)
+
+### Seeding Commands
+
+```bash
+# From monorepo root
+bun run api:seed
+
+# From apps/api directory
+bun run seed
+
+# Auto-seed after starting dev server (waits 3s)
+cd apps/api && bun run dev:seed
+
+# Seed production environment
+API_URL=https://api.sonr.id bun run api:seed
+```
+
+### How It Works
+
+The seed script (`apps/api/scripts/seed-registries.ts`):
+1. Waits for the API server to be running
+2. Makes POST requests to `/api/registry/chains` and `/api/registry/assets`
+3. Populates KV stores via the API endpoints
+4. Reports success/failure for each chain and asset
+
+### Adding More Chains/Assets
+
+Edit `apps/api/scripts/seed-registries.ts` to add more data:
+
+```typescript
+const SEED_CHAINS: ChainInfo[] = [
+  // ... existing chains
+  {
+    chainId: 'secret-4',
+    chainName: 'Secret Network',
+    nativeCurrency: {
+      name: 'Secret',
+      symbol: 'SCRT',
+      decimals: 6,
+    },
+    rpcUrls: ['https://rpc.secret.network'],
+    blockExplorerUrls: ['https://mintscan.io/secret'],
+    iconUrl: 'https://raw.githubusercontent.com/cosmos/chain-registry/master/secretnetwork/images/scrt.png',
+    network: 'mainnet',
+  },
+];
+```
+
+See `apps/api/scripts/README.md` for more details.
 
 ## Testing
 
@@ -472,11 +851,13 @@ turbo test -- --coverage
 ### Integration Tests
 
 ```bash
-# End-to-end tests
-bun run test:e2e
+# Test API endpoints
+curl http://localhost:5165/health
+curl http://localhost:5165/api/registry/chains
+curl http://localhost:5165/api/registry/assets
 
-# Worker tests
-wrangler dev --test
+# Test with staging/production
+curl https://api.sonr.id/health
 ```
 
 ## Documentation
@@ -544,14 +925,16 @@ MIT License - see [LICENSE](./LICENSE) for details
 
 Built with outstanding open-source technologies:
 
-- [Hono](https://hono.dev/) - Ultrafast web framework
+- [Hono](https://hono.dev/) - Ultrafast web framework for Cloudflare Workers
+- [SvelteKit](https://kit.svelte.dev/) - Full-stack framework with SSR and edge support
+- [Konsta UI](https://konstaui.com/) - Material Design 3 components for Svelte
 - [TinyGo](https://tinygo.org/) - Go compiler for WebAssembly
 - [Extism](https://extism.org/) - Universal plugin system
-- [TanStack](https://tanstack.com/) - Modern React utilities
 - [Cloudflare Workers](https://workers.cloudflare.com/) - Edge computing platform
+- [Cloudflare Pages](https://pages.cloudflare.com/) - Jamstack deployment platform
 - [Vite](https://vitejs.dev/) - Next generation frontend tooling
 - [Bun](https://bun.sh/) - Fast all-in-one JavaScript runtime
-- [shadcn/ui](https://ui.shadcn.com/) - Accessible component library
+- [Turborepo](https://turbo.build/) - High-performance build system
 
 ---
 

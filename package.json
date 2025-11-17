@@ -42,6 +42,7 @@
     "build:pkgs": "bunx --bun turbo build --filter='./pkgs/*'",
     "build:force": "bunx --bun turbo build --filter='./libs/*' --force && bunx --bun turbo build --filter='./pkgs/*' --force && bunx --bun turbo build --filter='./apps/*' --force",
     "api:dev": "cd apps/api && bun run dev",
+    "api:seed": "cd apps/api && bun run seed",
     "api:deploy": "cd apps/api && bun run deploy",
     "api:deploy:staging": "cd apps/api && bun run deploy:staging",
     "api:deploy:production": "cd apps/api && bun run deploy:production",
