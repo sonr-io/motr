@@ -1,39 +1,34 @@
-# @sonr.io/api
+# @sonr.io/worker
 
-Motr Orchestrator Worker - Central Cloudflare Worker serving the consolidated frontend app with session management and smart routing.
+Motr Worker - Cloudflare Worker for UCAN signing, transaction broadcasting, and session management.
 
 ## Architecture
 
-This worker serves as the main orchestrator for the Sonr ecosystem:
+This worker provides secure API endpoints for the Motr ecosystem:
 
-- **Static Asset Serving**: Serves built Vite apps from local `public/` directory (self-contained)
-- **Smart Routing**: Routes based on subdomain, path, and session state
-- **Session Management**: Handles user sessions with KV storage
-- **API Gateway**: Proxies identity API calls to the Enclave worker
+- **Session Management**: User authentication state with KV storage
+- **UCAN Orchestration**: Token validation and delegation for capabilities
+- **Transaction Pipeline**: MPC signing and blockchain broadcasting
+- **Identity Proxy**: Forwards identity operations to Enclave Durable Objects
 
-### Self-Contained Design
+### API-First Design
 
-The worker package is fully self-contained for Cloudflare deployment:
-- All frontend assets are aggregated into `apps/api/public/` during build
-- WASM binaries are copied from libs into `public/wasm/`
-- No dependencies on root-level directories
-- Ready for independent deployment
+The worker focuses exclusively on API endpoints:
+- No static asset serving (handled by `apps/frontend` static deployment)
+- Service bindings to cryptographic workers (`ENCLAVE`, `VAULT`)
+- Session-based authentication and authorization
+- Secure transaction signing and broadcasting
 
 ## Project Structure
 
 ```
-apps/api/
+apps/worker/
 ├── src/
-│   └── worker.ts                    # Main Hono worker with routing logic
-├── scripts/
-│   └── build-worker-assets.ts       # Aggregates built apps into public/
-├── public/                          # Build output (git-ignored)
-│   ├── web/                         # Frontend app assets
-│   └── wasm/                        # WASM binaries (vault.wasm, enclave.wasm)
+│   └── worker.ts                    # Main Hono worker with API endpoints
 ├── wrangler.toml                    # Cloudflare Worker configuration
 ├── package.json                     # Worker-specific scripts and dependencies
 ├── tsconfig.json                    # TypeScript configuration
-├── .gitignore                       # Ignores public/, .wrangler/
+├── .gitignore                       # Ignores .wrangler/
 └── README.md                        # This file
 ```
 
@@ -41,47 +36,30 @@ apps/api/
 
 ### Prerequisites
 
-Before developing the worker, ensure all frontend apps and libraries are built:
+Ensure cryptographic workers are available for service bindings:
 
 ```bash
-# From monorepo root
-bun run build
+# Deploy enclave and vault workers first
+cd libs/enclave && wrangler deploy
+cd libs/vault && wrangler deploy
 ```
 
 ### Local Development
 
 ```bash
 # Start worker with Wrangler dev server
-cd apps/api
+cd apps/worker
 bun run dev
 
-# Opens browser and starts worker at http://localhost:5165
+# Worker starts at http://localhost:8787
 ```
 
-Alternatively, from the monorepo root:
+From the monorepo root:
 
 ```bash
+# Start all workers in parallel
 bun run dev
 ```
-
-### Build Assets
-
-The worker serves static assets from its local `public/` directory (self-contained). To rebuild assets:
-
-```bash
-# From worker directory
-bun run build
-
-# Or from monorepo root
-bun run worker:build
-```
-
-This script:
-1. Cleans the `apps/api/public/` directory
-2. Copies all built frontend app assets from `apps/web/dist` to `public/web/`
-3. Copies WASM files from `libs/*/dist` to `public/wasm/`
-
-**Note**: The `public/` directory is git-ignored and regenerated on each build.
 
 ### Type Checking
 
@@ -101,10 +79,10 @@ bun run clean
 
 ```bash
 # From worker directory
-bun run deploy:production
+bun run deploy
 
 # Or from monorepo root
-bun run deploy:production
+WORKSPACES=@sonr.io/worker bun run deploy
 ```
 
 ### Deploy to Staging
@@ -133,23 +111,27 @@ bun run logs
 bun run logs:staging
 ```
 
-## Routing Strategy
+## API Endpoints
 
-The worker uses Hono and routes requests based on:
+The worker provides RESTful API endpoints for Motr operations:
 
-1. **Subdomain routing** (highest priority):
-   - `console.sonr.id/*` → Console app
-   - `profile.sonr.id/*` → Profile app
-   - `search.sonr.id/*` → Search app
+### Session Management
+- `GET /api/session` - Get current session data
+- `POST /api/session/preferences` - Update user preferences
+- `POST /api/session/logout` - Destroy session
+- `POST /api/session/auth/visit` - Track auth page visits
+- `POST /api/session/auth/registration-started` - Track registration start
+- `POST /api/session/auth/registration-completed` - Track registration completion
 
-2. **Path-based routing**:
-   - `/console/*` → Console app
-   - `/profile/*` → Profile app
-   - `/search/*` → Search app
+### UCAN Operations
+- `POST /api/ucan/validate` - Validate UCAN tokens and capabilities
 
-3. **Session-based routing**:
-   - Authenticated users → User's default app preference or Console
-   - Unauthenticated users → Auth app
+### Transaction Operations
+- `POST /api/tx/sign` - Sign transactions via MPC vault
+- `POST /api/tx/broadcast` - Broadcast signed transactions to blockchains
+
+### Identity Proxy
+- `ALL /api/identity/*` - Proxy requests to Enclave Durable Objects
 
 ## Configuration
 
@@ -158,45 +140,45 @@ The worker uses Hono and routes requests based on:
 Configured in `wrangler.toml`:
 
 - `ENVIRONMENT`: `development`, `staging`, or `production`
-- `EMAIL_FROM`: Email sender for notifications
+- `EMAIL_FROM`: Email sender for OTP notifications
+- `RESEND_API_KEY`: API key for email service
 
 ### KV Namespaces
 
-- `SESSIONS`: User session storage
-- `OTP_STORE`: One-time password storage
-- `CHAIN_REGISTRY`: Blockchain chain metadata
-- `ASSET_REGISTRY`: Asset metadata
+- `SESSIONS`: User session data with expiration
+- `OTP_STORE`: One-time password storage with rate limiting
+- `CHAIN_REGISTRY`: Blockchain network metadata
+- `ASSET_REGISTRY`: Token and asset information
 
 ### Service Bindings
 
-- `ENCLAVE`: Binding to the Enclave Durable Object worker
+- `ENCLAVE`: Binding to Enclave Durable Object for identity operations
+- `VAULT`: Binding to Vault worker for transaction signing and broadcasting
 
-## API Routes
+## Security Model
 
-All API routes are mounted at `/api`:
+### Authentication
+- Session-based authentication with secure HTTP-only cookies
+- UCAN token validation for capability-based authorization
+- Multi-party computation (MPC) for transaction security
 
-- `GET /api/session` - Get current session
-- `POST /api/session/preferences` - Update session preferences
-- `POST /api/session/logout` - Logout and clear session
-- `ALL /api/identity/*` - Proxy to Enclave worker
+### Authorization
+- Capability-based access control via UCAN tokens
+- Session validation for all privileged operations
+- Service binding isolation between workers
 
-## Asset Routing
-
-Special routes for shared assets:
-
-- `/assets/*` - Redirects to app-specific assets based on referer
-- `/shared/*` - Shared vendor chunks (cached forever)
-- `/sw.js`, `/wasm_exec.js`, `/vault.wasm`, `/enclave.wasm` - WASM-related files
+### Data Protection
+- Encrypted session data in KV storage
+- Secure service-to-service communication
+- Rate limiting on sensitive endpoints
 
 ## Scripts Reference
 
 | Script | Description |
 |--------|-------------|
-| `bun run build` | Aggregate all frontend assets into public/ |
-| `bun run dev` | Build assets and start Wrangler dev server |
+| `bun run dev` | Start Wrangler dev server |
 | `bun run deploy` | Deploy to production |
 | `bun run deploy:staging` | Deploy to staging |
-| `bun run deploy:production` | Deploy to production (explicit) |
 | `bun run preview` | Test with remote bindings |
 | `bun run logs` | View production logs |
 | `bun run logs:staging` | View staging logs |
@@ -211,41 +193,55 @@ Special routes for shared assets:
 
 ## Related Packages
 
-- **Frontend Apps**: `apps/auth`, `apps/console`, `apps/profile`, `apps/search`
+- **Frontend App**: `apps/frontend` (SPA with WebAuthn)
+- **Data Server**: `apps/server` (Elysia API for realtime data)
 - **WASM Libraries**: `libs/vault`, `libs/enclave`
-- **Enclave Worker**: Durable Object at `libs/enclave/src/durable.ts`
+- **SDK**: `@sonr.io/sdk` (client-side integrations)
 
 ## Troubleshooting
 
-### Assets Not Found
+### Service Binding Errors
 
-If assets are not being served correctly:
+If service bindings fail:
 
 ```bash
-# Rebuild all apps and worker assets
-cd ../..  # Go to monorepo root
-bun run build
-cd x/worker
-bun run dev
+# Ensure cryptographic workers are deployed
+cd libs/enclave && wrangler deploy
+cd libs/vault && wrangler deploy
+
+# Check worker names match wrangler.toml
+wrangler whoami
 ```
 
 ### Port Already in Use
 
-If port 5165 is already in use, update `wrangler.toml`:
+If port 8787 is already in use, update `wrangler.toml`:
 
 ```toml
 [dev]
-port = 5166  # Change to available port
+port = 8788  # Change to available port
 ```
 
-### Service Binding Errors
+### Session Issues
 
-If the Enclave worker binding fails:
+If session management fails:
 
 ```bash
-# Ensure Enclave worker is deployed
-cd ../libs/enclave
-wrangler deploy
+# Check KV namespace IDs in wrangler.toml
+# Ensure preview/production IDs are different
+wrangler kv:namespace list
+```
+
+### Transaction Signing Errors
+
+If MPC signing fails:
+
+```bash
+# Check vault worker logs
+cd libs/vault && wrangler tail
+
+# Verify service binding configuration
+wrangler deployments list
 ```
 
 ## Learn More
@@ -253,3 +249,5 @@ wrangler deploy
 - [Cloudflare Workers Documentation](https://developers.cloudflare.com/workers/)
 - [Hono Framework](https://hono.dev/)
 - [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/)
+- [UCAN Specification](https://ucan.xyz/)
+- [WebAuthn API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API)

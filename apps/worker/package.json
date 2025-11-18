@@ -1,23 +1,22 @@
 {
-  "name": "@sonr.io/api",
+  "name": "@sonr.io/worker",
   "version": "0.1.0",
   "private": true,
-  "description": "Motr Orchestrator Worker - Cloudflare Worker serving multiple frontend apps",
+  "description": "Motr Worker - UCAN signing, transaction broadcasting, and session management",
   "type": "module",
   "main": "src/worker.ts",
   "scripts": {
-    "build": "bun scripts/build-worker-assets.ts",
-    "dev": "bun run build && wrangler dev",
-    "dev:open": "chromium --new-window http://localhost:5165 & bun run dev",
-    "deploy": "bun run build && wrangler deploy",
-    "deploy:staging": "bun run build && wrangler deploy --env staging",
-    "deploy:production": "bun run build && wrangler deploy --env production",
-    "preview": "bun run build && wrangler dev --remote",
+    "dev": "wrangler dev",
+    "dev:open": "chromium --new-window http://localhost:8787 & bun run dev",
+    "deploy": "wrangler deploy",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:production": "wrangler deploy --env production",
+    "preview": "wrangler dev --remote",
     "logs": "wrangler tail --format pretty",
     "logs:staging": "wrangler tail --env staging --format pretty",
     "logs:production": "wrangler tail --env production --format pretty",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf public .wrangler"
+    "clean": "rm -rf .wrangler"
   },
   "dependencies": {
     "hono": "^4.10.6"

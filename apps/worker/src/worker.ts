@@ -1,15 +1,14 @@
 /**
- * Motr Orchestrator Worker
+ * Motr Worker
  *
- * Central Cloudflare Worker that serves static Vite builds for multiple frontend apps
- * and routes requests based on session state, subdomain, and path using Hono framework.
+ * Cloudflare Worker for UCAN signing, transaction broadcasting, and session management.
  *
  * Architecture:
  * - Uses Hono for clean routing and middleware
- * - Serves static Vite builds bundled as worker assets
- * - Routes based on subdomain (console.sonr.id, profile.sonr.id, etc.)
- * - Routes based on path (/console, /profile, /search)
- * - Routes based on session state for authenticated users
+ * - Manages user sessions with KV storage
+ * - Validates and delegates UCAN tokens
+ * - Orchestrates MPC signing via vault/enclave workers
+ * - Broadcasts signed transactions to blockchain networks
  */
 
 import { Hono, Context } from 'hono';
@@ -23,8 +22,9 @@ import { getCookie, setCookie, deleteCookie } from 'hono/cookie';
  * These are injected by the Cloudflare Workers runtime
  */
 type Bindings = {
-  // Service binding to Enclave worker
+  // Service bindings to cryptographic workers
   ENCLAVE: Fetcher;
+  VAULT: Fetcher;
 
   // KV namespaces for various data stores
   SESSIONS: KVNamespace;
@@ -103,7 +103,7 @@ app.use(
 app.get('/health', (c) => {
   return c.json({
     status: 'ok',
-    service: 'motr-orchestrator',
+    service: 'motr-worker',
     environment: c.env.ENVIRONMENT,
     timestamp: new Date().toISOString(),
   });
@@ -111,57 +111,6 @@ app.get('/health', (c) => {
 
 // API Routes
 app.route('/api', createApiRoutes());
-
-// Shared vendor chunks - served with aggressive caching
-app.get('/shared/*', async (c) => {
-  // These chunks are content-hashed, so they can be cached forever
-  c.header('Cache-Control', 'public, max-age=31536000, immutable');
-  // Request will be served by Wrangler's [assets] from public/shared/
-  return c.notFound();
-});
-
-// Asset routing middleware - redirects /assets/* to web app
-app.get('/assets/*', async (c) => {
-  // All assets now belong to the consolidated web app
-  const assetPath = c.req.path.replace('/assets', '');
-  return c.redirect(`/web/assets${assetPath}`);
-});
-
-// Service worker and WASM files - serve from web app
-app.get('/sw.js', async (c) => {
-  return c.redirect('/web/sw.js');
-});
-
-app.get('/wasm_exec.js', async (c) => {
-  return c.redirect('/web/wasm_exec.js');
-});
-
-app.get('/vault.wasm', async (c) => {
-  return c.redirect('/web/vault.wasm');
-});
-
-app.get('/enclave.wasm', async (c) => {
-  return c.redirect('/web/enclave.wasm');
-});
-
-// Root route - serve the consolidated web app
-app.get('/', async (c) => {
-  const { sessionId } = await getSession(c);
-
-  // Set session cookie if new session was created
-  if (!getCookie(c, SESSION_CONFIG.COOKIE_NAME)) {
-    setCookie(c, SESSION_CONFIG.COOKIE_NAME, sessionId, {
-      httpOnly: true,
-      secure: c.env.ENVIRONMENT === 'production',
-      sameSite: 'Lax',
-      maxAge: SESSION_CONFIG.MAX_AGE,
-      path: '/',
-    });
-  }
-
-  // Always serve the web app - it handles routing internally
-  return c.redirect('/web/');
-});
 
 /**
  * SPA fallback handler
@@ -331,6 +280,142 @@ function createApiRoutes() {
     }
   });
 
+  // UCAN Token Operations
+  api.post('/ucan/validate', async (c) => {
+    try {
+      const body = await c.req.json<{ token: string; audience?: string }>();
+
+      // Forward to enclave for UCAN validation
+      const response = await c.env.ENCLAVE.fetch(
+        new Request('/ucan/validate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        })
+      );
+
+      return response;
+    } catch (error) {
+      console.error('[UCAN Validation Error]', error);
+      return c.json(
+        {
+          error: 'UCAN Validation Error',
+          message: 'Failed to validate UCAN token',
+        },
+        500
+      );
+    }
+  });
+
+  // Transaction Signing and Broadcasting
+  api.post('/tx/sign', async (c) => {
+    try {
+      const { session } = await getSession(c);
+
+      // Validate user is authenticated
+      if (!session.authenticated || !session.userId) {
+        return c.json({ error: 'Unauthorized' }, 401);
+      }
+
+      const body = await c.req.json<{
+        transaction: any;
+        chain: string;
+        ucanToken: string;
+      }>();
+
+      // Validate UCAN token has signing capability
+      const ucanValidation = await c.env.ENCLAVE.fetch('/ucan/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: body.ucanToken,
+          audience: session.userId,
+          requiredCapabilities: ['sign:*'],
+        }),
+      });
+
+      if (!ucanValidation.ok) {
+        return c.json({ error: 'Invalid UCAN token or insufficient capabilities' }, 403);
+      }
+
+      // Forward to vault for MPC signing
+      const signResponse = await c.env.VAULT.fetch('/sign', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          transaction: body.transaction,
+          chain: body.chain,
+          userId: session.userId,
+        }),
+      });
+
+      if (!signResponse.ok) {
+        const errorData = (await signResponse
+          .json()
+          .catch(() => ({ message: 'Signing failed' }))) as { message?: string };
+        return c.json({ error: errorData.message || 'Signing failed' }, 500);
+      }
+
+      const signedTx = await signResponse.json();
+      return c.json(signedTx);
+    } catch (error) {
+      console.error('[Transaction Signing Error]', error);
+      return c.json(
+        {
+          error: 'Transaction Signing Error',
+          message: 'Failed to sign transaction',
+        },
+        500
+      );
+    }
+  });
+
+  api.post('/tx/broadcast', async (c) => {
+    try {
+      const { session } = await getSession(c);
+
+      // Validate user is authenticated
+      if (!session.authenticated || !session.userId) {
+        return c.json({ error: 'Unauthorized' }, 401);
+      }
+
+      const body = await c.req.json<{
+        signedTransaction: any;
+        chain: string;
+      }>();
+
+      // Forward to vault for broadcasting
+      const broadcastResponse = await c.env.VAULT.fetch('/broadcast', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          signedTransaction: body.signedTransaction,
+          chain: body.chain,
+          userId: session.userId,
+        }),
+      });
+
+      if (!broadcastResponse.ok) {
+        const errorData = (await broadcastResponse
+          .json()
+          .catch(() => ({ message: 'Broadcast failed' }))) as { message?: string };
+        return c.json({ error: errorData.message || 'Broadcast failed' }, 500);
+      }
+
+      const result = await broadcastResponse.json();
+      return c.json(result);
+    } catch (error) {
+      console.error('[Transaction Broadcast Error]', error);
+      return c.json(
+        {
+          error: 'Transaction Broadcast Error',
+          message: 'Failed to broadcast transaction',
+        },
+        500
+      );
+    }
+  });
+
   return api;
 }
 
@@ -421,10 +506,7 @@ function createNewSession(): SessionData {
  * Workers' fetch handler interface. When a request comes in, the Workers
  * runtime calls app.fetch(request, env, ctx).
  *
- * When used with Wrangler's [assets], any unmatched routes will automatically
- * fall through to the asset handler which serves files from public/.
- *
- * For SPA routes (like /auth/register), Wrangler's asset handler will
- * serve the index.html if the exact path doesn't exist.
+ * This worker focuses on API endpoints for session management, UCAN validation,
+ * and transaction signing/broadcasting. It does not serve static assets.
  */
 export default app;

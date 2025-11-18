@@ -1,41 +1,20 @@
 #:schema node_modules/wrangler/config-schema.json
-name = "motr-orchestrator"
+name = "motr-worker"
 main = "src/worker.ts"
 compatibility_date = "2025-01-11"
 compatibility_flags = ["nodejs_compat"]
 
-# Assets configuration - Wrangler will bundle these into the worker
-# The public directory structure (local to worker for self-containment):
-# public/
-#   auth/ (apps/auth/dist)
-#   console/ (apps/console/dist)
-#   profile/ (apps/profile/dist)
-#   search/ (apps/search/dist)
-#   wasm/ (WASM binaries)
-[assets]
-directory = "./public"
-# SPA routing: serve index.html for unmatched routes in each app directory
-html_handling = "auto-trailing-slash"
-not_found_handling = "single-page-application"
-
 # Production environment
 [env.production]
-name = "motr-orchestrator"
+name = "motr-worker"
 workers_dev = false
-routes = [
-  { pattern = "sonr.id/*", custom_domain = true },
-  { pattern = "*.sonr.id/*", custom_domain = true },
-  { pattern = "console.sonr.id/*", custom_domain = true },
-  { pattern = "profile.sonr.id/*", custom_domain = true },
-  { pattern = "search.sonr.id/*", custom_domain = true },
-]
 
 [env.production.vars]
 ENVIRONMENT = "production"
 
 # Staging environment
 [env.staging]
-name = "motr-orchestrator-staging"
+name = "motr-worker-staging"
 workers_dev = true
 
 [env.staging.vars]
@@ -43,7 +22,7 @@ ENVIRONMENT = "staging"
 
 # Development configuration
 [dev]
-port = 5165
+port = 8787
 local_protocol = "http"
 ip = "0.0.0.0"
 
@@ -52,6 +31,12 @@ ip = "0.0.0.0"
 [[services]]
 binding = "ENCLAVE"
 service = "motr-enclave"
+
+# Service binding to the Vault Worker
+# The Vault Worker handles transaction signing and broadcasting
+[[services]]
+binding = "VAULT"
+service = "motr-vault"
 
 # KV namespace for session management
 [[kv_namespaces]]
