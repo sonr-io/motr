@@ -29,6 +29,15 @@ export default defineConfig({
       include: '**/*.svg?react',
     }),
   ],
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, './src'),
+      '@/components': resolve(__dirname, './src/components'),
+      '@/lib': resolve(__dirname, './src/lib'),
+      '@/hooks': resolve(__dirname, './src/hooks'),
+      '@/styles': resolve(__dirname, './src/styles'),
+    },
+  },
   esbuild: {
     jsx: 'automatic',
   },
