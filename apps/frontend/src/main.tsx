@@ -1,11 +1,7 @@
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
-import { createRouter, RouterProvider } from '@tanstack/react-router';
 
 import { AppProviders, getProvidersContext } from './lib/providers.tsx';
-
-// Import the generated route tree
-import { routeTree } from './routeTree.gen';
 
 import '@sonr.io/ui/styles/globals.css';
 import reportWebVitals from './reportWebVitals';
@@ -42,27 +38,8 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// Create a new router instance
-
+// Create providers context
 const providersContext = getProvidersContext();
-const router = createRouter({
-  routeTree,
-  context: {
-    ...providersContext,
-  },
-  defaultPreload: 'intent',
-  scrollRestoration: true,
-  defaultStructuralSharing: true,
-  defaultPreloadStaleTime: 0,
-  defaultViewTransition: true,
-});
-
-// Register the router instance for type safety
-declare module '@tanstack/react-router' {
-  interface Register {
-    router: typeof router;
-  }
-}
 
 // Render the app
 const rootElement = document.getElementById('app');
@@ -71,7 +48,7 @@ if (rootElement && !rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <AppProviders {...providersContext}>
-        <RouterProvider router={router} />
+        <></>
       </AppProviders>
     </StrictMode>
   );
