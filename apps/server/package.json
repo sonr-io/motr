@@ -1,0 +1,31 @@
+{
+  "name": "@sonr.io/server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Motr Server - Elysia.js API for realtime data aggregation",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "dev:open": "chromium --new-window http://localhost:8788 & bun run dev",
+    "deploy": "wrangler deploy",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:production": "wrangler deploy --env production",
+    "preview": "wrangler dev --remote",
+    "logs": "wrangler tail --format pretty",
+    "logs:staging": "wrangler tail --env staging --format pretty",
+    "logs:production": "wrangler tail --env production --format pretty",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf .wrangler"
+  },
+  "dependencies": {
+    "elysia": "^1.1.12",
+    "@elysiajs/cors": "^1.1.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20251118.0",
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.49.0"
+  }
+}

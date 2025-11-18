@@ -1,0 +1,51 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "motr-server"
+main = "src/index.ts"
+compatibility_date = "2025-01-11"
+compatibility_flags = ["nodejs_compat"]
+
+# Production environment
+[env.production]
+name = "motr-server"
+workers_dev = false
+
+[env.production.vars]
+ENVIRONMENT = "production"
+
+# Staging environment
+[env.staging]
+name = "motr-server-staging"
+workers_dev = true
+
+[env.staging.vars]
+ENVIRONMENT = "staging"
+
+# Development configuration
+[dev]
+port = 8788
+local_protocol = "http"
+ip = "0.0.0.0"
+
+# KV namespace for price cache
+[[kv_namespaces]]
+binding = "PRICE_CACHE"
+id = "your_price_cache_kv_id"
+preview_id = "your_price_cache_preview_kv_id"
+
+# Durable Objects for WebSocket room management
+[[durable_objects.bindings]]
+name = "PRICE_FEED_MANAGER"
+class_name = "PriceFeedManager"
+
+[durable_objects.classes]
+PriceFeedManager = "src/price-feed-manager.ts"
+
+# Environment variables
+[vars]
+COINGECKO_API_KEY = "your_coingecko_api_key"
+DEFIPULSE_API_KEY = "your_defipulse_api_key"
+
+# Observability
+[observability]
+enabled = true
+head_sampling_rate = 1.0
