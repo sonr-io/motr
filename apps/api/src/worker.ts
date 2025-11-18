@@ -48,7 +48,7 @@ interface SessionData {
   createdAt: number;
   lastActivityAt: number;
   preferences?: {
-    defaultApp?: 'console' | 'profile' | 'search';
+    [key: string]: any;
   };
   auth?: {
     hasVisitedBefore: boolean;
@@ -66,11 +66,6 @@ const SESSION_CONFIG = {
   MAX_AGE_MS: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
   COOKIE_NAME: 'session_id',
 } as const;
-
-/**
- * Target app types
- */
-type TargetApp = 'auth' | 'console' | 'profile' | 'search';
 
 const app = new Hono<{ Bindings: Bindings }>();
 
@@ -125,103 +120,33 @@ app.get('/shared/*', async (c) => {
   return c.notFound();
 });
 
-// Asset routing middleware - redirects /assets/* to correct app
+// Asset routing middleware - redirects /assets/* to web app
 app.get('/assets/*', async (c) => {
-  const referer = c.req.header('referer');
-  let targetApp: TargetApp = 'auth';
-
-  // Determine which app the asset belongs to based on referer
-  if (referer) {
-    const refererUrl = new URL(referer);
-    const path = refererUrl.pathname;
-
-    if (path.startsWith('/console')) targetApp = 'console';
-    else if (path.startsWith('/profile')) targetApp = 'profile';
-    else if (path.startsWith('/search')) targetApp = 'search';
-    else if (path.startsWith('/auth')) targetApp = 'auth';
-  }
-
-  // Redirect to the correct app's assets
+  // All assets now belong to the consolidated web app
   const assetPath = c.req.path.replace('/assets', '');
-  return c.redirect(`/${targetApp}/assets${assetPath}`);
+  return c.redirect(`/web/assets${assetPath}`);
 });
 
-// Service worker routing - redirects common files to correct app
+// Service worker and WASM files - serve from web app
 app.get('/sw.js', async (c) => {
-  const referer = c.req.header('referer');
-  let targetApp: TargetApp = 'auth';
-
-  // Determine which app the file belongs to based on referer
-  if (referer) {
-    const refererUrl = new URL(referer);
-    const path = refererUrl.pathname;
-
-    if (path.startsWith('/console')) targetApp = 'console';
-    else if (path.startsWith('/profile')) targetApp = 'profile';
-    else if (path.startsWith('/search')) targetApp = 'search';
-    else if (path.startsWith('/auth')) targetApp = 'auth';
-  }
-
-  // Redirect to the correct app's file
-  return c.redirect(`/${targetApp}/sw.js`);
+  return c.redirect('/web/sw.js');
 });
 
 app.get('/wasm_exec.js', async (c) => {
-  const referer = c.req.header('referer');
-  let targetApp: TargetApp = 'auth';
-
-  if (referer) {
-    const refererUrl = new URL(referer);
-    const path = refererUrl.pathname;
-
-    if (path.startsWith('/console')) targetApp = 'console';
-    else if (path.startsWith('/profile')) targetApp = 'profile';
-    else if (path.startsWith('/search')) targetApp = 'search';
-    else if (path.startsWith('/auth')) targetApp = 'auth';
-  }
-
-  return c.redirect(`/${targetApp}/wasm_exec.js`);
+  return c.redirect('/web/wasm_exec.js');
 });
 
 app.get('/vault.wasm', async (c) => {
-  const referer = c.req.header('referer');
-  let targetApp: TargetApp = 'auth';
-
-  if (referer) {
-    const refererUrl = new URL(referer);
-    const path = refererUrl.pathname;
-
-    if (path.startsWith('/console')) targetApp = 'console';
-    else if (path.startsWith('/profile')) targetApp = 'profile';
-    else if (path.startsWith('/search')) targetApp = 'search';
-    else if (path.startsWith('/auth')) targetApp = 'auth';
-  }
-
-  return c.redirect(`/${targetApp}/vault.wasm`);
+  return c.redirect('/web/vault.wasm');
 });
 
 app.get('/enclave.wasm', async (c) => {
-  const referer = c.req.header('referer');
-  let targetApp: TargetApp = 'auth';
-
-  if (referer) {
-    const refererUrl = new URL(referer);
-    const path = refererUrl.pathname;
-
-    if (path.startsWith('/console')) targetApp = 'console';
-    else if (path.startsWith('/profile')) targetApp = 'profile';
-    else if (path.startsWith('/search')) targetApp = 'search';
-    else if (path.startsWith('/auth')) targetApp = 'auth';
-  }
-
-  return c.redirect(`/${targetApp}/enclave.wasm`);
+  return c.redirect('/web/enclave.wasm');
 });
 
-// Root route - smart routing based on session and subdomain
+// Root route - serve the consolidated web app
 app.get('/', async (c) => {
-  const { session, sessionId } = await getSession(c);
-  const url = new URL(c.req.url);
-  const targetApp = determineTargetApp(url, session);
+  const { sessionId } = await getSession(c);
 
   // Set session cookie if new session was created
   if (!getCookie(c, SESSION_CONFIG.COOKIE_NAME)) {
@@ -234,38 +159,22 @@ app.get('/', async (c) => {
     });
   }
 
-  // If routing to auth app, determine specific auth page
-  if (targetApp === 'auth') {
-    const authPage = determineAuthPage(session);
-    return c.redirect(`/auth/${authPage}`);
-  }
-
-  return c.redirect(`/${targetApp}/`);
+  // Always serve the web app - it handles routing internally
+  return c.redirect('/web/');
 });
 
 /**
- * Microfrontend SPA fallback handler
+ * SPA fallback handler
  * Wrangler's asset handler will try to serve files first.
- * If a route doesn't match a file, we catch it here and serve the app's index.html
- * This enables SPA routing for each microfrontend.
+ * If a route doesn't match a file, we catch it here and serve the web app's index.html
+ * This enables SPA routing for the consolidated web app.
  */
 app.notFound(async (c) => {
   const path = c.req.path;
 
-  // Determine which app based on path
-  let appName: TargetApp | null = null;
-
-  if (path.startsWith('/auth/')) appName = 'auth';
-  else if (path.startsWith('/console/')) appName = 'console';
-  else if (path.startsWith('/profile/')) appName = 'profile';
-  else if (path.startsWith('/search/')) appName = 'search';
-
-  // If path matches an app directory, serve that app's index.html
-  if (appName) {
-    // Let Wrangler's asset handler serve the index.html
-    // We redirect to the app root which will be served by assets
-    const indexPath = `/${appName}/index.html`;
-    return c.redirect(indexPath);
+  // If path starts with /web/, serve the web app's index.html for SPA routing
+  if (path.startsWith('/web/')) {
+    return c.redirect('/web/index.html');
   }
 
   // For other 404s, return standard 404
@@ -303,7 +212,7 @@ function createApiRoutes() {
 
   api.post('/session/preferences', async (c) => {
     const { session, sessionId } = await getSession(c);
-    const body = await c.req.json<{ defaultApp?: 'console' | 'profile' | 'search' }>();
+    const body = await c.req.json<{ [key: string]: any }>();
 
     // Update session with new preferences
     session.preferences = {
@@ -423,60 +332,6 @@ function createApiRoutes() {
   });
 
   return api;
-}
-
-/**
- * Determine which frontend app to serve based on request
- */
-function determineTargetApp(url: URL, session: SessionData): TargetApp {
-  const subdomain = url.hostname.split('.')[0];
-
-  // Subdomain routing (highest priority)
-  if (subdomain === 'console') return 'console';
-  if (subdomain === 'profile') return 'profile';
-  if (subdomain === 'search') return 'search';
-
-  // Path-based routing
-  if (url.pathname.startsWith('/console')) return 'console';
-  if (url.pathname.startsWith('/profile')) return 'profile';
-  if (url.pathname.startsWith('/search')) return 'search';
-
-  // Session-based routing for authenticated users
-  if (session.authenticated) {
-    const defaultApp = session.preferences?.defaultApp;
-    if (defaultApp) return defaultApp;
-    // Default to console for authenticated users
-    return 'console';
-  }
-
-  // Default: auth app for unauthenticated users
-  return 'auth';
-}
-
-/**
- * Determine which auth page to show based on session state
- */
-function determineAuthPage(session: SessionData): 'register' | 'login' {
-  // If user has an account but not authenticated, show login
-  if (session.auth?.hasAccount) {
-    return 'login';
-  }
-
-  // If user started registration recently (within 24 hours), continue registration
-  if (session.auth?.registrationStartedAt) {
-    const hoursSinceStart = (Date.now() - session.auth.registrationStartedAt) / (1000 * 60 * 60);
-    if (hoursSinceStart < 24) {
-      return 'register';
-    }
-  }
-
-  // If user has visited before and last visited login, show login
-  if (session.auth?.hasVisitedBefore && session.auth?.lastAuthPage === 'login') {
-    return 'login';
-  }
-
-  // Default: show register for new users
-  return 'register';
 }
 
 /**
