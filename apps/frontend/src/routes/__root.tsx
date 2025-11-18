@@ -1,12 +1,23 @@
 import { HeadContent, Scripts, createRootRoute, useRouter } from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import { TanStackDevtools } from '@tanstack/react-devtools';
+import * as React from 'react';
 
 import Header from '../components/Header';
 
 import appCss from '../styles.css?url';
 
 export const Route = createRootRoute({
+  beforeLoad: async () => {
+    // For now, we'll check localStorage for auth state
+    // In a real app, this would be a server function
+    const isAuthenticated =
+      typeof window !== 'undefined' && localStorage.getItem('authenticated') === 'true';
+
+    return {
+      user: isAuthenticated ? { email: 'user@example.com' } : null,
+    };
+  },
   head: () => ({
     meta: [
       {
@@ -33,13 +44,15 @@ export const Route = createRootRoute({
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const { user } = Route.useRouteContext();
+
   return (
     <html lang="en">
       <head>
         <HeadContent />
       </head>
       <body>
-        <Header />
+        <Header user={user} />
         {children}
         <TanStackDevtools
           config={{

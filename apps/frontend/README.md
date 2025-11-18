@@ -33,6 +33,36 @@ When you run `bun run build`, TanStack Start will:
 2. **Build client assets**: Create optimized JavaScript and CSS bundles
 3. **Configure routing**: Set up client-side routing for all routes
 
+### Authentication
+
+The application includes WebAuthn passkey-based authentication using the Sonr SDK with client-side fetch functions:
+
+- **Login** (`/login`): Authenticate with existing passkey
+- **Register** (`/register`): Create new account with passkey
+- **Session Management**: Uses localStorage for client-side session state
+
+#### Authentication Flow
+
+1. **Registration**: User creates account with passkey authentication
+2. **Login**: User authenticates using their passkey
+3. **Session**: Authentication state is stored in localStorage
+4. **Logout**: Clears authentication state and redirects to home
+
+#### Components Used
+
+- **LoginFlow**: Handles passkey authentication for existing users
+- **RegisterFlow**: Handles new user registration with passkey
+- **Header**: Shows login/logout buttons based on authentication state
+
+#### Client-Side Architecture
+
+This application minimizes server function usage in favor of client-side fetch functions:
+
+- **No server functions**: All data fetching and authentication is handled client-side
+- **SPA mode**: Optimized for static hosting with prerendered shell
+- **WebAuthn integration**: Uses Sonr SDK for passkey authentication
+- **Local state management**: Authentication state managed via localStorage
+
 ### Deployment
 
 For SPA mode deployment, ensure your hosting provider:

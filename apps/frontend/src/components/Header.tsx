@@ -12,7 +12,11 @@ import {
   X,
 } from 'lucide-react';
 
-export default function Header() {
+interface HeaderProps {
+  user?: { email: string } | null;
+}
+
+export default function Header({ user }: HeaderProps) {
   const router = useRouter();
   const isShell = router.isShell();
   const [isOpen, setIsOpen] = useState(false);
@@ -35,6 +39,29 @@ export default function Header() {
             <img src="/tanstack-word-logo-white.svg" alt="TanStack Logo" className="h-10" />
           </Link>
         </h1>
+        <div className="ml-auto flex items-center gap-4">
+          {user ? (
+            <>
+              <span className="text-white">{user.email}</span>
+              <button
+                onClick={() => {
+                  localStorage.removeItem('authenticated');
+                  window.location.href = '/';
+                }}
+                className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/login"
+              className="px-3 py-1 bg-cyan-600 hover:bg-cyan-700 text-white rounded transition-colors"
+            >
+              Login
+            </Link>
+          )}
+        </div>
       </header>
 
       {!isShell && (
@@ -71,7 +98,7 @@ export default function Header() {
             {/* Demo Links Start */}
 
             <Link
-              to="/demo/start/server-funcs"
+              to="/demo/start/client-funcs"
               onClick={() => setIsOpen(false)}
               className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
               activeProps={{
@@ -80,7 +107,7 @@ export default function Header() {
               }}
             >
               <SquareFunction size={20} />
-              <span className="font-medium">Start - Server Functions</span>
+              <span className="font-medium">Start - Client Functions</span>
             </Link>
 
             <Link
