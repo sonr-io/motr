@@ -1,33 +1,21 @@
 [scopes]
-actions = [".github/workflows"]
+ci = [".github/workflows", ".github/actions"]
+config = [".github", ".config", "package.json", "bun.lockb", "tsconfig.json", ".oxlint.json", ".editorconfig"]
+docs = ["docs", "README.md", "CLAUDE.md", "CONTRIBUTING.md", "LICENSE"]
+scripts = ["scripts"]
+worker = ["x/worker"]
+api = ["apps/api"]
+web = ["apps/web"]
 auth = ["apps/auth"]
-browser = ["pkgs/browser"]
-config = [".github", "pkgs/config", "package.json", "turbo.json", "bunfig.toml"]
 console = ["apps/console"]
-deps = ["bun.lock"]
-enclave = ["libs/enclave"]
-indexer = ["x/indexer"]
-messenger = ["x/messenger"]
-oracle = ["x/oracle"]
 profile = ["apps/profile"]
-payment = ["apps/payment"]
-react = ["pkgs/react"]
-repo = [".github/Repo.toml"]
-resolver = ["x/resolver"]
-sdk = ["pkgs/sdk"]
 search = ["apps/search"]
-techdocs = ["docs"]
+sdk = ["pkgs/sdk"]
 ui = ["pkgs/ui"]
+react = ["pkgs/react"]
+enclave = ["libs/enclave"]
 vault = ["libs/vault"]
-welcome = ["apps/welcome"]
-worker = ["src", "wrangler.toml"]
-
-[commands]
-build = "devbox run build"
-clean = "devbox run clean"
-dev = "devbox run dev"
-test = "devbox run test"
-lint = "devbox run lint"
-typecheck = "devbox run typecheck"
-check = "devbox run check"
-deploy = "devbox run deploy"
+shared = ["pkgs/config", "pkgs/browser"]
+build = ["index.ts", "bun.lockb", "package.json"]
+proto = ["proto"]
+tests = ["**/*.test.ts", "**/*.spec.ts", "**/*_test.go"]
