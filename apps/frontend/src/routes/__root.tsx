@@ -9,11 +9,12 @@ import appCss from '../styles.css?url';
 
 export const Route = createRootRoute({
   beforeLoad: async () => {
-    // For now, we'll check localStorage for auth state
-    // In a real app, this would be a server function
+    // For static deployment, check localStorage for auth state
+    // In production, this would be handled by the worker routing
     const isAuthenticated =
       typeof window !== 'undefined' && localStorage.getItem('authenticated') === 'true';
 
+    // For now, allow access to all routes - session routing will be handled by worker
     return {
       user: isAuthenticated ? { email: 'user@example.com' } : null,
     };

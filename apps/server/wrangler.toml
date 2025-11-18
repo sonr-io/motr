@@ -32,14 +32,6 @@ binding = "PRICE_CACHE"
 id = "your_price_cache_kv_id"
 preview_id = "your_price_cache_preview_kv_id"
 
-# Durable Objects for WebSocket room management
-[[durable_objects.bindings]]
-name = "PRICE_FEED_MANAGER"
-class_name = "PriceFeedManager"
-
-[durable_objects.classes]
-PriceFeedManager = "src/price-feed-manager.ts"
-
 # Environment variables
 [vars]
 COINGECKO_API_KEY = "your_coingecko_api_key"

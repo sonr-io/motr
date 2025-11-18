@@ -6,7 +6,7 @@
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "dev": "wrangler dev",
+    "dev": "bun run src/index.ts",
     "dev:open": "chromium --new-window http://localhost:8788 & bun run dev",
     "deploy": "wrangler deploy",
     "deploy:staging": "wrangler deploy --env staging",

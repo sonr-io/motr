@@ -16,7 +16,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["@cloudflare/workers-types"]
+    "types": ["node", "@types/node"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
