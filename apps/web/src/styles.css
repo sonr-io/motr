@@ -1,0 +1,5 @@
+@import "@sonr.io/ui/styles/globals.css";
+
+@source './components/**/*.{ts,tsx}';
+@source './routes/**/*.{ts,tsx}';
+@source './lib/**/*.{ts,tsx}';
