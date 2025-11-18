@@ -47,8 +47,28 @@ export async function authenticate(
 }
 
 /**
+ * Create an authenticated session
+ * Alias for authenticate that returns SessionData
+ */
+export async function createSession(
+	userId: string,
+	username: string
+): Promise<SessionData> {
+	const response = await authenticate(userId, username);
+	return response.session;
+}
+
+/**
  * Logout and destroy session
  */
 export async function logout(): Promise<LogoutResponse> {
 	return post<LogoutResponse>('/session/logout');
+}
+
+/**
+ * Destroy current session
+ * Alias for logout
+ */
+export async function destroySession(): Promise<void> {
+	await logout();
 }

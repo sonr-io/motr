@@ -1,10 +1,14 @@
-const konstaConfig = require('konsta/config');
+import konstaConfig from 'konsta/config';
 
 /** @type {import('tailwindcss').Config} */
-module.exports = konstaConfig({
-	content: ['./src/**/*.{html,js,svelte,ts}'],
+export default konstaConfig({
+	content: ['./src/**/*.{html,js,svelte,ts}', '../../node_modules/konsta/svelte/**/*.{js,svelte}'],
 	darkMode: 'class',
 	theme: {
-		extend: {}
+		extend: {
+			fontFamily: {
+				sans: ['Roboto', 'system-ui', 'sans-serif']
+			}
+		}
 	}
 });
