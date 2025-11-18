@@ -108,7 +108,10 @@ export interface Asset {
   keywords?: string[];
   socials?: {
     website?: string;
-    twitter?: string;
+    /**
+     * X (formerly Twitter)
+     */
+    x?: string;
     telegram?: string;
     discord?: string;
     github?: string;
