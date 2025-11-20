@@ -16,14 +16,14 @@
 
 /// <reference lib="webworker" />
 
-import { VaultClient } from "./client.js";
+import { VaultClient } from './client.js';
 import type {
   NewAttenuatedTokenRequest,
   NewOriginTokenRequest,
   SignDataRequest,
   VaultConfigWithStorage,
   VerifyDataRequest,
-} from "./types.js";
+} from './types.js';
 
 declare const self: DedicatedWorkerGlobalScope;
 
@@ -32,38 +32,38 @@ declare const self: DedicatedWorkerGlobalScope;
  */
 export enum WorkerMessageType {
   // Initialization
-  INIT = "init",
-  INIT_SUCCESS = "init_success",
-  INIT_ERROR = "init_error",
+  INIT = 'init',
+  INIT_SUCCESS = 'init_success',
+  INIT_ERROR = 'init_error',
 
   // Vault operations
-  NEW_ORIGIN_TOKEN = "new_origin_token",
-  NEW_ATTENUATED_TOKEN = "new_attenuated_token",
-  SIGN_DATA = "sign_data",
-  VERIFY_DATA = "verify_data",
-  GET_ISSUER_DID = "get_issuer_did",
+  NEW_ORIGIN_TOKEN = 'new_origin_token',
+  NEW_ATTENUATED_TOKEN = 'new_attenuated_token',
+  SIGN_DATA = 'sign_data',
+  VERIFY_DATA = 'verify_data',
+  GET_ISSUER_DID = 'get_issuer_did',
 
   // Storage operations
-  PERSIST_STATE = "persist_state",
-  LOAD_STATE = "load_state",
-  CLEAR_STATE = "clear_state",
-  SWITCH_ACCOUNT = "switch_account",
-  LIST_ACCOUNTS = "list_accounts",
-  REMOVE_ACCOUNT = "remove_account",
+  PERSIST_STATE = 'persist_state',
+  LOAD_STATE = 'load_state',
+  CLEAR_STATE = 'clear_state',
+  SWITCH_ACCOUNT = 'switch_account',
+  LIST_ACCOUNTS = 'list_accounts',
+  REMOVE_ACCOUNT = 'remove_account',
 
   // Token management
-  GET_TOKENS = "get_tokens",
-  REMOVE_EXPIRED_TOKENS = "remove_expired_tokens",
+  GET_TOKENS = 'get_tokens',
+  REMOVE_EXPIRED_TOKENS = 'remove_expired_tokens',
 
   // Responses
-  SUCCESS = "success",
-  ERROR = "error",
+  SUCCESS = 'success',
+  ERROR = 'error',
 
   // Lifecycle
-  PING = "ping",
-  PONG = "pong",
-  CLEANUP = "cleanup",
-  READY = "ready",
+  PING = 'ping',
+  PONG = 'pong',
+  CLEANUP = 'cleanup',
+  READY = 'ready',
 }
 
 /**
@@ -106,8 +106,11 @@ class EnclaveWorker {
   private initPromise: Promise<void> | null = null;
 
   constructor() {
-    this.setupMessageHandler();
-    this.notifyReady();
+    // Only initialize if we're in a worker environment
+    if (typeof self !== 'undefined' && 'postMessage' in self) {
+      this.setupMessageHandler();
+      this.notifyReady();
+    }
   }
 
   /**
@@ -115,7 +118,7 @@ class EnclaveWorker {
    */
   private notifyReady(): void {
     self.postMessage({
-      id: "worker-ready",
+      id: 'worker-ready',
       type: WorkerMessageType.READY,
       success: true,
     } as WorkerResponse);
@@ -125,18 +128,15 @@ class EnclaveWorker {
    * Setup message event handler
    */
   private setupMessageHandler(): void {
-    self.addEventListener(
-      "message",
-      async (event: MessageEvent<WorkerMessage>) => {
-        const message = event.data;
+    self.addEventListener('message', async (event: MessageEvent<WorkerMessage>) => {
+      const message = event.data;
 
-        try {
-          await this.handleMessage(message);
-        } catch (error) {
-          this.sendError(message.id, error);
-        }
-      },
-    );
+      try {
+        await this.handleMessage(message);
+      } catch (error) {
+        this.sendError(message.id, error);
+      }
+    });
   }
 
   /**
@@ -159,10 +159,7 @@ class EnclaveWorker {
         break;
 
       case WorkerMessageType.NEW_ATTENUATED_TOKEN:
-        await this.handleNewAttenuatedToken(
-          id,
-          payload as NewAttenuatedTokenRequest,
-        );
+        await this.handleNewAttenuatedToken(id, payload as NewAttenuatedTokenRequest);
         break;
 
       case WorkerMessageType.SIGN_DATA:
@@ -190,10 +187,7 @@ class EnclaveWorker {
         break;
 
       case WorkerMessageType.SWITCH_ACCOUNT:
-        await this.handleSwitchAccount(
-          id,
-          payload as { accountAddress: string },
-        );
+        await this.handleSwitchAccount(id, payload as { accountAddress: string });
         break;
 
       case WorkerMessageType.LIST_ACCOUNTS:
@@ -201,10 +195,7 @@ class EnclaveWorker {
         break;
 
       case WorkerMessageType.REMOVE_ACCOUNT:
-        await this.handleRemoveAccount(
-          id,
-          payload as { accountAddress: string },
-        );
+        await this.handleRemoveAccount(id, payload as { accountAddress: string });
         break;
 
       case WorkerMessageType.GET_TOKENS:
@@ -229,20 +220,17 @@ class EnclaveWorker {
    */
   private ensureInitialized(): void {
     if (!this.isInitialized || !this.vaultClient) {
-      throw new Error("Vault client not initialized. Call initialize() first.");
+      throw new Error('Vault client not initialized. Call initialize() first.');
     }
   }
 
   /**
    * Handle initialization
    */
-  private async handleInit(
-    id: string,
-    payload: InitMessagePayload,
-  ): Promise<void> {
+  private async handleInit(id: string, payload: InitMessagePayload): Promise<void> {
     if (this.isInitialized) {
       this.sendResponse(id, WorkerMessageType.INIT_SUCCESS, {
-        message: "Already initialized",
+        message: 'Already initialized',
       });
       return;
     }
@@ -251,7 +239,7 @@ class EnclaveWorker {
     if (this.initPromise) {
       await this.initPromise;
       this.sendResponse(id, WorkerMessageType.INIT_SUCCESS, {
-        message: "Initialization complete",
+        message: 'Initialization complete',
       });
       return;
     }
@@ -271,7 +259,7 @@ class EnclaveWorker {
     try {
       await this.initPromise;
       this.sendResponse(id, WorkerMessageType.INIT_SUCCESS, {
-        message: "Initialization successful",
+        message: 'Initialization successful',
       });
     } catch (error) {
       this.initPromise = null;
@@ -282,10 +270,7 @@ class EnclaveWorker {
   /**
    * Handle new origin token creation
    */
-  private async handleNewOriginToken(
-    id: string,
-    request: NewOriginTokenRequest,
-  ): Promise<void> {
+  private async handleNewOriginToken(id: string, request: NewOriginTokenRequest): Promise<void> {
     this.ensureInitialized();
     const response = await this.vaultClient!.newOriginToken(request);
     this.sendResponse(id, WorkerMessageType.SUCCESS, response);
@@ -296,7 +281,7 @@ class EnclaveWorker {
    */
   private async handleNewAttenuatedToken(
     id: string,
-    request: NewAttenuatedTokenRequest,
+    request: NewAttenuatedTokenRequest
   ): Promise<void> {
     this.ensureInitialized();
     const response = await this.vaultClient!.newAttenuatedToken(request);
@@ -306,10 +291,7 @@ class EnclaveWorker {
   /**
    * Handle data signing
    */
-  private async handleSignData(
-    id: string,
-    request: SignDataRequest,
-  ): Promise<void> {
+  private async handleSignData(id: string, request: SignDataRequest): Promise<void> {
     this.ensureInitialized();
 
     // Convert array back to Uint8Array if needed
@@ -330,10 +312,7 @@ class EnclaveWorker {
   /**
    * Handle data verification
    */
-  private async handleVerifyData(
-    id: string,
-    request: VerifyDataRequest,
-  ): Promise<void> {
+  private async handleVerifyData(id: string, request: VerifyDataRequest): Promise<void> {
     this.ensureInitialized();
 
     // Convert arrays back to Uint8Array if needed
@@ -367,7 +346,7 @@ class EnclaveWorker {
     this.ensureInitialized();
     await this.vaultClient!.persistState();
     this.sendResponse(id, WorkerMessageType.SUCCESS, {
-      message: "State persisted",
+      message: 'State persisted',
     });
   }
 
@@ -387,7 +366,7 @@ class EnclaveWorker {
     this.ensureInitialized();
     await this.vaultClient!.clearPersistedState();
     this.sendResponse(id, WorkerMessageType.SUCCESS, {
-      message: "State cleared",
+      message: 'State cleared',
     });
   }
 
@@ -396,12 +375,12 @@ class EnclaveWorker {
    */
   private async handleSwitchAccount(
     id: string,
-    payload: { accountAddress: string },
+    payload: { accountAddress: string }
   ): Promise<void> {
     this.ensureInitialized();
     await this.vaultClient!.switchAccount(payload.accountAddress);
     this.sendResponse(id, WorkerMessageType.SUCCESS, {
-      message: "Account switched",
+      message: 'Account switched',
     });
   }
 
@@ -419,12 +398,12 @@ class EnclaveWorker {
    */
   private async handleRemoveAccount(
     id: string,
-    payload: { accountAddress: string },
+    payload: { accountAddress: string }
   ): Promise<void> {
     this.ensureInitialized();
     await this.vaultClient!.removeAccount(payload.accountAddress);
     this.sendResponse(id, WorkerMessageType.SUCCESS, {
-      message: "Account removed",
+      message: 'Account removed',
     });
   }
 
@@ -444,7 +423,7 @@ class EnclaveWorker {
     this.ensureInitialized();
     await this.vaultClient!.removeExpiredTokens();
     this.sendResponse(id, WorkerMessageType.SUCCESS, {
-      message: "Expired tokens removed",
+      message: 'Expired tokens removed',
     });
   }
 
@@ -461,7 +440,7 @@ class EnclaveWorker {
     this.initPromise = null;
 
     this.sendResponse(id, WorkerMessageType.SUCCESS, {
-      message: "Cleanup complete",
+      message: 'Cleanup complete',
     });
   }
 
@@ -501,7 +480,9 @@ class EnclaveWorker {
   }
 }
 
-// Initialize worker
-new EnclaveWorker();
+// Initialize worker only in worker environment
+if (typeof self !== 'undefined' && 'postMessage' in self) {
+  new EnclaveWorker();
+}
 
 // Export for TypeScript type checking

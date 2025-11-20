@@ -49,7 +49,7 @@
     "test": "bunx --bun turbo test",
     "test:all": "bun --filter '*' test",
     "test:watch": "bunx --bun turbo test -- --watch",
-    "dev": "bun run build && (cd apps/frontend && bun run dev) & (cd apps/worker && bun run dev) & wait",
+    "dev": "bun run build && bun run worker:dev",
     "lint": "bunx --bun turbo lint",
     "lint:fix": "bunx --bun turbo lint --continue -- --fix",
     "format": "bunx --bun turbo format",
