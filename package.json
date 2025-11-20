@@ -50,7 +50,7 @@
     "test": "bunx --bun turbo test",
     "test:all": "bun --filter '*' test",
     "test:watch": "bunx --bun turbo test -- --watch",
-    "dev": "bun run build && bun run worker:dev",
+    "dev": "bun run build && (cd apps/frontend && bun run dev) & (cd apps/api && bun run dev) & wait",
     "lint": "bunx --bun turbo lint",
     "lint:fix": "bunx --bun turbo lint --continue -- --fix",
     "format": "bunx --bun turbo format",
