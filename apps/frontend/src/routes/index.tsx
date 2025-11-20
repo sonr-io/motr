@@ -1,118 +1,117 @@
-import { createFileRoute } from '@tanstack/react-router'
-import {
-  Zap,
-  Server,
-  Route as RouteIcon,
-  Shield,
-  Waves,
-  Sparkles,
-} from 'lucide-react'
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { AccountInfo } from '../components/AccountInfo';
+import { BalanceInfo } from '../components/BalanceInfo';
 
-export const Route = createFileRoute('/')({ component: App })
+export const Route = createFileRoute('/')({ component: App });
 
 function App() {
-  const features = [
-    {
-      icon: <Zap className="w-12 h-12 text-cyan-400" />,
-      title: 'Powerful Server Functions',
-      description:
-        'Write server-side code that seamlessly integrates with your client components. Type-safe, secure, and simple.',
-    },
-    {
-      icon: <Server className="w-12 h-12 text-cyan-400" />,
-      title: 'Flexible Server Side Rendering',
-      description:
-        'Full-document SSR, streaming, and progressive enhancement out of the box. Control exactly what renders where.',
-    },
-    {
-      icon: <RouteIcon className="w-12 h-12 text-cyan-400" />,
-      title: 'API Routes',
-      description:
-        'Build type-safe API endpoints alongside your application. No separate backend needed.',
-    },
-    {
-      icon: <Shield className="w-12 h-12 text-cyan-400" />,
-      title: 'Strongly Typed Everything',
-      description:
-        'End-to-end type safety from server to client. Catch errors before they reach production.',
-    },
-    {
-      icon: <Waves className="w-12 h-12 text-cyan-400" />,
-      title: 'Full Streaming Support',
-      description:
-        'Stream data from server to client progressively. Perfect for AI applications and real-time updates.',
-    },
-    {
-      icon: <Sparkles className="w-12 h-12 text-cyan-400" />,
-      title: 'Next Generation Ready',
-      description:
-        'Built from the ground up for modern web applications. Deploy anywhere JavaScript runs.',
-    },
-  ]
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
-      <section className="relative py-20 px-6 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-purple-500/10"></div>
-        <div className="relative max-w-5xl mx-auto">
-          <div className="flex items-center justify-center gap-6 mb-6">
-            <img
-              src="/tanstack-circle-logo.png"
-              alt="TanStack Logo"
-              className="w-24 h-24 md:w-32 md:h-32"
-            />
-            <h1 className="text-6xl md:text-7xl font-black text-white [letter-spacing:-0.08em]">
-              <span className="text-gray-300">TANSTACK</span>{' '}
-              <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                START
-              </span>
-            </h1>
-          </div>
-          <p className="text-2xl md:text-3xl text-gray-300 mb-4 font-light">
-            The framework for next generation AI applications
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-8">
+      <div className="max-w-6xl mx-auto space-y-8">
+        <header className="text-center space-y-4">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Motr Frontend</h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300">
+            Secure WebAssembly-based cryptographic operations and decentralized identity
           </p>
-          <p className="text-lg text-gray-400 max-w-3xl mx-auto mb-8">
-            Full-stack framework powered by TanStack Router for React and Solid.
-            Build modern applications with server functions, streaming, and type
-            safety.
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Built with TanStack Start, React, and WebAssembly
           </p>
-          <div className="flex flex-col items-center gap-4">
-            <a
-              href="https://tanstack.com/start"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-cyan-500/50"
-            >
-              Documentation
-            </a>
-            <p className="text-gray-400 text-sm mt-2">
-              Begin your TanStack Start journey by editing{' '}
-              <code className="px-2 py-1 bg-slate-700 rounded text-cyan-400">
-                /src/routes/index.tsx
-              </code>
-            </p>
-          </div>
-        </div>
-      </section>
+        </header>
 
-      <section className="py-16 px-6 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10"
-            >
-              <div className="mb-4">{feature.icon}</div>
-              <h3 className="text-xl font-semibold text-white mb-3">
-                {feature.title}
+        <nav className="flex justify-center space-x-6">
+          <Link
+            to="/login"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Login
+          </Link>
+          <Link
+            to="/register"
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+          >
+            Register
+          </Link>
+          <Link
+            to="/payment"
+            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+          >
+            Payment Demo
+          </Link>
+          <Link
+            to="/search"
+            className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+          >
+            Blockchain Explorer
+          </Link>
+          <Link
+            to="/identity"
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          >
+            Identity Management
+          </Link>
+        </nav>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          <AccountInfo />
+          <BalanceInfo />
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Features</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+              <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
+                WebAuthn Passkeys
               </h3>
-              <p className="text-gray-400 leading-relaxed">
-                {feature.description}
+              <p className="text-sm text-blue-800 dark:text-blue-200">
+                Secure, phishing-resistant authentication using hardware-backed passkeys
               </p>
             </div>
-          ))}
+            <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+              <h3 className="font-semibold text-green-900 dark:text-green-100 mb-2">
+                WebAssembly Crypto
+              </h3>
+              <p className="text-sm text-green-800 dark:text-green-200">
+                High-performance cryptographic operations running in WebAssembly
+              </p>
+            </div>
+            <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+              <h3 className="font-semibold text-purple-900 dark:text-purple-100 mb-2">
+                Multi-Chain Support
+              </h3>
+              <p className="text-sm text-purple-800 dark:text-purple-200">
+                Native support for Cosmos, Ethereum, Solana, and Bitcoin networks
+              </p>
+            </div>
+            <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+              <h3 className="font-semibold text-orange-900 dark:text-orange-100 mb-2">
+                UCAN Authorization
+              </h3>
+              <p className="text-sm text-orange-800 dark:text-orange-200">
+                Decentralized authorization with capability-based access control
+              </p>
+            </div>
+            <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
+              <h3 className="font-semibold text-red-900 dark:text-red-100 mb-2">MPC Operations</h3>
+              <p className="text-sm text-red-800 dark:text-red-200">
+                Multi-party computation for enhanced cryptographic security
+              </p>
+            </div>
+            <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
+              <h3 className="font-semibold text-indigo-900 dark:text-indigo-100 mb-2">
+                Service Workers
+              </h3>
+              <p className="text-sm text-indigo-800 dark:text-indigo-200">
+                Background processing and offline capabilities for payments
+              </p>
+            </div>
+          </div>
         </div>
-      </section>
+
+        <div className="text-center text-gray-500 dark:text-gray-400">
+          <p>Migrated from apps/web with enhanced authentication and blockchain features</p>
+        </div>
+      </div>
     </div>
-  )
+  );
 }
